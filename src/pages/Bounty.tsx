@@ -1,5 +1,5 @@
-const BountryPage = () => {
+const BountyPage = () => {
   return <div>Bountry page</div>;
 };
 
-export { BountryPage };
+export { BountyPage };

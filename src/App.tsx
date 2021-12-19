@@ -3,7 +3,7 @@ import { Web3ReactProvider } from '@web3-react/core';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
-import { BountryPage } from './pages/Bounty';
+import { BountyPage } from './pages/Bounty';
 import { HomePage } from './pages/Home';
 import { NotFoundPage } from './pages/NotFound';
 import { PurchasePage } from './pages/Purchase';
@@ -24,7 +24,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route index element={<HomePage />} />
-            <Route path="bounty" element={<BountryPage />} />
+            <Route path="bounty" element={<BountyPage />} />
             <Route path="/creator/:creatorId" element={<PurchasePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
