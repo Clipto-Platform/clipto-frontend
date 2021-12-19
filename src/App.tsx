@@ -21,6 +21,7 @@ function App() {
     <Web3ReactProvider getLibrary={getLibrary}>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
+          <Header />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route index element={<HomePage />} />
