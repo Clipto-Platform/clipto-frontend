@@ -1,0 +1,103 @@
+html,
+body {
+  font-size: 16px;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+
+body {
+  margin: 0;
+  font-family: 'Scto Grotesk A', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  background: #040404;
+  max-width: 100vw;
+  overflow-x: hidden;
+  color: #fff;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #0b0b0f;
+}
+
+select,
+button {
+  font-family: 'Scto Grotesk A', 'Roboto', sans-serif;
+  outline: none;
+  cursor: pointer;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type='number'] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+}
+
+@font-face {
+  font-family: 'Scto Grotesk A';
+  src: url('../assets/fonts/SctoGroteskA-Bold.woff2') format('woff2'),
+    url('../assets/fonts/SctoGroteskA-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Scto Grotesk A';
+  src: url('../assets/fonts/SctoGroteskA-Medium.woff2') format('woff2'),
+    url('../assets/fonts/SctoGroteskA-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Scto Grotesk A';
+  src: url('../assets/fonts/SctoGroteskA-Regular.otf') format('woff2'),
+    url('../assets/fonts/SctoGroteskA-Regular.otf') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
