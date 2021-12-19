@@ -2,9 +2,12 @@ import './App.css';
 
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
-import { useState } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import logo from './logo.svg';
+import { BountryPage } from './pages/Bounty';
+import { HomePage } from './pages/Home';
+import { NotFoundPage } from './pages/NotFound';
+import { PurchasePage } from './pages/Purchase';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLibrary(provider: any): Web3Provider {
@@ -14,38 +17,17 @@ function getLibrary(provider: any): Web3Provider {
 }
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>Hello Vite + React!</p>
-          <p>
-            <button type="button" onClick={() => setCount((count) => count + 1)}>
-              count is: {count}
-            </button>
-          </p>
-          <p>
-            Edit <code>App.tsx</code> and save to test HMR updates.
-          </p>
-          <p>
-            <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-              Learn React
-            </a>
-            {' | '}
-            <a
-              className="App-link"
-              href="https://vitejs.dev/guide/features.html"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Vite Docs
-            </a>
-          </p>
-        </header>
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route index element={<HomePage />} />
+          <Route path="bounty" element={<BountryPage />} />
+          <Route path="/creator/:creatorId" element={<PurchasePage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
     </Web3ReactProvider>
   );
 }
