@@ -13,7 +13,7 @@
   "dependencies": {
     "@ethersproject/abi": "^5.5.0",
     "@ethersproject/providers": "^5.5.1",
-    "@react-aria/button": "^3.3.4",
+    "@react-aria/button": "^3.2.2",
     "@react-aria/dialog": "^3.1.4",
     "@react-aria/focus": "^3.5.0",
     "@react-aria/overlays": "^3.7.3",
