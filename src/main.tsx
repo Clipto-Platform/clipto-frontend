@@ -1,4 +1,5 @@
-import './index.css';
+import './styles/resets.css';
+import './styles/base.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
