@@ -59,7 +59,7 @@ const HeaderWrapperInner = styled.div`
   margin: 0 auto 0 auto;
 `;
 
-const LeftWrapper = styled.a`
+const LeftWrapper = styled.div`
   display: flex;
   text-decoration: inherit;
   justify-content: flex-start;
