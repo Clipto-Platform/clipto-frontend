@@ -1,6 +1,5 @@
 import { useButton } from '@react-aria/button';
 import { AriaButtonProps } from '@react-types/button';
-import { useWeb3React } from '@web3-react/core';
 import React, { useRef } from 'react';
 import styled, { CSSProperties } from 'styled-components';
 
@@ -57,7 +56,7 @@ const StyledButton = styled.button<{
   }};
   width: 100%;
 
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   will-change: transform, background-color, box-shadow;
   transform: ${(props) => (props.isPressed ? `scale(0.985)` : `translate3d(0,0,0)`)};
 
@@ -79,7 +78,15 @@ const StyledButton = styled.button<{
     }
     return 'none';
   }};
-
+  :hover,
+  :active {
+    border: ${(props) => {
+      if (props.variant === 'secondary') {
+        return `1px solid ${props.theme.yellow}`;
+      }
+      return 'none';
+    }};
+  }
   ${(props) =>
     props.disabled &&
     `

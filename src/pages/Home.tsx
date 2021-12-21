@@ -15,6 +15,7 @@ interface FeaturedUser {
   name: string;
   shortDescription: string;
   price: string;
+  uid: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   src: any;
 }
@@ -26,30 +27,35 @@ const featuredUsers: Array<FeaturedUser> = [
     shortDescription: 'Idea instigator',
     price: '100 USDC',
     src: pfp1,
+    uid: '1111',
   },
   {
     name: 'Dave White',
     shortDescription: 'Protocol Designer',
     price: '100 USDC',
     src: pfp2,
+    uid: '2222',
   },
   {
     name: 'jseam',
     shortDescription: 'Handy-dandy builder',
     price: '100 USDC',
     src: pfp3,
+    uid: '3333',
   },
   {
     name: 'Artemilse',
     shortDescription: 'Product designer',
     price: '100 USDC',
     src: pfp4,
+    uid: '4444',
   },
   {
     name: 'CC0maxi',
     shortDescription: 'Web3 designer',
     price: '100 USDC',
     src: pfp5,
+    uid: '5555',
   },
 ];
 
@@ -136,8 +142,8 @@ const HomePage = () => {
             <FeaturedGrid>
               {featuredUsers.map((user) => {
                 return (
-                  <Link key={user.name} to={'/bounty'}>
-                    <FeaturedUserCardContainer key={user.name}>
+                  <Link key={user.uid} to={`/${user.uid}`}>
+                    <FeaturedUserCardContainer key={user.uid}>
                       <FeaturedUserImage src={user.src} style={{ marginBottom: 24 }} />
                       <FeaturedUserTitle style={{ marginBottom: 4 }}>{user.name}</FeaturedUserTitle>
                       <FeaturedUserDescription style={{ marginBottom: 16 }}>

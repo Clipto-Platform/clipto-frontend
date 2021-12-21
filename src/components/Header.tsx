@@ -1,7 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
-import { useButton } from '@react-aria/button';
 import { OverlayContainer } from '@react-aria/overlays';
-import { useOverlayTriggerState } from '@react-stately/overlays';
 import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -18,10 +16,9 @@ import { injected, walletconnect } from '../web3/connectors';
 import { AvatarOrb } from './AvatarOrb';
 import { PrimaryButton } from './Button';
 import { ModalDialog } from './Dialog';
-import { MetamaskIcon } from './icons/MetamaskIcon';
-import { WalletConnectIcon } from './icons/WalletConnectIcon';
 import { Logo } from './Logo';
-// import { WalletSelectButton } from '../WalletButton';
+// import { MetamaskIcon } from './icons/MetamaskIcon';
+// import { WalletConnectIcon } from './icons/WalletConnectIcon';
 
 const MAX_HEADER_WIDTH_IN_PX = MAX_CONTENT_WIDTH_PX;
 
@@ -124,10 +121,6 @@ const Header: React.FC<HeaderProps> = () => {
   const setShowLoginDialog = useHeaderStore((s) => s.setShowDialog);
   const setHasTriedEagerConnecting = useHeaderStore((s) => s.setHasTriedEagerConnecting);
 
-  const state = useOverlayTriggerState({
-    isOpen: showLoginDialog,
-  });
-
   const userEnsName = useEns();
 
   const hasTriedEagerConnect = useEagerConnect();
@@ -145,6 +138,7 @@ const Header: React.FC<HeaderProps> = () => {
     setCurrentlyActivating('metamask');
     try {
       await activate(injected, undefined, true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.log(e.name);
       if (e.name === 'NoEthereumProviderError' || e.message?.includes('No Ethereum provider was found')) {
@@ -174,6 +168,7 @@ const Header: React.FC<HeaderProps> = () => {
     setCurrentlyActivating('wc');
     try {
       await activate(walletconnect, undefined, true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       setCurrentlyActivating(undefined);
       setErrorMessage(e.message ?? 'Something went wrong logging in with WalletConnect');
@@ -196,7 +191,6 @@ const Header: React.FC<HeaderProps> = () => {
     <>
       <HeaderWrapperOuter>
         <HeaderWrapperInner>
-          {/* TODO(johnrjj) Wrap in react-router link */}
           <LeftWrapper>
             <Link to={'/'}>
               <Logo />
@@ -233,6 +227,8 @@ const Header: React.FC<HeaderProps> = () => {
               <div
                 style={{
                   marginBottom: 16,
+                  fontWeight: 700,
+                  fontSize: 18,
                   textAlign: 'left',
                 }}
               >
@@ -242,12 +238,12 @@ const Header: React.FC<HeaderProps> = () => {
                 <div style={{ marginBottom: 12, color: '#FF6868', textAlign: 'left' }}>{errorMessage}</div>
               )}
 
-              <button
+              <PrimaryButton
+                variant={'secondary'}
                 style={{ marginBottom: 16, minWidth: 310 }}
-                disabled={currentlyActivating === 'metamask'}
-                onClick={activeWithMetamask}
+                isDisabled={currentlyActivating === 'metamask'}
+                onPress={activeWithMetamask}
               >
-                <div style={{ display: 'flex', marginRight: 14 }}>Metamask Icon here</div>
                 <div
                   style={{
                     display: 'flex',
@@ -256,16 +252,14 @@ const Header: React.FC<HeaderProps> = () => {
                 >
                   {currentlyActivating === 'metamask' ? <>{'Confirm in your wallet'}</> : 'Continue with Metamask'}
                 </div>
-              </button>
+              </PrimaryButton>
 
-              <button
+              <PrimaryButton
+                variant={'secondary'}
                 style={{ marginBottom: 16, minWidth: 310 }}
-                disabled={currentlyActivating === 'wc'}
-                onClick={activeWithWalletConnect}
+                isDisabled={currentlyActivating === 'wc'}
+                onPress={activeWithWalletConnect}
               >
-                <div style={{ display: 'flex', marginRight: 14 }}>
-                  <button />
-                </div>
                 <div
                   style={{
                     display: 'flex',
@@ -274,7 +268,7 @@ const Header: React.FC<HeaderProps> = () => {
                 >
                   {currentlyActivating === 'wc' ? <>{'Confirm in your wallet'}</> : 'Continue with mobile wallet'}
                 </div>
-              </button>
+              </PrimaryButton>
             </>
           </ModalDialog>
         </OverlayContainer>
