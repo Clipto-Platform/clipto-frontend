@@ -14,38 +14,51 @@ import { MAX_CONTENT_WIDTH_PX } from '../styles/theme';
 import { getShortenedAddress } from '../utils/address';
 import { immer } from '../utils/zustand';
 import { injected, walletconnect } from '../web3/connectors';
+import { AvatarOrb } from './AvatarOrb';
+import { PrimaryButton } from './Button';
 import { ModalDialog } from './Dialog';
-// import { MetamaskIcon } from '../svgs/MetamaskIcon';
-// import { WalletConnectIcon } from '../svgs/WalletConnectIcon';
+import { MetamaskIcon } from './icons/MetamaskIcon';
+import { WalletConnectIcon } from './icons/WalletConnectIcon';
+import { Logo } from './Logo';
 // import { WalletSelectButton } from '../WalletButton';
 
 const MAX_HEADER_WIDTH_IN_PX = MAX_CONTENT_WIDTH_PX;
 
-const HEADER_HEIGHT_IN_PX = '14px';
+const HEADER_HEIGHT_IN_PX = '64px';
 
-const HeaderWrapper = styled.div`
+const HeaderWrapperOuter = styled.div`
   display: flex;
+  flex: 1;
   position: relative;
   align-items: center;
   justify-content: space-between;
-  margin-top: 32px;
-  max-width: ${MAX_HEADER_WIDTH_IN_PX};
+  width: 100%;
+  height: ${HEADER_HEIGHT_IN_PX};
+  max-height: ${HEADER_HEIGHT_IN_PX};
+  min-height: ${HEADER_HEIGHT_IN_PX};
+  background: ${(props) => props.theme.black};
+  z-index: 100;
+
   padding: 0 32px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 0 16px;
   `}
-  color: #ffffff;
-  margin: 32px auto 0 auto;
-  height: ${HEADER_HEIGHT_IN_PX};
-  max-height: ${HEADER_HEIGHT_IN_PX};
-  min-height: ${HEADER_HEIGHT_IN_PX};
-  z-index: 100;
 
   position: absolute;
-  display: flex;
-  flex: 1;
   left: 0;
   right: 0;
+`;
+
+const HeaderWrapperInner = styled.div`
+  display: flex;
+  flex: 1;
+  position: relative;
+  align-items: center;
+  justify-content: space-between;
+  max-width: ${MAX_HEADER_WIDTH_IN_PX};
+
+  color: #ffffff;
+  margin: 0 auto 0 auto;
 `;
 
 const LeftWrapper = styled.a`
@@ -53,20 +66,13 @@ const LeftWrapper = styled.a`
   text-decoration: inherit;
   justify-content: flex-start;
   align-items: center;
-  width: 180px;
-`;
-
-const CenterWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 const RightWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  width: 180px;
+  cursor: pointer;
 `;
 
 const StyledSpan = styled.span`
@@ -74,10 +80,13 @@ const StyledSpan = styled.span`
   text-decoration: none;
   font-style: normal;
   font-weight: bold;
-  font-size: 14px;
-  line-height: 19px;
-  color: #ffffff;
-  cursor: pointer;
+  font-size: 16px;
+  line-height: 20px;
+  color: #cccccc;
+  transition: color 0.15s ease;
+  :hover {
+    color: #ffffff;
+  }
 `;
 
 interface HeaderStore extends State {
@@ -88,7 +97,7 @@ interface HeaderStore extends State {
 }
 
 const useHeaderStore = create<HeaderStore>(
-  immer((set, _get) => ({
+  immer((set) => ({
     showDialog: false,
     hasTriedEagerConnecting: false,
     setShowDialog: (show: boolean) => {
@@ -108,7 +117,7 @@ const useHeaderStore = create<HeaderStore>(
 export interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
-  const { activate, chainId, error, account, deactivate, library } = useWeb3React<Web3Provider>();
+  const { activate, account, deactivate } = useWeb3React<Web3Provider>();
 
   const showLoginDialog = useHeaderStore((s) => s.showDialog);
   const setShowLoginDialog = useHeaderStore((s) => s.setShowDialog);
@@ -117,25 +126,6 @@ const Header: React.FC<HeaderProps> = () => {
   const state = useOverlayTriggerState({
     isOpen: showLoginDialog,
   });
-  const openButtonRef = React.useRef<HTMLButtonElement | null>(null);
-  const closeButtonRef = React.useRef<HTMLButtonElement | null>(null);
-
-  // useButton ensures that focus management is handled correctly,
-  // across all browsers. Focus is restored to the button once the
-  // dialog closes.
-  const { buttonProps: openButtonProps } = useButton(
-    {
-      onPress: () => setShowLoginDialog(true),
-    },
-    openButtonRef,
-  );
-
-  const { buttonProps: closeButtonProps } = useButton(
-    {
-      onPress: () => setShowLoginDialog(false),
-    },
-    closeButtonRef,
-  );
 
   const userEnsName = useEns();
 
@@ -203,21 +193,35 @@ const Header: React.FC<HeaderProps> = () => {
 
   return (
     <>
-      <HeaderWrapper>
-        {/* Wrap in react-router link */}
-        <LeftWrapper>
-          <span style={{ marginLeft: 12 }}>Clipto</span>
-        </LeftWrapper>
-        <CenterWrapper></CenterWrapper>
-        <RightWrapper>
-          {!account && (
-            <button {...openButtonProps} ref={openButtonRef}>
-              {'Connect Wallet'}
-            </button>
+      <HeaderWrapperOuter>
+        <HeaderWrapperInner>
+          {/* TODO(johnrjj) Wrap in react-router link */}
+          <LeftWrapper>
+            <Logo />
+          </LeftWrapper>
+          {hasTriedEagerConnect && (
+            <>
+              {!account && (
+                <RightWrapper>
+                  <PrimaryButton size={'small'} variant={'secondary'} onPress={() => setShowLoginDialog(true)}>
+                    Connect Wallet
+                  </PrimaryButton>
+                </RightWrapper>
+              )}
+              {account && (
+                <>
+                  <RightWrapper onClick={logoutUser}>
+                    <StyledSpan style={{ marginRight: 16 }}>
+                      {userEnsName ?? getShortenedAddress(account, 6, 4)}
+                    </StyledSpan>
+                    <AvatarOrb />
+                  </RightWrapper>
+                </>
+              )}
+            </>
           )}
-          {account && <StyledSpan onClick={logoutUser}>{userEnsName ?? getShortenedAddress(account, 6, 4)}</StyledSpan>}
-        </RightWrapper>
-      </HeaderWrapper>
+        </HeaderWrapperInner>
+      </HeaderWrapperOuter>
 
       {showLoginDialog && (
         <OverlayContainer>
@@ -227,8 +231,6 @@ const Header: React.FC<HeaderProps> = () => {
                 style={{
                   marginBottom: 16,
                   textAlign: 'left',
-                  color: '#888F96',
-                  fontWeight: 'bold',
                 }}
               >
                 Connect a wallet
@@ -278,4 +280,19 @@ const Header: React.FC<HeaderProps> = () => {
   );
 };
 
-export { Header };
+const HeaderSpacer = styled.div`
+  height: ${HEADER_HEIGHT_IN_PX};
+  width: 100%;
+  min-height: ${HEADER_HEIGHT_IN_PX};
+  max-height: ${HEADER_HEIGHT_IN_PX};
+`;
+
+const SPACE_BETWEEN_HEADER_AND_CONTENT_IN_PX = '88px';
+const HeaderContentGapSpacer = styled.div`
+  height: ${SPACE_BETWEEN_HEADER_AND_CONTENT_IN_PX};
+  width: 100%;
+  min-height: ${SPACE_BETWEEN_HEADER_AND_CONTENT_IN_PX};
+  max-height: ${SPACE_BETWEEN_HEADER_AND_CONTENT_IN_PX};
+`;
+
+export { Header, HeaderContentGapSpacer, HeaderSpacer };

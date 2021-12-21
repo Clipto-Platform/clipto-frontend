@@ -1,3 +1,5 @@
+import '@formatjs/intl-numberformat/polyfill';
+import '@formatjs/intl-numberformat/locale-data/en'; // locale-data for en
 import './styles/resets.css';
 import './styles/base.css';
 

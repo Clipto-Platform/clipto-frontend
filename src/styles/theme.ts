@@ -3,8 +3,8 @@ import { css, DefaultTheme } from 'styled-components';
 
 import type { Colors } from './styled';
 
-export const MAX_CONTENT_WIDTH = 1320;
-export const MAX_CONTENT_WIDTH_PX = '1320px';
+export const MAX_CONTENT_WIDTH = 1130;
+export const MAX_CONTENT_WIDTH_PX = `${MAX_CONTENT_WIDTH}px`;
 
 const MEDIA_WIDTHS = {
   upToExtraSmall: 500,
@@ -38,6 +38,7 @@ export const colors: Colors = {
   black,
   blackPure,
   lightGray: '#B3B3B3',
+  gray: '#686868',
   darkGray: '0E0E0E',
   twitterBlue: '#1DA1F2',
   green: '#1DB954',
