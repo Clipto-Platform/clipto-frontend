@@ -5,11 +5,12 @@ const LogoText = styled.div`
   font-style: bold;
   font-weight: 900;
   font-size: 24px;
-  line-height: 30px;
-  /* identical to box height */
+  line-height: 125%;
 
   display: flex;
   align-items: center;
+  padding: 4px;
+  margin-left: -4px;
 
   color: #ffffff;
 `;

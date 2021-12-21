@@ -4,6 +4,7 @@ import { OverlayContainer } from '@react-aria/overlays';
 import { useOverlayTriggerState } from '@react-stately/overlays';
 import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
 
@@ -197,7 +198,9 @@ const Header: React.FC<HeaderProps> = () => {
         <HeaderWrapperInner>
           {/* TODO(johnrjj) Wrap in react-router link */}
           <LeftWrapper>
-            <Logo />
+            <Link to={'/'}>
+              <Logo />
+            </Link>
           </LeftWrapper>
           {hasTriedEagerConnect && (
             <>
