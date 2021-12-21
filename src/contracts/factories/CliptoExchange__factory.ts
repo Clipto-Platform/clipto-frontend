@@ -19,7 +19,7 @@ const _abi = [
       {
         indexed: true,
         internalType: 'string',
-        name: 'name',
+        name: 'profileUrl',
         type: 'string',
       },
       {
@@ -27,6 +27,37 @@ const _abi = [
         internalType: 'uint256',
         name: 'cost',
         type: 'uint256',
+      },
+    ],
+    name: 'CreatorModified',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'creator',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'string',
+        name: 'profileUrl',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'cost',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'tokenAddress',
+        type: 'address',
       },
     ],
     name: 'CreatorRegistered',
@@ -50,11 +81,79 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
+        name: 'index',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'DeliveredRequest',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'creator',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'requester',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
         name: 'amount',
         type: 'uint256',
       },
     ],
     name: 'NewRequest',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'creator',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'requester',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'RefundedRequest',
     type: 'event',
   },
   {
@@ -69,7 +168,7 @@ const _abi = [
     outputs: [
       {
         internalType: 'string',
-        name: 'name',
+        name: 'profileUrl',
         type: 'string',
       },
       {
@@ -83,9 +182,9 @@ const _abi = [
         type: 'address',
       },
       {
-        internalType: 'string',
-        name: 'profileUrl',
-        type: 'string',
+        internalType: 'uint256',
+        name: 'minTimeToDeliver',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -112,9 +211,37 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'string',
+        name: 'profileUrl',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: 'cost',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'minTimeToDeliver',
+        type: 'uint256',
+      },
+    ],
+    name: 'modifyCreator',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'address',
         name: 'creator',
         type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'deadline',
+        type: 'uint256',
       },
     ],
     name: 'newRequest',
@@ -125,8 +252,31 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'address',
+        name: 'creator',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256',
+      },
+    ],
+    name: 'refundRequest',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'string',
-        name: 'name',
+        name: 'creatorName',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'profileUrl',
         type: 'string',
       },
       {
@@ -135,13 +285,19 @@ const _abi = [
         type: 'uint256',
       },
       {
-        internalType: 'string',
-        name: 'profileUrl',
-        type: 'string',
+        internalType: 'uint256',
+        name: 'minTimeToDeliver',
+        type: 'uint256',
       },
     ],
     name: 'registerCreator',
-    outputs: [],
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -173,6 +329,16 @@ const _abi = [
       {
         internalType: 'bool',
         name: 'delivered',
+        type: 'bool',
+      },
+      {
+        internalType: 'uint256',
+        name: 'deadline',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bool',
+        name: 'refunded',
         type: 'bool',
       },
     ],
