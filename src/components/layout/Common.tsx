@@ -31,3 +31,10 @@ export const Row = styled.div`
   flex-direction: row;
   flex: 1;
 `;
+
+export const OutlinedContainer = styled.div`
+  border: 1px solid ${({ theme }) => theme.border};
+  max-width: 512px;
+  padding: 20px;
+  border-radius: 16px;
+`;

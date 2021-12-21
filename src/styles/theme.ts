@@ -47,6 +47,7 @@ export const colors: Colors = {
   // Semantic colors
   primary: white,
   secondary: '#888F96',
+  border: '#2A2A2A',
 };
 
 export const theme: DefaultTheme = {
