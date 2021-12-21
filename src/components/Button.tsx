@@ -102,8 +102,8 @@ const PrimaryButton: React.FC<ButtonProps & AriaButtonProps<'button'>> = (props)
   return (
     <StyledButton
       key={props.key}
-      variant={props.variant}
-      size={props.size}
+      variant={props.variant ?? 'primary'}
+      size={props.size ?? 'large'}
       isDisabled={props.isDisabled}
       {...buttonProps}
       isPressed={isPressed}

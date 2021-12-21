@@ -1,12 +1,10 @@
 import { useButton } from '@react-aria/button';
-import { useLocale } from '@react-aria/i18n';
 import { useNumberField } from '@react-aria/numberfield';
 import { NumberFieldStateProps, useNumberFieldState } from '@react-stately/numberfield';
 import { useRef } from 'react';
 
 function NumberField(props: NumberFieldStateProps) {
-  const { locale } = useLocale();
-  const state = useNumberFieldState({ ...props, locale });
+  const state = useNumberFieldState({ ...props });
   const inputRef = useRef<HTMLInputElement | null>(null);
   const incrRef = useRef<HTMLButtonElement | null>(null);
   const decRef = useRef<HTMLButtonElement | null>(null);
