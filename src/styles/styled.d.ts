@@ -5,6 +5,7 @@ export interface Colors {
   black: Color;
   blackPure: Color;
   lightGray: Color;
+  gray: Color;
   darkGray: Color;
   twitterBlue: Color;
   green: Color;

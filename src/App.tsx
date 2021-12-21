@@ -3,6 +3,7 @@ import { Web3ReactProvider } from '@web3-react/core';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
+import { Header } from './components/Header';
 import { BountyPage } from './pages/Bounty';
 import { HomePage } from './pages/Home';
 import { NotFoundPage } from './pages/NotFound';
@@ -21,6 +22,7 @@ function App() {
     <Web3ReactProvider getLibrary={getLibrary}>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
+          <Header />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route index element={<HomePage />} />

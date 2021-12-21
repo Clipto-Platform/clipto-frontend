@@ -1,5 +1,13 @@
+import '@formatjs/intl-numberformat/polyfill';
+import '@formatjs/intl-numberformat/locale-data/en'; // locale-data for en
 import './styles/resets.css';
 import './styles/base.css';
+
+// Workaround for walletconnect + vite build problem
+import { Buffer } from 'buffer';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(window as any).global = window;
+window.Buffer = window.Buffer || Buffer;
 
 import React from 'react';
 import ReactDOM from 'react-dom';
