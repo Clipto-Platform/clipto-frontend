@@ -29,7 +29,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="bounty" element={<BountyPage />} />
             <Route path="onboarding" element={<OnboardingPage />} />
-            <Route path="/creator/:creatorId" element={<PurchasePage />} />
+            <Route path="creator/:creatorId" element={<PurchasePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>

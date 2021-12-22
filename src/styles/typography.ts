@@ -20,4 +20,13 @@ const Label = styled.span`
   color: ${(props) => props.theme.white};
 `;
 
-export { Label, Text };
+const Description = styled.div`
+  font-family: 'Scto Grotesk A';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  color: ${(props) => props.theme.lightGray};
+`;
+
+export { Description, Label, Text };
