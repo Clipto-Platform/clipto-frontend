@@ -10,6 +10,7 @@ import { BountyPage } from './pages/Bounty';
 import { OnboardingPage } from './pages/creator/Onboard';
 import { HomePage } from './pages/Home';
 import { NotFoundPage } from './pages/NotFound';
+import { OrdersPage } from './pages/Orders';
 import { theme } from './styles/theme';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLibrary(provider: any): Web3Provider {
@@ -30,6 +31,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="bounty" element={<BountyPage />} />
             <Route path="onboarding" element={<OnboardingPage />} />
+            <Route path="orders" element={<OrdersPage />} />
             <Route path="creator/:creatorId" element={<BookingPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

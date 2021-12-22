@@ -12,23 +12,27 @@ interface ITabListProps<T> extends TabListProps<T> {
   containerStyles?: CSSProperties;
 }
 
+const TabsContainer = styled.div`
+  width: 100%;
+`;
+
 function Tabs(props: ITabListProps<ITabState>) {
   const state = useTabListState(props);
   const ref = React.useRef<HTMLDivElement | null>(null);
   const { tabListProps } = useTabList(props, state, ref);
   return (
-    <div style={{}}>
+    <TabsContainer style={{}}>
       <div
         {...tabListProps}
         ref={ref}
-        style={{ display: 'flex', borderBottom: '1px solid #000000', ...props.containerStyles }}
+        style={{ display: 'flex', borderBottom: '1px solid #2A2A2A', ...props.containerStyles }}
       >
         {[...state.collection].map((item) => (
           <Tab key={item.key} item={item} state={state} />
         ))}
       </div>
       <TabPanel key={state.selectedItem?.key} state={state} />
-    </div>
+    </TabsContainer>
   );
 }
 
@@ -42,8 +46,9 @@ export interface TabProps<T> extends AriaTabProps {
 
 const TabWrapper = styled.div`
   font-style: normal;
-  font-weight: 500;
-  font-size: 18px;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 30px;
   line-height: 149%;
   display: flex;
   align-items: center;
@@ -69,9 +74,9 @@ function Tab({ item, state }: TabProps<ITabState>) {
       {...tabProps}
       ref={ref}
       style={{
-        marginRight: 16,
-        padding: 10,
-        paddingBottom: 25,
+        marginRight: 48,
+        paddingTop: 10,
+        paddingBottom: 8,
         borderBottom: isSelected ? '2px solid #ffffff' : '2px solid transparent',
         opacity: isDisabled ? '0.5' : undefined,
         outline: 'none',
