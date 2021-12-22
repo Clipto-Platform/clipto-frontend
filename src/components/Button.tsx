@@ -74,7 +74,7 @@ const StyledButton = styled.button<{
   }};
   border: ${(props) => {
     if (props.variant === 'secondary') {
-      return '1px solid #2A2A2A';
+      return `1px solid ${props.theme.border}`;
     }
     return 'none';
   }};
