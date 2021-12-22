@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import create from 'zustand';
 
 import { API_URL } from '../config/config';
@@ -15,7 +17,7 @@ export type UserProfile = {
   setProfilePicutre: (profilePicture: string) => void;
   setDeliveryTime: (deliveryTime: number) => void;
   setDemos: (demos: string[]) => void;
-  verifyUser: (tweetUrl: string, address: string) => Promise<boolean>;
+  verifyUser: (tweetUrl: string, address: string) => Promise<void>;
 };
 
 export const useProfile = create<UserProfile>(
@@ -51,15 +53,19 @@ export const useProfile = create<UserProfile>(
       });
     },
     verifyUser: async (tweetUrl: string, address: string) => {
-      const verificationResult = await axios.post(`${API_URL}/user/verify`, { tweetUrl, address });
-      if (verificationResult.data && verificationResult.data.includes) {
+      const verificationResult = await axios.post(`${API_URL}/user/verify`, { tweetUrl, address }).catch((e) => {
+        console.log(e);
+      });
+      if (verificationResult && verificationResult.data && verificationResult.data.includes) {
         set((draft) => {
           draft.userName = verificationResult.data.includes.users[0].name;
           draft.profilePicture = verificationResult.data.includes.users[0].profile_image_url;
         });
-        return true;
+        const navigate = useNavigate();
+        navigate('/');
+      } else {
+        toast.error('Failed to verify your Twitter!');
       }
-      return false;
     },
   })),
 );

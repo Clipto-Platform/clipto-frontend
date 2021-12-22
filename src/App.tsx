@@ -1,6 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import { ThemeProvider } from 'styled-components';
 
 import { Header } from './components/Header';
@@ -10,7 +11,6 @@ import { HomePage } from './pages/Home';
 import { NotFoundPage } from './pages/NotFound';
 import { PurchasePage } from './pages/Purchase';
 import { theme } from './styles/theme';
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -22,6 +22,7 @@ function App() {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <ThemeProvider theme={theme}>
+        <ToastContainer />
         <BrowserRouter>
           <Header />
           <Routes>
