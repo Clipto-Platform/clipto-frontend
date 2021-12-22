@@ -142,7 +142,7 @@ const HomePage = () => {
             <FeaturedGrid>
               {featuredUsers.map((user) => {
                 return (
-                  <Link key={user.uid} to={`/${user.uid}`}>
+                  <Link key={user.uid} to={`/creator/${user.uid}`}>
                     <FeaturedUserCardContainer key={user.uid}>
                       <FeaturedUserImage src={user.src} style={{ marginBottom: 24 }} />
                       <FeaturedUserTitle style={{ marginBottom: 4 }}>{user.name}</FeaturedUserTitle>

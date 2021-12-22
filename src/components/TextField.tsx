@@ -1,37 +1,34 @@
 import { AriaTextFieldOptions, useTextField } from '@react-aria/textfield';
 import { useRef } from 'react';
-import styled from 'styled-components';
+import styled, { CSSProperties } from 'styled-components';
 
-import { Label } from '../styles/typography';
-import { Input } from './Input';
+import { Description, Label } from '../styles/typography';
+import { Input, Textarea } from './Input';
 
 export interface TextFieldProps {
   label: string;
+  inputStyles?: CSSProperties;
 }
 
-const Description = styled.div`
-  font-family: 'Scto Grotesk A';
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 17px;
-  color: ${(props) => props.theme.lightGray};
-`;
-
-function TextField(props: AriaTextFieldOptions<'input'> & TextFieldProps) {
-  const { label } = props;
+function TextField(props: AriaTextFieldOptions<'input' | 'textarea'> & TextFieldProps) {
   const ref = useRef<HTMLInputElement | null>(null);
-  const { labelProps, inputProps, descriptionProps, errorMessageProps } = useTextField(props, ref);
+  const { ...textFieldProps } = props;
+  const { labelProps, inputProps, descriptionProps, errorMessageProps } = useTextField(textFieldProps, ref);
 
+  const inputStyles = { ...inputProps.style, ...props.inputStyles };
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div style={{ marginBottom: 16 }}>
-        <Label as={'label'} {...labelProps}>
-          {label}
+        <Label style={{ marginBottom: props.description ? 7 : 0 }} as={'label'} {...labelProps}>
+          {props.label}
         </Label>
         {props.description && <Description {...descriptionProps}>{props.description}</Description>}
       </div>
-      <Input {...inputProps} ref={ref} />
+      {props.inputElementType === 'textarea' ? (
+        <Textarea {...(inputProps as any)} style={inputStyles} />
+      ) : (
+        <Input {...(inputProps as any)} ref={ref} style={inputStyles} />
+      )}
       {props.errorMessage && (
         <div {...errorMessageProps} style={{ color: 'red', fontSize: 12 }}>
           {props.errorMessage}
@@ -40,7 +37,5 @@ function TextField(props: AriaTextFieldOptions<'input'> & TextFieldProps) {
     </div>
   );
 }
-
-// <TextField label="Email" placeholder="abc@example.com" />;
 
 export { TextField };
