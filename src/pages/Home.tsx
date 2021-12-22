@@ -116,7 +116,7 @@ const FeaturedUserDescription = styled.div`
   font-weight: normal;
   font-size: 16px;
   line-height: 20px;
-  color: #b3b3b3;
+  color: ${(props) => props.theme.lightGray};
 `;
 
 const FeaturedUserStartingPrice = styled.div``;

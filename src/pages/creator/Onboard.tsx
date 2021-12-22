@@ -10,20 +10,19 @@ import { ContentWrapper, OutlinedContainer, PageContentWrapper, PageWrapper } fr
 import { TextField } from '../../components/TextField';
 import { Text } from '../../styles/typography';
 
+// TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
   font-family: 'Scto Grotesk A';
   font-weight: normal;
   text-align: center;
-  font-size: 40px;
-  line-height: 125%;
+  font-size: 32px;
+  line-height: 140%;
+  font-style: normal;
+  font-weight: bold;
   max-width: 500px;
   display: block;
   margin: auto;
   margin-bottom: 30px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-  font-size: 36px;
-  font-weight: bold;
-  `}
 `;
 
 const Subtitle = styled(Text)`
@@ -41,6 +40,7 @@ const StepLabel = styled(Text)`
   font-size: 16px;
   font-weight: bold;
   color: white;
+  margin-bottom: 4px;
 `;
 
 const OnboardingHr = styled.hr`
@@ -51,6 +51,11 @@ const OnboardingHr = styled.hr`
   background-color: ${({ theme }) => theme.border};
   margin-top: 10px;
   margin-bottom: 10px;
+`;
+
+const StepDescription = styled(Text)`
+  font-size: 18px;
+  line-height: 140%;
 `;
 
 const TwitterButton = styled(PrimaryButton)`
@@ -69,10 +74,12 @@ const OnboardingPage = () => {
         <PageContentWrapper>
           <ContentWrapper>
             <OnboardTitle>Claim your creator profile by verifying on Twitter</OnboardTitle>
-            <Subtitle>This helps secure your profile and prevents impersonations.</Subtitle>
+            <Subtitle style={{ marginBottom: 64 }}>
+              This helps secure your profile and prevents impersonations.
+            </Subtitle>
             <StepsContainer>
               <StepLabel>Step 1.</StepLabel>
-              <Text>Post a public tweet that includes your wallet address: {account}</Text>
+              <StepDescription>Post a public tweet that includes your wallet address: {account}</StepDescription>
 
               <a
                 href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -96,11 +103,14 @@ const OnboardingPage = () => {
               </a>
               <OnboardingHr />
               <StepLabel>Step 2.</StepLabel>
-              <Text>Paste the URL link to the tweet to verify your profile.</Text>
+              <StepDescription style={{ marginBottom: 40 }}>
+                Paste the URL link to the tweet to verify your profile.
+              </StepDescription>
+              <div style={{ marginBottom: 24 }}>
+                <TextField label="Tweet URL" placeholder="https://twitter.com/VitalikButerin/1273742863688499203" />
+              </div>
 
-              <TextField label="Tweet URL" placeholder="https://twitter.com/VitalikButerin/1273742863688499203" />
-
-              <PrimaryButton style={{ marginTop: '20px' }}>Confirm</PrimaryButton>
+              <PrimaryButton style={{ marginBottom: '16px' }}>Confirm</PrimaryButton>
             </StepsContainer>
           </ContentWrapper>
         </PageContentWrapper>
