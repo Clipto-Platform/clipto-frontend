@@ -1,6 +1,19 @@
+import styled from 'styled-components';
+
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
+import { OrderCard } from '../components/OrderCard';
 import { Item, Tabs } from '../components/Tabs';
+
+const TabContent = styled.div`
+  margin-top: 48px;
+`;
+
+const SingleColumnPageContent = styled(PageContentWrapper)`
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+`;
 
 const OrdersPage = () => {
   return (
@@ -8,16 +21,21 @@ const OrdersPage = () => {
       <PageWrapper>
         <HeaderSpacer />
         <HeaderContentGapSpacer />
-        <PageContentWrapper style={{ width: '100%', maxWidth: 600, margin: '0 auto' }}>
+        <SingleColumnPageContent>
           <Tabs aria-label="View received and purchased orders">
             <Item key="received" title="Received">
-              <div style={{ marginTop: 48 }}>received tab</div>
+              <TabContent>
+                <OrderCard />
+                <OrderCard />
+                <OrderCard />
+                <OrderCard />
+              </TabContent>
             </Item>
             <Item key="purchased" title="Purchased">
-              <div style={{ marginTop: 48 }}>purchased tab</div>
+              <TabContent>purchased tab</TabContent>
             </Item>
           </Tabs>
-        </PageContentWrapper>
+        </SingleColumnPageContent>
       </PageWrapper>
     </>
   );
