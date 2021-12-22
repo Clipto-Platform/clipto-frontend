@@ -1,6 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
+import { ChangeEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import { PrimaryButton } from '../../components/Button';
@@ -8,6 +10,7 @@ import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
 import TwitterIcon from '../../components/icons/TwitterIcon';
 import { ContentWrapper, OutlinedContainer, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
+import { useProfile } from '../../hooks/useProfile';
 import { Text } from '../../styles/typography';
 
 // TODO(johnrjj) - Consolidate final typography into stylesheet
@@ -58,14 +61,18 @@ const StepDescription = styled(Text)`
   line-height: 140%;
 `;
 
-const TwitterButton = styled(PrimaryButton)`
-  background: ${({ theme }) => theme.twitterBlue} !important;
-`;
-
 const OnboardingPage = () => {
   const theme = useTheme();
+  const userProfile = useProfile();
+  const navigate = useNavigate();
   const { account } = useWeb3React<Web3Provider>();
+  const [tweetUrl, setTweetUrl] = useState<string>('');
 
+  const verifyTwitterUser = async () => {
+    if (await userProfile.verifyUser(tweetUrl, account!)) {
+      navigate('/');
+    }
+  };
   return (
     <>
       <PageWrapper>
@@ -107,10 +114,21 @@ const OnboardingPage = () => {
                 Paste the URL link to the tweet to verify your profile.
               </StepDescription>
               <div style={{ marginBottom: 24 }}>
-                <TextField label="Tweet URL" placeholder="https://twitter.com/VitalikButerin/1273742863688499203" />
+                <TextField
+                  onChange={(e) => setTweetUrl(e)}
+                  label="Tweet URL"
+                  placeholder="https://twitter.com/VitalikButerin/1273742863688499203"
+                />
               </div>
 
-              <PrimaryButton style={{ marginBottom: '16px' }}>Confirm</PrimaryButton>
+              <PrimaryButton
+                style={{ marginBottom: '16px' }}
+                onPress={() => {
+                  verifyTwitterUser();
+                }}
+              >
+                Confirm
+              </PrimaryButton>
             </StepsContainer>
           </ContentWrapper>
         </PageContentWrapper>
