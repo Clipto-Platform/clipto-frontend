@@ -2,6 +2,7 @@ import '@formatjs/intl-numberformat/polyfill';
 import '@formatjs/intl-numberformat/locale-data/en'; // locale-data for en
 import './styles/resets.css';
 import './styles/base.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Workaround for walletconnect + vite build problem
 import { Buffer } from 'buffer';

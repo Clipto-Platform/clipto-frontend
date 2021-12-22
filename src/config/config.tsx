@@ -16,3 +16,5 @@ export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_MAINNET]: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
   [CHAIN_IDS.POLYGON_TESTNET]: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
 };
+
+export const API_URL = 'http://localhost:8000';
