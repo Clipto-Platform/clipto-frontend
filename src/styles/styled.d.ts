@@ -14,6 +14,7 @@ export interface Colors {
   // semantic
   primary: Color;
   secondary: Color;
+  border: Color;
 }
 
 declare module 'styled-components' {

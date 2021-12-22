@@ -5,6 +5,7 @@ import { ThemeProvider } from 'styled-components';
 
 import { Header } from './components/Header';
 import { BountyPage } from './pages/Bounty';
+import { OnboardingPage } from './pages/creator/Onboard';
 import { HomePage } from './pages/Home';
 import { NotFoundPage } from './pages/NotFound';
 import { PurchasePage } from './pages/Purchase';
@@ -27,6 +28,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route index element={<HomePage />} />
             <Route path="bounty" element={<BountyPage />} />
+            <Route path="onboarding" element={<OnboardingPage />} />
             <Route path="/creator/:creatorId" element={<PurchasePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
