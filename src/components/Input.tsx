@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const Input = styled.input`
   font-family: 'Scto Grotesk A';
   background: transparent;
-  border: 1px solid #2a2a2a;
+  border: 1px solid ${(props) => props.theme.border};
   box-sizing: border-box;
   border-radius: 8px;
   min-height: 48px;
@@ -27,7 +27,7 @@ const Textarea = styled.textarea`
   resize: none; /*remove the resize handle on the bottom right*/
   font-family: 'Scto Grotesk A';
   background: transparent;
-  border: 1px solid #2a2a2a;
+  border: 1px solid ${(props) => props.theme.border};
   box-sizing: border-box;
   border-radius: 8px;
   min-height: 48px;

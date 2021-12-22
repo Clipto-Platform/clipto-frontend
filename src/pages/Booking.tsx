@@ -37,8 +37,8 @@ const ImagesColumnContainer = styled.div`
 `;
 
 const BookingCard = styled.div`
-  background: #040404;
-  border: 1px solid #2a2a2a;
+  background: ${(props) => props.theme.black};
+  border: 1px solid ${(props) => props.theme.border};
   border-radius: 16px;
   padding: 32px 24px;
 `;
@@ -61,7 +61,7 @@ const HR = styled.div`
   height: 1px;
   margin-left: -24px;
   width: calc(100% + 48px);
-  background-color: #2a2a2a; ;
+  background-color: ${(props) => props.theme.border};
 `;
 
 const BookingPage = () => {

@@ -7,7 +7,7 @@ const ChevronContainer = styled.div`
   height: 32px;
   width: 32px;
   background: #090909;
-  border: 1px solid #2a2a2a;
+  border: 1px solid ${(props) => props.theme.border};
   display: flex;
   align-items: center;
   justify-content: center;
