@@ -1,8 +1,12 @@
+import { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
+import pfp from '../assets/images/pfps/sample-profile.png';
 import { AvatarOrb } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
+import { ImagesSlider } from '../components/ImagesSlider';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
 import { Description, Label } from '../styles/typography';
@@ -14,12 +18,22 @@ const PageGrid = styled.div`
   grid-column-gap: 40px;
   grid-row-gap: 0px;
   margin-bottom: 64px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: 1fr;
+    width: 100%;
+    grid-column-gap: 40px;
+    grid-row-gap: 30px;
+    max-width: 100%;
+  `}
 `;
 
 const ImagesColumnContainer = styled.div`
-  border: 1px solid white;
-  opacity: 0.7;
+  position: relative;
   height: 440px;
+  max-width: 100%;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    overflow: hidden;
+  `}
 `;
 
 const BookingCard = styled.div`
@@ -50,14 +64,27 @@ const HR = styled.div`
   background-color: #2a2a2a; ;
 `;
 
-const PurchasePage = () => {
+const BookingPage = () => {
+  // TODO(johnrjj) - Use creatorId (wallet address) to query
+  const { creatorId } = useParams();
+  const creatorImages = useMemo(
+    () => [
+      { src: pfp, key: '1' },
+      { src: pfp, key: '2' },
+      { src: pfp, key: '3' },
+    ],
+    [],
+  );
+
   return (
     <PageWrapper>
       <HeaderSpacer />
       <HeaderContentGapSpacer />
       <PageContentWrapper>
         <PageGrid>
-          <ImagesColumnContainer>Image carousel</ImagesColumnContainer>
+          <ImagesColumnContainer>
+            <ImagesSlider images={creatorImages} />
+          </ImagesColumnContainer>
           <BookingCard>
             <FlexRow style={{ marginBottom: 30 }}>
               <div>
@@ -130,4 +157,4 @@ const PurchasePage = () => {
   );
 };
 
-export { PurchasePage };
+export { BookingPage };
