@@ -17,7 +17,7 @@ export type UserProfile = {
   setProfilePicutre: (profilePicture: string) => void;
   setDeliveryTime: (deliveryTime: number) => void;
   setDemos: (demos: string[]) => void;
-  verifyUser: (tweetUrl: string, address: string) => Promise<void>;
+  verifyUser: (tweetUrl: string, address: string) => Promise<boolean>;
 };
 
 export const useProfile = create<UserProfile>(
@@ -61,10 +61,10 @@ export const useProfile = create<UserProfile>(
           draft.userName = verificationResult.data.includes.users[0].name;
           draft.profilePicture = verificationResult.data.includes.users[0].profile_image_url;
         });
-        const navigate = useNavigate();
-        navigate('/');
+        return true;
       } else {
         toast.error('Failed to verify your Twitter!');
+        return false;
       }
     },
   })),

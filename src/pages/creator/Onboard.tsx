@@ -64,11 +64,14 @@ const StepDescription = styled(Text)`
 const OnboardingPage = () => {
   const theme = useTheme();
   const userProfile = useProfile();
+  const navigate = useNavigate();
   const { account } = useWeb3React<Web3Provider>();
   const [tweetUrl, setTweetUrl] = useState<string>('');
 
   const verifyTwitterUser = async () => {
-    await userProfile.verifyUser(tweetUrl, account!);
+    if (await userProfile.verifyUser(tweetUrl, account!)) {
+      navigate('/onboarding/profile');
+    }
   };
   return (
     <>
