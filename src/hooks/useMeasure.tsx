@@ -1,5 +1,5 @@
-import React from 'react';
 import { ResizeObserver } from '@juggle/resize-observer';
+import React from 'react';
 
 import { useCallbackRef } from './useCallbackRef';
 
