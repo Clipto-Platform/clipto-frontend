@@ -83,14 +83,6 @@ const BookingPage = () => {
     };
     getCreatorData();
   }, [creatorId]);
-  const creatorImages = useMemo(
-    () => [
-      { src: pfp, key: '1' },
-      { src: pfp, key: '2' },
-      { src: pfp, key: '3' },
-    ],
-    [],
-  );
 
   return (
     <PageWrapper>
@@ -99,7 +91,7 @@ const BookingPage = () => {
       <PageContentWrapper>
         <PageGrid>
           <ImagesColumnContainer>
-            <ImagesSlider images={creatorImages} />
+            <ImagesSlider images={creatorProfile?.demos || []} />
           </ImagesColumnContainer>
           <BookingCard>
             <FlexRow style={{ marginBottom: 30 }}>
@@ -152,18 +144,18 @@ const BookingPage = () => {
             </div>
 
             <div style={{ marginBottom: 40 }}>
-              {/* TODO(johnrjj) - Add label to input right (e.g. 'USDC') */}
               <TextField
                 inputStyles={{
                   width: 172,
                 }}
                 label="Amount to pay"
                 description={'Increase your bid to get your video earlier'}
+                endText="ETH"
                 inputMode="numeric"
-                placeholder="100"
+                placeholder={creatorProfile?.price}
               />
             </div>
-            <PrimaryButton>Book now (100 USDC)</PrimaryButton>
+            <PrimaryButton>Book now</PrimaryButton>
           </BookingCard>
         </PageGrid>
       </PageContentWrapper>
