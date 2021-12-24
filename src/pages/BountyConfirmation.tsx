@@ -115,7 +115,7 @@ const BountyConfirmation = (props: BountyConfirmationProps) => {
           style={{ marginBottom: '16px' }}
           onPress={() => {
           }}
-        >View Order Summary</PrimaryButton>
+        >Place order {props.offerAmount}</PrimaryButton>
       </CenterContainer>
     </>
   );
