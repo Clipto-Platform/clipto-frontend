@@ -2,6 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { ethers } from 'ethers';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
@@ -48,28 +49,28 @@ const OnboardProfilePage = () => {
   const userProfile = useProfile();
   const { account } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
+  const navigate = useNavigate();
 
   const createUserProfile = async () => {
     const profile = values(userProfile);
-    const json = JSON.stringify(profile);
-    const blob = new Blob([json], {
-      type: 'application/json',
+    console.log(profile);
+
+    const verificationResult = await axios.post(`${API_URL}/user/create`, { ...profile }).catch((e) => {
+      console.log(e);
     });
-    const data = new FormData();
-    data.append('asset', blob);
-    const uploadResult = await axios({
-      method: 'post',
-      url: `${API_URL}/upload`,
-      data: data,
-    });
-    console.log(
-      await exchangeContract.registerCreator(
-        userProfile.userName!,
-        uploadResult.data.result,
-        ethers.utils.parseEther(userProfile.price!),
-      ),
-    );
-    toast.success('Creator profile created!');
+    if (verificationResult) {
+      if (verificationResult.status === 201) {
+        await (
+          await exchangeContract.registerCreator(userProfile.userName!, ethers.utils.parseEther(userProfile.price!))
+        ).wait();
+        toast.success('Creator profile created!');
+        navigate(`/creator/${userProfile.address}`);
+      } else {
+        toast.error(verificationResult.data.message);
+      }
+    } else {
+      toast.error('Something went wrong');
+    }
   };
 
   return (

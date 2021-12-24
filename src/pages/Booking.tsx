@@ -1,4 +1,7 @@
+import { Web3Provider } from '@ethersproject/providers';
+import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
+import { ethers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -10,6 +13,7 @@ import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ImagesSlider } from '../components/ImagesSlider';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
+import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { UserProfile } from '../hooks/useProfile';
 import { Description, Label } from '../styles/typography';
@@ -68,17 +72,18 @@ const HR = styled.div`
 `;
 
 const BookingPage = () => {
-  // TODO(johnrjj) - Use creatorId (wallet address) to query
   const { creatorId } = useParams();
+  const { account } = useWeb3React<Web3Provider>();
+
   const exchangeContract = useExchangeContract(true);
   const [creatorProfile, setCreatorProfile] = useState<Partial<UserProfile>>();
 
   useEffect(() => {
     const getCreatorData = async () => {
       if (creatorId) {
-        const profile = await exchangeContract.creators(creatorId);
-        const arweaveProfile = await axios.get(`https://arweave.net/${profile.profileUrl.substring(5)}`);
-        setCreatorProfile(arweaveProfile.data);
+        const contractProfile = await exchangeContract.creators(creatorId);
+        const arweaveProfile = await axios.get(`${API_URL}/user/${creatorId}`);
+        setCreatorProfile({ ...arweaveProfile.data, price: ethers.utils.formatEther(contractProfile.cost) });
       }
     };
     getCreatorData();
@@ -124,7 +129,6 @@ const BookingPage = () => {
                 }}
                 type="date"
                 label={`Request deadline (${creatorProfile?.deliveryTime} days minimum)`}
-                value="2018-07-22"
                 description={
                   'If your video isn’t delivered by your requested deadline, you will receive an automatic refund.'
                 }
@@ -141,7 +145,7 @@ const BookingPage = () => {
             </div>
 
             <div style={{ marginBottom: 40 }}>
-              <TextField label="Address to receive video NFT" placeholder="Wallet address" />
+              <TextField label="Address to receive video NFT" placeholder="Wallet address" value={account!} />
             </div>
 
             <div style={{ marginBottom: 40 }}>

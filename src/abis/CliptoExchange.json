@@ -20,12 +20,6 @@
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "string",
-        "name": "profileUrl",
-        "type": "string"
-      },
-      {
         "indexed": false,
         "internalType": "uint256",
         "name": "cost",
@@ -43,12 +37,6 @@
         "internalType": "address",
         "name": "creator",
         "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "string",
-        "name": "profileUrl",
-        "type": "string"
       },
       {
         "indexed": false,
@@ -183,11 +171,6 @@
     "name": "creators",
     "outputs": [
       {
-        "internalType": "string",
-        "name": "profileUrl",
-        "type": "string"
-      },
-      {
         "internalType": "uint256",
         "name": "cost",
         "type": "uint256"
@@ -221,11 +204,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "string",
-        "name": "profileUrl",
-        "type": "string"
-      },
       {
         "internalType": "uint256",
         "name": "cost",
@@ -273,11 +251,6 @@
       {
         "internalType": "string",
         "name": "creatorName",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "profileUrl",
         "type": "string"
       },
       {

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import create from 'zustand';
 
@@ -12,13 +11,16 @@ export type UserProfile = {
   deliveryTime: number | undefined;
   demos: string[];
   price: string | undefined;
+  tweetUrl: string | undefined;
+  address: string | undefined;
   setBio: (bio: string) => void;
   setUsername: (username: string) => void;
-  setProfilePicutre: (profilePicture: string) => void;
+  setProfilePicture: (profilePicture: string) => void;
   setDeliveryTime: (deliveryTime: number) => void;
   setDemos: (demos: string[]) => void;
   setPrice: (price: string) => void;
-  verifyUser: (tweetUrl: string, address: string) => Promise<boolean>;
+  setTweetUrl: (tweetUrl: string) => void;
+  setAddress: (address: string) => void;
 };
 
 export const useProfile = create<UserProfile>(
@@ -29,6 +31,8 @@ export const useProfile = create<UserProfile>(
     deliveryTime: undefined,
     demos: ['', '', ''],
     price: undefined,
+    tweetUrl: undefined,
+    address: undefined,
     setBio: (bio: string) => {
       set((draft) => {
         draft.bio = bio;
@@ -39,7 +43,7 @@ export const useProfile = create<UserProfile>(
         draft.userName = userName;
       });
     },
-    setProfilePicutre: (profilePicture: string) => {
+    setProfilePicture: (profilePicture: string) => {
       set((draft) => {
         draft.profilePicture = profilePicture;
       });
@@ -59,20 +63,15 @@ export const useProfile = create<UserProfile>(
         draft.demos = demos;
       });
     },
-    verifyUser: async (tweetUrl: string, address: string) => {
-      const verificationResult = await axios.post(`${API_URL}/user/verify`, { tweetUrl, address }).catch((e) => {
-        console.log(e);
+    setTweetUrl: (tweetUrl: string) => {
+      set((draft) => {
+        draft.tweetUrl = tweetUrl;
       });
-      if (verificationResult && verificationResult.data && verificationResult.data.includes) {
-        set((draft) => {
-          draft.userName = verificationResult.data.includes.users[0].name;
-          draft.profilePicture = verificationResult.data.includes.users[0].profile_image_url;
-        });
-        return true;
-      } else {
-        toast.error('Failed to verify your Twitter!');
-        return false;
-      }
+    },
+    setAddress: (address: string) => {
+      set((draft) => {
+        draft.address = address;
+      });
     },
   })),
 );
