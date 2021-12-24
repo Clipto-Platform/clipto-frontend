@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
 import pfp from '../assets/images/pfps/sample-profile.png';
@@ -71,6 +72,15 @@ const HR = styled.div`
   background-color: ${(props) => props.theme.border};
 `;
 
+type CreateRequestDto = {
+  requester: string;
+  creator: string;
+  amount: string;
+  description: string;
+  deadline: number;
+  txHash: string;
+};
+
 const BookingPage = () => {
   const { creatorId } = useParams();
   const { account } = useWeb3React<Web3Provider>();
@@ -78,16 +88,37 @@ const BookingPage = () => {
   const exchangeContract = useExchangeContract(true);
   const [creatorProfile, setCreatorProfile] = useState<Partial<UserProfile>>();
 
+  const [request, setRequest] = useState<Partial<CreateRequestDto>>({});
+
   useEffect(() => {
     const getCreatorData = async () => {
+      console.log('fired');
       if (creatorId) {
         const contractProfile = await exchangeContract.creators(creatorId);
         const arweaveProfile = await axios.get(`${API_URL}/user/${creatorId}`);
         setCreatorProfile({ ...arweaveProfile.data, price: ethers.utils.formatEther(contractProfile.cost) });
+        setRequest({
+          creator: creatorId,
+          amount: ethers.utils.formatEther(contractProfile.cost),
+        });
       }
     };
     getCreatorData();
   }, [creatorId]);
+
+  const makeBooking = async () => {
+    const tx = await exchangeContract.newRequest(request.creator!, { value: ethers.utils.parseEther(request.amount!) });
+    await tx.wait();
+    const requestResult = await axios
+      .post(`${API_URL}/request/create`, { ...request, txHash: tx.hash, requester: account! })
+      .catch((e) => {
+        console.log(e);
+      });
+
+    if (requestResult && requestResult.status === 201) {
+      toast.success('Request created!');
+    }
+  };
 
   return (
     <PageWrapper>
@@ -127,12 +158,14 @@ const BookingPage = () => {
                 inputStyles={{
                   width: 172,
                 }}
-                type="date"
+                type="number"
                 label={`Request deadline (${creatorProfile?.deliveryTime} days minimum)`}
                 description={
                   'If your video isn’t delivered by your requested deadline, you will receive an automatic refund.'
                 }
-                placeholder="2018-07-22"
+                endText="Days"
+                onChange={(e) => setRequest({ ...request, deadline: parseInt(e) })}
+                placeholder={`${(creatorProfile?.deliveryTime || 2) + 1} days`}
               />
             </div>
 
@@ -141,6 +174,7 @@ const BookingPage = () => {
                 inputElementType="textarea"
                 label={`Instructions for ${creatorProfile?.userName}`}
                 placeholder="Say something nice..."
+                onChange={(e) => setRequest({ ...request, description: e })}
               />
             </div>
 
@@ -158,9 +192,10 @@ const BookingPage = () => {
                 endText="ETH"
                 inputMode="numeric"
                 placeholder={creatorProfile?.price}
+                onChange={(e) => setRequest({ ...request, amount: e })}
               />
             </div>
-            <PrimaryButton>Book now</PrimaryButton>
+            <PrimaryButton onPress={() => makeBooking()}>Book now</PrimaryButton>
           </BookingCard>
         </PageGrid>
       </PageContentWrapper>
