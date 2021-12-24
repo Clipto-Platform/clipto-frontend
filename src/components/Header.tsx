@@ -13,7 +13,7 @@ import { MAX_CONTENT_WIDTH_PX } from '../styles/theme';
 import { getShortenedAddress } from '../utils/address';
 import { immer } from '../utils/zustand';
 import { injected, walletconnect } from '../web3/connectors';
-import { AvatarOrb } from './AvatarOrb';
+import { AvatarComponent, AvatarOrb } from './AvatarOrb';
 import { PrimaryButton } from './Button';
 import { ModalDialog } from './Dialog';
 import { Logo } from './Logo';
@@ -211,7 +211,7 @@ const Header: React.FC<HeaderProps> = () => {
                     <StyledSpan style={{ marginRight: 16 }}>
                       {userEnsName ?? getShortenedAddress(account, 6, 4)}
                     </StyledSpan>
-                    <AvatarOrb />
+                    <AvatarComponent address={account} />
                   </RightWrapper>
                 </>
               )}

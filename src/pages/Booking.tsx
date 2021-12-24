@@ -1,14 +1,17 @@
-import { useMemo } from 'react';
+import axios from 'axios';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import pfp from '../assets/images/pfps/sample-profile.png';
-import { AvatarOrb } from '../components/AvatarOrb';
+import { AvatarComponent, AvatarOrb } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ImagesSlider } from '../components/ImagesSlider';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
+import { useExchangeContract } from '../hooks/useContracts';
+import { UserProfile } from '../hooks/useProfile';
 import { Description, Label } from '../styles/typography';
 
 const PageGrid = styled.div`
@@ -67,6 +70,19 @@ const HR = styled.div`
 const BookingPage = () => {
   // TODO(johnrjj) - Use creatorId (wallet address) to query
   const { creatorId } = useParams();
+  const exchangeContract = useExchangeContract(true);
+  const [creatorProfile, setCreatorProfile] = useState<Partial<UserProfile>>();
+
+  useEffect(() => {
+    const getCreatorData = async () => {
+      if (creatorId) {
+        const profile = await exchangeContract.creators(creatorId);
+        const arweaveProfile = await axios.get(`https://arweave.net/${profile.profileUrl.substring(5)}`);
+        setCreatorProfile(arweaveProfile.data);
+      }
+    };
+    getCreatorData();
+  }, [creatorId]);
   const creatorImages = useMemo(
     () => [
       { src: pfp, key: '1' },
@@ -88,17 +104,15 @@ const BookingPage = () => {
           <BookingCard>
             <FlexRow style={{ marginBottom: 30 }}>
               <div>
-                <Label style={{ marginBottom: 4 }}>Gabriel Haines</Label>
+                <Label style={{ marginBottom: 4 }}>{creatorProfile?.userName}</Label>
                 <Description>Idea instigator</Description>
               </div>
               <div>
-                <AvatarOrb />
+                <AvatarComponent url={creatorProfile?.profilePicture} />
               </div>
             </FlexRow>
             <FlexRow style={{ marginBottom: 24 }}>
-              <Description>
-                Copy WAGMI | @cre8rdao (Bricks,Bricks) | @county_cap | @elonmusk thinks my videos are “nice”
-              </Description>
+              <Description>{creatorProfile?.bio}</Description>
             </FlexRow>
 
             <HR style={{ marginBottom: 36 }} />
@@ -106,7 +120,7 @@ const BookingPage = () => {
             <PurchaseOption style={{ marginBottom: 40 }}>
               <FlexRow style={{ marginBottom: 7 }}>
                 <Label>Personal use</Label>
-                <Label style={{ fontSize: 14 }}>100+ USDC</Label>
+                <Label style={{ fontSize: 14 }}>{creatorProfile?.price} ether</Label>
               </FlexRow>
               <Description>Personalized video for you or someone else</Description>
             </PurchaseOption>
@@ -116,7 +130,7 @@ const BookingPage = () => {
                   width: 172,
                 }}
                 type="date"
-                label="Request deadline (3 days minimum)"
+                label={`Request deadline (${creatorProfile?.deliveryTime} days minimum)`}
                 value="2018-07-22"
                 description={
                   'If your video isn’t delivered by your requested deadline, you will receive an automatic refund.'
@@ -128,7 +142,7 @@ const BookingPage = () => {
             <div style={{ marginBottom: 40 }}>
               <TextField
                 inputElementType="textarea"
-                label="Instructions for Gabriel"
+                label={`Instructions for ${creatorProfile?.userName}`}
                 placeholder="Say something nice..."
               />
             </div>
