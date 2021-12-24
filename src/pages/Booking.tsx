@@ -97,7 +97,8 @@ const BookingPage = () => {
             <FlexRow style={{ marginBottom: 30 }}>
               <div>
                 <Label style={{ marginBottom: 4 }}>{creatorProfile?.userName}</Label>
-                <Description>Idea instigator</Description>
+                {/* todo: decide what to do with this, it's not currently included in our profile data */}
+                {/* <Description>Idea instigator</Description> */}
               </div>
               <div>
                 <AvatarComponent url={creatorProfile?.profilePicture} />
