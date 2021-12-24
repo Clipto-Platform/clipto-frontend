@@ -68,7 +68,7 @@ const StyledButton = styled.button<{
   }};
   color: ${(props) => {
     if (props.variant === 'secondary') {
-      return props.theme.white;
+      return props.theme.yellow;
     }
     return props.theme.blackPure;
   }};
@@ -81,11 +81,11 @@ const StyledButton = styled.button<{
   :hover,
   :active {
     border: ${(props) => {
-      if (props.variant === 'secondary') {
-        return `1px solid ${props.theme.yellow}`;
-      }
-      return 'none';
-    }};
+    if (props.variant === 'secondary') {
+      return `1px solid ${props.theme.yellow}`;
+    }
+    return 'none';
+  }};
   }
   ${(props) =>
     props.disabled &&
