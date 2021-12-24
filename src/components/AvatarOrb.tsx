@@ -24,8 +24,9 @@ const AvatarComponent: React.FC<AvatarProps> = (props) => {
     const b = parseInt(hash.substring(4, 6), 16);
     return `rgb(${r}, ${g}, ${b})`;
   };
-  console.log(props.address);
-  if (props.address) {
+  if (props.url) {
+    return <AvatarOrb style={{ background: `url(${props.url})` }} />;
+  } else if (props.address) {
     return (
       <AvatarOrb
         style={{
@@ -35,8 +36,6 @@ const AvatarComponent: React.FC<AvatarProps> = (props) => {
         }}
       />
     );
-  } else if (props.url) {
-    return <AvatarOrb style={{ background: `url(${props.url})` }} />;
   } else {
     return <AvatarOrb />;
   }

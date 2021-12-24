@@ -1,14 +1,17 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { OverlayContainer } from '@react-aria/overlays';
 import { useWeb3React } from '@web3-react/core';
+import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
 
+import { useExchangeContract } from '../hooks/useContracts';
 import { useEagerConnect } from '../hooks/useEagerConnect';
 import { useEns } from '../hooks/useEns';
 import { useInactiveListener } from '../hooks/useInactiveListener';
+import { UserProfile } from '../hooks/useProfile';
 import { MAX_CONTENT_WIDTH_PX } from '../styles/theme';
 import { getShortenedAddress } from '../utils/address';
 import { immer } from '../utils/zustand';
@@ -115,6 +118,7 @@ const useHeaderStore = create<HeaderStore>(
 export interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
+  const exchangeContract = useExchangeContract(true);
   const { activate, account, deactivate } = useWeb3React<Web3Provider>();
 
   const showLoginDialog = useHeaderStore((s) => s.showDialog);
@@ -126,6 +130,8 @@ const Header: React.FC<HeaderProps> = () => {
   const hasTriedEagerConnect = useEagerConnect();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loggedInProfile, setLoggedInProfile] = useState<Partial<UserProfile>>();
+
 
   useEffect(() => {
     setHasTriedEagerConnecting(hasTriedEagerConnect);
@@ -187,6 +193,17 @@ const Header: React.FC<HeaderProps> = () => {
 
   useInactiveListener(!hasTriedEagerConnect);
 
+  useEffect(() => {
+    const getCreatorData = async () => {
+      if (account) {
+        const profile = await exchangeContract.creators(account);
+        const arweaveProfile = await axios.get(`https://arweave.net/${profile.profileUrl.substring(5)}`);
+        setLoggedInProfile(arweaveProfile.data);
+      }
+    };
+    getCreatorData();
+  }, [account]);
+
   return (
     <>
       <HeaderWrapperOuter>
@@ -211,7 +228,7 @@ const Header: React.FC<HeaderProps> = () => {
                     <StyledSpan style={{ marginRight: 16 }}>
                       {userEnsName ?? getShortenedAddress(account, 6, 4)}
                     </StyledSpan>
-                    <AvatarComponent address={account} />
+                    <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
                   </RightWrapper>
                 </>
               )}
