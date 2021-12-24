@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import create from 'zustand';
 
@@ -11,12 +10,14 @@ export type UserProfile = {
   userName: string | undefined;
   profilePicture: string | undefined;
   deliveryTime: number | undefined;
-  demos: string[] | undefined;
+  demos: string[];
+  price: string | undefined;
   setBio: (bio: string) => void;
   setUsername: (username: string) => void;
   setProfilePicutre: (profilePicture: string) => void;
   setDeliveryTime: (deliveryTime: number) => void;
   setDemos: (demos: string[]) => void;
+  setPrice: (price: string) => void;
   verifyUser: (tweetUrl: string, address: string) => Promise<boolean>;
 };
 
@@ -26,7 +27,8 @@ export const useProfile = create<UserProfile>(
     userName: undefined,
     profilePicture: undefined,
     deliveryTime: undefined,
-    demos: undefined,
+    demos: ['', '', ''],
+    price: undefined,
     setBio: (bio: string) => {
       set((draft) => {
         draft.bio = bio;
@@ -45,6 +47,11 @@ export const useProfile = create<UserProfile>(
     setDeliveryTime: (deliveryTime: number) => {
       set((draft) => {
         draft.deliveryTime = deliveryTime;
+      });
+    },
+    setPrice: (price: string) => {
+      set((draft) => {
+        draft.price = price;
       });
     },
     setDemos: (demos: string[]) => {
@@ -69,3 +76,12 @@ export const useProfile = create<UserProfile>(
     },
   })),
 );
+
+//ew, todo: something saner
+export const values = (userProfile: UserProfile): Partial<UserProfile> => {
+  return Object.fromEntries(
+    Object.keys(userProfile)
+      .filter((i) => !i.startsWith('set'))
+      .map((i) => [i, userProfile[i as keyof UserProfile]]),
+  );
+};

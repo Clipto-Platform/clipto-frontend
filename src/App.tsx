@@ -12,6 +12,7 @@ import { OnboardProfilePage } from './pages/creator/OnboardProfile';
 import { HomePage } from './pages/Home';
 import { NotFoundPage } from './pages/NotFound';
 import { theme } from './styles/theme';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
