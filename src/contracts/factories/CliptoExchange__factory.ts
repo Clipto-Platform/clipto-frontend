@@ -8,6 +8,17 @@ import type { CliptoExchange, CliptoExchangeInterface } from '../CliptoExchange'
 
 const _abi = [
   {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'implementation',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -55,7 +66,7 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: 'address',
+        internalType: 'contract CliptoToken',
         name: 'tokenAddress',
         type: 'address',
       },
@@ -157,6 +168,19 @@ const _abi = [
     type: 'event',
   },
   {
+    inputs: [],
+    name: 'TOKEN_IMPLEMENTATION',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -177,14 +201,9 @@ const _abi = [
         type: 'uint256',
       },
       {
-        internalType: 'address',
+        internalType: 'contract CliptoToken',
         name: 'token',
         type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'minTimeToDeliver',
-        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -220,11 +239,6 @@ const _abi = [
         name: 'cost',
         type: 'uint256',
       },
-      {
-        internalType: 'uint256',
-        name: 'minTimeToDeliver',
-        type: 'uint256',
-      },
     ],
     name: 'modifyCreator',
     outputs: [],
@@ -237,11 +251,6 @@ const _abi = [
         internalType: 'address',
         name: 'creator',
         type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'deadline',
-        type: 'uint256',
       },
     ],
     name: 'newRequest',
@@ -284,20 +293,9 @@ const _abi = [
         name: 'cost',
         type: 'uint256',
       },
-      {
-        internalType: 'uint256',
-        name: 'minTimeToDeliver',
-        type: 'uint256',
-      },
     ],
     name: 'registerCreator',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -332,17 +330,30 @@ const _abi = [
         type: 'bool',
       },
       {
-        internalType: 'uint256',
-        name: 'deadline',
-        type: 'uint256',
-      },
-      {
         internalType: 'bool',
         name: 'refunded',
         type: 'bool',
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'creator',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256',
+      },
+    ],
+    name: 'updateRequest',
+    outputs: [],
+    stateMutability: 'payable',
     type: 'function',
   },
 ];

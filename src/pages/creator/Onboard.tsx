@@ -1,8 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { ChangeEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import styled, { useTheme } from 'styled-components';
 
 import { PrimaryButton } from '../../components/Button';
@@ -64,11 +64,15 @@ const StepDescription = styled(Text)`
 const OnboardingPage = () => {
   const theme = useTheme();
   const userProfile = useProfile();
+  const navigate = useNavigate();
   const { account } = useWeb3React<Web3Provider>();
   const [tweetUrl, setTweetUrl] = useState<string>('');
 
   const verifyTwitterUser = async () => {
-    await userProfile.verifyUser(tweetUrl, account!);
+    if (await userProfile.verifyUser(tweetUrl, account!)) {
+      toast.success('Verified Twitter successfully!');
+      navigate('/onboarding/profile');
+    }
   };
   return (
     <>

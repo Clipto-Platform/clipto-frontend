@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import create from 'zustand';
 
@@ -11,13 +10,15 @@ export type UserProfile = {
   userName: string | undefined;
   profilePicture: string | undefined;
   deliveryTime: number | undefined;
-  demos: string[] | undefined;
+  demos: string[];
+  price: string | undefined;
   setBio: (bio: string) => void;
   setUsername: (username: string) => void;
   setProfilePicutre: (profilePicture: string) => void;
   setDeliveryTime: (deliveryTime: number) => void;
   setDemos: (demos: string[]) => void;
-  verifyUser: (tweetUrl: string, address: string) => Promise<void>;
+  setPrice: (price: string) => void;
+  verifyUser: (tweetUrl: string, address: string) => Promise<boolean>;
 };
 
 export const useProfile = create<UserProfile>(
@@ -26,7 +27,8 @@ export const useProfile = create<UserProfile>(
     userName: undefined,
     profilePicture: undefined,
     deliveryTime: undefined,
-    demos: undefined,
+    demos: ['', '', ''],
+    price: undefined,
     setBio: (bio: string) => {
       set((draft) => {
         draft.bio = bio;
@@ -47,6 +49,11 @@ export const useProfile = create<UserProfile>(
         draft.deliveryTime = deliveryTime;
       });
     },
+    setPrice: (price: string) => {
+      set((draft) => {
+        draft.price = price;
+      });
+    },
     setDemos: (demos: string[]) => {
       set((draft) => {
         draft.demos = demos;
@@ -61,11 +68,20 @@ export const useProfile = create<UserProfile>(
           draft.userName = verificationResult.data.includes.users[0].name;
           draft.profilePicture = verificationResult.data.includes.users[0].profile_image_url;
         });
-        const navigate = useNavigate();
-        navigate('/');
+        return true;
       } else {
         toast.error('Failed to verify your Twitter!');
+        return false;
       }
     },
   })),
 );
+
+//ew, todo: something saner
+export const values = (userProfile: UserProfile): Partial<UserProfile> => {
+  return Object.fromEntries(
+    Object.keys(userProfile)
+      .filter((i) => !i.startsWith('set'))
+      .map((i) => [i, userProfile[i as keyof UserProfile]]),
+  );
+};
