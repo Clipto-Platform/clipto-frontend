@@ -132,7 +132,6 @@ const Header: React.FC<HeaderProps> = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loggedInProfile, setLoggedInProfile] = useState<Partial<UserProfile>>();
 
-
   useEffect(() => {
     setHasTriedEagerConnecting(hasTriedEagerConnect);
   }, [hasTriedEagerConnect, setHasTriedEagerConnecting]);
