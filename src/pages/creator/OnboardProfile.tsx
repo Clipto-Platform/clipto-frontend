@@ -60,10 +60,13 @@ const OnboardProfilePage = () => {
     });
     if (verificationResult) {
       if (verificationResult.status === 201) {
-        await (
-          await exchangeContract.registerCreator(userProfile.userName!, ethers.utils.parseEther(userProfile.price!))
-        ).wait();
-        toast.success('Creator profile created!');
+        const txResult = await exchangeContract.registerCreator(
+          userProfile.userName!,
+          ethers.utils.parseEther(userProfile.price!),
+        );
+        toast.success('Profile created, waiting for confirmation!');
+        await txResult.wait();
+        toast.success('Success!');
         navigate(`/creator/${userProfile.address}`);
       } else {
         toast.error(verificationResult.data.message);

@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
+import { API_URL } from '../config/config';
 
 import { useExchangeContract } from '../hooks/useContracts';
 import { useEagerConnect } from '../hooks/useEagerConnect';
@@ -195,8 +196,7 @@ const Header: React.FC<HeaderProps> = () => {
   useEffect(() => {
     const getCreatorData = async () => {
       if (account) {
-        const profile = await exchangeContract.creators(account);
-        const arweaveProfile = await axios.get(`https://arweave.net/${profile.profileUrl.substring(5)}`);
+        const arweaveProfile = await axios.get(`${API_URL}/user/${account}`);
         setLoggedInProfile(arweaveProfile.data);
       }
     };
