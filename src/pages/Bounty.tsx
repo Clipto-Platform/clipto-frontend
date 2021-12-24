@@ -101,6 +101,7 @@ const BountyPage = () => {
                 <TextField
                   // onChange={(e) => setTweetUrl(e)}
                   label="Instructions"
+                  inputElementType='textarea'
                   placeholder="Say something nice..."
                 />
               </FieldWrapper>
