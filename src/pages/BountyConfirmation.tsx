@@ -4,11 +4,10 @@ import { ChangeEvent, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
-
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import TwitterIcon from '../components/icons/TwitterIcon';
-import { ContentWrapper, OutlinedContainer, PageContentWrapper, PageWrapper, Container } from '../components/layout/Common';
+import { ContentWrapper, OutlinedContainer, PageContentWrapper, PageWrapper, Container, FieldWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
 import { useProfile } from '../hooks/useProfile';
 import { Text } from '../styles/typography';
@@ -31,6 +30,13 @@ const OnboardTitle = styled.h1`
 const Subtitle = styled(Text)`
   text-align: center;
   font-size: 18px;
+`;
+
+const HR = styled.div`
+  height: 1px;
+  margin-left: -24px;
+  width: calc(100% + 48px);
+  background-color: ${(props) => props.theme.border};
 `;
 
 const CenterContainer = styled(Container)`
@@ -61,9 +67,7 @@ const StepDescription = styled(Text)`
   line-height: 140%;
 `;
 
-const FieldWrapper = styled.div`
-  margin-bottom: 26px;
-`
+
 export interface BountyConfirmationProps {
   title: string;
   instructions: string;
@@ -112,12 +116,15 @@ const BountyConfirmation = (props: BountyConfirmationProps) => {
             description={props.recipientWallet}
           />
         </FieldWrapper>
-        {/* TODO(joanthanng) - Add horizational line */}
-        <PrimaryButton
-          style={{ marginBottom: '16px' }}
-          onPress={() => {
-          }}
-        >Place order {props.offerAmount}</PrimaryButton>
+        <HR style={{ marginBottom: 36 }} />
+        <Link to={'/bountyDone'}>
+          <PrimaryButton
+            style={{ marginBottom: '16px' }}
+            onPress={() => {
+
+            }}
+          >Place order {props.offerAmount}</PrimaryButton>
+        </Link>
       </CenterContainer>
     </>
   );

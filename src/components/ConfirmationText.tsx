@@ -17,6 +17,8 @@ export interface ConfirmationTextProps {
 //            If label and description change, this is will lead to
 //            consequences here as the Description and Label do not
 //            function as its name suggests.
+
+//used in Mint.tsx, Bountyconfirmation.tsx
 function ConfirmationText(props: ConfirmationTextProps) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>

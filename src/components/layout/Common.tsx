@@ -44,3 +44,6 @@ border-radius: 16px;
 border: 1px solid ${({ theme }) => theme.border};
 `
 
+export const FieldWrapper = styled.div`
+  margin-bottom: 14px;
+`

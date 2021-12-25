@@ -55,7 +55,7 @@ const StyledButton = styled.button<{
     return '48px';
   }};
   width: 100%;
-
+  max-width: 514px;
   transition: all 0.15s ease;
   will-change: transform, background-color, box-shadow;
   transform: ${(props) => (props.isPressed ? `scale(0.985)` : `translate3d(0,0,0)`)};
@@ -68,13 +68,13 @@ const StyledButton = styled.button<{
   }};
   color: ${(props) => {
     if (props.variant === 'secondary') {
-      return props.theme.yellow;
+      return props.theme.lightGray; // jonathanng - was yellow, changed to lightGray bc there are no yellow text buttons on figma
     }
     return props.theme.blackPure;
   }};
   border: ${(props) => {
     if (props.variant === 'secondary') {
-      return `1px solid ${props.theme.border}`;
+      return `1px solid ${props.theme.lightGray}`; // jonathanng - was border(dark gray), changed to lightGray bc there are no dark gray buttons on figma
     }
     return 'none';
   }};

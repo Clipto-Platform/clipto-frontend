@@ -25,7 +25,7 @@ const OnboardTitle = styled.h1`
   line-height: 140%;
   font-style: normal;
   font-weight: bold;
-  max-width: 500px;
+  max-width: 700px;
   display: block;
   margin: auto;
   margin-bottom: 30px;
@@ -37,7 +37,7 @@ const Subtitle = styled(Text)`
 `;
 
 const CenterContainer = styled(Container)`
-  max-width:700px;
+  max-width: 1000px;
   display: block;
   margin: auto;
   margin-top: 45px;
@@ -76,7 +76,7 @@ export interface BountyConfirmationProps {
   // recipientWallet: string;
 }
 
-const BountyDone = (props: BountyConfirmationProps) => {
+const InvitationPage = (props: BountyConfirmationProps) => {
   const theme = useTheme();
   const userProfile = useProfile();
   const { account } = useWeb3React<Web3Provider>();
@@ -84,44 +84,27 @@ const BountyDone = (props: BountyConfirmationProps) => {
     <>
       <PageWrapper>
         <HeaderSpacer />
+        <HeaderSpacer />
         <PageContentWrapper>
           {/* TODO(jonathanng) - fix spacing to better match figma */}
           {/* paddingTop will probably need to change depending on what containers it is put in */}
           <CenterContainer style={{ textAlign: 'center' }}>
-            <SuccessIcon />
-            <OnboardTitle style={{ marginTop: '14px' }}>Success</OnboardTitle>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center'
-            }}>
-              {/* TODO(jonathanng) - make arrow look like figma */}
-              <XAvatarOrb />      -----------------{'>'}      <XAvatarOrb />
-            </div>
+            <OnboardTitle style={{ marginTop: '14px' }}>You have been invited to create a video NFT</OnboardTitle>
             {/* TODO(jonathanng) - add names below XAvatorOrb */}
-            <Label as={'label'} style={{ marginTop: '14px' }}>
-              Your bounty request has been posted!
-            </Label>
-            <Description style={{ marginTop: '14px' }}>
-              Share and invite the creator to complete your request
+            <Description style={{ marginTop: '50px', color: colors.white }}>
+              Post a public tweet that contains your wallet address.
             </Description>
             <PrimaryButton
               style={{
                 backgroundColor: theme.twitterBlue,
                 color: 'white',
-                marginTop: '30px',
-                marginBottom: '30px',
+                margin: '60px auto 0px', //top left/right bot
 
               }}
             >
               <TwitterIcon />
-              Share on Twitter
+              Post a Tweet
             </PrimaryButton>
-            <PrimaryButton
-              // style={{ borderWidth: 100, backgroundColor: colors.black, color: colors.yellow, borderColor: colors.yellow }}
-              variant="secondary"
-              onPress={() => {
-              }}
-            >Copy Shareable Link</PrimaryButton>
           </CenterContainer>
         </PageContentWrapper>
       </PageWrapper>
@@ -129,4 +112,4 @@ const BountyDone = (props: BountyConfirmationProps) => {
   );
 };
 
-export { BountyDone };
+export { InvitationPage };
