@@ -72,14 +72,15 @@ const HR = styled.div`
   background-color: ${(props) => props.theme.border};
 `;
 
-type CreateRequestDto = {
+export interface CreateRequestDto {
   requester: string;
   creator: string;
   amount: string;
   description: string;
   deadline: number;
   txHash: string;
-};
+  created?: string;
+}
 
 const BookingPage = () => {
   const { creatorId } = useParams();

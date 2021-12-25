@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
+import { CreateRequestDto } from '../pages/Booking';
 import { Label, Text } from '../styles/typography';
+import { getShortenedAddress } from '../utils/address';
 import { AvatarOrb } from './AvatarOrb';
 import { PrimaryButton } from './Button';
-
-export interface OrderCardProps {}
 
 const OrderCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.border};
@@ -45,15 +45,21 @@ const Column = styled.div`
 type CreatorCardStates = 'rejected' | 'past-deadline' | 'upload-clip' | 'accept-booking' | 'done';
 type UserOrderCardStates = 'pending' | 'accepted' | 'cancelled' | 'done' | 'rejected';
 
+// definitely good to implement in v2
+// export interface OrderCardProps {
+//   username: string;
+//   address: string;
+//   deadline?: Date;
+//   bidAmount: string;
+//   bidSymbol: string;
+//   instructions: string;
+//   clipData?: any;
+//   action?: CreatorCardStates | UserOrderCardStates;
+// }
+
 export interface OrderCardProps {
-  username: string;
-  address: string;
-  deadline?: Date;
-  bidAmount: string;
-  bidSymbol: string;
-  instructions: string;
-  clipData?: any;
-  action?: CreatorCardStates | UserOrderCardStates;
+  request?: CreateRequestDto;
+  txHash?: string;
 }
 
 const SecondaryLabel = styled(Text)`
@@ -66,6 +72,12 @@ const BidAmount = styled(Text)`
 `;
 
 const OrderCard: React.FC<OrderCardProps> = (props) => {
+  const getDeadline = () => {
+    const creationDate: Date = new Date(props.request!.created!);
+    creationDate.setDate(creationDate.getDate() + (props.request?.deadline || 0));
+    return creationDate.toLocaleDateString();
+  };
+
   return (
     <OrderCardContainer>
       <OrderCardTopRowContainer>
@@ -73,17 +85,17 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
           <AvatarOrb style={{ marginRight: 16 }} />
           <Column>
             <Label style={{ marginBottom: 2 }}>CC0maxi</Label>
-            <Text>0xD79...Cf15</Text>
+            <Text>{props.request?.creator ? getShortenedAddress(props.request?.creator) : ''}</Text>
           </Column>
         </Row>
         <Row>
           <Column style={{ marginRight: 40, textAlign: 'right' }}>
             <SecondaryLabel style={{ marginBottom: 2 }}>Deadline</SecondaryLabel>
-            <Text style={{ color: '#ffffff' }}>Dec 20, 2021</Text>
+            <Text style={{ color: '#ffffff' }}>{getDeadline()}</Text>
           </Column>
           <Column style={{ textAlign: 'right' }}>
             <SecondaryLabel style={{ marginBottom: 2 }}>Bid</SecondaryLabel>
-            <BidAmount>500 USDC</BidAmount>
+            <BidAmount>{props.request?.amount} ETH</BidAmount>
           </Column>
         </Row>
       </OrderCardTopRowContainer>
@@ -91,7 +103,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
       <OrderCardBodyContainer>
         <div style={{ marginBottom: 40 }}>
           <SecondaryLabel style={{ marginBottom: 8 }}>Instructions</SecondaryLabel>
-          <Text style={{ color: '#ffffff' }}>Tell Jet merry christmas and congrats on finishing his finals.</Text>
+          <Text style={{ color: '#ffffff' }}>{props.request?.description}</Text>
         </div>
         <Row style={{ flex: 1 }}>{props.children}</Row>
       </OrderCardBodyContainer>
