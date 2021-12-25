@@ -9,6 +9,7 @@ import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { OrderCard } from '../components/OrderCard';
 import { Item, Tabs } from '../components/Tabs';
 import { API_URL } from '../config/config';
+import { useExchangeContract } from '../hooks/useContracts';
 import { CreateRequestDto } from './Booking';
 
 const TabContent = styled.div`
@@ -22,15 +23,21 @@ const SingleColumnPageContent = styled(PageContentWrapper)`
 `;
 
 const OrdersPage = () => {
-  const [userRequests, setUserRequests] = useState<CreateRequestDto[]>([]);
+  const [requestsByUser, setRequestsByUser] = useState<CreateRequestDto[]>([]);
+  const [requestsToUser, setRequestsToUser] = useState<CreateRequestDto[]>([]);
   const { account } = useWeb3React<Web3Provider>();
+  const exchangeContract = useExchangeContract(true);
 
   useEffect(() => {
-    const getUserRequests = async () => {
-      const requests = await axios.get(`${API_URL}/request/receiver/${account}`);
-      setUserRequests(requests.data);
+    const getRequests = async () => {
+      if (account) {
+        const userRequests = await axios.get(`${API_URL}/request/receiver/${account}`);
+        setRequestsByUser(userRequests.data);
+        const creatorRequests = await axios.get(`${API_URL}/request/creator/${account}`);
+        setRequestsToUser(creatorRequests.data);
+      }
     };
-    getUserRequests();
+    getRequests();
   }, [account]);
 
   return (
@@ -41,11 +48,15 @@ const OrdersPage = () => {
         <SingleColumnPageContent>
           <Tabs aria-label="View received and purchased orders">
             <Item key="purchased" title="Received">
-              <TabContent>purchased tab</TabContent>
+              <TabContent>
+                {requestsToUser.map((i, n) => (
+                  <OrderCard key={n} request={i} />
+                ))}
+              </TabContent>
             </Item>
             <Item key="received" title="Requested">
               <TabContent>
-                {userRequests.map((i, n) => (
+                {requestsByUser.map((i, n) => (
                   <OrderCard key={n} request={i} />
                 ))}
               </TabContent>
