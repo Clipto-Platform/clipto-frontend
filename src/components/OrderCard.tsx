@@ -105,6 +105,10 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
           <SecondaryLabel style={{ marginBottom: 8 }}>Instructions</SecondaryLabel>
           <Text style={{ color: '#ffffff' }}>{props.request?.description}</Text>
         </div>
+        <PrimaryButton size='small' width='small'>
+          {/* TODO(jonathanng) - Check if request is completed or not */}
+          Upload clip
+        </PrimaryButton>
         <Row style={{ flex: 1 }}>{props.children}</Row>
       </OrderCardBodyContainer>
     </OrderCardContainer>

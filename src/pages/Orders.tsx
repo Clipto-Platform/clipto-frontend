@@ -47,14 +47,14 @@ const OrdersPage = () => {
         <HeaderContentGapSpacer />
         <SingleColumnPageContent>
           <Tabs aria-label="View received and purchased orders">
-            <Item key="purchased" title="Received">
+            <Item key="purchased" title="Purchased">
               <TabContent>
                 {requestsToUser.map((i, n) => (
                   <OrderCard key={n} request={i} />
                 ))}
               </TabContent>
             </Item>
-            <Item key="received" title="Requested">
+            <Item key="received" title="Received">
               <TabContent>
                 {requestsByUser.map((i, n) => (
                   <OrderCard key={n} request={i} />

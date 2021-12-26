@@ -10,6 +10,7 @@ interface ButtonProps {
   style?: CSSProperties;
   variant?: 'primary' | 'secondary';
   size?: 'large' | 'small';
+  width?: 'small' | 'large';
 }
 
 const StyledButton = styled.button<{
@@ -17,6 +18,7 @@ const StyledButton = styled.button<{
   isDisabled?: boolean;
   variant: 'primary' | 'secondary';
   size: 'large' | 'small';
+  width?: 'small' | 'large';
 }>`
   font-family: 'Scto Grotesk A';
   font-style: normal;
@@ -55,6 +57,13 @@ const StyledButton = styled.button<{
     return '48px';
   }};
   width: 100%;
+  max-width: ${(props) => {
+    console.log(props.width)
+    if (props.width === 'small') {
+      return '160px';
+    }
+    return '100%';
+  }};
 
   transition: all 0.15s ease;
   will-change: transform, background-color, box-shadow;
@@ -81,11 +90,11 @@ const StyledButton = styled.button<{
   :hover,
   :active {
     border: ${(props) => {
-      if (props.variant === 'secondary') {
-        return `1px solid ${props.theme.yellow}`;
-      }
-      return 'none';
-    }};
+    if (props.variant === 'secondary') {
+      return `1px solid ${props.theme.yellow}`;
+    }
+    return 'none';
+  }};
   }
   ${(props) =>
     props.disabled &&
@@ -109,6 +118,7 @@ const PrimaryButton: React.FC<ButtonProps & AriaButtonProps<'button'>> = (props)
       isPressed={isPressed}
       ref={ref}
       style={props.style}
+      width={props.width ?? 'large'}
     >
       {props.children}
     </StyledButton>
