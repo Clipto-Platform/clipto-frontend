@@ -60,10 +60,7 @@ const OnboardProfilePage = () => {
     });
     if (verificationResult) {
       if (verificationResult.status === 201) {
-        const txResult = await exchangeContract.registerCreator(
-          userProfile.userName!,
-          ethers.utils.parseEther(userProfile.price!),
-        );
+        const txResult = await exchangeContract.registerCreator(userProfile.userName!);
         toast.success('Profile created, waiting for confirmation!');
         await txResult.wait();
         toast.success('Success!');

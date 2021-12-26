@@ -20,34 +20,9 @@
         "type": "address"
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "cost",
-        "type": "uint256"
-      }
-    ],
-    "name": "CreatorModified",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": true,
-        "internalType": "address",
-        "name": "creator",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "cost",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
         "internalType": "contract CliptoToken",
-        "name": "tokenAddress",
+        "name": "token",
         "type": "address"
       }
     ],
@@ -72,13 +47,13 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "index",
+        "name": "amount",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
+        "name": "index",
         "type": "uint256"
       }
     ],
@@ -103,13 +78,13 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "index",
+        "name": "amount",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
+        "name": "index",
         "type": "uint256"
       }
     ],
@@ -134,17 +109,48 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "index",
+        "name": "amount",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
+        "name": "index",
         "type": "uint256"
       }
     ],
     "name": "RefundedRequest",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "requester",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amountIncreased",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "RequestUpdated",
     "type": "event"
   },
   {
@@ -171,13 +177,8 @@
     "name": "creators",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "cost",
-        "type": "uint256"
-      },
-      {
         "internalType": "contract CliptoToken",
-        "name": "token",
+        "name": "",
         "type": "address"
       }
     ],
@@ -193,24 +194,11 @@
       },
       {
         "internalType": "string",
-        "name": "_tokenURI",
+        "name": "tokenURI",
         "type": "string"
       }
     ],
     "name": "deliverRequest",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "cost",
-        "type": "uint256"
-      }
-    ],
-    "name": "modifyCreator",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -252,11 +240,6 @@
         "internalType": "string",
         "name": "creatorName",
         "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "cost",
-        "type": "uint256"
       }
     ],
     "name": "registerCreator",
@@ -291,12 +274,7 @@
       },
       {
         "internalType": "bool",
-        "name": "delivered",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "refunded",
+        "name": "fulfilled",
         "type": "bool"
       }
     ],

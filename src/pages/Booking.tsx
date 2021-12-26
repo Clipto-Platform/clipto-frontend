@@ -93,14 +93,14 @@ const BookingPage = () => {
 
   useEffect(() => {
     const getCreatorData = async () => {
-      console.log('fired');
       if (creatorId) {
         const contractProfile = await exchangeContract.creators(creatorId);
-        const arweaveProfile = await axios.get(`${API_URL}/user/${creatorId}`);
-        setCreatorProfile({ ...arweaveProfile.data, price: ethers.utils.formatEther(contractProfile.cost) });
+        const restContractProfile = await axios.get(`${API_URL}/user/${creatorId}`);
+        setCreatorProfile(restContractProfile.data);
+        // todo: get amount from server side, not yet implemented
         setRequest({
           creator: creatorId,
-          amount: ethers.utils.formatEther(contractProfile.cost),
+          amount: '1',
         });
       }
     };
