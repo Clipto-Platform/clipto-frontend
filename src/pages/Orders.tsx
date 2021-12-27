@@ -2,7 +2,9 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { PrimaryButton } from '../components/Button';
 
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
@@ -57,7 +59,14 @@ const OrdersPage = () => {
             <Item key="received" title="Received">
               <TabContent>
                 {requestsByUser.map((i, n) => (
-                  <OrderCard key={n} request={i} />
+                  <OrderCard key={n} request={i}>
+                    <Link to={`/orders/${i.id}`} style={{ marginTop: 20 }}>
+                      <PrimaryButton size='small' width='small'>
+                        {/* TODO(jonathanng) - Check if request is completed or not */}
+                        Upload clip
+                      </PrimaryButton>
+                    </Link>
+                  </OrderCard>
                 ))}
               </TabContent>
             </Item>

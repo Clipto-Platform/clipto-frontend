@@ -80,6 +80,8 @@ export interface CreateRequestDto {
   deadline: number;
   txHash: string;
   created?: string;
+  id?: number;
+  delivered: boolean;
 }
 
 const BookingPage = () => {

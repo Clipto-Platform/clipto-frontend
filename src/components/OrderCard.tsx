@@ -5,7 +5,7 @@ import { Label, Text } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { AvatarOrb } from './AvatarOrb';
 import { PrimaryButton } from './Button';
-
+import { Link } from 'react-router-dom';
 const OrderCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.border};
   padding: 24px;
@@ -58,8 +58,9 @@ type UserOrderCardStates = 'pending' | 'accepted' | 'cancelled' | 'done' | 'reje
 // }
 
 export interface OrderCardProps {
-  request?: CreateRequestDto;
+  request: CreateRequestDto;
   txHash?: string;
+  key: number;
 }
 
 const SecondaryLabel = styled(Text)`
@@ -72,12 +73,12 @@ const BidAmount = styled(Text)`
 `;
 
 const OrderCard: React.FC<OrderCardProps> = (props) => {
+  console.log(props)
   const getDeadline = () => {
     const creationDate: Date = new Date(props.request!.created!);
     creationDate.setDate(creationDate.getDate() + (props.request?.deadline || 0));
     return creationDate.toLocaleDateString();
   };
-
   return (
     <OrderCardContainer>
       <OrderCardTopRowContainer>
@@ -101,14 +102,10 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
       </OrderCardTopRowContainer>
       <HR />
       <OrderCardBodyContainer>
-        <div style={{ marginBottom: 40 }}>
+        <div style={{ marginBottom: 0 }}>
           <SecondaryLabel style={{ marginBottom: 8 }}>Instructions</SecondaryLabel>
           <Text style={{ color: '#ffffff' }}>{props.request?.description}</Text>
         </div>
-        <PrimaryButton size='small' width='small'>
-          {/* TODO(jonathanng) - Check if request is completed or not */}
-          Upload clip
-        </PrimaryButton>
         <Row style={{ flex: 1 }}>{props.children}</Row>
       </OrderCardBodyContainer>
     </OrderCardContainer>
