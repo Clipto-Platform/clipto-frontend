@@ -75,7 +75,7 @@ const SelectedOrderPage = () => {
               </ImageCardContainer>
             )}
           </BookingCard>
-          {upload && (
+          {upload && !done && (
             <div style={{ display: 'flex', marginBottom: 20 }}>
               <PrimaryButton onPress={() => setDone(true)} size="small" style={{ marginRight: 20 }}>
                 Mint and send NFT
