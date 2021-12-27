@@ -32,9 +32,18 @@ export const Row = styled.div`
   flex: 1;
 `;
 
+export const Container = styled.div`
+  max-width: 512px;
+  padding: 20px;
+`;
+
 export const OutlinedContainer = styled.div`
-  border: 1px solid ${({ theme }) => theme.border};
   max-width: 512px;
   padding: 20px;
   border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.border};
+`;
+
+export const FieldWrapper = styled.div`
+  margin-bottom: 14px;
 `;

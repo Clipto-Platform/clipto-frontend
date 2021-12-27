@@ -7,9 +7,12 @@ import { ThemeProvider } from 'styled-components';
 import { Header } from './components/Header';
 import { BookingPage } from './pages/Booking';
 import { BountyPage } from './pages/Bounty';
+import { BountyDone } from './pages/BountyDone';
 import { OnboardingPage } from './pages/creator/Onboard';
 import { OnboardProfilePage } from './pages/creator/OnboardProfile';
 import { HomePage } from './pages/Home';
+import { InvitationPage } from './pages/Invitation';
+import { MintPage } from './pages/Mint';
 import { NotFoundPage } from './pages/NotFound';
 import { OrdersPage } from './pages/Orders';
 import { theme } from './styles/theme';
@@ -33,6 +36,9 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="bounty" element={<BountyPage />} />
             <Route path="onboarding/profile" element={<OnboardProfilePage />} />
+            <Route path="bountyDone" element={<BountyDone />} />
+            <Route path="invitation" element={<InvitationPage />} />
+            <Route path="mint" element={<MintPage />} />
             <Route path="onboarding" element={<OnboardingPage />} />
             <Route path="orders" element={<OrdersPage />} />
             <Route path="creator/:creatorId" element={<BookingPage />} />
