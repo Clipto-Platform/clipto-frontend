@@ -1,18 +1,24 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { ChangeEvent, useState, useEffect } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import { PrimaryButton } from '../components/Button';
+import { ConfirmationText } from '../components/ConfirmationText';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import TwitterIcon from '../components/icons/TwitterIcon';
-import { ContentWrapper, OutlinedContainer, PageContentWrapper, PageWrapper, Container } from '../components/layout/Common';
+import {
+  Container,
+  ContentWrapper,
+  OutlinedContainer,
+  PageContentWrapper,
+  PageWrapper,
+} from '../components/layout/Common';
 import { TextField } from '../components/TextField';
 import { useProfile } from '../hooks/useProfile';
 import { Text } from '../styles/typography';
-import { ConfirmationText } from '../components/ConfirmationText';
 import { BountyConfirmation } from './BountyConfirmation';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
@@ -64,7 +70,7 @@ const StepDescription = styled(Text)`
 
 const FieldWrapper = styled.div`
   margin-bottom: 26px;
-`
+`;
 
 const BountyPage = () => {
   const theme = useTheme();
@@ -84,15 +90,17 @@ const BountyPage = () => {
         <HeaderSpacer />
         <HeaderContentGapSpacer />
         <PageContentWrapper>
-          {confirmation ? <ContentWrapper>
-            <BountyConfirmation
-              title={title}
-              instructions={instructions}
-              requestDue={requestDue}
-              offerAmount={offerAmount}
-              recipientWallet={recipientWallet}
-            />
-          </ContentWrapper> :
+          {confirmation ? (
+            <ContentWrapper>
+              <BountyConfirmation
+                title={title}
+                instructions={instructions}
+                requestDue={requestDue}
+                offerAmount={offerAmount}
+                recipientWallet={recipientWallet}
+              />
+            </ContentWrapper>
+          ) : (
             <ContentWrapper>
               <OnboardTitle>Post a Bounty</OnboardTitle>
               <CenterContainer>
@@ -104,17 +112,13 @@ const BountyPage = () => {
                   />
                 </FieldWrapper>
                 <FieldWrapper>
-                  <TextField
-                    onChange={(e) => setTitle(e)}
-                    label="Title"
-                    placeholder="Optional"
-                  />
+                  <TextField onChange={(e) => setTitle(e)} label="Title" placeholder="Optional" />
                 </FieldWrapper>
                 <FieldWrapper>
                   <TextField
                     onChange={(e) => setIntructions(e)}
                     label="Instructions"
-                    inputElementType='textarea'
+                    inputElementType="textarea"
                     placeholder="Say something nice..."
                   />
                 </FieldWrapper>
@@ -124,7 +128,9 @@ const BountyPage = () => {
                     onChange={(e) => setRequestDue(e)}
                     label="Request deadline (3 days minimum)"
                     description="If your video isn't delivered by your requested deadline, you will receive an automatic refund."
-                    placeholder={`${new Date().toLocaleString('default', { month: 'long' })} ${new Date().getDate() + 3}, ${new Date().getFullYear()}`}
+                    placeholder={`${new Date().toLocaleString('default', { month: 'long' })} ${
+                      new Date().getDate() + 3
+                    }, ${new Date().getFullYear()}`}
                   />
                 </FieldWrapper>
                 <FieldWrapper>
@@ -153,9 +159,12 @@ const BountyPage = () => {
                     //TODO(jonathanng) - input validation
                     setConfirmation(true);
                   }}
-                >View Order Summary</PrimaryButton>
+                >
+                  View Order Summary
+                </PrimaryButton>
               </CenterContainer>
-            </ContentWrapper>}
+            </ContentWrapper>
+          )}
         </PageContentWrapper>
       </PageWrapper>
     </>

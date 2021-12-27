@@ -12,13 +12,12 @@ const AvatarOrb = styled.div`
 `;
 
 const XAvatarOrb = styled(AvatarOrb)`
-height: 60px;
+  height: 60px;
   min-height: 60px;
   max-height: 60px;
   width: 60px;
   min-width: 60px;
   max-width: 60px;
-`
-
+`;
 
 export { AvatarOrb, XAvatarOrb };

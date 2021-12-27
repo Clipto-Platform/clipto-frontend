@@ -3,16 +3,15 @@ import { useRef } from 'react';
 import styled, { CSSProperties } from 'styled-components';
 
 import { Description, Label } from '../styles/typography';
+import { colors } from './../styles/theme';
 import { Input, Textarea } from './Input';
-
-import { colors } from './../styles/theme'
 
 export interface ConfirmationTextProps {
   label: string;
   description: string;
   inputStyles?: CSSProperties;
 }
-//jonathanng: Note that Description jsx is using props.label and 
+//jonathanng: Note that Description jsx is using props.label and
 //            Label is using props.description
 //            If label and description change, this is will lead to
 //            consequences here as the Description and Label do not

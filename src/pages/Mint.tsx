@@ -78,35 +78,33 @@ const OnboardTitle = styled.h1`
 `;
 
 const MintPage = () => {
-  const title = "Reaction to Clipto"
-  const instructions = "Tell CC0 merry christmas and mention his designs are awesome!"
-  const requestDeadline = "December 24, 2021"
+  const title = 'Reaction to Clipto';
+  const instructions = 'Tell CC0 merry christmas and mention his designs are awesome!';
+  const requestDeadline = 'December 24, 2021';
 
   return (
     <PageWrapper>
       <HeaderSpacer />
       <HeaderContentGapSpacer />
       <PageContentWrapper style={{ flexWrap: 'wrap' }}>
-        <OnboardTitle>
-          Create a Video NFT
-        </OnboardTitle>
+        <OnboardTitle>Create a Video NFT</OnboardTitle>
         <PageGrid>
           {/* Left side of page */}
           <BookingCard style={{ display: 'flex', textAlign: 'center' }}>
             <div style={{ margin: 'auto' }}>
               <FieldWrapper>
                 {/** TODO(jonathanng) - Text size is off */}
-                <Label>
-                  Upload clip
-                </Label>
+                <Label>Upload clip</Label>
               </FieldWrapper>
               <FieldWrapper>
-                <Description>
-                  Drag and drop an mp4 or select a file to upload
-                </Description>
+                <Description>Drag and drop an mp4 or select a file to upload</Description>
               </FieldWrapper>
               {/** TODO(jonathanng) - colors off */}
-              <PrimaryButton variant='secondary' size='small' style={{ color: colors.white, width: 120, margin: 'auto' }}>
+              <PrimaryButton
+                variant="secondary"
+                size="small"
+                style={{ color: colors.white, width: 120, margin: 'auto' }}
+              >
                 Select file
               </PrimaryButton>
             </div>
@@ -125,45 +123,33 @@ const MintPage = () => {
                 </div>
               </FlexRow>
               <div style={{ textAlign: 'right' }}>
-                <Label style={{ color: colors.secondary }}>
-                  Bid
-                </Label>
-                <Label style={{ color: colors.yellow }}>
-                  500 USDC
-                </Label>
+                <Label style={{ color: colors.secondary }}>Bid</Label>
+                <Label style={{ color: colors.yellow }}>500 USDC</Label>
               </div>
             </FlexRow>
-            <FlexRow style={{ marginBottom: 24 }}>
-            </FlexRow>
+            <FlexRow style={{ marginBottom: 24 }}></FlexRow>
 
             <HR style={{ marginBottom: 36 }} />
             <FieldWrapper>
-              <ConfirmationText
-                label="Title"
-                description={title}
-              />
+              <ConfirmationText label="Title" description={title} />
             </FieldWrapper>
             <FieldWrapper>
-              <ConfirmationText
-                label="Instructions"
-                description={instructions}
-              />
+              <ConfirmationText label="Instructions" description={instructions} />
             </FieldWrapper>
             <FieldWrapper>
-              <ConfirmationText
-                label="Request Deadline"
-                description={requestDeadline}
-              />
+              <ConfirmationText label="Request Deadline" description={requestDeadline} />
             </FieldWrapper>
 
-
-
-            <PrimaryButton style={{ marginBottom: 15 }} size='small'>Complete</PrimaryButton>
-            <PrimaryButton variant='secondary' size='small'>Reject Order</PrimaryButton>
+            <PrimaryButton style={{ marginBottom: 15 }} size="small">
+              Complete
+            </PrimaryButton>
+            <PrimaryButton variant="secondary" size="small">
+              Reject Order
+            </PrimaryButton>
           </BookingCard>
         </PageGrid>
       </PageContentWrapper>
-    </PageWrapper >
+    </PageWrapper>
   );
 };
 

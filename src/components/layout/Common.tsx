@@ -33,17 +33,17 @@ export const Row = styled.div`
 `;
 
 export const Container = styled.div`
-max-width: 512px;
-padding: 20px;
-`
+  max-width: 512px;
+  padding: 20px;
+`;
 
 export const OutlinedContainer = styled.div`
-max-width: 512px;
-padding: 20px;
-border-radius: 16px;
-border: 1px solid ${({ theme }) => theme.border};
-`
+  max-width: 512px;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.border};
+`;
 
 export const FieldWrapper = styled.div`
   margin-bottom: 14px;
-`
+`;

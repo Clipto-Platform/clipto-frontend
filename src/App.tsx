@@ -10,9 +10,9 @@ import { BountyPage } from './pages/Bounty';
 import { BountyDone } from './pages/BountyDone';
 import { OnboardingPage } from './pages/creator/Onboard';
 import { HomePage } from './pages/Home';
-import { NotFoundPage } from './pages/NotFound';
 import { InvitationPage } from './pages/Invitation';
 import { MintPage } from './pages/Mint';
+import { NotFoundPage } from './pages/NotFound';
 import { theme } from './styles/theme';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

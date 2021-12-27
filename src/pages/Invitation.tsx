@@ -1,21 +1,28 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { ChangeEvent, useState, useEffect } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
-import SuccessIcon from '../components/icons/SuccessIcon';
+
+import { XAvatarOrb } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
+import { ConfirmationText } from '../components/ConfirmationText';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
+import SuccessIcon from '../components/icons/SuccessIcon';
 import TwitterIcon from '../components/icons/TwitterIcon';
-import { ContentWrapper, OutlinedContainer, PageContentWrapper, PageWrapper, Container } from '../components/layout/Common';
+import {
+  Container,
+  ContentWrapper,
+  OutlinedContainer,
+  PageContentWrapper,
+  PageWrapper,
+} from '../components/layout/Common';
 import { TextField } from '../components/TextField';
 import { useProfile } from '../hooks/useProfile';
-import { Text } from '../styles/typography';
-import { ConfirmationText } from '../components/ConfirmationText';
 import { colors } from '../styles/theme';
+import { Text } from '../styles/typography';
 import { Description, Label } from '../styles/typography';
-import { XAvatarOrb } from '../components/AvatarOrb';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
   font-family: 'Scto Grotesk A';
@@ -67,7 +74,7 @@ const StepDescription = styled(Text)`
 
 const FieldWrapper = styled.div`
   margin-bottom: 26px;
-`
+`;
 export interface BountyConfirmationProps {
   // title: string;
   // instructions: string;
@@ -99,7 +106,6 @@ const InvitationPage = (props: BountyConfirmationProps) => {
                 backgroundColor: theme.twitterBlue,
                 color: 'white',
                 margin: '60px auto 0px', //top left/right bot
-
               }}
             >
               <TwitterIcon />
