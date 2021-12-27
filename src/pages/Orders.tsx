@@ -60,12 +60,22 @@ const OrdersPage = () => {
               <TabContent>
                 {requestsByUser.map((i, n) => (
                   <OrderCard key={n} request={i}>
-                    <Link to={`/orders/${i.id}`} style={{ marginTop: 20 }}>
-                      <PrimaryButton size="small" width="small">
-                        {/* TODO(jonathanng) - Check if request is completed or not */}
-                        Upload clip
+                    {!i.delivered && (
+                      // {TODO(jonathanng) - Link and useLocation is very weird, make sure useLocation doesn't break here when you move Link somewhere else}
+                      <PrimaryButton size="small" width="small" style={{ marginTop: 20 }}>
+                        <Link to={`/orders/${i.id}`} state={{ request: i }} style={{}}>
+                          Upload clip
+                        </Link>
                       </PrimaryButton>
-                    </Link>
+                    )}
+                    {i.delivered && (
+                      <Link to={`/orders/${i.id}`} state={{ request: i }} style={{ marginTop: 20 }}>
+                        {/* TODO(jonathanng) - add Link here once useLocation is figured out */}
+                        <PrimaryButton variant="secondary" size="small" width="small">
+                          View clip
+                        </PrimaryButton>
+                      </Link>
+                    )}
                   </OrderCard>
                 ))}
               </TabContent>

@@ -24,7 +24,7 @@ const StyledButton = styled.button<{
   font-style: normal;
   font-weight: bold;
 
-  padding: 0 20px;
+  // padding: 0 20px;
   font-size: ${(props) => {
     if (props.size === 'small') {
       return '14px';
@@ -90,11 +90,11 @@ const StyledButton = styled.button<{
   :hover,
   :active {
     border: ${(props) => {
-      if (props.variant === 'secondary') {
-        return `1px solid ${props.theme.yellow}`;
-      }
-      return 'none';
-    }};
+    if (props.variant === 'secondary') {
+      return `1px solid ${props.theme.yellow}`;
+    }
+    return 'none';
+  }};
   }
   ${(props) =>
     props.disabled &&
