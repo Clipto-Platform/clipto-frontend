@@ -11,4 +11,13 @@ const AvatarOrb = styled.div`
   background: linear-gradient(134.17deg, #ff9900 0%, #fff627 86.27%);
 `;
 
-export { AvatarOrb };
+const XAvatarOrb = styled(AvatarOrb)`
+  height: 60px;
+  min-height: 60px;
+  max-height: 60px;
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+`;
+
+export { AvatarOrb, XAvatarOrb };
