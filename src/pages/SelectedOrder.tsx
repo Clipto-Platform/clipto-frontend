@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import pfp from '../assets/images/pfps/sample-profile.png';
 import { AvatarOrb } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
+import { Card } from '../components/Card';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ImagesSlider } from '../components/ImagesSlider';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
@@ -37,7 +38,7 @@ const ImageCardImg = styled.img`
 
 const SelectedOrderPage = () => {
   const [upload, setUpload] = useState('');
-
+  const [done, setDone] = useState(false);
   return (
     <>
       <PageWrapper>
@@ -76,7 +77,7 @@ const SelectedOrderPage = () => {
           </BookingCard>
           {upload && (
             <div style={{ display: 'flex', marginBottom: 20 }}>
-              <PrimaryButton size="small" style={{ marginRight: 20 }}>
+              <PrimaryButton onPress={() => setDone(true)} size="small" style={{ marginRight: 20 }}>
                 Mint and send NFT
               </PrimaryButton>
               <PrimaryButton size="small" variant="secondary" onPress={() => setUpload('')}>
@@ -98,6 +99,12 @@ const SelectedOrderPage = () => {
             }}
             key={1}
           />
+          {done && (
+            <>
+              <Card title="History"></Card>
+              <Card title="NFT Details"></Card>
+            </>
+          )}
         </PageContentWrapper>
       </PageWrapper>
     </>
