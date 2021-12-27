@@ -72,7 +72,7 @@ const BidAmount = styled(Text)`
   color: ${(props) => props.theme.yellow};
 `;
 
-const OrderCard: React.FC<OrderCardProps> = (props) => {
+const Card: React.FC<OrderCardProps> = (props) => {
   const getDeadline = () => {
     const creationDate: Date = new Date(props.request!.created!);
     creationDate.setDate(creationDate.getDate() + (props.request?.deadline || 0));
@@ -111,4 +111,4 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
   );
 };
 
-export { OrderCard };
+export { Card };
