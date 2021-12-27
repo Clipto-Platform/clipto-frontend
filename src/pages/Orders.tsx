@@ -4,8 +4,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { PrimaryButton } from '../components/Button';
 
+import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { OrderCard } from '../components/OrderCard';
@@ -61,7 +61,7 @@ const OrdersPage = () => {
                 {requestsByUser.map((i, n) => (
                   <OrderCard key={n} request={i}>
                     <Link to={`/orders/${i.id}`} style={{ marginTop: 20 }}>
-                      <PrimaryButton size='small' width='small'>
+                      <PrimaryButton size="small" width="small">
                         {/* TODO(jonathanng) - Check if request is completed or not */}
                         Upload clip
                       </PrimaryButton>

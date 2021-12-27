@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { CreateRequestDto } from '../pages/Booking';
@@ -5,7 +6,6 @@ import { Label, Text } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { AvatarOrb } from './AvatarOrb';
 import { PrimaryButton } from './Button';
-import { Link } from 'react-router-dom';
 const OrderCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.border};
   padding: 24px;
@@ -73,7 +73,7 @@ const BidAmount = styled(Text)`
 `;
 
 const OrderCard: React.FC<OrderCardProps> = (props) => {
-  console.log(props)
+  console.log(props);
   const getDeadline = () => {
     const creationDate: Date = new Date(props.request!.created!);
     creationDate.setDate(creationDate.getDate() + (props.request?.deadline || 0));

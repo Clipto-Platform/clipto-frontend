@@ -116,7 +116,7 @@ const useHeaderStore = create<HeaderStore>(
 );
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface HeaderProps { }
+export interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
@@ -225,14 +225,10 @@ const Header: React.FC<HeaderProps> = () => {
                 <>
                   <RightWrapper>
                     <Link to={'/'}>
-                      <StyledSpan style={{ marginRight: 40 }}>
-                        Explore
-                      </StyledSpan>
+                      <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
                     </Link>
                     <Link to={'/orders'}>
-                      <StyledSpan style={{ marginRight: 40 }}>
-                        Orders
-                      </StyledSpan>
+                      <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
                     </Link>
                     <RightWrapper onClick={logoutUser}>
                       <StyledSpan style={{ marginRight: 16 }}>
@@ -240,7 +236,6 @@ const Header: React.FC<HeaderProps> = () => {
                       </StyledSpan>
                       <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
                     </RightWrapper>
-
                   </RightWrapper>
                 </>
               )}
