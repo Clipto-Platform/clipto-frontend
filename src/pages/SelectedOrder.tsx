@@ -101,7 +101,8 @@ const SelectedOrderPage = (props: any) => {
                 onPress={async () => {
                   const id = location.state.request.id;
                   console.log(account)
-                  const req = await exchangeContract.deliverRequest(id, pfp)
+                  //TODO(jonathanng) - get actual request
+                  const req = await exchangeContract.deliverRequest(location.state.request.index, pfp)
                   console.log('req')
                   console.log(req)
                   const verificationResult = await axios

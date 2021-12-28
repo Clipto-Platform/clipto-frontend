@@ -82,6 +82,7 @@ export interface CreateRequestDto {
   created?: string;
   id?: number;
   delivered: boolean;
+  index?: number;
 }
 
 const BookingPage = () => {
