@@ -15,6 +15,11 @@ import { OrderCard } from '../components/OrderCard';
 import { API_URL } from '../config/config';
 import { colors } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
+
+import { useExchangeContract } from '../hooks/useContracts';
+import { useProfile } from '../hooks/useProfile';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
 const BookingCard = styled.div`
   background: ${(props) => props.theme.lessDarkGray};
   border: 1px solid ${(props) => props.theme.border};
@@ -43,7 +48,9 @@ const SelectedOrderPage = (props: any) => {
   const [upload, setUpload] = useState('');
   const [done, setDone] = useState(false);
   const location = useLocation();
-
+  const userProfile = useProfile();
+  const { account } = useWeb3React<Web3Provider>();
+  const exchangeContract = useExchangeContract(true);
   if (location == null) {
     console.error(
       'NOTE(jonathanng) - If state is null, either 1) the Link props.state you clicked has a null request, 2) The props.state for Link is null or 3) you are trying to go to this page without a Link. However you should have access to the url in the format orders/:id. Code needs to be written to get the request by id from the db when state is null.',
@@ -92,8 +99,13 @@ const SelectedOrderPage = (props: any) => {
             <div style={{ display: 'flex', marginBottom: 20 }}>
               <PrimaryButton
                 onPress={async () => {
+                  const id = location.state.request.id;
+                  console.log(account)
+                  const req = await exchangeContract.deliverRequest(id, pfp)
+                  console.log('req')
+                  console.log(req)
                   const verificationResult = await axios
-                    .post(`${API_URL}/request/finish`, { id: location.state.request.id })
+                    .post(`${API_URL}/request/finish`, { id: id })
                     .then(() => {
                       toast.success('Successfully completed order!');
                       setDone(true);

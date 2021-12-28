@@ -17,7 +17,7 @@ interface ButtonProps {
     state: object;
   };
 }
-const ButtonLink = styled(Link)<{
+const ButtonLink = styled(Link) <{
   isPressed: boolean;
   isDisabled?: boolean;
   variant: 'primary' | 'secondary';
@@ -62,7 +62,6 @@ const ButtonLink = styled(Link)<{
   }};
   width: 100%;
   max-width: ${(props) => {
-    console.log(props.width);
     if (props.width === 'small') {
       return '160px';
     }
@@ -94,11 +93,11 @@ const ButtonLink = styled(Link)<{
   :hover,
   :active {
     border: ${(props) => {
-      if (props.variant === 'secondary') {
-        return `1px solid ${props.theme.yellow}`;
-      }
-      return 'none';
-    }};
+    if (props.variant === 'secondary') {
+      return `1px solid ${props.theme.yellow}`;
+    }
+    return 'none';
+  }};
   }
   ${(props) =>
     props.isDisabled &&
@@ -153,7 +152,6 @@ const StyledButton = styled.button<{
   }};
   width: 100%;
   max-width: ${(props) => {
-    console.log(props.width);
     if (props.width === 'small') {
       return '160px';
     }
@@ -185,11 +183,11 @@ const StyledButton = styled.button<{
   :hover,
   :active {
     border: ${(props) => {
-      if (props.variant === 'secondary') {
-        return `1px solid ${props.theme.yellow}`;
-      }
-      return 'none';
-    }};
+    if (props.variant === 'secondary') {
+      return `1px solid ${props.theme.yellow}`;
+    }
+    return 'none';
+  }};
   }
   ${(props) =>
     props.disabled &&
