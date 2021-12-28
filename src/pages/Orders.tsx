@@ -14,6 +14,21 @@ import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { CreateRequestDto } from './Booking';
 
+export const Status = styled.div`
+  width: 90px;
+  height: 30px;
+  line-height: 30px;
+  background: rgba(255, 255, 255, 0.1); //TODO(jonathanng) - color don't be lazy
+  font-family: 'Scto Grotesk A';
+  border-radius: 40px;
+  text-align: center;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4); //TODO(jonathanng) - color don't be lazy
+}
+`;
+
 const TabContent = styled.div`
   margin-top: 48px;
 `;
@@ -52,7 +67,22 @@ const OrdersPage = () => {
             <Item key="purchased" title="Purchased">
               <TabContent>
                 {requestsToUser.map((i, n) => (
-                  <OrderCard key={n} request={i} />
+                  <OrderCard key={n} request={i}>
+                    {i.delivered && (
+                      <PrimaryButton
+                        link={{
+                          to: `/orders/${i.id}`,
+                          state: { request: i },
+                        }}
+                        size="small"
+                        width="small"
+                        style={{ marginTop: 20 }}
+                      >
+                        View clip
+                      </PrimaryButton>
+                    )}
+                    {!i.delivered && <Status style={{ marginTop: 20 }}>PENDING</Status>}
+                  </OrderCard>
                 ))}
               </TabContent>
             </Item>
@@ -61,20 +91,31 @@ const OrdersPage = () => {
                 {requestsByUser.map((i, n) => (
                   <OrderCard key={n} request={i}>
                     {!i.delivered && (
-                      // {TODO(jonathanng) - Link and useLocation is very weird, make sure useLocation doesn't break here when you move Link somewhere else}
-                      <PrimaryButton size="small" width="small" style={{ marginTop: 20 }}>
-                        <Link to={`/orders/${i.id}`} state={{ request: i }} style={{}}>
-                          Upload clip
-                        </Link>
+                      <PrimaryButton
+                        link={{
+                          to: `/orders/${i.id}`,
+                          state: { request: i },
+                        }}
+                        size="small"
+                        width="small"
+                        style={{ marginTop: 20 }}
+                      >
+                        Upload clip
                       </PrimaryButton>
                     )}
                     {i.delivered && (
-                      <Link to={`/orders/${i.id}`} state={{ request: i }} style={{ marginTop: 20 }}>
-                        {/* TODO(jonathanng) - add Link here once useLocation is figured out */}
-                        <PrimaryButton variant="secondary" size="small" width="small">
-                          View clip
-                        </PrimaryButton>
-                      </Link>
+                      <PrimaryButton
+                        link={{
+                          to: `/orders/${i.id}`,
+                          state: { request: i },
+                        }}
+                        variant="secondary"
+                        size="small"
+                        width="small"
+                        style={{ marginTop: 20 }}
+                      >
+                        View clip
+                      </PrimaryButton>
                     )}
                   </OrderCard>
                 ))}
