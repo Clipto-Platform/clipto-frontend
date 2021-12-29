@@ -76,6 +76,8 @@ const SelectedOrderPage = (props: any) => {
     const f = await nftExchange.balanceOf(account)
     console.log(f)
     console.log('^^^')
+    const ff = await nftExchange.tokenURI(0)
+    console.log(ff)
     // exchangeContract.on("Transfer", (address, to, tokenId) => {
     //   console.log('transfer event emitted')
     //   console.log(address)
