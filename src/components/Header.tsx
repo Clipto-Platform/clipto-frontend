@@ -116,7 +116,7 @@ const useHeaderStore = create<HeaderStore>(
 );
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface HeaderProps {}
+export interface HeaderProps { }
 
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
@@ -224,7 +224,7 @@ const Header: React.FC<HeaderProps> = () => {
               {account && (
                 <>
                   <RightWrapper>
-                    <Link to={'/'}>
+                    <Link to={'/explore'}>
                       <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
                     </Link>
                     <Link to={'/orders'}>

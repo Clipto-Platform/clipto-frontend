@@ -9,6 +9,7 @@ import { BookingPage } from './pages/Booking';
 import { BountyPage } from './pages/Bounty';
 import { OnboardingPage } from './pages/creator/Onboard';
 import { OnboardProfilePage } from './pages/creator/OnboardProfile';
+import { ExplorePage } from './pages/Explore';
 import { HomePage } from './pages/Home';
 import { NotFoundPage } from './pages/NotFound';
 import { OrdersPage } from './pages/Orders';
@@ -32,6 +33,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route index element={<HomePage />} />
+            <Route path="explore" element={<ExplorePage />} />
             <Route path="bounty" element={<BountyPage />} />
             <Route path="onboarding/profile" element={<OnboardProfilePage />} />
             <Route path="onboarding" element={<OnboardingPage />} />
