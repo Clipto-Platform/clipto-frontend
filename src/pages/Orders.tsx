@@ -3,6 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
 import { PrimaryButton } from '../components/Button';
@@ -88,7 +89,35 @@ const OrdersPage = () => {
                         View clip
                       </PrimaryButton>
                     )}
-                    {!i.delivered && <Status style={{ marginTop: 20 }}>PENDING</Status>}
+                    {!i.delivered && i.deadline >= 0 && <Status style={{ marginTop: 20 }}>PENDING</Status>}
+                    {!i.delivered && i.deadline < 0 && (
+                      <PrimaryButton
+                        // link={{
+                        //   to: `/orders/${i.index}`,
+                        //   state: { request: i },
+                        // }}
+                        size="small"
+                        width="small"
+                        variant='secondary'
+                        style={{ marginTop: 20 }}
+                        onPress={async () => {
+                          //TODO(jonathanng) - when refunded, ui doesn't update. Also reload results in view clip button
+                          const tx = await exchangeContract.refundRequest(i.creator, i.index!)
+                          await tx.wait();
+                          const verificationResult = await axios
+                            .post(`${API_URL}/request/finish`, { id: i.id })
+                            .then(() => {
+                              toast.success('Successfully on refund!');
+                            })
+                            .catch((e) => {
+                              console.log(e);
+                              toast.error('Error on refund!');
+                            });
+                        }}
+                      >
+                        Claim refund
+                      </PrimaryButton>
+                    )}
                   </OrderCard>
                 ))}
               </TabContent>
@@ -97,7 +126,7 @@ const OrdersPage = () => {
               <TabContent>
                 {requestsByUser.map((i, n, f) => (
                   <OrderCard key={i.index} request={i}>
-                    {!i.delivered && (
+                    {!i.delivered && i.deadline >= 0 && (
                       <PrimaryButton
                         link={{
                           to: `/orders/${i.index}`,
@@ -113,6 +142,9 @@ const OrdersPage = () => {
                         {console.log(f)}
                         {console.log(i.position)} */}
                       </PrimaryButton>
+                    )}
+                    {!i.delivered && i.deadline < 0 && (
+                      <Status style={{ marginTop: 20, minWidth: 160 }}>PAST DEADLINE</Status>
                     )}
                     {i.delivered && (
                       <PrimaryButton
