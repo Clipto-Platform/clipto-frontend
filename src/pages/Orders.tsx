@@ -79,7 +79,7 @@ const OrdersPage = () => {
                     {i.delivered && (
                       <PrimaryButton
                         link={{
-                          to: `/orders/${i.index}`,
+                          to: `/orders/${i.creator}/${i.requestId}`,
                           state: { request: i },
                         }}
                         size="small"
@@ -92,10 +92,6 @@ const OrdersPage = () => {
                     {!i.delivered && i.deadline >= 0 && <Status style={{ marginTop: 20 }}>PENDING</Status>}
                     {!i.delivered && i.deadline < 0 && (
                       <PrimaryButton
-                        // link={{
-                        //   to: `/orders/${i.index}`,
-                        //   state: { request: i },
-                        // }}
                         size="small"
                         width="small"
                         variant='secondary'
@@ -129,7 +125,7 @@ const OrdersPage = () => {
                     {!i.delivered && i.deadline >= 0 && (
                       <PrimaryButton
                         link={{
-                          to: `/orders/${i.index}`,
+                          to: `/orders/${i.creator}/${i.requestId}`,
                           state: { request: i },
                         }}
                         size="small"
@@ -149,7 +145,7 @@ const OrdersPage = () => {
                     {i.delivered && (
                       <PrimaryButton
                         link={{
-                          to: `/orders/${i.id}`,
+                          to: `/orders/${i.creator}/${i.requestId}`,
                           state: { request: i },
                         }}
                         variant="secondary"

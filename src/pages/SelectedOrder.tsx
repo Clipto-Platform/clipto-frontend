@@ -16,7 +16,7 @@ import { API_URL } from '../config/config';
 import { colors } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
 
-import { useExchangeContract } from '../hooks/useContracts';
+import { useExchangeContract, useNFTContract } from '../hooks/useContracts';
 import { useProfile } from '../hooks/useProfile';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
@@ -42,7 +42,7 @@ const ImageCardContainer = styled.div`
 const ImageCardImg = styled.img`
   object-fit: fill;
   user-select: none;
-`;
+  `;
 
 const SelectedOrderPage = (props: any) => {
   const [upload, setUpload] = useState('');
@@ -51,6 +51,7 @@ const SelectedOrderPage = (props: any) => {
   const userProfile = useProfile();
   const { account } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
+  const nftExchange = useNFTContract('0x7d704f6B7Ed4abF6572979Ab667bE5A0626174Bb', true)
   if (location == null) {
     console.error(
       'NOTE(jonathanng) - If state is null, either 1) the Link props.state you clicked has a null request, 2) The props.state for Link is null or 3) you are trying to go to this page without a Link. However you should have access to the url in the format orders/:id. Code needs to be written to get the request by id from the db when state is null.',
@@ -59,6 +60,37 @@ const SelectedOrderPage = (props: any) => {
       'more info here: https://ui.dev/react-router-pass-props-to-link/#:~:text=To%20do%20this%20with%20React,Route%20that%20is%20being%20rendered.&text=To%20do%20this%20(and%20to,the%20user%20is%20coming%20from%20.',
     );
   }
+
+  useEffect(async () => {
+    const creator = location.state.request.creator;
+    const index = location.state.request.requestId;
+    console.log(location)
+    console.log(index)
+    exchangeContract.requests(creator, index).then((e) => {
+      console.log('hi')
+      console.log(e)
+    })
+
+    const cliptoTokenContract = await exchangeContract.creators(creator);
+    console.log(cliptoTokenContract)
+    const f = await nftExchange.balanceOf(account)
+    console.log(f)
+    console.log('^^^')
+    // exchangeContract.on("Transfer", (address, to, tokenId) => {
+    //   console.log('transfer event emitted')
+    //   console.log(address)
+    //   console.log(to)
+    //   console.log(tokenId)
+    // })
+    const ex = [
+      "0x4e78d8b8F17443dF9b92f07fd322d1aB1DA91365",
+      {
+        "type": "BigNumber",
+        "hex": "0x06f05b59d3b20000"
+      },
+      false
+    ]
+  })
   return (
     <>
       <PageWrapper>
@@ -102,7 +134,7 @@ const SelectedOrderPage = (props: any) => {
                   const id = location.state.request.id;
                   console.log(account)
                   //TODO(jonathanng) - get actual request
-                  const req = await exchangeContract.deliverRequest(location.state.request.index, pfp)
+                  const req = await exchangeContract.deliverRequest(location.state.request.requestId, pfp)
                   console.log('req')
                   console.log(req)
                   const verificationResult = await axios

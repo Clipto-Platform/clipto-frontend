@@ -38,7 +38,7 @@ function App() {
             <Route path="onboarding/profile" element={<OnboardProfilePage />} />
             <Route path="onboarding" element={<OnboardingPage />} />
             <Route path="orders" element={<OrdersPage />} />
-            <Route path="orders/:id" element={<SelectedOrderPage />} />
+            <Route path="orders/:creator/:requestId" element={<SelectedOrderPage />} />
             <Route path="creator/:creatorId" element={<BookingPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
