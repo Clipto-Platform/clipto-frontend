@@ -50,4 +50,4 @@ const AvatarComponent: React.FC<AvatarProps> = (props) => {
   }
 };
 
-export { AvatarComponent, AvatarOrb };
+export { AvatarComponent, AvatarOrb, XAvatarOrb };
