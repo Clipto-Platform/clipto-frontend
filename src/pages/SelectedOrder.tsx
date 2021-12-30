@@ -19,6 +19,7 @@ import { useExchangeContract, useNFTContract } from '../hooks/useContracts';
 import { useProfile } from '../hooks/useProfile';
 import { colors } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
+import { CreateRequestDto } from './Booking';
 const BookingCard = styled.div`
   background: ${(props) => props.theme.lessDarkGray};
   border: 1px solid ${(props) => props.theme.border};
@@ -50,48 +51,33 @@ const SelectedOrderPage = (props: any) => {
   const userProfile = useProfile();
   const { account } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
-  const nftExchange = useNFTContract('0x7d704f6B7Ed4abF6572979Ab667bE5A0626174Bb', true);
-  if (location == null) {
-    console.error(
-      'NOTE(jonathanng) - If state is null, either 1) the Link props.state you clicked has a null request, 2) The props.state for Link is null or 3) you are trying to go to this page without a Link. However you should have access to the url in the format orders/:id. Code needs to be written to get the request by id from the db when state is null.',
-    );
-    console.error(
-      'more info here: https://ui.dev/react-router-pass-props-to-link/#:~:text=To%20do%20this%20with%20React,Route%20that%20is%20being%20rendered.&text=To%20do%20this%20(and%20to,the%20user%20is%20coming%20from%20.',
-    );
-  }
+  const { creator, requestId } = useParams();
+  const [request, setRequest] = useState<CreateRequestDto>();
 
-  useEffect(async () => {
-    const creator = location.state.request.creator;
-    const index = location.state.request.requestId;
-    console.log(location);
-    console.log(index);
-    exchangeContract.requests(creator, index).then((e) => {
-      console.log('hi');
+  useEffect(() => {
+    // const creator = location?.state!.request.creator;
+    // const requestId = location.state.request.requestId;
+    exchangeContract.requests(creator!, requestId!).then((e) => {
       console.log(e);
+      axios.get(`${API_URL}/request/creator/${creator}/${requestId}`).then(res => {
+        setRequest(res.data)
+      }).catch(console.error)
     });
-
-    const cliptoTokenContract = await exchangeContract.creators(creator);
-    console.log(cliptoTokenContract);
-    const f = await nftExchange.balanceOf(account);
-    console.log(f);
-    console.log('^^^');
-    const ff = await nftExchange.tokenURI(0);
-    console.log(ff);
-    // exchangeContract.on("Transfer", (address, to, tokenId) => {
-    //   console.log('transfer event emitted')
-    //   console.log(address)
-    //   console.log(to)
-    //   console.log(tokenId)
-    // })
-    const ex = [
-      '0x4e78d8b8F17443dF9b92f07fd322d1aB1DA91365',
-      {
-        type: 'BigNumber',
-        hex: '0x06f05b59d3b20000',
-      },
-      false,
-    ];
-  });
+  }, []);
+  useEffect(() => { console.log(request) }, [request])
+  if (request && request.delivered) {
+    return (
+      <>
+        <PageWrapper>
+          <HeaderSpacer />
+          <HeaderContentGapSpacer />
+          <PageContentWrapper style={{ display: 'block', maxWidth: '600px', margin: 'auto' }}>
+            <Label>Request is delivered or refunded</Label>
+          </PageContentWrapper>
+        </PageWrapper>
+      </>
+    )
+  }
   return (
     <>
       <PageWrapper>
