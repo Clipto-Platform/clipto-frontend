@@ -1,3 +1,5 @@
+import { Web3Provider } from '@ethersproject/providers';
+import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
@@ -13,13 +15,10 @@ import { ImagesSlider } from '../components/ImagesSlider';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { OrderCard } from '../components/OrderCard';
 import { API_URL } from '../config/config';
-import { colors } from '../styles/theme';
-import { Description, Label } from '../styles/typography';
-
 import { useExchangeContract, useNFTContract } from '../hooks/useContracts';
 import { useProfile } from '../hooks/useProfile';
-import { useWeb3React } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
+import { colors } from '../styles/theme';
+import { Description, Label } from '../styles/typography';
 const BookingCard = styled.div`
   background: ${(props) => props.theme.lessDarkGray};
   border: 1px solid ${(props) => props.theme.border};
@@ -42,7 +41,7 @@ const ImageCardContainer = styled.div`
 const ImageCardImg = styled.img`
   object-fit: fill;
   user-select: none;
-  `;
+`;
 
 const SelectedOrderPage = (props: any) => {
   const [upload, setUpload] = useState('');
@@ -51,7 +50,7 @@ const SelectedOrderPage = (props: any) => {
   const userProfile = useProfile();
   const { account } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
-  const nftExchange = useNFTContract('0x7d704f6B7Ed4abF6572979Ab667bE5A0626174Bb', true)
+  const nftExchange = useNFTContract('0x7d704f6B7Ed4abF6572979Ab667bE5A0626174Bb', true);
   if (location == null) {
     console.error(
       'NOTE(jonathanng) - If state is null, either 1) the Link props.state you clicked has a null request, 2) The props.state for Link is null or 3) you are trying to go to this page without a Link. However you should have access to the url in the format orders/:id. Code needs to be written to get the request by id from the db when state is null.',
@@ -64,20 +63,20 @@ const SelectedOrderPage = (props: any) => {
   useEffect(async () => {
     const creator = location.state.request.creator;
     const index = location.state.request.requestId;
-    console.log(location)
-    console.log(index)
+    console.log(location);
+    console.log(index);
     exchangeContract.requests(creator, index).then((e) => {
-      console.log('hi')
-      console.log(e)
-    })
+      console.log('hi');
+      console.log(e);
+    });
 
     const cliptoTokenContract = await exchangeContract.creators(creator);
-    console.log(cliptoTokenContract)
-    const f = await nftExchange.balanceOf(account)
-    console.log(f)
-    console.log('^^^')
-    const ff = await nftExchange.tokenURI(0)
-    console.log(ff)
+    console.log(cliptoTokenContract);
+    const f = await nftExchange.balanceOf(account);
+    console.log(f);
+    console.log('^^^');
+    const ff = await nftExchange.tokenURI(0);
+    console.log(ff);
     // exchangeContract.on("Transfer", (address, to, tokenId) => {
     //   console.log('transfer event emitted')
     //   console.log(address)
@@ -85,14 +84,14 @@ const SelectedOrderPage = (props: any) => {
     //   console.log(tokenId)
     // })
     const ex = [
-      "0x4e78d8b8F17443dF9b92f07fd322d1aB1DA91365",
+      '0x4e78d8b8F17443dF9b92f07fd322d1aB1DA91365',
       {
-        "type": "BigNumber",
-        "hex": "0x06f05b59d3b20000"
+        type: 'BigNumber',
+        hex: '0x06f05b59d3b20000',
       },
-      false
-    ]
-  })
+      false,
+    ];
+  });
   return (
     <>
       <PageWrapper>
@@ -134,11 +133,11 @@ const SelectedOrderPage = (props: any) => {
               <PrimaryButton
                 onPress={async () => {
                   const id = location.state.request.id;
-                  console.log(account)
+                  console.log(account);
                   //TODO(jonathanng) - get actual request
-                  const req = await exchangeContract.deliverRequest(location.state.request.requestId, pfp)
-                  console.log('req')
-                  console.log(req)
+                  const req = await exchangeContract.deliverRequest(location.state.request.requestId, pfp);
+                  console.log('req');
+                  console.log(req);
                   const verificationResult = await axios
                     .post(`${API_URL}/request/finish`, { id: id })
                     .then(() => {
