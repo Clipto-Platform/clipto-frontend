@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import { ethers } from 'ethers';
+import { ethers, Transaction } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -94,11 +94,10 @@ const BookingPage = () => {
   const [creatorProfile, setCreatorProfile] = useState<Partial<UserProfile>>();
 
   const [request, setRequest] = useState<Partial<CreateRequestDto>>({});
-  const [tx, setTx] = useState('');
+
   useEffect(() => {
     const getCreatorData = async () => {
       if (creatorId) {
-        const contractProfile = await exchangeContract.creators(creatorId);
         const restContractProfile = await axios.get(`${API_URL}/user/${creatorId}`);
         setCreatorProfile(restContractProfile.data);
         // todo: get amount from server side, not yet implemented
@@ -109,29 +108,26 @@ const BookingPage = () => {
       }
     };
     getCreatorData();
-
-    // get request number from contract
-    exchangeContract.on("NewRequest", async (creator, requester, amount, index) => {
-      console.log('New Request event emitted')
-      console.log({ ...request, requestId: index.toNumber(), txHash: tx.hash, requester: account! })
-      const requestResult = await axios.post(`${API_URL}/request/create`, { ...request, requestId: index.toNumber(), txHash: tx.hash, requester: account! })
-        .catch((e) => {
-          console.log(e);
-        });
-
-      if (requestResult && requestResult.status === 201) {
-        toast.success('Request created!');
-      }
-    })
-
   }, [creatorId]);
 
   const makeBooking = async () => {
     const tx = await exchangeContract.newRequest(request.creator!, { value: ethers.utils.parseEther(request.amount!) });
-    console.log('newRequest completed')
-    // await tx.wait();
-    // setTx(tx)
+    console.log('newRequest waiting')
+    const receipt = await tx.wait();
+    const requestId = receipt.events?.at(0)?.args?.index.toNumber();
+    const requestDat = { ...request, requestId, txHash: tx.hash, requester: account! }
+    console.log(requestDat)
+    const requestResult = await axios.post(`${API_URL}/request/create`, requestDat)
+      .catch((e) => {
+        console.error(e);
+        toast.error(e);
+      });
 
+    if (requestResult && requestResult.status === 201) {
+      toast.success('Request created!');
+    } else {
+      toast.error("Something is wrong.");
+    }
   };
 
   return (
