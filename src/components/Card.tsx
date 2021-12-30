@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -57,10 +58,8 @@ type UserOrderCardStates = 'pending' | 'accepted' | 'cancelled' | 'done' | 'reje
 //   action?: CreatorCardStates | UserOrderCardStates;
 // }
 
-export interface OrderCardProps {
-  request: CreateRequestDto;
-  txHash?: string;
-  key: number;
+export interface CardProps {
+  title: string;
 }
 
 const SecondaryLabel = styled(Text)`
@@ -72,43 +71,18 @@ const BidAmount = styled(Text)`
   color: ${(props) => props.theme.yellow};
 `;
 
-const OrderCard: React.FC<OrderCardProps> = (props) => {
-  const getDeadline = () => {
-    const creationDate: Date = new Date(props.request!.created!);
-    creationDate.setDate(creationDate.getDate() + (props.request?.deadline || 0));
-    return creationDate.toLocaleDateString();
-  };
+const Card: React.FC<CardProps> = (props) => {
   return (
     <OrderCardContainer>
       <OrderCardTopRowContainer>
-        <Row>
-          <AvatarOrb style={{ marginRight: 16 }} />
-          <Column>
-            <Label style={{ marginBottom: 2 }}>CC0maxi</Label>
-            <Text>{props.request?.creator ? getShortenedAddress(props.request?.creator) : ''}</Text>
-          </Column>
-        </Row>
-        <Row>
-          <Column style={{ marginRight: 40, textAlign: 'right' }}>
-            <SecondaryLabel style={{ marginBottom: 2 }}>Deadline</SecondaryLabel>
-            <Text style={{ color: '#ffffff' }}>{getDeadline()}</Text>
-          </Column>
-          <Column style={{ textAlign: 'right' }}>
-            <SecondaryLabel style={{ marginBottom: 2 }}>Bid</SecondaryLabel>
-            <BidAmount>{props.request?.amount} ETH</BidAmount>
-          </Column>
-        </Row>
+        <Label>{props.title}</Label>
       </OrderCardTopRowContainer>
       <HR />
       <OrderCardBodyContainer>
-        <div style={{ marginBottom: 0 }}>
-          <SecondaryLabel style={{ marginBottom: 8 }}>Instructions</SecondaryLabel>
-          <Text style={{ color: '#ffffff' }}>{props.request?.description}</Text>
-        </div>
-        <Row style={{ flex: 1 }}>{props.children}</Row>
+        <Row>{props.children}</Row>
       </OrderCardBodyContainer>
     </OrderCardContainer>
   );
 };
 
-export { OrderCard };
+export { Card };

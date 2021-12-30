@@ -74,12 +74,16 @@ const HR = styled.div`
 
 export interface CreateRequestDto {
   requester: string;
+  requestId: number;
   creator: string;
   amount: string;
   description: string;
   deadline: number;
   txHash: string;
   created?: string;
+  id?: number;
+  delivered: boolean;
+  index?: number;
 }
 
 const BookingPage = () => {
@@ -90,7 +94,7 @@ const BookingPage = () => {
   const [creatorProfile, setCreatorProfile] = useState<Partial<UserProfile>>();
 
   const [request, setRequest] = useState<Partial<CreateRequestDto>>({});
-
+  const [tx, setTx] = useState('');
   useEffect(() => {
     const getCreatorData = async () => {
       if (creatorId) {
@@ -105,20 +109,29 @@ const BookingPage = () => {
       }
     };
     getCreatorData();
+
+    // get request number from contract
+    exchangeContract.on("NewRequest", async (creator, requester, amount, index) => {
+      console.log('New Request event emitted')
+      console.log({ ...request, requestId: index.toNumber(), txHash: tx.hash, requester: account! })
+      const requestResult = await axios.post(`${API_URL}/request/create`, { ...request, requestId: index.toNumber(), txHash: tx.hash, requester: account! })
+        .catch((e) => {
+          console.log(e);
+        });
+
+      if (requestResult && requestResult.status === 201) {
+        toast.success('Request created!');
+      }
+    })
+
   }, [creatorId]);
 
   const makeBooking = async () => {
     const tx = await exchangeContract.newRequest(request.creator!, { value: ethers.utils.parseEther(request.amount!) });
-    await tx.wait();
-    const requestResult = await axios
-      .post(`${API_URL}/request/create`, { ...request, txHash: tx.hash, requester: account! })
-      .catch((e) => {
-        console.log(e);
-      });
+    console.log('newRequest completed')
+    // await tx.wait();
+    // setTx(tx)
 
-    if (requestResult && requestResult.status === 201) {
-      toast.success('Request created!');
-    }
   };
 
   return (
