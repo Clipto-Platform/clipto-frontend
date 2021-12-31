@@ -2,6 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -10,7 +11,7 @@ import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { API_URL } from '../../config/config';
+import { API_URL, HELP_EMAIL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
 import { useProfile, values } from '../../hooks/useProfile';
 
@@ -49,12 +50,11 @@ const OnboardProfilePage = () => {
   const userProfile = useProfile();
   const { account } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
+  const [creator, setCreator] = useState();
   const navigate = useNavigate();
 
   const createUserProfile = async () => {
     const profile = values(userProfile);
-    console.log(profile);
-
     const verificationResult = await axios.post(`${API_URL}/user/create`, { ...profile }).catch((e) => {
       console.log(e);
     });
@@ -69,13 +69,18 @@ const OnboardProfilePage = () => {
         toast.error(verificationResult.data.message);
       }
     } else {
-      toast.error('Something went wrong');
+      toast.error('You may already have an account');
     }
   };
 
+  useEffect(() => {
+    axios.get(`${API_URL}/user/${account}`).then(res => {
+      setCreator(res.data.id)
+    })
+  }, [])
   return (
     <>
-      <PageWrapper>
+      {creator && (<PageWrapper>
         <HeaderSpacer />
         <HeaderContentGapSpacer />
         <PageContentWrapper>
@@ -160,7 +165,20 @@ const OnboardProfilePage = () => {
             </ProfileDetailsContainer>
           </ContentWrapper>
         </PageContentWrapper>
-      </PageWrapper>
+      </PageWrapper>)}
+      {!creator && (
+        <PageWrapper>
+          <HeaderSpacer />
+          <HeaderContentGapSpacer />
+          <PageContentWrapper>
+            <ContentWrapper>
+              <OnboardTitle>
+                It looks like you already have a an account. Please contact {`${HELP_EMAIL}`}
+              </OnboardTitle>
+            </ContentWrapper>
+          </PageContentWrapper>
+        </PageWrapper>
+      )}
     </>
   );
 };
