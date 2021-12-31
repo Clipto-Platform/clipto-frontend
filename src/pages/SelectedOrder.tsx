@@ -19,6 +19,7 @@ import { useExchangeContract, useNFTContract } from '../hooks/useContracts';
 import { useProfile } from '../hooks/useProfile';
 import { colors } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
+import { CreateRequestDto } from './Booking';
 const BookingCard = styled.div`
   background: ${(props) => props.theme.lessDarkGray};
   border: 1px solid ${(props) => props.theme.border};
@@ -50,128 +51,121 @@ const SelectedOrderPage = (props: any) => {
   const userProfile = useProfile();
   const { account } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
-  const nftExchange = useNFTContract('0x7d704f6B7Ed4abF6572979Ab667bE5A0626174Bb', true);
-  if (location == null) {
-    console.error(
-      'NOTE(jonathanng) - If state is null, either 1) the Link props.state you clicked has a null request, 2) The props.state for Link is null or 3) you are trying to go to this page without a Link. However you should have access to the url in the format orders/:id. Code needs to be written to get the request by id from the db when state is null.',
-    );
-    console.error(
-      'more info here: https://ui.dev/react-router-pass-props-to-link/#:~:text=To%20do%20this%20with%20React,Route%20that%20is%20being%20rendered.&text=To%20do%20this%20(and%20to,the%20user%20is%20coming%20from%20.',
-    );
-  }
-
-  useEffect(async () => {
-    const creator = location.state.request.creator;
-    const index = location.state.request.requestId;
-    console.log(location);
-    console.log(index);
-    exchangeContract.requests(creator, index).then((e) => {
-      console.log('hi');
-      console.log(e);
+  const { creator, requestId } = useParams();
+  const [request, setRequest] = useState<CreateRequestDto>();
+  const [loaded, setLoaded] = useState<boolean>(false);
+  useEffect(() => {
+    // const creator = location?.state!.request.creator;
+    // const requestId = location.state.request.requestId;
+    exchangeContract.requests(creator!, requestId!).then((e) => {
+      axios
+        .get(`${API_URL}/request/creator/${creator}/${requestId}`)
+        .then((res) => {
+          setRequest(res.data);
+        })
+        .catch(console.error)
+        .finally(() => {
+          setLoaded(true);
+        });
     });
+  }, []);
 
-    const cliptoTokenContract = await exchangeContract.creators(creator);
-    console.log(cliptoTokenContract);
-    const f = await nftExchange.balanceOf(account);
-    console.log(f);
-    console.log('^^^');
-    const ff = await nftExchange.tokenURI(0);
-    console.log(ff);
-    // exchangeContract.on("Transfer", (address, to, tokenId) => {
-    //   console.log('transfer event emitted')
-    //   console.log(address)
-    //   console.log(to)
-    //   console.log(tokenId)
-    // })
-    const ex = [
-      '0x4e78d8b8F17443dF9b92f07fd322d1aB1DA91365',
-      {
-        type: 'BigNumber',
-        hex: '0x06f05b59d3b20000',
-      },
-      false,
-    ];
-  });
   return (
     <>
-      <PageWrapper>
-        <HeaderSpacer />
-        <HeaderContentGapSpacer />
-        <PageContentWrapper style={{ display: 'block', maxWidth: '600px', margin: 'auto' }}>
-          <BookingCard style={{ textAlign: 'center', display: 'flex', marginBottom: 24 }}>
-            {!upload && (
-              <div style={{ margin: 'auto' }}>
-                <div style={{}}>
-                  {/** TODO(jonathanng) - Text size is off */}
-                  <Label>Upload clip</Label>
-                </div>
-                <div>
-                  <Description>Drag and drop an mp4 or select a file to upload</Description>
-                </div>
-                {/** TODO(jonathanng) - colors off */}
-                <PrimaryButton
-                  variant="secondary"
-                  size="small"
-                  style={{ color: colors.white, width: 120, margin: 'auto' }}
-                  onPress={() => {
-                    setUpload(pfp);
-                  }}
-                >
-                  Select file
-                </PrimaryButton>
-              </div>
-            )}
+      {loaded && (
+        <>
+          {((request && request.delivered) || done) && (
+            <PageWrapper>
+              <HeaderSpacer />
+              <HeaderContentGapSpacer />
+              <PageContentWrapper style={{ display: 'block', maxWidth: '600px', margin: 'auto' }}>
+                <Label>Request is delivered or refunded</Label>
+              </PageContentWrapper>
+            </PageWrapper>
+          )}
+          {!((request && request.delivered) || done) && (
+            <PageWrapper>
+              <HeaderSpacer />
+              <HeaderContentGapSpacer />
+              <PageContentWrapper style={{ display: 'block', maxWidth: '600px', margin: 'auto' }}>
+                <BookingCard style={{ textAlign: 'center', display: 'flex', marginBottom: 24 }}>
+                  {!upload && (
+                    <div style={{ margin: 'auto' }}>
+                      <div style={{}}>
+                        {/** TODO(jonathanng) - Text size is off */}
+                        <Label>Upload clip</Label>
+                      </div>
+                      <div>
+                        <Description>Drag and drop an mp4 or select a file to upload</Description>
+                      </div>
+                      {/** TODO(jonathanng) - colors off */}
+                      <PrimaryButton
+                        variant="secondary"
+                        size="small"
+                        style={{ color: colors.white, width: 120, margin: 'auto' }}
+                        onPress={() => {
+                          setUpload(pfp);
+                        }}
+                      >
+                        Select file
+                      </PrimaryButton>
+                    </div>
+                  )}
 
-            {upload && (
-              <ImageCardContainer style={{ margin: 'auto' }}>
-                <ImageCardImg src={pfp} />
-              </ImageCardContainer>
-            )}
-          </BookingCard>
-          {upload && !done && (
-            <div style={{ display: 'flex', marginBottom: 20 }}>
-              <PrimaryButton
-                onPress={async () => {
-                  const id = location.state.request.id;
-                  console.log(account);
-                  //TODO(jonathanng) - get actual request
-                  const req = await exchangeContract.deliverRequest(location.state.request.requestId, pfp);
-                  console.log('req');
-                  console.log(req);
-                  const verificationResult = await axios
-                    .post(`${API_URL}/request/finish`, { id: id })
-                    .then(() => {
-                      toast.success('Successfully completed order!');
-                      setDone(true);
-                    })
-                    .catch((e) => {
-                      console.log(e);
-                      toast.error('Failed to mint NFT!');
-                    });
-                }}
-                size="small"
-                style={{ marginRight: 20 }}
-              >
-                Mint and send NFT
-              </PrimaryButton>
-              <PrimaryButton size="small" variant="secondary" onPress={() => setUpload('')}>
-                New upload
-              </PrimaryButton>
-            </div>
+                  {upload && (
+                    <ImageCardContainer style={{ margin: 'auto' }}>
+                      <ImageCardImg src={pfp} />
+                    </ImageCardContainer>
+                  )}
+                </BookingCard>
+                {upload && !done && (
+                  <div style={{ display: 'flex', marginBottom: 20 }}>
+                    <PrimaryButton
+                      onPress={async () => {
+                        // const id = location.state.request.id;
+                        // console.log(account);
+                        //TODO(jonathanng) - get actual request
+                        if (!request) {
+                          toast.error('Request not found. Try reloading the page...');
+                          return;
+                        }
+                        const tx = await exchangeContract.deliverRequest(parseInt(requestId!), pfp);
+                        const receipt = await tx.wait();
+                        const verificationResult = await axios
+                          .post(`${API_URL}/request/finish`, { id: request.id })
+                          .then(() => {
+                            toast.success('Successfully completed order!');
+                            setDone(true);
+                          })
+                          .catch((e) => {
+                            console.log(e);
+                            toast.error('Failed to mint NFT!');
+                          });
+                      }}
+                      size="small"
+                      style={{ marginRight: 20 }}
+                    >
+                      Mint and send NFT
+                    </PrimaryButton>
+                    <PrimaryButton size="small" variant="secondary" onPress={() => setUpload('')}>
+                      New upload
+                    </PrimaryButton>
+                  </div>
+                )}
+                {request && <OrderCard request={request!} key={1} />}
+                {!request && <Label>Could not find request</Label>}
+
+                {done && (
+                  <>
+                    <Card title="History"></Card>
+                    <Card title="NFT Details"></Card>
+                  </>
+                )}
+              </PageContentWrapper>
+            </PageWrapper>
           )}
-          <OrderCard
-            //NOTE(jonathanng) - typescript problems...
-            request={location.state.request}
-            key={1}
-          />
-          {done && (
-            <>
-              <Card title="History"></Card>
-              <Card title="NFT Details"></Card>
-            </>
-          )}
-        </PageContentWrapper>
-      </PageWrapper>
+        </>
+      )}
     </>
   );
 };

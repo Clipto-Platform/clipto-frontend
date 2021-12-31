@@ -1,7 +1,9 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import styled, { useTheme } from 'styled-components';
-import axios from 'axios'
+
 // Sample image assets
 import pfp1 from '../assets/images/pfps/1.png';
 import pfp2 from '../assets/images/pfps/2.png';
@@ -12,7 +14,6 @@ import pfp5 from '../assets/images/pfps/5.png';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { API_URL } from '../config/config';
-import { toast } from 'react-toastify';
 
 interface User {
   name: string;
@@ -21,6 +22,7 @@ interface User {
   uid: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   src: any;
+  address: any;
 }
 
 const FeaturedContainerWrapper = styled(PageContentWrapper)`
@@ -87,27 +89,29 @@ const FeaturedUserStartingPrice = styled.div``;
 
 const ExplorePage = () => {
   const theme = useTheme();
-  const [featuredUsers, setFeaturedUsers] = useState([]);
+  const [featuredUsers, setFeaturedUsers] = useState<Array<User>>([]);
   useEffect(() => {
-    axios.get(`${API_URL}/users`)
+    axios
+      .get(`${API_URL}/users`)
       .then((res: { data: Array<any> }) => {
-        const users: Array<User> = res.data.map(u => {
+        const users: Array<User> = res.data.map((u) => {
           return {
             name: u.userName,
             shortDescription: u.twitterHandle,
-            price: '100 USDC',
+            price: '0.01 ETH',
             src: u.profilePicture,
-            uid: u.id
-          }
-        })
-        setFeaturedUsers(users)
+            uid: u.id,
+            address: u.address,
+          };
+        });
+        setFeaturedUsers(users);
         console.log('Fetched users!');
       })
       .catch((e) => {
         console.error(e);
         console.error('Error fetching users!');
       });
-  }, [])
+  }, []);
   return (
     <>
       <PageWrapper>
@@ -119,7 +123,7 @@ const ExplorePage = () => {
             <FeaturedGrid>
               {featuredUsers.map((user) => {
                 return (
-                  <Link key={user.uid} to={`/creator/${user.uid}`}>
+                  <Link key={user.address} to={`/creator/${user.address}`}>
                     <FeaturedUserCardContainer key={user.uid}>
                       <FeaturedUserImage src={user.src} style={{ marginBottom: 24 }} />
                       <FeaturedUserTitle style={{ marginBottom: 4 }}>{user.name}</FeaturedUserTitle>
