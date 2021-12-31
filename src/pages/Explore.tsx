@@ -21,6 +21,7 @@ interface User {
   uid: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   src: any;
+  address: any;
 }
 
 const FeaturedContainerWrapper = styled(PageContentWrapper)`
@@ -87,7 +88,7 @@ const FeaturedUserStartingPrice = styled.div``;
 
 const ExplorePage = () => {
   const theme = useTheme();
-  const [featuredUsers, setFeaturedUsers] = useState([]);
+  const [featuredUsers, setFeaturedUsers] = useState<Array<User>>([]);
   useEffect(() => {
     axios.get(`${API_URL}/users`)
       .then((res: { data: Array<any> }) => {
@@ -97,7 +98,8 @@ const ExplorePage = () => {
             shortDescription: u.twitterHandle,
             price: '100 USDC',
             src: u.profilePicture,
-            uid: u.id
+            uid: u.id,
+            address: u.address
           }
         })
         setFeaturedUsers(users)
@@ -119,7 +121,7 @@ const ExplorePage = () => {
             <FeaturedGrid>
               {featuredUsers.map((user) => {
                 return (
-                  <Link key={user.uid} to={`/creator/${user.uid}`}>
+                  <Link key={user.address} to={`/creator/${user.address}`}>
                     <FeaturedUserCardContainer key={user.uid}>
                       <FeaturedUserImage src={user.src} style={{ marginBottom: 24 }} />
                       <FeaturedUserTitle style={{ marginBottom: 4 }}>{user.name}</FeaturedUserTitle>
