@@ -63,9 +63,10 @@ const SelectedOrderPage = (props: any) => {
       }).catch(console.error)
     });
   }, []);
-  if (request && request.delivered || done) {
-    return (
-      <>
+
+  return (
+    <>
+      {(request && request.delivered || done) && (
         <PageWrapper>
           <HeaderSpacer />
           <HeaderContentGapSpacer />
@@ -73,92 +74,90 @@ const SelectedOrderPage = (props: any) => {
             <Label>Request is delivered or refunded</Label>
           </PageContentWrapper>
         </PageWrapper>
-      </>
-    )
-  }
-  return (
-    <>
-      <PageWrapper>
-        <HeaderSpacer />
-        <HeaderContentGapSpacer />
-        <PageContentWrapper style={{ display: 'block', maxWidth: '600px', margin: 'auto' }}>
-          <BookingCard style={{ textAlign: 'center', display: 'flex', marginBottom: 24 }}>
-            {!upload && (
-              <div style={{ margin: 'auto' }}>
-                <div style={{}}>
-                  {/** TODO(jonathanng) - Text size is off */}
-                  <Label>Upload clip</Label>
+      )}
+      {!(request && request.delivered || done) && (
+        <PageWrapper>
+          <HeaderSpacer />
+          <HeaderContentGapSpacer />
+          <PageContentWrapper style={{ display: 'block', maxWidth: '600px', margin: 'auto' }}>
+            <BookingCard style={{ textAlign: 'center', display: 'flex', marginBottom: 24 }}>
+              {!upload && (
+                <div style={{ margin: 'auto' }}>
+                  <div style={{}}>
+                    {/** TODO(jonathanng) - Text size is off */}
+                    <Label>Upload clip</Label>
+                  </div>
+                  <div>
+                    <Description>Drag and drop an mp4 or select a file to upload</Description>
+                  </div>
+                  {/** TODO(jonathanng) - colors off */}
+                  <PrimaryButton
+                    variant="secondary"
+                    size="small"
+                    style={{ color: colors.white, width: 120, margin: 'auto' }}
+                    onPress={() => {
+                      setUpload(pfp);
+                    }}
+                  >
+                    Select file
+                  </PrimaryButton>
                 </div>
-                <div>
-                  <Description>Drag and drop an mp4 or select a file to upload</Description>
-                </div>
-                {/** TODO(jonathanng) - colors off */}
+              )}
+
+              {upload && (
+                <ImageCardContainer style={{ margin: 'auto' }}>
+                  <ImageCardImg src={pfp} />
+                </ImageCardContainer>
+              )}
+            </BookingCard>
+            {upload && !done && (
+              <div style={{ display: 'flex', marginBottom: 20 }}>
                 <PrimaryButton
-                  variant="secondary"
-                  size="small"
-                  style={{ color: colors.white, width: 120, margin: 'auto' }}
-                  onPress={() => {
-                    setUpload(pfp);
+                  onPress={async () => {
+                    // const id = location.state.request.id;
+                    // console.log(account);
+                    //TODO(jonathanng) - get actual request
+                    if (!request) {
+                      toast.error('Request not found. Try reloading the page...')
+                      return;
+                    }
+                    const tx = await exchangeContract.deliverRequest(parseInt(requestId!), pfp);
+                    const receipt = await tx.wait()
+                    const verificationResult = await axios
+                      .post(`${API_URL}/request/finish`, { id: request.id })
+                      .then(() => {
+                        toast.success('Successfully completed order!');
+                        setDone(true);
+                      })
+                      .catch((e) => {
+                        console.log(e);
+                        toast.error('Failed to mint NFT!');
+                      });
                   }}
+                  size="small"
+                  style={{ marginRight: 20 }}
                 >
-                  Select file
+                  Mint and send NFT
+                </PrimaryButton>
+                <PrimaryButton size="small" variant="secondary" onPress={() => setUpload('')}>
+                  New upload
                 </PrimaryButton>
               </div>
             )}
-
-            {upload && (
-              <ImageCardContainer style={{ margin: 'auto' }}>
-                <ImageCardImg src={pfp} />
-              </ImageCardContainer>
+            <OrderCard
+              //NOTE(jonathanng) - typescript problems...
+              request={request!}
+              key={1}
+            />
+            {done && (
+              <>
+                <Card title="History"></Card>
+                <Card title="NFT Details"></Card>
+              </>
             )}
-          </BookingCard>
-          {upload && !done && (
-            <div style={{ display: 'flex', marginBottom: 20 }}>
-              <PrimaryButton
-                onPress={async () => {
-                  // const id = location.state.request.id;
-                  // console.log(account);
-                  //TODO(jonathanng) - get actual request
-                  if (!request) {
-                    toast.error('Request not found. Try reloading the page...')
-                    return;
-                  }
-                  const tx = await exchangeContract.deliverRequest(parseInt(requestId!), pfp);
-                  const receipt = await tx.wait()
-                  const verificationResult = await axios
-                    .post(`${API_URL}/request/finish`, { id: request.id })
-                    .then(() => {
-                      toast.success('Successfully completed order!');
-                      setDone(true);
-                    })
-                    .catch((e) => {
-                      console.log(e);
-                      toast.error('Failed to mint NFT!');
-                    });
-                }}
-                size="small"
-                style={{ marginRight: 20 }}
-              >
-                Mint and send NFT
-              </PrimaryButton>
-              <PrimaryButton size="small" variant="secondary" onPress={() => setUpload('')}>
-                New upload
-              </PrimaryButton>
-            </div>
-          )}
-          <OrderCard
-            //NOTE(jonathanng) - typescript problems...
-            request={location.state.request}
-            key={1}
-          />
-          {done && (
-            <>
-              <Card title="History"></Card>
-              <Card title="NFT Details"></Card>
-            </>
-          )}
-        </PageContentWrapper>
-      </PageWrapper>
+          </PageContentWrapper>
+        </PageWrapper>
+      )}
     </>
   );
 };
