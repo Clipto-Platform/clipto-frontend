@@ -6,12 +6,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-
+import { DeliveryTime, errorHandle, Number, Url } from '../../utils/validation';
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { API_URL, HELP_EMAIL } from '../../config/config';
+import { API_URL, DEV, HELP_EMAIL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
 import { useProfile, values } from '../../hooks/useProfile';
 
@@ -52,9 +52,27 @@ const OnboardProfilePage = () => {
   const exchangeContract = useExchangeContract(true);
   const [creator, setCreator] = useState();
   const navigate = useNavigate();
-
+  const [formValid, setFormValid] = useState<boolean>(false);
   const createUserProfile = async () => {
+    console.log(userProfile)
     const profile = values(userProfile);
+
+    try {
+      Number.parse(profile!.price)
+      DeliveryTime.parse(profile.deliveryTime)
+      for (let i = 0; i < profile.demos?.length; i++) {
+        let demo = profile.demos[i]
+        if (demo.trim() != '') {
+          Url.parse(demo)
+        }
+      }
+    } catch (e) {
+      console.log(e.issues)
+      errorHandle(e, toast.error)
+      toast.error('Please fix fields')
+      return;
+    }
+    console.log(profile)
     const verificationResult = await axios.post(`${API_URL}/user/create`, { ...profile }).catch((e) => {
       console.log(e);
     });
@@ -80,7 +98,7 @@ const OnboardProfilePage = () => {
   }, [])
   return (
     <>
-      {creator && (<PageWrapper>
+      {(DEV || creator) && (<PageWrapper>
         <HeaderSpacer />
         <HeaderContentGapSpacer />
         <PageContentWrapper>
@@ -128,12 +146,19 @@ const OnboardProfilePage = () => {
                   type="number"
                   placeholder="3"
                   endText="Days"
+                  onBlur={() => {
+                    try {
+                      DeliveryTime.parse(userProfile.deliveryTime)
+                    } catch {
+                      toast.error('Invalid delivery time')
+                    }
+                  }}
                 />
               </div>
 
               <div style={{ marginBottom: 48 }}>
                 <TextField
-                  onChange={(e) => userProfile.setPrice(e)}
+                  onChange={(e) => userProfile.setPrice(parseFloat(e))}
                   label="Minimum amount to charge for bookings"
                   description="Fans will be able to pay this in ETH"
                   placeholder="0.5"
@@ -173,7 +198,7 @@ const OnboardProfilePage = () => {
           <PageContentWrapper>
             <ContentWrapper>
               <OnboardTitle>
-                It looks like you already have a an account. Please contact {`${HELP_EMAIL}`}
+                It looks like you already have an account. Please contact {`${HELP_EMAIL}`}
               </OnboardTitle>
             </ContentWrapper>
           </PageContentWrapper>

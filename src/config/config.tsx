@@ -22,3 +22,6 @@ export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
 
 export const API_URL = 'http://localhost:8000';
 export const HELP_EMAIL = '<REPLACE ME>';
+export const MIN_DELIVERY_TIME = 3;
+
+export const DEV = true;
