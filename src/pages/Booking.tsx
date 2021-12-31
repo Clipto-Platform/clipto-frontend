@@ -112,21 +112,20 @@ const BookingPage = () => {
 
   const makeBooking = async () => {
     const tx = await exchangeContract.newRequest(request.creator!, { value: ethers.utils.parseEther(request.amount!) });
-    console.log('newRequest waiting')
+    console.log('newRequest waiting');
     const receipt = await tx.wait();
     const requestId = receipt.events?.at(0)?.args?.index.toNumber();
-    const requestDat = { ...request, requestId, txHash: tx.hash, requester: account! }
-    console.log(requestDat)
-    const requestResult = await axios.post(`${API_URL}/request/create`, requestDat)
-      .catch((e) => {
-        console.error(e);
-        toast.error(e);
-      });
+    const requestDat = { ...request, requestId, txHash: tx.hash, requester: account! };
+    console.log(requestDat);
+    const requestResult = await axios.post(`${API_URL}/request/create`, requestDat).catch((e) => {
+      console.error(e);
+      toast.error(e);
+    });
 
     if (requestResult && requestResult.status === 201) {
       toast.success('Request created!');
     } else {
-      toast.error("Something is wrong.");
+      toast.error('Something is wrong.');
     }
   };
 

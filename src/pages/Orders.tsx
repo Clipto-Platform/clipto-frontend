@@ -69,7 +69,7 @@ const OrdersPage = () => {
             <Item key="purchased" title="Purchased">
               <TabContent>
                 {requestsToUser.map((i, n) => (
-                  <OrderCard key={i.index} request={i}>
+                  <OrderCard key={i!.index!} request={i}>
                     {i.delivered && (
                       <PrimaryButton
                         link={{
@@ -88,11 +88,11 @@ const OrdersPage = () => {
                       <PrimaryButton
                         size="small"
                         width="small"
-                        variant='secondary'
+                        variant="secondary"
                         style={{ marginTop: 20 }}
                         onPress={async () => {
                           //TODO(jonathanng) - when refunded, ui doesn't update. Also reload results in view clip button
-                          const tx = await exchangeContract.refundRequest(i.creator, i.index!)
+                          const tx = await exchangeContract.refundRequest(i.creator, i.index!);
                           await tx.wait();
                           const verificationResult = await axios
                             .post(`${API_URL}/request/finish`, { id: i.id })
@@ -115,7 +115,7 @@ const OrdersPage = () => {
             <Item key="received" title="Received">
               <TabContent>
                 {requestsByUser.map((i, n, f) => (
-                  <OrderCard key={i.index} request={i}>
+                  <OrderCard key={i!.index!} request={i}>
                     {!i.delivered && i.deadline >= 0 && (
                       <PrimaryButton
                         link={{
