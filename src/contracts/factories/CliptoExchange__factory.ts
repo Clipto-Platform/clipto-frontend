@@ -8,29 +8,15 @@ import type { CliptoExchange, CliptoExchangeInterface } from '../CliptoExchange'
 
 const _abi = [
   {
-    anonymous: false,
     inputs: [
       {
-        indexed: true,
         internalType: 'address',
-        name: 'creator',
+        name: 'implementation',
         type: 'address',
       },
-      {
-        indexed: true,
-        internalType: 'string',
-        name: 'profileUrl',
-        type: 'string',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'cost',
-        type: 'uint256',
-      },
     ],
-    name: 'CreatorModified',
-    type: 'event',
+    stateMutability: 'nonpayable',
+    type: 'constructor',
   },
   {
     anonymous: false,
@@ -43,20 +29,8 @@ const _abi = [
       },
       {
         indexed: true,
-        internalType: 'string',
-        name: 'profileUrl',
-        type: 'string',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'cost',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'tokenAddress',
+        internalType: 'contract CliptoToken',
+        name: 'token',
         type: 'address',
       },
     ],
@@ -81,13 +55,13 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'index',
+        name: 'amount',
         type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'amount',
+        name: 'index',
         type: 'uint256',
       },
     ],
@@ -112,13 +86,13 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'index',
+        name: 'amount',
         type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'amount',
+        name: 'index',
         type: 'uint256',
       },
     ],
@@ -143,18 +117,62 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'index',
+        name: 'amount',
         type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'amount',
+        name: 'index',
         type: 'uint256',
       },
     ],
     name: 'RefundedRequest',
     type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'creator',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'requester',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amountIncreased',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256',
+      },
+    ],
+    name: 'RequestUpdated',
+    type: 'event',
+  },
+  {
+    inputs: [],
+    name: 'TOKEN_IMPLEMENTATION',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     inputs: [
@@ -167,24 +185,9 @@ const _abi = [
     name: 'creators',
     outputs: [
       {
-        internalType: 'string',
-        name: 'profileUrl',
-        type: 'string',
-      },
-      {
-        internalType: 'uint256',
-        name: 'cost',
-        type: 'uint256',
-      },
-      {
-        internalType: 'address',
-        name: 'token',
+        internalType: 'contract CliptoToken',
+        name: '',
         type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'minTimeToDeliver',
-        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -199,7 +202,7 @@ const _abi = [
       },
       {
         internalType: 'string',
-        name: '_tokenURI',
+        name: 'tokenURI',
         type: 'string',
       },
     ],
@@ -211,37 +214,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'string',
-        name: 'profileUrl',
-        type: 'string',
-      },
-      {
-        internalType: 'uint256',
-        name: 'cost',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'minTimeToDeliver',
-        type: 'uint256',
-      },
-    ],
-    name: 'modifyCreator',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
         internalType: 'address',
         name: 'creator',
         type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'deadline',
-        type: 'uint256',
       },
     ],
     name: 'newRequest',
@@ -274,30 +249,9 @@ const _abi = [
         name: 'creatorName',
         type: 'string',
       },
-      {
-        internalType: 'string',
-        name: 'profileUrl',
-        type: 'string',
-      },
-      {
-        internalType: 'uint256',
-        name: 'cost',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'minTimeToDeliver',
-        type: 'uint256',
-      },
     ],
     name: 'registerCreator',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -328,21 +282,29 @@ const _abi = [
       },
       {
         internalType: 'bool',
-        name: 'delivered',
-        type: 'bool',
-      },
-      {
-        internalType: 'uint256',
-        name: 'deadline',
-        type: 'uint256',
-      },
-      {
-        internalType: 'bool',
-        name: 'refunded',
+        name: 'fulfilled',
         type: 'bool',
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'creator',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256',
+      },
+    ],
+    name: 'updateRequest',
+    outputs: [],
+    stateMutability: 'payable',
     type: 'function',
   },
 ];

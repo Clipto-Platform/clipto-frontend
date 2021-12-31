@@ -66,10 +66,7 @@ const SliderControlsContainer = styled.div`
 `;
 
 export interface ImagesSliderProps {
-  images: Array<{
-    src: string;
-    key: string;
-  }>;
+  images: string[];
 }
 
 const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
@@ -96,10 +93,10 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
     <>
       <ImageSliderContainerScrolllShadowContainer />
       <ImagesSliderContainer ref={imageSliderContainerRef} style={{ marginBottom: 8 }}>
-        {props.images.map((imgData) => {
+        {props.images.map((imgSrc, n) => {
           return (
-            <ImageCardContainer key={imgData.key}>
-              <ImageCardImg src={imgData.src} />
+            <ImageCardContainer key={n.toString()}>
+              <ImageCardImg src={imgSrc} />
             </ImageCardContainer>
           );
         })}

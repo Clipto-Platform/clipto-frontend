@@ -1,19 +1,24 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { OverlayContainer } from '@react-aria/overlays';
 import { useWeb3React } from '@web3-react/core';
+import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
 
+import { API_URL, DEV } from '../config/config';
+import { useExchangeContract } from '../hooks/useContracts';
 import { useEagerConnect } from '../hooks/useEagerConnect';
 import { useEns } from '../hooks/useEns';
 import { useInactiveListener } from '../hooks/useInactiveListener';
+import { UserProfile } from '../hooks/useProfile';
 import { MAX_CONTENT_WIDTH_PX } from '../styles/theme';
+import { Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { immer } from '../utils/zustand';
 import { injected, walletconnect } from '../web3/connectors';
-import { AvatarOrb } from './AvatarOrb';
+import { AvatarComponent, AvatarOrb } from './AvatarOrb';
 import { PrimaryButton } from './Button';
 import { ModalDialog } from './Dialog';
 import { Logo } from './Logo';
@@ -112,9 +117,10 @@ const useHeaderStore = create<HeaderStore>(
 );
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface HeaderProps {}
+export interface HeaderProps { }
 
 const Header: React.FC<HeaderProps> = () => {
+  const exchangeContract = useExchangeContract(true);
   const { activate, account, deactivate } = useWeb3React<Web3Provider>();
 
   const showLoginDialog = useHeaderStore((s) => s.showDialog);
@@ -126,6 +132,7 @@ const Header: React.FC<HeaderProps> = () => {
   const hasTriedEagerConnect = useEagerConnect();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loggedInProfile, setLoggedInProfile] = useState<Partial<UserProfile>>();
 
   useEffect(() => {
     setHasTriedEagerConnecting(hasTriedEagerConnect);
@@ -187,6 +194,21 @@ const Header: React.FC<HeaderProps> = () => {
 
   useInactiveListener(!hasTriedEagerConnect);
 
+  useEffect(() => {
+    const getCreatorData = async () => {
+      if (account) {
+        let userProfile;
+        try {
+          userProfile = await axios.get(`${API_URL}/user/${account}`);
+          setLoggedInProfile(userProfile.data);
+        } catch (e) {
+          console.log('Failed to find creator account for userProfile')
+        }
+      }
+    };
+    getCreatorData();
+  }, [account]);
+
   return (
     <>
       <HeaderWrapperOuter>
@@ -195,6 +217,8 @@ const Header: React.FC<HeaderProps> = () => {
             <Link to={'/'}>
               <Logo />
             </Link>
+            {DEV && <Label>In DEV environment</Label>}
+
           </LeftWrapper>
           {hasTriedEagerConnect && (
             <>
@@ -207,12 +231,41 @@ const Header: React.FC<HeaderProps> = () => {
               )}
               {account && (
                 <>
-                  <RightWrapper onClick={logoutUser}>
-                    <StyledSpan style={{ marginRight: 16 }}>
-                      {userEnsName ?? getShortenedAddress(account, 6, 4)}
-                    </StyledSpan>
-                    <AvatarOrb />
-                  </RightWrapper>
+                  {loggedInProfile && (
+                    <RightWrapper>
+                      <Link to={'/explore'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
+                      </Link>
+                      <Link to={'/orders'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
+                      </Link>
+                      <RightWrapper onClick={logoutUser}>
+                        <StyledSpan style={{ marginRight: 16 }}>
+                          {userEnsName ?? getShortenedAddress(account, 6, 4)}
+                        </StyledSpan>
+                        <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
+                      </RightWrapper>
+                    </RightWrapper>
+                  )}
+                  {!loggedInProfile && (
+                    <RightWrapper>
+                      <Link to={'/explore'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
+                      </Link>
+                      <Link to={'/orders'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
+                      </Link>
+                      <Link to={'/onboarding'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Become a creator</StyledSpan>
+                      </Link>
+                      <RightWrapper onClick={logoutUser}>
+                        <StyledSpan style={{ marginRight: 16 }}>
+                          {userEnsName ?? getShortenedAddress(account, 6, 4)}
+                        </StyledSpan>
+                        <AvatarComponent address={account} />
+                      </RightWrapper>
+                    </RightWrapper>
+                  )}
                 </>
               )}
             </>

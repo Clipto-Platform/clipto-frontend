@@ -3,10 +3,11 @@ import { useRef } from 'react';
 import styled, { CSSProperties } from 'styled-components';
 
 import { Description, Label } from '../styles/typography';
-import { Input, Textarea } from './Input';
+import { EndText, Input, Textarea } from './Input';
 
 export interface TextFieldProps {
-  label: string;
+  label?: string;
+  endText?: string;
   inputStyles?: CSSProperties;
 }
 
@@ -19,16 +20,25 @@ function TextField(props: AriaTextFieldOptions<'input' | 'textarea'> & TextField
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div style={{ marginBottom: 16 }}>
-        <Label style={{ marginBottom: props.description ? 7 : 0 }} as={'label'} {...labelProps}>
-          {props.label}
-        </Label>
+        {props.label && (
+          <Label style={{ marginBottom: props.description ? 7 : 0 }} as={'label'} {...labelProps}>
+            {props.label}
+          </Label>
+        )}
         {props.description && <Description {...descriptionProps}>{props.description}</Description>}
       </div>
-      {props.inputElementType === 'textarea' ? (
-        <Textarea {...(inputProps as any)} style={inputStyles} />
-      ) : (
-        <Input {...(inputProps as any)} ref={ref} style={inputStyles} />
-      )}
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        {props.inputElementType === 'textarea' ? (
+          <Textarea {...(inputProps as any)} style={inputStyles} />
+        ) : (
+          <Input {...(inputProps as any)} ref={ref} style={inputStyles} />
+        )}
+        {props.endText && (
+          <div style={{ position: 'relative' }}>
+            <EndText>{props.endText}</EndText>
+          </div>
+        )}
+      </div>
       {props.errorMessage && (
         <div {...errorMessageProps} style={{ color: 'red', fontSize: 12 }}>
           {props.errorMessage}

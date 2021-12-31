@@ -46,4 +46,13 @@ const Textarea = styled.textarea`
   min-height: 182px;
 `;
 
-export { Input, Textarea };
+const EndText = styled.p`
+  position: absolute;
+  right: 0;
+  padding-right: 18px;
+  margin-left: 100%;
+  transform: translateY(14px);
+  font-weight: bold;
+`;
+
+export { EndText, Input, Textarea };

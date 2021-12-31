@@ -1,17 +1,21 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { ChangeEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import styled, { useTheme } from 'styled-components';
+import { z } from 'zod';
 
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
 import TwitterIcon from '../../components/icons/TwitterIcon';
 import { ContentWrapper, OutlinedContainer, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
+import { API_URL } from '../../config/config';
 import { useProfile } from '../../hooks/useProfile';
 import { Text } from '../../styles/typography';
+import { errorHandle, Url } from '../../utils/validation';
 
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
@@ -64,11 +68,24 @@ const StepDescription = styled(Text)`
 const OnboardingPage = () => {
   const theme = useTheme();
   const userProfile = useProfile();
+  const navigate = useNavigate();
   const { account } = useWeb3React<Web3Provider>();
   const [tweetUrl, setTweetUrl] = useState<string>('');
 
   const verifyTwitterUser = async () => {
-    await userProfile.verifyUser(tweetUrl, account!);
+    const verificationResult = await axios.post(`${API_URL}/user/verify`, { tweetUrl, address: account }).catch((e) => {
+      console.log(e);
+    });
+    if (verificationResult && verificationResult.data && verificationResult.data.includes) {
+      userProfile.setUsername(verificationResult.data.includes.users[0].name);
+      userProfile.setProfilePicture(verificationResult.data.includes.users[0].profile_image_url);
+      userProfile.setAddress(account!);
+      userProfile.setTweetUrl(tweetUrl);
+      toast.success('Verified Twitter successfully!');
+      navigate('/onboarding/profile');
+    } else {
+      toast.error('Failed to verify your Twitter!');
+    }
   };
   return (
     <>
@@ -121,7 +138,12 @@ const OnboardingPage = () => {
               <PrimaryButton
                 style={{ marginBottom: '16px' }}
                 onPress={() => {
-                  verifyTwitterUser();
+                  try {
+                    Url.parse(tweetUrl);
+                    verifyTwitterUser();
+                  } catch (e) {
+                    errorHandle(e, toast.error)
+                  }
                 }}
               >
                 Confirm

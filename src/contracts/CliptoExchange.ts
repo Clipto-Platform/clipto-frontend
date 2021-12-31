@@ -20,80 +20,85 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export interface CliptoExchangeInterface extends utils.Interface {
   functions: {
+    'TOKEN_IMPLEMENTATION()': FunctionFragment;
     'creators(address)': FunctionFragment;
     'deliverRequest(uint256,string)': FunctionFragment;
-    'modifyCreator(string,uint256,uint256)': FunctionFragment;
-    'newRequest(address,uint256)': FunctionFragment;
+    'newRequest(address)': FunctionFragment;
     'refundRequest(address,uint256)': FunctionFragment;
-    'registerCreator(string,string,uint256,uint256)': FunctionFragment;
+    'registerCreator(string)': FunctionFragment;
     'requests(address,uint256)': FunctionFragment;
+    'updateRequest(address,uint256)': FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: 'TOKEN_IMPLEMENTATION', values?: undefined): string;
   encodeFunctionData(functionFragment: 'creators', values: [string]): string;
   encodeFunctionData(functionFragment: 'deliverRequest', values: [BigNumberish, string]): string;
-  encodeFunctionData(functionFragment: 'modifyCreator', values: [string, BigNumberish, BigNumberish]): string;
-  encodeFunctionData(functionFragment: 'newRequest', values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'newRequest', values: [string]): string;
   encodeFunctionData(functionFragment: 'refundRequest', values: [string, BigNumberish]): string;
-  encodeFunctionData(functionFragment: 'registerCreator', values: [string, string, BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'registerCreator', values: [string]): string;
   encodeFunctionData(functionFragment: 'requests', values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'updateRequest', values: [string, BigNumberish]): string;
 
+  decodeFunctionResult(functionFragment: 'TOKEN_IMPLEMENTATION', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'creators', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'deliverRequest', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'modifyCreator', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'newRequest', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'refundRequest', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'registerCreator', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'requests', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'updateRequest', data: BytesLike): Result;
 
   events: {
-    'CreatorModified(address,string,uint256)': EventFragment;
-    'CreatorRegistered(address,string,uint256,address)': EventFragment;
+    'CreatorRegistered(address,address)': EventFragment;
     'DeliveredRequest(address,address,uint256,uint256)': EventFragment;
     'NewRequest(address,address,uint256,uint256)': EventFragment;
     'RefundedRequest(address,address,uint256,uint256)': EventFragment;
+    'RequestUpdated(address,address,uint256,uint256)': EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: 'CreatorModified'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CreatorRegistered'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DeliveredRequest'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'NewRequest'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'RefundedRequest'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'RequestUpdated'): EventFragment;
 }
 
-export type CreatorModifiedEvent = TypedEvent<
-  [string, string, BigNumber],
-  { creator: string; profileUrl: string; cost: BigNumber }
->;
-
-export type CreatorModifiedEventFilter = TypedEventFilter<CreatorModifiedEvent>;
-
-export type CreatorRegisteredEvent = TypedEvent<
-  [string, string, BigNumber, string],
-  { creator: string; profileUrl: string; cost: BigNumber; tokenAddress: string }
->;
+export type CreatorRegisteredEvent = TypedEvent<[string, string], { creator: string; token: string }>;
 
 export type CreatorRegisteredEventFilter = TypedEventFilter<CreatorRegisteredEvent>;
 
 export type DeliveredRequestEvent = TypedEvent<
   [string, string, BigNumber, BigNumber],
-  { creator: string; requester: string; index: BigNumber; amount: BigNumber }
+  { creator: string; requester: string; amount: BigNumber; index: BigNumber }
 >;
 
 export type DeliveredRequestEventFilter = TypedEventFilter<DeliveredRequestEvent>;
 
 export type NewRequestEvent = TypedEvent<
   [string, string, BigNumber, BigNumber],
-  { creator: string; requester: string; index: BigNumber; amount: BigNumber }
+  { creator: string; requester: string; amount: BigNumber; index: BigNumber }
 >;
 
 export type NewRequestEventFilter = TypedEventFilter<NewRequestEvent>;
 
 export type RefundedRequestEvent = TypedEvent<
   [string, string, BigNumber, BigNumber],
-  { creator: string; requester: string; index: BigNumber; amount: BigNumber }
+  { creator: string; requester: string; amount: BigNumber; index: BigNumber }
 >;
 
 export type RefundedRequestEventFilter = TypedEventFilter<RefundedRequestEvent>;
+
+export type RequestUpdatedEvent = TypedEvent<
+  [string, string, BigNumber, BigNumber],
+  {
+    creator: string;
+    requester: string;
+    amountIncreased: BigNumber;
+    index: BigNumber;
+  }
+>;
+
+export type RequestUpdatedEventFilter = TypedEventFilter<RequestUpdatedEvent>;
 
 export interface CliptoExchange extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -118,34 +123,18 @@ export interface CliptoExchange extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    creators(
-      arg0: string,
-      overrides?: CallOverrides,
-    ): Promise<
-      [string, BigNumber, string, BigNumber] & {
-        profileUrl: string;
-        cost: BigNumber;
-        token: string;
-        minTimeToDeliver: BigNumber;
-      }
-    >;
+    TOKEN_IMPLEMENTATION(overrides?: CallOverrides): Promise<[string]>;
+
+    creators(arg0: string, overrides?: CallOverrides): Promise<[string]>;
 
     deliverRequest(
       index: BigNumberish,
-      _tokenURI: string,
-      overrides?: Overrides & { from?: string | Promise<string> },
-    ): Promise<ContractTransaction>;
-
-    modifyCreator(
-      profileUrl: string,
-      cost: BigNumberish,
-      minTimeToDeliver: BigNumberish,
+      tokenURI: string,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
     newRequest(
       creator: string,
-      deadline: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
@@ -157,9 +146,6 @@ export interface CliptoExchange extends BaseContract {
 
     registerCreator(
       creatorName: string,
-      profileUrl: string,
-      cost: BigNumberish,
-      minTimeToDeliver: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
@@ -168,44 +154,32 @@ export interface CliptoExchange extends BaseContract {
       arg1: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<
-      [string, BigNumber, boolean, BigNumber, boolean] & {
+      [string, BigNumber, boolean] & {
         requester: string;
         amount: BigNumber;
-        delivered: boolean;
-        deadline: BigNumber;
-        refunded: boolean;
+        fulfilled: boolean;
       }
     >;
+
+    updateRequest(
+      creator: string,
+      index: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> },
+    ): Promise<ContractTransaction>;
   };
 
-  creators(
-    arg0: string,
-    overrides?: CallOverrides,
-  ): Promise<
-    [string, BigNumber, string, BigNumber] & {
-      profileUrl: string;
-      cost: BigNumber;
-      token: string;
-      minTimeToDeliver: BigNumber;
-    }
-  >;
+  TOKEN_IMPLEMENTATION(overrides?: CallOverrides): Promise<string>;
+
+  creators(arg0: string, overrides?: CallOverrides): Promise<string>;
 
   deliverRequest(
     index: BigNumberish,
-    _tokenURI: string,
-    overrides?: Overrides & { from?: string | Promise<string> },
-  ): Promise<ContractTransaction>;
-
-  modifyCreator(
-    profileUrl: string,
-    cost: BigNumberish,
-    minTimeToDeliver: BigNumberish,
+    tokenURI: string,
     overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   newRequest(
     creator: string,
-    deadline: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
@@ -217,9 +191,6 @@ export interface CliptoExchange extends BaseContract {
 
   registerCreator(
     creatorName: string,
-    profileUrl: string,
-    cost: BigNumberish,
-    minTimeToDeliver: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
@@ -228,141 +199,111 @@ export interface CliptoExchange extends BaseContract {
     arg1: BigNumberish,
     overrides?: CallOverrides,
   ): Promise<
-    [string, BigNumber, boolean, BigNumber, boolean] & {
+    [string, BigNumber, boolean] & {
       requester: string;
       amount: BigNumber;
-      delivered: boolean;
-      deadline: BigNumber;
-      refunded: boolean;
+      fulfilled: boolean;
     }
   >;
 
+  updateRequest(
+    creator: string,
+    index: BigNumberish,
+    overrides?: PayableOverrides & { from?: string | Promise<string> },
+  ): Promise<ContractTransaction>;
+
   callStatic: {
-    creators(
-      arg0: string,
-      overrides?: CallOverrides,
-    ): Promise<
-      [string, BigNumber, string, BigNumber] & {
-        profileUrl: string;
-        cost: BigNumber;
-        token: string;
-        minTimeToDeliver: BigNumber;
-      }
-    >;
+    TOKEN_IMPLEMENTATION(overrides?: CallOverrides): Promise<string>;
 
-    deliverRequest(index: BigNumberish, _tokenURI: string, overrides?: CallOverrides): Promise<void>;
+    creators(arg0: string, overrides?: CallOverrides): Promise<string>;
 
-    modifyCreator(
-      profileUrl: string,
-      cost: BigNumberish,
-      minTimeToDeliver: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<void>;
+    deliverRequest(index: BigNumberish, tokenURI: string, overrides?: CallOverrides): Promise<void>;
 
-    newRequest(creator: string, deadline: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    newRequest(creator: string, overrides?: CallOverrides): Promise<void>;
 
     refundRequest(creator: string, index: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    registerCreator(
-      creatorName: string,
-      profileUrl: string,
-      cost: BigNumberish,
-      minTimeToDeliver: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<string>;
+    registerCreator(creatorName: string, overrides?: CallOverrides): Promise<void>;
 
     requests(
       arg0: string,
       arg1: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<
-      [string, BigNumber, boolean, BigNumber, boolean] & {
+      [string, BigNumber, boolean] & {
         requester: string;
         amount: BigNumber;
-        delivered: boolean;
-        deadline: BigNumber;
-        refunded: boolean;
+        fulfilled: boolean;
       }
     >;
+
+    updateRequest(creator: string, index: BigNumberish, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
-    'CreatorModified(address,string,uint256)'(
-      creator?: string | null,
-      profileUrl?: string | null,
-      cost?: null,
-    ): CreatorModifiedEventFilter;
-    CreatorModified(creator?: string | null, profileUrl?: string | null, cost?: null): CreatorModifiedEventFilter;
-
-    'CreatorRegistered(address,string,uint256,address)'(
-      creator?: string | null,
-      profileUrl?: string | null,
-      cost?: null,
-      tokenAddress?: null,
-    ): CreatorRegisteredEventFilter;
-    CreatorRegistered(
-      creator?: string | null,
-      profileUrl?: string | null,
-      cost?: null,
-      tokenAddress?: null,
-    ): CreatorRegisteredEventFilter;
+    'CreatorRegistered(address,address)'(creator?: string | null, token?: string | null): CreatorRegisteredEventFilter;
+    CreatorRegistered(creator?: string | null, token?: string | null): CreatorRegisteredEventFilter;
 
     'DeliveredRequest(address,address,uint256,uint256)'(
       creator?: string | null,
       requester?: string | null,
-      index?: null,
       amount?: null,
+      index?: null,
     ): DeliveredRequestEventFilter;
     DeliveredRequest(
       creator?: string | null,
       requester?: string | null,
-      index?: null,
       amount?: null,
+      index?: null,
     ): DeliveredRequestEventFilter;
 
     'NewRequest(address,address,uint256,uint256)'(
       creator?: string | null,
       requester?: string | null,
-      index?: null,
       amount?: null,
+      index?: null,
     ): NewRequestEventFilter;
-    NewRequest(creator?: string | null, requester?: string | null, index?: null, amount?: null): NewRequestEventFilter;
+    NewRequest(creator?: string | null, requester?: string | null, amount?: null, index?: null): NewRequestEventFilter;
 
     'RefundedRequest(address,address,uint256,uint256)'(
       creator?: string | null,
       requester?: string | null,
-      index?: null,
       amount?: null,
+      index?: null,
     ): RefundedRequestEventFilter;
     RefundedRequest(
       creator?: string | null,
       requester?: string | null,
-      index?: null,
       amount?: null,
+      index?: null,
     ): RefundedRequestEventFilter;
+
+    'RequestUpdated(address,address,uint256,uint256)'(
+      creator?: string | null,
+      requester?: string | null,
+      amountIncreased?: null,
+      index?: null,
+    ): RequestUpdatedEventFilter;
+    RequestUpdated(
+      creator?: string | null,
+      requester?: string | null,
+      amountIncreased?: null,
+      index?: null,
+    ): RequestUpdatedEventFilter;
   };
 
   estimateGas: {
+    TOKEN_IMPLEMENTATION(overrides?: CallOverrides): Promise<BigNumber>;
+
     creators(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     deliverRequest(
       index: BigNumberish,
-      _tokenURI: string,
+      tokenURI: string,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
-    modifyCreator(
-      profileUrl: string,
-      cost: BigNumberish,
-      minTimeToDeliver: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> },
-    ): Promise<BigNumber>;
-
-    newRequest(
-      creator: string,
-      deadline: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> },
-    ): Promise<BigNumber>;
+    newRequest(creator: string, overrides?: PayableOverrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
     refundRequest(
       creator: string,
@@ -372,34 +313,31 @@ export interface CliptoExchange extends BaseContract {
 
     registerCreator(
       creatorName: string,
-      profileUrl: string,
-      cost: BigNumberish,
-      minTimeToDeliver: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
     requests(arg0: string, arg1: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    updateRequest(
+      creator: string,
+      index: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> },
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    TOKEN_IMPLEMENTATION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     creators(arg0: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     deliverRequest(
       index: BigNumberish,
-      _tokenURI: string,
-      overrides?: Overrides & { from?: string | Promise<string> },
-    ): Promise<PopulatedTransaction>;
-
-    modifyCreator(
-      profileUrl: string,
-      cost: BigNumberish,
-      minTimeToDeliver: BigNumberish,
+      tokenURI: string,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
     newRequest(
       creator: string,
-      deadline: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
@@ -411,12 +349,15 @@ export interface CliptoExchange extends BaseContract {
 
     registerCreator(
       creatorName: string,
-      profileUrl: string,
-      cost: BigNumberish,
-      minTimeToDeliver: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
     requests(arg0: string, arg1: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    updateRequest(
+      creator: string,
+      index: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> },
+    ): Promise<PopulatedTransaction>;
   };
 }
