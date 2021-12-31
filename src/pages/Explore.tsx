@@ -96,7 +96,7 @@ const ExplorePage = () => {
           return {
             name: u.userName,
             shortDescription: u.twitterHandle,
-            price: '100 USDC',
+            price: '0.01 ETH',
             src: u.profilePicture,
             uid: u.id,
             address: u.address

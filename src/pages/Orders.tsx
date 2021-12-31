@@ -50,15 +50,9 @@ const OrdersPage = () => {
     const getRequests = async () => {
       if (account) {
         const userRequests = await axios.get(`${API_URL}/request/receiver/${account}`);
-        // NOTE(jonathanng) - this is one way to get the order of the requests. This is important for knowing which request to change for the contracts
-        for (let i = 0; i < userRequests.data.length; i++) {
-          userRequests.data[i].index = i;
-        }
         setRequestsByUser(userRequests.data);
+
         const creatorRequests = await axios.get(`${API_URL}/request/creator/${account}`);
-        for (let i = 0; i < creatorRequests.data.length; i++) {
-          creatorRequests.data[i].index = i;
-        }
         setRequestsToUser(creatorRequests.data);
       }
     };
