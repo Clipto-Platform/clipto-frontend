@@ -58,14 +58,12 @@ const SelectedOrderPage = (props: any) => {
     // const creator = location?.state!.request.creator;
     // const requestId = location.state.request.requestId;
     exchangeContract.requests(creator!, requestId!).then((e) => {
-      console.log(e);
       axios.get(`${API_URL}/request/creator/${creator}/${requestId}`).then(res => {
         setRequest(res.data)
       }).catch(console.error)
     });
   }, []);
-  useEffect(() => { console.log(request) }, [request])
-  if (request && request.delivered) {
+  if (request && request.delivered || done) {
     return (
       <>
         <PageWrapper>
@@ -118,14 +116,17 @@ const SelectedOrderPage = (props: any) => {
             <div style={{ display: 'flex', marginBottom: 20 }}>
               <PrimaryButton
                 onPress={async () => {
-                  const id = location.state.request.id;
-                  console.log(account);
+                  // const id = location.state.request.id;
+                  // console.log(account);
                   //TODO(jonathanng) - get actual request
-                  const req = await exchangeContract.deliverRequest(location.state.request.requestId, pfp);
-                  console.log('req');
-                  console.log(req);
+                  if (!request) {
+                    toast.error('Request not found. Try reloading the page...')
+                    return;
+                  }
+                  const tx = await exchangeContract.deliverRequest(parseInt(requestId!), pfp);
+                  const receipt = await tx.wait()
                   const verificationResult = await axios
-                    .post(`${API_URL}/request/finish`, { id: id })
+                    .post(`${API_URL}/request/finish`, { id: request.id })
                     .then(() => {
                       toast.success('Successfully completed order!');
                       setDone(true);
