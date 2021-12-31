@@ -7,13 +7,14 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
 
-import { API_URL } from '../config/config';
+import { API_URL, DEV } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useEagerConnect } from '../hooks/useEagerConnect';
 import { useEns } from '../hooks/useEns';
 import { useInactiveListener } from '../hooks/useInactiveListener';
 import { UserProfile } from '../hooks/useProfile';
 import { MAX_CONTENT_WIDTH_PX } from '../styles/theme';
+import { Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { immer } from '../utils/zustand';
 import { injected, walletconnect } from '../web3/connectors';
@@ -216,6 +217,8 @@ const Header: React.FC<HeaderProps> = () => {
             <Link to={'/'}>
               <Logo />
             </Link>
+            {DEV && <Label>In DEV environment</Label>}
+
           </LeftWrapper>
           {hasTriedEagerConnect && (
             <>

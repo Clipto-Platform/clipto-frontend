@@ -6,12 +6,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-
+import { DeliveryTime, errorHandle, Number, Url } from '../../utils/validation';
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { API_URL, HELP_EMAIL } from '../../config/config';
+import { API_URL, DEV, HELP_EMAIL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
 import { useProfile, values } from '../../hooks/useProfile';
 
@@ -52,9 +52,26 @@ const OnboardProfilePage = () => {
   const exchangeContract = useExchangeContract(true);
   const [creator, setCreator] = useState();
   const navigate = useNavigate();
-
+  const [formValid, setFormValid] = useState<boolean>(false);
   const createUserProfile = async () => {
     const profile = values(userProfile);
+
+    try {
+      Number.parse(parseInt(profile!.price))
+      DeliveryTime.parse(profile.deliveryTime)
+      for (let i = 0; i < profile.demos?.length; i++) {
+        let demo = profile.demos[i]
+        if (demo) {
+          Url.parse(demo)
+        }
+      }
+    } catch (e) {
+      console.log(e.issues)
+      errorHandle(e, toast.error)
+      toast.error('Please fix fields')
+      return;
+    }
+
     const verificationResult = await axios.post(`${API_URL}/user/create`, { ...profile }).catch((e) => {
       console.log(e);
     });
@@ -80,7 +97,7 @@ const OnboardProfilePage = () => {
   }, [])
   return (
     <>
-      {!creator && (<PageWrapper>
+      {(DEV || creator) && (<PageWrapper>
         <HeaderSpacer />
         <HeaderContentGapSpacer />
         <PageContentWrapper>
@@ -128,6 +145,13 @@ const OnboardProfilePage = () => {
                   type="number"
                   placeholder="3"
                   endText="Days"
+                  onBlur={() => {
+                    try {
+                      DeliveryTime.parse(userProfile.deliveryTime)
+                    } catch {
+                      toast.error('Invalid delivery time')
+                    }
+                  }}
                 />
               </div>
 
