@@ -116,7 +116,7 @@ const useHeaderStore = create<HeaderStore>(
 );
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface HeaderProps {}
+export interface HeaderProps { }
 
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
@@ -196,8 +196,13 @@ const Header: React.FC<HeaderProps> = () => {
   useEffect(() => {
     const getCreatorData = async () => {
       if (account) {
-        const userProfile = await axios.get(`${API_URL}/user/${account}`);
-        setLoggedInProfile(userProfile.data);
+        let userProfile;
+        try {
+          userProfile = await axios.get(`${API_URL}/user/${account}`);
+          setLoggedInProfile(userProfile.data);
+        } catch (e) {
+          console.log('Failed to find creator account for userProfile')
+        }
       }
     };
     getCreatorData();
@@ -223,20 +228,41 @@ const Header: React.FC<HeaderProps> = () => {
               )}
               {account && (
                 <>
-                  <RightWrapper>
-                    <Link to={'/explore'}>
-                      <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
-                    </Link>
-                    <Link to={'/orders'}>
-                      <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
-                    </Link>
-                    <RightWrapper onClick={logoutUser}>
-                      <StyledSpan style={{ marginRight: 16 }}>
-                        {userEnsName ?? getShortenedAddress(account, 6, 4)}
-                      </StyledSpan>
-                      <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
+                  {loggedInProfile && (
+                    <RightWrapper>
+                      <Link to={'/explore'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
+                      </Link>
+                      <Link to={'/orders'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
+                      </Link>
+                      <RightWrapper onClick={logoutUser}>
+                        <StyledSpan style={{ marginRight: 16 }}>
+                          {userEnsName ?? getShortenedAddress(account, 6, 4)}
+                        </StyledSpan>
+                        <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
+                      </RightWrapper>
                     </RightWrapper>
-                  </RightWrapper>
+                  )}
+                  {!loggedInProfile && (
+                    <RightWrapper>
+                      <Link to={'/explore'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
+                      </Link>
+                      <Link to={'/orders'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
+                      </Link>
+                      <Link to={'/onboarding'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Become a creator</StyledSpan>
+                      </Link>
+                      <RightWrapper onClick={logoutUser}>
+                        <StyledSpan style={{ marginRight: 16 }}>
+                          {userEnsName ?? getShortenedAddress(account, 6, 4)}
+                        </StyledSpan>
+                        <AvatarComponent address={account} />
+                      </RightWrapper>
+                    </RightWrapper>
+                  )}
                 </>
               )}
             </>
