@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled, { useTheme } from 'styled-components';
+import { z } from 'zod';
 
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
@@ -14,6 +15,7 @@ import { TextField } from '../../components/TextField';
 import { API_URL } from '../../config/config';
 import { useProfile } from '../../hooks/useProfile';
 import { Text } from '../../styles/typography';
+import { errorHandle, Url } from '../../utils/validation';
 
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
@@ -136,7 +138,12 @@ const OnboardingPage = () => {
               <PrimaryButton
                 style={{ marginBottom: '16px' }}
                 onPress={() => {
-                  verifyTwitterUser();
+                  try {
+                    Url.parse(tweetUrl);
+                    verifyTwitterUser();
+                  } catch (e) {
+                    errorHandle(e, toast.error)
+                  }
                 }}
               >
                 Confirm

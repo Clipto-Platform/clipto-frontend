@@ -80,7 +80,7 @@ const OnboardProfilePage = () => {
   }, [])
   return (
     <>
-      {creator && (<PageWrapper>
+      {!creator && (<PageWrapper>
         <HeaderSpacer />
         <HeaderContentGapSpacer />
         <PageContentWrapper>
@@ -173,7 +173,7 @@ const OnboardProfilePage = () => {
           <PageContentWrapper>
             <ContentWrapper>
               <OnboardTitle>
-                It looks like you already have a an account. Please contact {`${HELP_EMAIL}`}
+                It looks like you already have an account. Please contact {`${HELP_EMAIL}`}
               </OnboardTitle>
             </ContentWrapper>
           </PageContentWrapper>

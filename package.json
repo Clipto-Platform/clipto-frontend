@@ -40,6 +40,7 @@
     "react-stately": "^3.11.0",
     "react-toastify": "^8.1.0",
     "styled-components": "^5.3.3",
+    "zod": "^3.11.6",
     "zustand": "^3.6.7"
   },
   "devDependencies": {
