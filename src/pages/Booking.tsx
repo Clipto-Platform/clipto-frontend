@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-
+import { Number } from '../utils/validation';
 import pfp from '../assets/images/pfps/sample-profile.png';
 import { AvatarComponent, AvatarOrb } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
@@ -158,7 +158,7 @@ const BookingPage = () => {
             <PurchaseOption style={{ marginBottom: 40 }}>
               <FlexRow style={{ marginBottom: 7 }}>
                 <Label>Personal use</Label>
-                <Label style={{ fontSize: 14 }}>{creatorProfile?.price} ether</Label>
+                <Label style={{ fontSize: 14 }}>{creatorProfile?.price} ETH +</Label>
               </FlexRow>
               <Description>Personalized video for you or someone else</Description>
             </PurchaseOption>
@@ -200,11 +200,23 @@ const BookingPage = () => {
                 description={'Increase your bid to get your video earlier'}
                 endText="ETH"
                 inputMode="numeric"
-                placeholder={creatorProfile?.price}
+                placeholder={creatorProfile?.price + " +"}
                 onChange={(e) => setRequest({ ...request, amount: e })}
+                onBlur={(e) => {
+                  try {
+                    Number.parse(request?.number)
+                    if (parseFloat(request?.amount) < parseFloat(creatorProfile?.price)) {
+                      throw 'catch me'
+                    }
+                  } catch {
+                    toast.error(`Amount must be greator than ${creatorProfile?.price}`)
+                    return;
+                  }
+
+                }}
               />
             </div>
-            <PrimaryButton onPress={() => makeBooking()}>Book now</PrimaryButton>
+            <PrimaryButton onPress={() => makeBooking()} isDisabled={false}>Book now</PrimaryButton>
           </BookingCard>
         </PageGrid>
       </PageContentWrapper>
