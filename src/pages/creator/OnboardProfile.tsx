@@ -223,8 +223,8 @@ const OnboardProfilePage = () => {
                     }
                     return errors
                   }}
-                // validateOnBlur={true}
-                // validateOnChange={true}
+                  validateOnBlur={false}
+                  validateOnChange={false}
                 >
                   {({ handleChange, handleBlur, handleSubmit, values, errors, touched, validateForm }) => (
                     <>
