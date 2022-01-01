@@ -10,7 +10,6 @@ import pfp5 from '../assets/images/pfps/5.png';
 // Components
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
-
 import { User, UserDisplay } from '../components/UserDisplay';
 
 // TODO(johnrjj) - Fetch remotely
@@ -21,7 +20,7 @@ const featuredUsers: Array<User> = [
     price: '100 USDC',
     src: pfp1,
     uid: '1111',
-    address: '1'
+    address: '1',
   },
   {
     name: 'Dave White',
@@ -29,7 +28,7 @@ const featuredUsers: Array<User> = [
     price: '100 USDC',
     src: pfp2,
     uid: '2222',
-    address: '1'
+    address: '1',
   },
   {
     name: 'jseam',
@@ -37,7 +36,7 @@ const featuredUsers: Array<User> = [
     price: '100 USDC',
     src: pfp3,
     uid: '3333',
-    address: '1'
+    address: '1',
   },
   {
     name: 'Artemilse',
@@ -45,7 +44,7 @@ const featuredUsers: Array<User> = [
     price: '100 USDC',
     src: pfp4,
     uid: '4444',
-    address: '1'
+    address: '1',
   },
   {
     name: 'CC0maxi',
@@ -53,7 +52,7 @@ const featuredUsers: Array<User> = [
     price: '100 USDC',
     src: pfp5,
     uid: '5555',
-    address: '1'
+    address: '1',
   },
 ];
 
@@ -82,7 +81,7 @@ const HomePage = () => {
             </HeroTitle>
           </ContentWrapper>
         </PageContentWrapper>
-        <UserDisplay users={featuredUsers} title='Featured' style={{ marginBottom: 40 }} />
+        <UserDisplay users={featuredUsers} title="Featured" style={{ marginBottom: 40 }} />
       </PageWrapper>
     </>
   );

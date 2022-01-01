@@ -142,7 +142,7 @@ const OnboardingPage = () => {
                     Url.parse(tweetUrl);
                     verifyTwitterUser();
                   } catch (e) {
-                    errorHandle(e, toast.error)
+                    errorHandle(e, toast.error);
                   }
                 }}
               >

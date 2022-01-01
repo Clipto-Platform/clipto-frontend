@@ -39,7 +39,7 @@ const AvatarComponent: React.FC<AvatarProps> = (props) => {
       <div style={{ ...props.style }}>
         <AvatarOrb style={{ background: `url(${props.url})` }} />
       </div>
-    )
+    );
   } else if (props.address) {
     return (
       <AvatarOrb

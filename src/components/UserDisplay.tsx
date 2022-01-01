@@ -4,10 +4,8 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled, { useTheme } from 'styled-components';
 
-
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
-
-import { formatETH } from '../utils/format'
+import { formatETH } from '../utils/format';
 export interface User {
   name: string;
   shortDescription: string;
@@ -81,7 +79,7 @@ const UserDescription = styled.div`
 const UserStartingPrice = styled.div``;
 
 interface UserDisplayProps {
-  title: String;
+  title: string;
   users: Array<User>;
   style?: CSSProperties;
 }
@@ -100,9 +98,7 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
                   <UserCardContainer key={user.uid}>
                     <UserImage src={user.src} style={{ marginBottom: 24 }} />
                     <UserTitle style={{ marginBottom: 4 }}>{user.name}</UserTitle>
-                    <UserDescription style={{ marginBottom: 16 }}>
-                      {user.shortDescription}
-                    </UserDescription>
+                    <UserDescription style={{ marginBottom: 16 }}>{user.shortDescription}</UserDescription>
                     <UserStartingPrice>
                       From <span style={{ fontWeight: 700 }}>{formatETH(parseFloat(user.price))} ETH</span>
                     </UserStartingPrice>
@@ -118,4 +114,3 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
 };
 
 export { UserDisplay };
-

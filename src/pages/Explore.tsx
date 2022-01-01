@@ -9,7 +9,7 @@ import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { User, UserDisplay } from '../components/UserDisplay';
 import { API_URL } from '../config/config';
-import { formatETH } from '../utils/format'
+import { formatETH } from '../utils/format';
 
 const FeaturedContainerWrapper = styled(PageContentWrapper)`
   display: flex;
@@ -84,7 +84,7 @@ const ExplorePage = () => {
           return {
             name: u.userName,
             shortDescription: u.twitterHandle,
-            price: u.price + " ETH",
+            price: u.price + ' ETH',
             src: u.profilePicture,
             uid: u.id,
             address: u.address,
@@ -114,4 +114,3 @@ const ExplorePage = () => {
 };
 
 export { ExplorePage };
-

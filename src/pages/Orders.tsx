@@ -83,7 +83,9 @@ const OrdersPage = () => {
                         View clip
                       </PrimaryButton>
                     )}
-                    {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && <Status style={{ marginTop: 20 }}>PENDING</Status>}
+                    {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
+                      <Status style={{ marginTop: 20 }}>PENDING</Status>
+                    )}
                     {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && (
                       <PrimaryButton
                         size="small"

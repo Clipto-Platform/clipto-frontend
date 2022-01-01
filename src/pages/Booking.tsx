@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-import { Number } from '../utils/validation';
+
 import pfp from '../assets/images/pfps/sample-profile.png';
 import { AvatarComponent, AvatarOrb } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
@@ -19,6 +19,7 @@ import { useExchangeContract } from '../hooks/useContracts';
 import { UserProfile } from '../hooks/useProfile';
 import { Description, Label } from '../styles/typography';
 import { formatETH } from '../utils/format';
+import { Number } from '../utils/validation';
 
 const PageGrid = styled.div`
   display: grid;
@@ -105,7 +106,7 @@ const BookingPage = () => {
         setRequest({
           creator: creatorId,
           amount: formatETH(parseFloat(restContractProfile.data.price)),
-          deadline: restContractProfile.data.deliveryTime
+          deadline: restContractProfile.data.deliveryTime,
         });
       }
     };
@@ -202,24 +203,25 @@ const BookingPage = () => {
                 description={'Increase your bid to get your video earlier'}
                 endText="ETH"
                 inputMode="numeric"
-                placeholder={formatETH(parseFloat(creatorProfile?.price)) + " +"}
+                placeholder={formatETH(parseFloat(creatorProfile?.price)) + ' +'}
                 onChange={(e) => setRequest({ ...request, amount: e })}
                 onBlur={(e) => {
                   try {
-                    console.log(request.amount)
-                    Number.parse(parseFloat(request?.amount))
+                    console.log(request.amount);
+                    Number.parse(parseFloat(request?.amount));
                     if (formatETH(parseFloat(request?.amount)) < formatETH(parseFloat(creatorProfile?.price))) {
-                      throw 'catch me'
+                      throw 'catch me';
                     }
                   } catch {
-                    toast.error(`Amount must be greator than ${creatorProfile?.price}`)
+                    toast.error(`Amount must be greator than ${creatorProfile?.price}`);
                     return;
                   }
-
                 }}
               />
             </div>
-            <PrimaryButton onPress={() => makeBooking()} isDisabled={false}>Book now</PrimaryButton>
+            <PrimaryButton onPress={() => makeBooking()} isDisabled={false}>
+              Book now
+            </PrimaryButton>
           </BookingCard>
         </PageGrid>
       </PageContentWrapper>

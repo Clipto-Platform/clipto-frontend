@@ -1,16 +1,17 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from 'axios'
+
+import { API_URL } from '../config/config';
+import { UserProfile } from '../hooks/useProfile';
 import { CreateRequestDto } from '../pages/Booking';
 import { Label, Text } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
-import { AvatarComponent, AvatarOrb } from './AvatarOrb';
-import { PrimaryButton } from './Button';
-import { API_URL } from '../config/config';
-import { UserProfile } from '../hooks/useProfile';
 import { formatETH } from '../utils/format';
 import { DAY, HOUR } from '../utils/time';
+import { AvatarComponent, AvatarOrb } from './AvatarOrb';
+import { PrimaryButton } from './Button';
 const OrderCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.border};
   padding: 24px;
@@ -82,24 +83,24 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
   const getDeadline = () => {
     const creationDate: Date = new Date(props.request!.created!);
     creationDate.setDate(creationDate.getDate() + (props.request?.deadline || 0));
-    const mmRemaining = creationDate.getTime() - Date.now()
+    const mmRemaining = creationDate.getTime() - Date.now();
     if (mmRemaining < DAY && DAY - mmRemaining > 0) {
       //TODO(jonathanng) - can go to minutes
-      return (((mmRemaining - (mmRemaining % HOUR)) / HOUR)).toString() + " Hours"
+      return ((mmRemaining - (mmRemaining % HOUR)) / HOUR).toString() + ' Hours';
     }
     return creationDate.toLocaleDateString();
   };
 
   useEffect(() => {
-    console.log(props.request)
+    console.log(props.request);
     const getCreator = async () => {
       const restContractProfile = await axios.get(`${API_URL}/user/${props.request.creator}`);
       if (restContractProfile) {
-        setCreator(restContractProfile.data)
+        setCreator(restContractProfile.data);
       }
-    }
-    getCreator()
-  }, [])
+    };
+    getCreator();
+  }, []);
   return (
     <OrderCardContainer>
       <OrderCardTopRowContainer>
