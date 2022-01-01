@@ -4,26 +4,12 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled, { useTheme } from 'styled-components';
 
-// Sample image assets
-import pfp1 from '../assets/images/pfps/1.png';
-import pfp2 from '../assets/images/pfps/2.png';
-import pfp3 from '../assets/images/pfps/3.png';
-import pfp4 from '../assets/images/pfps/4.png';
-import pfp5 from '../assets/images/pfps/5.png';
 // Components
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
+import { User, UserDisplay } from '../components/UserDisplay';
 import { API_URL } from '../config/config';
 import { formatETH } from '../utils/format'
-interface User {
-  name: string;
-  shortDescription: string;
-  price: string;
-  uid: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  src: any;
-  address: any;
-}
 
 const FeaturedContainerWrapper = styled(PageContentWrapper)`
   display: flex;
@@ -89,7 +75,7 @@ const FeaturedUserStartingPrice = styled.div``;
 
 const ExplorePage = () => {
   const theme = useTheme();
-  const [featuredUsers, setFeaturedUsers] = useState<Array<User>>([]);
+  const [users, setUsers] = useState<Array<User>>([]);
   useEffect(() => {
     axios
       .get(`${API_URL}/users`)
@@ -104,7 +90,7 @@ const ExplorePage = () => {
             address: u.address,
           };
         });
-        setFeaturedUsers(users);
+        setUsers(users);
         console.log('Fetched users!');
       })
       .catch((e) => {
@@ -119,25 +105,7 @@ const ExplorePage = () => {
         <HeaderContentGapSpacer />
         <FeaturedContainerWrapper>
           <ContentWrapper>
-            <FeaturedTitle style={{ marginTop: 64, marginBottom: 36 }}>Explore the community</FeaturedTitle>
-            <FeaturedGrid>
-              {featuredUsers.map((user) => {
-                return (
-                  <Link key={user.address} to={`/creator/${user.address}`}>
-                    <FeaturedUserCardContainer key={user.uid}>
-                      <FeaturedUserImage src={user.src} style={{ marginBottom: 24 }} />
-                      <FeaturedUserTitle style={{ marginBottom: 4 }}>{user.name}</FeaturedUserTitle>
-                      <FeaturedUserDescription style={{ marginBottom: 16 }}>
-                        {user.shortDescription}
-                      </FeaturedUserDescription>
-                      <FeaturedUserStartingPrice>
-                        From <span style={{ fontWeight: 700 }}>{formatETH(parseFloat(user.price))} ETH</span>
-                      </FeaturedUserStartingPrice>
-                    </FeaturedUserCardContainer>
-                  </Link>
-                );
-              })}
-            </FeaturedGrid>
+            <UserDisplay title="Explore the community" users={users} />
           </ContentWrapper>
         </FeaturedContainerWrapper>
       </PageWrapper>
