@@ -204,7 +204,8 @@ const BookingPage = () => {
                 onChange={(e) => setRequest({ ...request, amount: e })}
                 onBlur={(e) => {
                   try {
-                    Number.parse(request?.number)
+                    console.log(request.amount)
+                    Number.parse(parseFloat(request?.amount))
                     if (parseFloat(request?.amount) < parseFloat(creatorProfile?.price)) {
                       throw 'catch me'
                     }
