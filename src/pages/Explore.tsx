@@ -14,7 +14,7 @@ import pfp5 from '../assets/images/pfps/5.png';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { API_URL } from '../config/config';
-
+import { formatETH } from '../utils/format'
 interface User {
   name: string;
   shortDescription: string;
@@ -131,7 +131,7 @@ const ExplorePage = () => {
                         {user.shortDescription}
                       </FeaturedUserDescription>
                       <FeaturedUserStartingPrice>
-                        From <span style={{ fontWeight: 700 }}>{user.price}</span>
+                        From <span style={{ fontWeight: 700 }}>{formatETH(parseFloat(user.price))} ETH</span>
                       </FeaturedUserStartingPrice>
                     </FeaturedUserCardContainer>
                   </Link>
@@ -146,3 +146,4 @@ const ExplorePage = () => {
 };
 
 export { ExplorePage };
+

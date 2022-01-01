@@ -18,6 +18,7 @@ import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { UserProfile } from '../hooks/useProfile';
 import { Description, Label } from '../styles/typography';
+import { formatETH } from '../utils/format';
 
 const PageGrid = styled.div`
   display: grid;
@@ -103,7 +104,8 @@ const BookingPage = () => {
         // todo: get amount from server side, not yet implemented
         setRequest({
           creator: creatorId,
-          amount: '1',
+          amount: formatETH(parseFloat(restContractProfile.data.price)),
+          deadline: restContractProfile.data.deliveryTime
         });
       }
     };
@@ -158,7 +160,7 @@ const BookingPage = () => {
             <PurchaseOption style={{ marginBottom: 40 }}>
               <FlexRow style={{ marginBottom: 7 }}>
                 <Label>Personal use</Label>
-                <Label style={{ fontSize: 14 }}>{creatorProfile?.price} ETH +</Label>
+                <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creatorProfile?.price))} ETH +</Label>
               </FlexRow>
               <Description>Personalized video for you or someone else</Description>
             </PurchaseOption>
@@ -200,13 +202,13 @@ const BookingPage = () => {
                 description={'Increase your bid to get your video earlier'}
                 endText="ETH"
                 inputMode="numeric"
-                placeholder={creatorProfile?.price + " +"}
+                placeholder={formatETH(parseFloat(creatorProfile?.price)) + " +"}
                 onChange={(e) => setRequest({ ...request, amount: e })}
                 onBlur={(e) => {
                   try {
                     console.log(request.amount)
                     Number.parse(parseFloat(request?.amount))
-                    if (parseFloat(request?.amount) < parseFloat(creatorProfile?.price)) {
+                    if (formatETH(parseFloat(request?.amount)) < formatETH(parseFloat(creatorProfile?.price))) {
                       throw 'catch me'
                     }
                   } catch {

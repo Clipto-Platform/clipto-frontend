@@ -1,11 +1,16 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
+import axios from 'axios'
 import { CreateRequestDto } from '../pages/Booking';
 import { Label, Text } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
-import { AvatarOrb } from './AvatarOrb';
+import { AvatarComponent, AvatarOrb } from './AvatarOrb';
 import { PrimaryButton } from './Button';
+import { API_URL } from '../config/config';
+import { UserProfile } from '../hooks/useProfile';
+import { formatETH } from '../utils/format';
+import { DAY, HOUR } from '../utils/time';
 const OrderCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.border};
   padding: 24px;
@@ -73,18 +78,37 @@ const BidAmount = styled(Text)`
 `;
 
 const OrderCard: React.FC<OrderCardProps> = (props) => {
+  const [creator, setCreator] = useState<UserProfile>();
   const getDeadline = () => {
     const creationDate: Date = new Date(props.request!.created!);
     creationDate.setDate(creationDate.getDate() + (props.request?.deadline || 0));
+    const mmRemaining = creationDate.getTime() - Date.now()
+    if (mmRemaining < DAY && DAY - mmRemaining > 0) {
+      //TODO(jonathanng) - can go to minutes
+      return (((mmRemaining - (mmRemaining % HOUR)) / HOUR)).toString() + " Hours"
+    }
     return creationDate.toLocaleDateString();
   };
+
+  useEffect(() => {
+    console.log(props.request)
+    const getCreator = async () => {
+      const restContractProfile = await axios.get(`${API_URL}/user/${props.request.creator}`);
+      if (restContractProfile) {
+        setCreator(restContractProfile.data)
+      }
+    }
+    getCreator()
+  }, [])
   return (
     <OrderCardContainer>
       <OrderCardTopRowContainer>
         <Row>
-          <AvatarOrb style={{ marginRight: 16 }} />
+          {creator && <AvatarComponent style={{ marginRight: 16 }} url={creator.profilePicture} />}
+          {!creator && <AvatarComponent /*style={{ marginRight: 16 }}*/ />}
           <Column>
-            <Label style={{ marginBottom: 2 }}>CC0maxi</Label>
+            {/* TODO(jonathanng) - make dynamic */}
+            <Label style={{ marginBottom: 2 }}>{creator?.userName}</Label>
             <Text>{props.request?.creator ? getShortenedAddress(props.request?.creator) : ''}</Text>
           </Column>
         </Row>
@@ -95,7 +119,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
           </Column>
           <Column style={{ textAlign: 'right' }}>
             <SecondaryLabel style={{ marginBottom: 2 }}>Bid</SecondaryLabel>
-            <BidAmount>{props.request?.amount} ETH</BidAmount>
+            <BidAmount>{formatETH(parseFloat(props.request?.amount))} ETH</BidAmount>
           </Column>
         </Row>
       </OrderCardTopRowContainer>

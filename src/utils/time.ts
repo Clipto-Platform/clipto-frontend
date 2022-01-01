@@ -11,15 +11,18 @@ export const incrementDate = (date: any, i: number) => {
  * @returns true if deadline is passed
  */
 export const checkIfDeadlinePassed = (start: string, deadline: number): boolean => {
-  return new Date() < incrementDate(start, deadline)
+  return new Date() > incrementDate(start, deadline)
 }
 
-
+// 24 hours in millisecs
+export const DAY = 1000 * 60 * 60 * 24;
+export const HOUR = 1000 * 60 * 60
+export const MINUTE = 1000 * 60
 export const tests = () => {
   // increments date by 1
   const today = new Date()
   const tomorrow = incrementDate(new Date(today), 1)
-  if (today.getTime() - tomorrow.getTime() !== -1000 * 60 * 60 * 24) {
+  if (tomorrow.getTime() - today.getTime() !== DAY) {
     console.log(today.getTime() - tomorrow.getTime())
     throw 'tomorrow is not 24 hrs from today'
   }

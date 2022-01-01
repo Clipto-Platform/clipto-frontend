@@ -14,6 +14,7 @@ import { TextField } from '../../components/TextField';
 import { API_URL, DEV, HELP_EMAIL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
 import { useProfile, values } from '../../hooks/useProfile';
+import { formatETH } from '../../utils/format';
 
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
@@ -158,7 +159,7 @@ const OnboardProfilePage = () => {
 
               <div style={{ marginBottom: 48 }}>
                 <TextField
-                  onChange={(e) => userProfile.setPrice(parseFloat(e))}
+                  onChange={(e) => userProfile.setPrice(formatETH(parseFloat(user.price)))}
                   label="Minimum amount to charge for bookings"
                   description="Fans will be able to pay this in ETH"
                   placeholder="0.5"
