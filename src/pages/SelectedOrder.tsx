@@ -1,21 +1,20 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { useLocation, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
 import pfp from '../assets/images/pfps/sample-profile.png';
-import { AvatarOrb } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
 import { Card } from '../components/Card';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { ImagesSlider } from '../components/ImagesSlider';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { OrderCard } from '../components/OrderCard';
 import { API_URL } from '../config/config';
-import { useExchangeContract, useNFTContract } from '../hooks/useContracts';
+import { useExchangeContract } from '../hooks/useContracts';
 import { useProfile } from '../hooks/useProfile';
 import { colors } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
@@ -54,6 +53,12 @@ const SelectedOrderPage = (props: any) => {
   const { creator, requestId } = useParams();
   const [request, setRequest] = useState<CreateRequestDto>();
   const [loaded, setLoaded] = useState<boolean>(false);
+
+  const onDrop = useCallback((acceptedFiles) => {
+    // Do something with the files
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
   useEffect(() => {
     // const creator = location?.state!.request.creator;
     // const requestId = location.state.request.requestId;
@@ -88,36 +93,29 @@ const SelectedOrderPage = (props: any) => {
               <HeaderSpacer />
               <HeaderContentGapSpacer />
               <PageContentWrapper style={{ display: 'block', maxWidth: '600px', margin: 'auto' }}>
-                <BookingCard style={{ textAlign: 'center', display: 'flex', marginBottom: 24 }}>
-                  {!upload && (
-                    <div style={{ margin: 'auto' }}>
-                      <div style={{}}>
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  <BookingCard style={{ textAlign: 'center', display: 'flex', marginBottom: 24 }}>
+                    {!upload && (
+                      <div style={{ margin: 'auto' }}>
                         {/** TODO(jonathanng) - Text size is off */}
-                        <Label>Upload clip</Label>
+                        <Label style={{ marginBottom: '8px' }}>Upload clip</Label>
+                        {isDragActive ? (
+                          <p>Drop the files here ...</p>
+                        ) : (
+                          <Description>Drag and drop an mp4 or click to select a file to upload</Description>
+                        )}
                       </div>
-                      <div>
-                        <Description>Drag and drop an mp4 or select a file to upload</Description>
-                      </div>
-                      {/** TODO(jonathanng) - colors off */}
-                      <PrimaryButton
-                        variant="secondary"
-                        size="small"
-                        style={{ color: colors.white, width: 120, margin: 'auto' }}
-                        onPress={() => {
-                          setUpload(pfp);
-                        }}
-                      >
-                        Select file
-                      </PrimaryButton>
-                    </div>
-                  )}
+                    )}
 
-                  {upload && (
-                    <ImageCardContainer style={{ margin: 'auto' }}>
-                      <ImageCardImg src={pfp} />
-                    </ImageCardContainer>
-                  )}
-                </BookingCard>
+                    {upload && (
+                      <ImageCardContainer style={{ margin: 'auto' }}>
+                        <ImageCardImg src={pfp} />
+                      </ImageCardContainer>
+                    )}
+                  </BookingCard>
+                </div>
+
                 {upload && !done && (
                   <div style={{ display: 'flex', marginBottom: 20 }}>
                     <PrimaryButton
