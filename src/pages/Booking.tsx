@@ -80,7 +80,7 @@ export interface CreateRequestDto {
   description: string;
   deadline: number;
   txHash: string;
-  created?: string;
+  created: string;
   id?: number;
   delivered: boolean;
   index?: number;

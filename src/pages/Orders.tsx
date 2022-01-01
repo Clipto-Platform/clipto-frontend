@@ -12,6 +12,7 @@ import { OrderCard } from '../components/OrderCard';
 import { Item, Tabs } from '../components/Tabs';
 import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
+import { checkIfDeadlinePassed, incrementDate, tests } from '../utils/time';
 import { CreateRequestDto } from './Booking';
 
 export const Status = styled.div`
@@ -82,8 +83,8 @@ const OrdersPage = () => {
                         View clip
                       </PrimaryButton>
                     )}
-                    {!i.delivered && i.deadline >= 0 && <Status style={{ marginTop: 20 }}>PENDING</Status>}
-                    {!i.delivered && i.deadline < 0 && (
+                    {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && <Status style={{ marginTop: 20 }}>PENDING</Status>}
+                    {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && (
                       <PrimaryButton
                         size="small"
                         width="small"
@@ -115,7 +116,7 @@ const OrdersPage = () => {
               <TabContent>
                 {requestsByUser.map((i, n, f) => (
                   <OrderCard key={i!.index!} request={i}>
-                    {!i.delivered && i.deadline >= 0 && (
+                    {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
                       <PrimaryButton
                         link={{
                           to: `/orders/${i.creator}/${i.requestId}`,
@@ -132,7 +133,7 @@ const OrdersPage = () => {
                         {console.log(i.position)} */}
                       </PrimaryButton>
                     )}
-                    {!i.delivered && i.deadline < 0 && (
+                    {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && (
                       <Status style={{ marginTop: 20, minWidth: 160 }}>PAST DEADLINE</Status>
                     )}
                     {i.delivered && (
