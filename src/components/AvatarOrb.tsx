@@ -23,6 +23,7 @@ const XAvatarOrb = styled(AvatarOrb)`
 export interface AvatarProps {
   address?: string;
   url?: string;
+  style?: any;
 }
 
 const AvatarComponent: React.FC<AvatarProps> = (props) => {
@@ -34,7 +35,11 @@ const AvatarComponent: React.FC<AvatarProps> = (props) => {
     return `rgb(${r}, ${g}, ${b})`;
   };
   if (props.url) {
-    return <AvatarOrb style={{ background: `url(${props.url})` }} />;
+    return (
+      <div style={{ ...props.style }}>
+        <AvatarOrb style={{ background: `url(${props.url})` }} />
+      </div>
+    );
   } else if (props.address) {
     return (
       <AvatarOrb

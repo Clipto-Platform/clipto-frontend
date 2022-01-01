@@ -1,10 +1,6 @@
-import { AriaTextFieldOptions, useTextField } from '@react-aria/textfield';
-import { useRef } from 'react';
-import styled, { CSSProperties } from 'styled-components';
+import { CSSProperties } from 'styled-components';
 
 import { Description, Label } from '../styles/typography';
-import { colors } from './../styles/theme';
-import { Input, Textarea } from './Input';
 
 export interface ConfirmationTextProps {
   label: string;

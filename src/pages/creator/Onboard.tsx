@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled, { useTheme } from 'styled-components';
-import { z } from 'zod';
 
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
@@ -142,7 +141,7 @@ const OnboardingPage = () => {
                     Url.parse(tweetUrl);
                     verifyTwitterUser();
                   } catch (e) {
-                    errorHandle(e, toast.error)
+                    errorHandle(e, toast.error);
                   }
                 }}
               >
