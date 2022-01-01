@@ -1,4 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
+import * as UpChunk from '@mux/upchunk';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
@@ -16,8 +17,8 @@ import { OrderCard } from '../components/OrderCard';
 import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useProfile } from '../hooks/useProfile';
-import { colors } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
+import { extractResumeableUrl } from '../utils/http';
 import { CreateRequestDto } from './Booking';
 
 const BookingCard = styled.div`
@@ -55,9 +56,31 @@ const SelectedOrderPage = (props: any) => {
   const [request, setRequest] = useState<CreateRequestDto>();
   const [loaded, setLoaded] = useState<boolean>(false);
 
-  const onDrop = useCallback((acceptedFiles) => {
-    // Do something with the files
+  const onDrop = useCallback(async <T extends File>(acceptedFiles: T[]) => {
+    const uploadReq = await axios.post(`${API_URL}/upload`, { extension: acceptedFiles[0].name });
+
+    const requestUuid = uploadReq.data.job_uuid;
+    const resumableUrl = await extractResumeableUrl(uploadReq.data.upload_url);
+
+    const upload = UpChunk.createUpload({
+      endpoint: resumableUrl!,
+      file: acceptedFiles[0],
+      chunkSize: 5120, // Uploads the file in ~5mb chunks
+    });
+
+    upload.on('error', (err) => {
+      console.error('💥 🙀', err.detail);
+    });
+
+    upload.on('progress', (progress) => {
+      console.log(`So far we've uploaded ${progress.detail}% of this file.`);
+    });
+
+    upload.on('success', () => {
+      console.log("Wrap it up, we're done here. 👋");
+    });
   }, []);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   useEffect(() => {
