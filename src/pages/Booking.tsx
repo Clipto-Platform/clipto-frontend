@@ -1,14 +1,13 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import { ethers, Transaction } from 'ethers';
-import { useEffect, useMemo, useState } from 'react';
+import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
-import pfp from '../assets/images/pfps/sample-profile.png';
-import { AvatarComponent, AvatarOrb } from '../components/AvatarOrb';
+import { AvatarComponent } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ImagesSlider } from '../components/ImagesSlider';

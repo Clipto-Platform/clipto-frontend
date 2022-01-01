@@ -1,6 +1,5 @@
 import produce, { Draft } from 'immer';
-import { GetState, SetState, StoreApi } from 'zustand';
-import { State, StateCreator } from 'zustand';
+import { GetState, SetState, State, StateCreator, StoreApi } from 'zustand';
 
 const immer =
   <
