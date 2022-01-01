@@ -74,7 +74,7 @@ const OnboardProfilePage = () => {
       toast.error('Please fix fields');
       return;
     }
-    profile.price = parseFloat(profile.price)
+    profile.price = parseFloat(profile.price);
     const verificationResult = await axios.post(`${API_URL}/user/create`, { ...profile }).catch((e) => {
       console.log(e);
     });
