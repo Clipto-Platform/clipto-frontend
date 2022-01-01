@@ -1,23 +1,11 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { ChangeEvent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import { PrimaryButton } from '../components/Button';
 import { ConfirmationText } from '../components/ConfirmationText';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import TwitterIcon from '../components/icons/TwitterIcon';
-import {
-  Container,
-  ContentWrapper,
-  FieldWrapper,
-  OutlinedContainer,
-  PageContentWrapper,
-  PageWrapper,
-} from '../components/layout/Common';
-import { TextField } from '../components/TextField';
+import { Container, FieldWrapper } from '../components/layout/Common';
 import { useProfile } from '../hooks/useProfile';
 import { Text } from '../styles/typography';
 // TODO(johnrjj) - Consolidate final typography into stylesheet

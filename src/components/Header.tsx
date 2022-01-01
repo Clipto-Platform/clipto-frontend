@@ -18,7 +18,7 @@ import { Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { immer } from '../utils/zustand';
 import { injected, walletconnect } from '../web3/connectors';
-import { AvatarComponent, AvatarOrb } from './AvatarOrb';
+import { AvatarComponent } from './AvatarOrb';
 import { PrimaryButton } from './Button';
 import { ModalDialog } from './Dialog';
 import { Logo } from './Logo';
@@ -117,7 +117,7 @@ const useHeaderStore = create<HeaderStore>(
 );
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface HeaderProps { }
+export interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
@@ -202,7 +202,7 @@ const Header: React.FC<HeaderProps> = () => {
           userProfile = await axios.get(`${API_URL}/user/${account}`);
           setLoggedInProfile(userProfile.data);
         } catch (e) {
-          console.log('Failed to find creator account for userProfile')
+          console.log('Failed to find creator account for userProfile');
         }
       }
     };
@@ -218,7 +218,6 @@ const Header: React.FC<HeaderProps> = () => {
               <Logo />
             </Link>
             {DEV && <Label>In DEV environment</Label>}
-
           </LeftWrapper>
           {hasTriedEagerConnect && (
             <>

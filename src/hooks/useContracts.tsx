@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 
 import { DEFAULT_CHAIN_ID, EXCHANGE_ADDRESS, RPC_URLS } from '../config/config';
-import { CliptoExchange__factory, CliptoToken__factory, ERC721__factory } from '../contracts';
+import { CliptoExchange__factory, CliptoToken__factory } from '../contracts';
 
 export const getSigner = (library: Web3Provider, account: string): JsonRpcSigner => {
   return library.getSigner(account).connectUnchecked();

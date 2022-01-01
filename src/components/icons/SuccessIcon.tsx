@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { colors } from '../../styles/theme';
+
 function SuccessIcon() {
   const Svg = styled.svg`
     width: 30px;

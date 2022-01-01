@@ -1,15 +1,9 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import styled, { useTheme } from 'styled-components';
 
 // Sample image assets
-import pfp1 from '../assets/images/pfps/1.png';
-import pfp2 from '../assets/images/pfps/2.png';
-import pfp3 from '../assets/images/pfps/3.png';
-import pfp4 from '../assets/images/pfps/4.png';
-import pfp5 from '../assets/images/pfps/5.png';
 // Components
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';

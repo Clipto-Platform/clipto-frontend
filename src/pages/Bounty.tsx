@@ -1,21 +1,11 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { ChangeEvent, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { PrimaryButton } from '../components/Button';
-import { ConfirmationText } from '../components/ConfirmationText';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import TwitterIcon from '../components/icons/TwitterIcon';
-import {
-  Container,
-  ContentWrapper,
-  OutlinedContainer,
-  PageContentWrapper,
-  PageWrapper,
-} from '../components/layout/Common';
+import { Container, ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
 import { useProfile } from '../hooks/useProfile';
 import { Text } from '../styles/typography';
