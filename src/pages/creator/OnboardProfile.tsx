@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-
+import { UserProfile } from '../../hooks/useProfile';
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
@@ -16,6 +16,7 @@ import { useExchangeContract } from '../../hooks/useContracts';
 import { useProfile, values } from '../../hooks/useProfile';
 import { formatETH } from '../../utils/format';
 import { DeliveryTime, errorHandle, Number, Url } from '../../utils/validation';
+import { ZodError } from 'zod';
 
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
@@ -56,11 +57,10 @@ const OnboardProfilePage = () => {
   const navigate = useNavigate();
   const [formValid, setFormValid] = useState<boolean>(false);
   const createUserProfile = async () => {
-    console.log(userProfile);
     const profile = values(userProfile);
 
     try {
-      Number.parse(parseFloat(profile!.price));
+      Number.parse(profile!.price);
       DeliveryTime.parse(profile.deliveryTime);
       for (let i = 0; i < profile.demos?.length; i++) {
         const demo = profile.demos[i];
@@ -74,7 +74,7 @@ const OnboardProfilePage = () => {
       toast.error('Please fix fields');
       return;
     }
-    profile.price = parseFloat(profile.price)
+
     const verificationResult = await axios.post(`${API_URL}/user/create`, { ...profile }).catch((e) => {
       console.log(e);
     });
@@ -161,7 +161,7 @@ const OnboardProfilePage = () => {
 
                 <div style={{ marginBottom: 48 }}>
                   <TextField
-                    onChange={(e) => userProfile.setPrice(formatETH(parseFloat(e)))}
+                    onChange={(e) => userProfile.setPrice(parseFloat(formatETH(parseFloat(e))))}
                     label="Minimum amount to charge for bookings"
                     description="Fans will be able to pay this in ETH"
                     placeholder="0.5"
