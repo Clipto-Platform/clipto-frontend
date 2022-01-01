@@ -12,6 +12,8 @@ import { formatETH } from '../utils/format';
 import { DAY, HOUR } from '../utils/time';
 import { AvatarComponent, AvatarOrb } from './AvatarOrb';
 import { PrimaryButton } from './Button';
+import { AvatarOrb } from './AvatarOrb';
+
 const OrderCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.border};
   padding: 24px;

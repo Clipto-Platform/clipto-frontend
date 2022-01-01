@@ -13,9 +13,9 @@ import {
   Signer,
   utils,
 } from 'ethers';
-import { FunctionFragment, Result, EventFragment } from '@ethersproject/abi';
+import { EventFragment, FunctionFragment, Result } from '@ethersproject/abi';
 import { Listener, Provider } from '@ethersproject/providers';
-import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
+import { OnEvent, TypedEvent, TypedEventFilter, TypedListener } from './common';
 
 export interface CliptoTokenInterface extends utils.Interface {
   functions: {

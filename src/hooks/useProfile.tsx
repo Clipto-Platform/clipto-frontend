@@ -1,7 +1,5 @@
-import { toast } from 'react-toastify';
 import create from 'zustand';
 
-import { API_URL } from '../config/config';
 import { immer } from '../utils/zustand';
 
 export type UserProfile = {

@@ -1,15 +1,10 @@
-import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import pfp from '../assets/images/pfps/sample-profile.png';
 import { XAvatarOrb } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
 import { ConfirmationText } from '../components/ConfirmationText';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { ImagesSlider } from '../components/ImagesSlider';
 import { FieldWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
-import { TextField } from '../components/TextField';
 import { colors } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
 
