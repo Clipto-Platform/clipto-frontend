@@ -16,6 +16,17 @@ export type CreateUserDto = {
   address: string | undefined;
 }
 
+export interface CreateUserDtoFull {
+  bio: string;
+  userName: string;
+  profilePicture: string;
+  deliveryTime: number;
+  demos: string[];
+  price: number;
+  tweetUrl: string;
+  address: string;
+}
+
 export type UserProfileSet = {
 
   setBio: (bio: string) => void;
@@ -93,6 +104,5 @@ export const values = (userProfile: UserProfile): CreateUserDto => {
   const keys = Object.keys(userProfile)
     .filter((i) => !i.startsWith('set'))
     .map((i) => [i, userProfile[i as keyof UserProfile]]);
-  console.log(keys)
   return Object.fromEntries(keys);
 };

@@ -29,9 +29,9 @@ function TextField(props: AriaTextFieldOptions<'input' | 'textarea'> & TextField
       </div>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         {props.inputElementType === 'textarea' ? (
-          <Textarea {...(inputProps as any)} style={inputStyles} />
+          <Textarea {...(inputProps as any)} style={props.errorMessage ? { ...inputStyles, borderColor: 'red' } : { ...inputStyles }} />
         ) : (
-          <Input {...(inputProps as any)} ref={ref} style={inputStyles} />
+          <Input {...(inputProps as any)} min="0" step="1" ref={ref} style={props.errorMessage ? { ...inputStyles, borderColor: 'red' } : { ...inputStyles }} />
         )}
         {props.endText && (
           <div style={{ position: 'relative' }}>
@@ -40,7 +40,7 @@ function TextField(props: AriaTextFieldOptions<'input' | 'textarea'> & TextField
         )}
       </div>
       {props.errorMessage && (
-        <div {...errorMessageProps} style={{ color: 'red', fontSize: 12 }}>
+        <div {...errorMessageProps} style={{ color: 'red', fontSize: 12, paddingTop: 5 }}>
           {props.errorMessage}
         </div>
       )}
