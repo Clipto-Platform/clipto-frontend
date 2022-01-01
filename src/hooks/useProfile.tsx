@@ -4,7 +4,6 @@ import create from 'zustand';
 import { API_URL } from '../config/config';
 import { immer } from '../utils/zustand';
 
-
 export type CreateUserDto = {
   bio: string | undefined;
   userName: string | undefined;
@@ -14,7 +13,7 @@ export type CreateUserDto = {
   price: number | undefined;
   tweetUrl: string | undefined;
   address: string | undefined;
-}
+};
 
 export interface CreateUserDtoFull {
   bio: string;
@@ -28,7 +27,6 @@ export interface CreateUserDtoFull {
 }
 
 export type UserProfileSet = {
-
   setBio: (bio: string) => void;
   setUsername: (username: string) => void;
   setProfilePicture: (profilePicture: string) => void;
@@ -38,7 +36,6 @@ export type UserProfileSet = {
   setTweetUrl: (tweetUrl: string) => void;
   setAddress: (address: string) => void;
 };
-
 
 export type UserProfile = CreateUserDto & UserProfileSet;
 
@@ -97,8 +94,8 @@ export const useProfile = create<UserProfile>(
 
 /**
  * Gets only keys that have values (not functions)
- * @param userProfile 
- * @returns 
+ * @param userProfile
+ * @returns
  */
 export const values = (userProfile: UserProfile): CreateUserDto => {
   const keys = Object.keys(userProfile)

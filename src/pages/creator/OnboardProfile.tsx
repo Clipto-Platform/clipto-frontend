@@ -2,22 +2,23 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { ethers } from 'ethers';
+import { Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-import { CreateUserDto, CreateUserDtoFull, UserProfile } from '../../hooks/useProfile';
+import { ZodError } from 'zod';
+
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
 import { API_URL, DEV, HELP_EMAIL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
+import { CreateUserDto, CreateUserDtoFull, UserProfile } from '../../hooks/useProfile';
 import { useProfile, values } from '../../hooks/useProfile';
 import { formatETH } from '../../utils/format';
 import { Address, DeliveryTime, errorHandle, Number, Url } from '../../utils/validation';
-import { ZodError } from 'zod';
-import { Formik } from 'formik'
 import { CreateRequestDto } from '../Booking';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
@@ -60,7 +61,7 @@ const OnboardProfilePage = () => {
   const createUserProfile = async (vals: any) => {
     const profile = values(userProfile);
 
-    console.log(profile)
+    console.log(profile);
     // const exampleOfValidReq = {
     //   "bio": "asdf",
     //   "userName": "crypto test",
@@ -91,17 +92,20 @@ const OnboardProfilePage = () => {
 
   useEffect(() => {
     if (!userProfile.tweetUrl) {
-      navigate('/onboarding')
+      navigate('/onboarding');
     }
     //address should already be set from onboarding but if not then do this...
     if (!userProfile.address) {
-      userProfile.setAddress(account!)
+      userProfile.setAddress(account!);
     }
-    axios.get(`${API_URL}/user/${account}`).then((res) => {
-      setCreator(res.data.id); // checking if user is already a creator
-    }).catch(() => {
-      console.log('Creator not found')
-    })
+    axios
+      .get(`${API_URL}/user/${account}`)
+      .then((res) => {
+        setCreator(res.data.id); // checking if user is already a creator
+      })
+      .catch(() => {
+        console.log('Creator not found');
+      });
   }, []);
   return (
     <>
@@ -131,97 +135,101 @@ const OnboardProfilePage = () => {
                     demo2: userProfile.demos[1] || '',
                     demo3: userProfile.demos[2] || '',
                   }} //TODO(jonathanng) - change to fetched values
-                  onSubmit={values => {
-                    console.log(values)
-                    userProfile.setAddress(values.address)
-                    userProfile.setBio(values.bio)
-                    userProfile.setDeliveryTime(parseInt(values.deliveryTime))
+                  onSubmit={(values) => {
+                    console.log(values);
+                    userProfile.setAddress(values.address);
+                    userProfile.setBio(values.bio);
+                    userProfile.setDeliveryTime(parseInt(values.deliveryTime));
                     const demos = [];
-                    values.demo1 && demos.push(values.demo1)
-                    values.demo2 && demos.push(values.demo2)
-                    values.demo3 && demos.push(values.demo3)
-                    userProfile.setDemos(demos)
-                    userProfile.setPrice(parseFloat(values.price))
-                    userProfile.setProfilePicture(values.profilePicture)
-                    userProfile.setTweetUrl(values.tweetUrl)
-                    userProfile.setUsername(values.userName)
+                    values.demo1 && demos.push(values.demo1);
+                    values.demo2 && demos.push(values.demo2);
+                    values.demo3 && demos.push(values.demo3);
+                    userProfile.setDemos(demos);
+                    userProfile.setPrice(parseFloat(values.price));
+                    userProfile.setProfilePicture(values.profilePicture);
+                    userProfile.setTweetUrl(values.tweetUrl);
+                    userProfile.setUsername(values.userName);
 
                     //for some reason, the above set values do not work immediately, if you submit the form twice this will work else null
-                    const vals = { ...values, demos, deliveryTime: parseInt(values.deliveryTime), price: parseFloat(values.price) }
-                    console.log(vals)
-                    createUserProfile(vals)
-                    setTimeout(() => {
-                    }, 1000)
-                    console.log(userProfile)
+                    const vals = {
+                      ...values,
+                      demos,
+                      deliveryTime: parseInt(values.deliveryTime),
+                      price: parseFloat(values.price),
+                    };
+                    console.log(vals);
+                    createUserProfile(vals);
+                    setTimeout(() => {}, 1000);
+                    console.log(userProfile);
                   }}
                   validate={(values) => {
-                    console.log()
+                    console.log();
                     const errors: any = {};
                     const { bio, userName, profilePicture, deliveryTime, price, tweetUrl, address } = values;
-                    const demo1 = values['demo1']
-                    const demo2 = values['demo2']
-                    const demo3 = values['demo3']
+                    const demo1 = values['demo1'];
+                    const demo2 = values['demo2'];
+                    const demo3 = values['demo3'];
 
                     if (bio == '') {
-                      errors.bio = 'Please enter a bio.'
+                      errors.bio = 'Please enter a bio.';
                     }
                     if (userName == '') {
-                      errors.userName = 'Username cannot be empty.'
+                      errors.userName = 'Username cannot be empty.';
                     }
                     if (profilePicture == '') {
-                      errors.profilePicture = 'Profile picture can not be empty.'
+                      errors.profilePicture = 'Profile picture can not be empty.';
                     } else {
                       try {
-                        Url.parse(profilePicture)
+                        Url.parse(profilePicture);
                       } catch (error) {
-                        errors.profilePicture = 'Profile picture must be an url.'
+                        errors.profilePicture = 'Profile picture must be an url.';
                       }
                     }
                     const dTime: number = parseInt(deliveryTime);
                     try {
-                      Number.parse(dTime)
+                      Number.parse(dTime);
                       if (dTime.toString() != deliveryTime) {
-                        errors.deliveryTime = 'Delivery time cannot be a decimal or have leading zeros.'
+                        errors.deliveryTime = 'Delivery time cannot be a decimal or have leading zeros.';
                       }
                       if (dTime <= 0) {
-                        errors.deliveryTime = 'Delivery time must be greater than 0 days.'
+                        errors.deliveryTime = 'Delivery time must be greater than 0 days.';
                       }
                     } catch (error) {
-                      errors.deliveryTime = 'Delivery time is not a number.'
+                      errors.deliveryTime = 'Delivery time is not a number.';
                     }
                     try {
-                      demo1 != '' && Url.parse(demo1)
-                      demo2 != '' && Url.parse(demo2)
-                      demo3 != '' && Url.parse(demo3)
+                      demo1 != '' && Url.parse(demo1);
+                      demo2 != '' && Url.parse(demo2);
+                      demo3 != '' && Url.parse(demo3);
                     } catch {
-                      errors.demo1 = 'One of your links is invalid.'
+                      errors.demo1 = 'One of your links is invalid.';
                     }
                     const p: number = parseFloat(price);
                     try {
-                      Number.parse(p)
+                      Number.parse(p);
                       if (p <= 0) {
-                        errors.price = 'Price must be greater than 0.'
+                        errors.price = 'Price must be greater than 0.';
                       }
                     } catch (error) {
-                      errors.price = 'Price is not a number.'
+                      errors.price = 'Price is not a number.';
                     }
 
                     if (tweetUrl == '') {
-                      errors.tweetUrl = 'Tweet url can not be empty.'
+                      errors.tweetUrl = 'Tweet url can not be empty.';
                     } else {
                       try {
-                        Url.parse(tweetUrl)
+                        Url.parse(tweetUrl);
                       } catch (error) {
-                        errors.tweetUrl = 'Tweet url must be an url.'
+                        errors.tweetUrl = 'Tweet url must be an url.';
                       }
                     }
 
                     try {
-                      Address.parse(address)
+                      Address.parse(address);
                     } catch (error) {
-                      errors.address = 'Please enter a valid address.'
+                      errors.address = 'Please enter a valid address.';
                     }
-                    return errors
+                    return errors;
                   }}
                   validateOnBlur={false}
                   validateOnChange={false}
@@ -267,7 +275,7 @@ const OnboardProfilePage = () => {
                           onChange={handleChange('deliveryTime')}
                           label="Minimum time to deliver"
                           type="number"
-                          placeholder='3'
+                          placeholder="3"
                           endText="Days"
                           onBlur={handleBlur}
                           errorMessage={errors.deliveryTime}
@@ -316,13 +324,16 @@ const OnboardProfilePage = () => {
                         />
                       </div>
 
-                      <PrimaryButton /*isDisabled={Object.keys(errors).length != 0}*/ style={{ marginBottom: '16px' }} onPress={() => {
-                        validateForm()
-                        if (Object.keys(errors).length != 0) {
-                          toast.error('Please fix the errors.')
-                        }
-                        return handleSubmit()
-                      }}>
+                      <PrimaryButton
+                        /*isDisabled={Object.keys(errors).length != 0}*/ style={{ marginBottom: '16px' }}
+                        onPress={() => {
+                          validateForm();
+                          if (Object.keys(errors).length != 0) {
+                            toast.error('Please fix the errors.');
+                          }
+                          return handleSubmit();
+                        }}
+                      >
                         Set up profile
                       </PrimaryButton>
                     </>
