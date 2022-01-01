@@ -60,7 +60,7 @@ const OnboardProfilePage = () => {
     const profile = values(userProfile);
 
     try {
-      Number.parse(profile!.price);
+      Number.parse(parseFloat(profile!.price));
       DeliveryTime.parse(profile.deliveryTime);
       for (let i = 0; i < profile.demos?.length; i++) {
         const demo = profile.demos[i];
@@ -74,7 +74,7 @@ const OnboardProfilePage = () => {
       toast.error('Please fix fields');
       return;
     }
-    console.log(profile);
+    profile.price = parseFloat(profile.price)
     const verificationResult = await axios.post(`${API_URL}/user/create`, { ...profile }).catch((e) => {
       console.log(e);
     });
@@ -161,7 +161,7 @@ const OnboardProfilePage = () => {
 
                 <div style={{ marginBottom: 48 }}>
                   <TextField
-                    onChange={(e) => userProfile.setPrice(formatETH(parseFloat(user.price)))}
+                    onChange={(e) => userProfile.setPrice(formatETH(parseFloat(e)))}
                     label="Minimum amount to charge for bookings"
                     description="Fans will be able to pay this in ETH"
                     placeholder="0.5"
