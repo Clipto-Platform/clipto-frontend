@@ -18,6 +18,7 @@ import { formatETH } from '../../utils/format';
 import { Address, DeliveryTime, errorHandle, Number, Url } from '../../utils/validation';
 import { ZodError } from 'zod';
 import { Formik } from 'formik'
+import { CreateRequestDto } from '../Booking';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
   font-family: 'Scto Grotesk A';
@@ -56,11 +57,21 @@ const OnboardProfilePage = () => {
   const [creator, setCreator] = useState();
   const navigate = useNavigate();
 
-  const createUserProfile = async () => {
+  const createUserProfile = async (vals: any) => {
     const profile = values(userProfile);
 
     console.log(profile)
-    const verificationResult = await axios.post(`${API_URL}/user/create`, { ...profile }).catch((e) => {
+    // const exampleOfValidReq = {
+    //   "bio": "asdf",
+    //   "userName": "crypto test",
+    //   "profilePicture": "https://pbs.twimg.com/profile_images/1474767708512215050/mgDnq1_J_normal.png",
+    //   "deliveryTime": 3,
+    //   "price": 1,
+    //   "tweetUrl": "https://twitter.com/cryptot56280295/status/1475688719227232271",
+    //   "address": "0x4e78d8b8F17443dF9b92f07fd322d1aB1DA91365",
+    //   "demos": []
+    // }
+    const verificationResult = await axios.post(`${API_URL}/user/create`, { ...vals }).catch((e) => {
       console.log(e);
     });
     if (verificationResult) {
@@ -121,6 +132,7 @@ const OnboardProfilePage = () => {
                     demo3: userProfile.demos[2] || '',
                   }} //TODO(jonathanng) - change to fetched values
                   onSubmit={values => {
+                    console.log(values)
                     userProfile.setAddress(values.address)
                     userProfile.setBio(values.bio)
                     userProfile.setDeliveryTime(parseInt(values.deliveryTime))
@@ -133,9 +145,17 @@ const OnboardProfilePage = () => {
                     userProfile.setProfilePicture(values.profilePicture)
                     userProfile.setTweetUrl(values.tweetUrl)
                     userProfile.setUsername(values.userName)
-                    createUserProfile()
+
+                    //for some reason, the above set values do not work immediately, if you submit the form twice this will work else null
+                    const vals = { ...values, demos, deliveryTime: parseInt(values.deliveryTime), price: parseFloat(values.price) }
+                    console.log(vals)
+                    createUserProfile(vals)
+                    setTimeout(() => {
+                    }, 1000)
+                    console.log(userProfile)
                   }}
-                  validate={values => {
+                  validate={(values) => {
+                    console.log()
                     const errors: any = {};
                     const { bio, userName, profilePicture, deliveryTime, price, tweetUrl, address } = values;
                     const demo1 = values['demo1']
@@ -203,10 +223,10 @@ const OnboardProfilePage = () => {
                     }
                     return errors
                   }}
-                  validateOnBlur={true}
+                // validateOnBlur={true}
                 // validateOnChange={true}
                 >
-                  {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+                  {({ handleChange, handleBlur, handleSubmit, values, errors, touched, validateForm }) => (
                     <>
                       <div style={{ marginBottom: 48 }}>
                         <TextField
@@ -297,6 +317,7 @@ const OnboardProfilePage = () => {
                       </div>
 
                       <PrimaryButton /*isDisabled={Object.keys(errors).length != 0}*/ style={{ marginBottom: '16px' }} onPress={() => {
+                        validateForm()
                         if (Object.keys(errors).length != 0) {
                           toast.error('Please fix the errors.')
                         }
