@@ -17,6 +17,7 @@ import { API_URL, DEV, HELP_EMAIL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
 import { CreateUserDto, CreateUserDtoFull, UserProfile } from '../../hooks/useProfile';
 import { useProfile, values } from '../../hooks/useProfile';
+import { Description } from '../../styles/typography';
 import { formatETH } from '../../utils/format';
 import { Address, DeliveryTime, errorHandle, Number, Url } from '../../utils/validation';
 import { CreateRequestDto } from '../Booking';
@@ -294,6 +295,8 @@ const OnboardProfilePage = () => {
                           onBlur={handleBlur}
                           errorMessage={errors.price}
                         />
+                        {/* TODO(jonathanng) - make dynamic */}
+                        <Description style={{ fontSize: 10 }}>* Currently a 10% fee is in place to support our developers</Description>
                       </div>
 
                       <div style={{ marginBottom: 12 }}>

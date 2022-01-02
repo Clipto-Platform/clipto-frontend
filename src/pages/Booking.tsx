@@ -283,6 +283,8 @@ const BookingPage = () => {
                         onBlur={(e) => { }}
                         errorMessage={errors.amount}
                       />
+                      {/* TODO(jonathanng) - make dynamic */}
+                      <Description style={{ fontSize: 10 }}>* Currently a 10% fee is in place to support our developers</Description>
                     </div>
                     <PrimaryButton
                       onPress={() => {
