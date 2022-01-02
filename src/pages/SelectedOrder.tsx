@@ -5,8 +5,9 @@ import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useLocation, useParams } from 'react-router-dom';
+import BounceLoader from 'react-spinners/BounceLoader';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import pfp from '../assets/images/pfps/sample-profile.png';
 import { PrimaryButton } from '../components/Button';
@@ -45,11 +46,17 @@ const ImageCardImg = styled.img`
   user-select: none;
 `;
 
+const UploadStatusContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const SelectedOrderPage = (props: any) => {
+  const theme = useTheme();
+
   const [upload, setUpload] = useState('');
+  const [uploadStatus, setUploadStatus] = useState('');
   const [done, setDone] = useState(false);
-  const location = useLocation();
-  const userProfile = useProfile();
   const { account } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
   const { creator, requestId } = useParams();
@@ -57,11 +64,11 @@ const SelectedOrderPage = (props: any) => {
   const [loaded, setLoaded] = useState<boolean>(false);
 
   const onDrop = useCallback(async <T extends File>(acceptedFiles: T[]) => {
-    const uploadReq = await axios.post(`${API_URL}/upload`, { extension: acceptedFiles[0].name });
+    const uploadReq = await axios.post(`${API_URL}/upload`, { extension: acceptedFiles[0].name.split('.').pop() });
 
     const requestUuid = uploadReq.data.job_uuid;
     const resumableUrl = await extractResumeableUrl(uploadReq.data.upload_url);
-
+    setUploadStatus('Uploading...');
     const upload = UpChunk.createUpload({
       endpoint: resumableUrl!,
       file: acceptedFiles[0],
@@ -69,7 +76,7 @@ const SelectedOrderPage = (props: any) => {
     });
 
     upload.on('error', (err) => {
-      console.error('💥 🙀', err.detail);
+      toast.error(`Error uploading: ${err.detail}`);
     });
 
     upload.on('progress', (progress) => {
@@ -77,7 +84,29 @@ const SelectedOrderPage = (props: any) => {
     });
 
     upload.on('success', () => {
-      console.log("Wrap it up, we're done here. 👋");
+      setUploadStatus('Transcoding...');
+      const checkUploadInterval = setInterval(async () => {
+        const checkUploadStatus = await axios.get(
+          `https://testing.glassapi.xyz/organizations/clipto/videos/${requestUuid}/status`,
+        );
+        console.log(checkUploadStatus.data);
+        if (
+          checkUploadStatus.data.transcoding_complete === 'succeeded' &&
+          checkUploadStatus.data.image_complete === true &&
+          checkUploadStatus.data.video_complete === true
+        ) {
+          clearInterval(checkUploadInterval);
+          const finalizeResult = await axios.post(
+            `https://testing.glassapi.xyz/organizations/clipto/videos/${requestUuid}/finalize`,
+            {
+              description: 'test',
+              name: 'test',
+            },
+          );
+          console.log(finalizeResult);
+          setUploadStatus('');
+        }
+      }, 5000);
     });
   }, []);
 
@@ -123,11 +152,28 @@ const SelectedOrderPage = (props: any) => {
                     {!upload && (
                       <div style={{ margin: 'auto' }}>
                         {/** TODO(jonathanng) - Text size is off */}
-                        <Label style={{ marginBottom: '8px' }}>Upload clip</Label>
-                        {isDragActive ? (
-                          <p>Drop the files here ...</p>
+                        {uploadStatus ? (
+                          <UploadStatusContainer>
+                            <BounceLoader
+                              color={theme.yellow}
+                              loading={true}
+                              size={50}
+                              css={`
+                                display: block;
+                                margin: auto;
+                              `}
+                            />
+                            <Label>{uploadStatus}</Label>
+                          </UploadStatusContainer>
                         ) : (
-                          <Description>Drag and drop an mp4 or click to select a file to upload</Description>
+                          <>
+                            <Label style={{ marginBottom: '8px' }}>Upload clip</Label>
+                            {isDragActive ? (
+                              <p>Drop the files here ...</p>
+                            ) : (
+                              <Description>Drag and drop an mp4 or click to select a file to upload</Description>
+                            )}
+                          </>
                         )}
                       </div>
                     )}
