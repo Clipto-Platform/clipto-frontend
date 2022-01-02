@@ -17,7 +17,9 @@ import { TextField } from '../components/TextField';
 import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { CreateUserDto, UserProfile } from '../hooks/useProfile';
+import { theme } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
+import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
 import { Number } from '../utils/validation';
 
@@ -94,6 +96,7 @@ export interface ReadUserDto {
   price: string;
   tweetUrl: string;
   userName: string;
+  twitterHandle: string;
 }
 
 const BookingPage = () => {
@@ -108,6 +111,7 @@ const BookingPage = () => {
     const getCreatorData = async () => {
       if (creatorId) {
         const restContractProfile: { data: ReadUserDto } = await axios.get(`${API_URL}/user/${creatorId}`);
+        console.log(restContractProfile.data)
         setCreatorProfile(restContractProfile.data);
       }
     };
@@ -165,14 +169,14 @@ const BookingPage = () => {
             <ImagesSlider images={creatorProfile?.demos || []} />
           </ImagesColumnContainer>
           <BookingCard>
-            <FlexRow style={{ marginBottom: 30 }}>
+            <FlexRow style={{ marginBottom: 12 }}>
               <div>
-                <Label style={{ marginBottom: 4 }}>{creatorProfile?.userName}</Label>
-                {/* todo: decide what to do with this, it's not currently included in our profile data */}
-                {/* <Description>Idea instigator</Description> */}
+                <Label style={{ marginBottom: 8 }}>{creatorProfile?.userName}</Label>
+                <Description>Twitter: <a href={`https://twitter.com/${creatorProfile?.twitterHandle}`} style={{ color: "#EDE641" }}>@{creatorProfile?.twitterHandle}</a>  </Description>
+                <Description>Address: {creatorProfile && getShortenedAddress(creatorProfile.address)}</Description>
               </div>
               <div>
-                <AvatarComponent url={creatorProfile?.profilePicture} />
+                <AvatarComponent url={creatorProfile?.profilePicture} size='medium' />
               </div>
             </FlexRow>
             <FlexRow style={{ marginBottom: 24 }}>
