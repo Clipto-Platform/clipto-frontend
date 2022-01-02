@@ -111,7 +111,7 @@ const BookingPage = () => {
     const getCreatorData = async () => {
       if (creatorId) {
         const restContractProfile: { data: ReadUserDto } = await axios.get(`${API_URL}/user/${creatorId}`);
-        console.log(restContractProfile.data)
+        console.log(restContractProfile.data);
         setCreatorProfile(restContractProfile.data);
       }
     };
@@ -172,11 +172,16 @@ const BookingPage = () => {
             <FlexRow style={{ marginBottom: 12 }}>
               <div>
                 <Label style={{ marginBottom: 8 }}>{creatorProfile?.userName}</Label>
-                <Description>Twitter: <a href={`https://twitter.com/${creatorProfile?.twitterHandle}`} style={{ color: "#EDE641" }}>@{creatorProfile?.twitterHandle}</a>  </Description>
+                <Description>
+                  Twitter:{' '}
+                  <a href={`https://twitter.com/${creatorProfile?.twitterHandle}`} style={{ color: '#EDE641' }}>
+                    @{creatorProfile?.twitterHandle}
+                  </a>{' '}
+                </Description>
                 <Description>Address: {creatorProfile && getShortenedAddress(creatorProfile.address)}</Description>
               </div>
               <div>
-                <AvatarComponent url={creatorProfile?.profilePicture} size='medium' />
+                <AvatarComponent url={creatorProfile?.profilePicture} size="medium" />
               </div>
             </FlexRow>
             <FlexRow style={{ marginBottom: 24 }}>
@@ -280,11 +285,13 @@ const BookingPage = () => {
                         type="number"
                         placeholder={formatETH(parseFloat(creatorProfile.price)) + ' +'}
                         onChange={handleChange('amount')}
-                        onBlur={(e) => { }}
+                        onBlur={(e) => {}}
                         errorMessage={errors.amount}
                       />
                       {/* TODO(jonathanng) - make dynamic */}
-                      <Description style={{ fontSize: 10 }}>* Currently a 10% fee is in place to support our developers</Description>
+                      <Description style={{ fontSize: 10 }}>
+                        * Currently a 10% fee is in place to support our developers
+                      </Description>
                     </div>
                     <PrimaryButton
                       onPress={() => {

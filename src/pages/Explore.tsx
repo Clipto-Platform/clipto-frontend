@@ -78,7 +78,7 @@ const ExplorePage = () => {
     axios
       .get(`${API_URL}/users`)
       .then((res: { data: Array<any> }) => {
-        const array = res.data.reverse()
+        const array = res.data.reverse();
         const users: Array<User> = array.map((u) => {
           return {
             name: u.userName,

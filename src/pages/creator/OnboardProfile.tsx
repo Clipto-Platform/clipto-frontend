@@ -161,7 +161,7 @@ const OnboardProfilePage = () => {
                     };
                     console.log(vals);
                     createUserProfile(vals);
-                    setTimeout(() => { }, 1000);
+                    setTimeout(() => {}, 1000);
                     console.log(userProfile);
                   }}
                   validate={(values) => {
@@ -296,7 +296,9 @@ const OnboardProfilePage = () => {
                           errorMessage={errors.price}
                         />
                         {/* TODO(jonathanng) - make dynamic */}
-                        <Description style={{ fontSize: 10 }}>* Currently a 10% fee is in place to support our developers</Description>
+                        <Description style={{ fontSize: 10 }}>
+                          * Currently a 10% fee is in place to support our developers
+                        </Description>
                       </div>
 
                       <div style={{ marginBottom: 12 }}>

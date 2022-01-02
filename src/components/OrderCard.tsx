@@ -116,15 +116,19 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
         <Row>
           <Column style={{ marginRight: 40, textAlign: 'right' }}>
             <SecondaryLabel style={{ marginBottom: 2 }}>Deadline</SecondaryLabel>
-            <Text style={{
-              color: `${(() => {
-                if (checkIfDeadlinePassed(new Date().toString(), props.request?.deadline)) {
-                  return theme.red
-                } else {
-                  return '#ffffff'
-                }
-              })()}`
-            }}>{getDeadline()}</Text>
+            <Text
+              style={{
+                color: `${(() => {
+                  if (checkIfDeadlinePassed(new Date().toString(), props.request?.deadline)) {
+                    return theme.red;
+                  } else {
+                    return '#ffffff';
+                  }
+                })()}`,
+              }}
+            >
+              {getDeadline()}
+            </Text>
           </Column>
           <Column style={{ textAlign: 'right' }}>
             <SecondaryLabel style={{ marginBottom: 2 }}>Bid</SecondaryLabel>
