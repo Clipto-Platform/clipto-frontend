@@ -75,7 +75,8 @@ const OnboardProfilePage = () => {
     const verificationResult = await axios.post(`${API_URL}/user/create`, { ...vals }).catch((e) => {
       console.log(e);
     });
-    if (verificationResult) {
+    //if was able to create a user in db or found a user in db already then...
+    if (creator || verificationResult) {
       if (verificationResult.status === 201) {
         const txResult = await exchangeContract.registerCreator(userProfile.userName!);
         toast.success('Profile created, waiting for confirmation!');
@@ -159,7 +160,7 @@ const OnboardProfilePage = () => {
                     };
                     console.log(vals);
                     createUserProfile(vals);
-                    setTimeout(() => {}, 1000);
+                    setTimeout(() => { }, 1000);
                     console.log(userProfile);
                   }}
                   validate={(values) => {
