@@ -276,7 +276,7 @@ const BookingPage = () => {
                         type="number"
                         placeholder={formatETH(parseFloat(creatorProfile.price)) + ' +'}
                         onChange={handleChange('amount')}
-                        onBlur={(e) => { }}
+                        onBlur={(e) => {}}
                         errorMessage={errors.amount}
                       />
                     </div>
