@@ -2,11 +2,12 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { errors, ethers, Transaction } from 'ethers';
+import { Formik } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-import { Formik } from 'formik'
+
 import pfp from '../assets/images/pfps/sample-profile.png';
 import { AvatarComponent, AvatarOrb } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
@@ -102,32 +103,32 @@ const BookingPage = () => {
 
   const exchangeContract = useExchangeContract(true);
   const [creatorProfile, setCreatorProfile] = useState<ReadUserDto>();
-
-  // const [request, setRequest] = useState<Partial<CreateRequestDto>>({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getCreatorData = async () => {
       if (creatorId) {
         const restContractProfile: { data: ReadUserDto } = await axios.get(`${API_URL}/user/${creatorId}`);
         setCreatorProfile(restContractProfile.data);
-        // setRequest({
-        //   creator: creatorId,
-        //   amount: formatETH(parseFloat(restContractProfile.data.price)),
-        //   deadline: restContractProfile.data.deliveryTime,
-        // });
       }
     };
     getCreatorData();
   }, [creatorId]);
 
-  const makeBooking = async (requester: string, creator: string, amount: string, description: string, deadline: number) => {
+  const makeBooking = async (
+    requester: string,
+    creator: string,
+    amount: string,
+    description: string,
+    deadline: number,
+  ) => {
     let tx;
     try {
-      console.log(creator)
+      console.log(creator);
       tx = await exchangeContract.newRequest(creator, { value: ethers.utils.parseEther(amount) });
     } catch (e) {
-      console.error('tx failed at Booking.tsx')
-      console.error(e)
+      console.error('tx failed at Booking.tsx');
+      console.error(e);
       return;
     }
     const receipt = await tx.wait();
@@ -138,16 +139,17 @@ const BookingPage = () => {
       creator,
       amount,
       description,
-      deadline, //This is actually a string... forms will automatically change it to string but ts doesn't see that
-      txHash: tx.hash
-    }
-    console.log(requestDat)
-    const requestResult = await axios.post(`${API_URL}/request/create`, { ...requestDat, deadline: parseInt(deadline.toString()) }).catch((e) => {
+      deadline: parseInt(deadline.toString()), //This was actually a string before this line... forms will automatically change it to string but ts doesn't see that
+      txHash: tx.hash,
+    };
+    console.log(requestDat);
+    const requestResult = await axios.post(`${API_URL}/request/create`, { ...requestDat }).catch((e) => {
       console.error(e);
       toast.error(e);
     });
 
     if (requestResult && requestResult.status === 201) {
+      navigate('/orders');
       toast.success('Request created!');
     } else {
       toast.error('Something is wrong.');
@@ -181,101 +183,102 @@ const BookingPage = () => {
             <HR style={{ marginBottom: 36 }} />
             {!creatorProfile && <Label>Error loading creatorProfile</Label>}
             {!account && <Label>Error loading account</Label>}
-            {creatorProfile && account && <Formik
-              initialValues={{
-                deadline: creatorProfile.deliveryTime,
-                description: '',
-                amount: 0
-              }}
-              // validate={({ deadline, description, amount }) => {
-              //   try {
-              //     Number.parse(amount);
-              //     if (formatETH(amount) < formatETH(parseFloat(creatorProfile.price))) {
-              //       throw 'catch me';
-              //     }
-              //   } catch {
-              //     toast.error(`Amount must be greator than ${creatorProfile.price}`);
-              //     return;
-              //   }
-              // }}
-              onSubmit={({ deadline, description, amount }) => {
-                makeBooking(account, creatorProfile.address, amount.toString(), description, deadline);
-              }}
+            {creatorProfile && account && (
+              <Formik
+                initialValues={{
+                  deadline: creatorProfile.deliveryTime,
+                  description: '',
+                  amount: 0,
+                }}
+                // validate={({ deadline, description, amount }) => {
+                //   try {
+                //     Number.parse(amount);
+                //     if (formatETH(amount) < formatETH(parseFloat(creatorProfile.price))) {
+                //       throw 'catch me';
+                //     }
+                //   } catch {
+                //     toast.error(`Amount must be greator than ${creatorProfile.price}`);
+                //     return;
+                //   }
+                // }}
+                onSubmit={({ deadline, description, amount }) => {
+                  makeBooking(account, creatorProfile.address, amount.toString(), description, deadline);
+                }}
+              >
+                {({ initialValues, handleChange, handleSubmit, errors, validateForm }) => (
+                  <>
+                    <PurchaseOption style={{ marginBottom: 40 }}>
+                      <FlexRow style={{ marginBottom: 7 }}>
+                        <Label>Personal use</Label>
+                        <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creatorProfile.price))} ETH +</Label>
+                      </FlexRow>
+                      <Description>Personalized video for you or someone else</Description>
+                    </PurchaseOption>
+                    <div style={{ marginBottom: 40 }}>
+                      <TextField
+                        inputStyles={{
+                          width: 172,
+                        }}
+                        type="number"
+                        label={`Request deadline (${initialValues.deadline} days minimum)`}
+                        description={
+                          'If your video isn’t delivered by your requested deadline, you will receive an automatic refund.'
+                        }
+                        endText="Days"
+                        onChange={handleChange('deadline')} //parseInt
+                        placeholder={`${creatorProfile.deliveryTime} days`}
+                      />
+                    </div>
 
-            >
+                    <div style={{ marginBottom: 40 }}>
+                      <TextField
+                        inputElementType="textarea"
+                        label={`Instructions for ${creatorProfile.userName}`}
+                        placeholder="Say something nice..."
+                        onChange={handleChange('description')}
+                      />
+                    </div>
 
-              {({ initialValues, handleChange, handleSubmit, errors, validateForm }) => (
-                <>
-                  <PurchaseOption style={{ marginBottom: 40 }}>
-                    <FlexRow style={{ marginBottom: 7 }}>
-                      <Label>Personal use</Label>
-                      <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creatorProfile.price))} ETH +</Label>
-                    </FlexRow>
-                    <Description>Personalized video for you or someone else</Description>
-                  </PurchaseOption>
-                  <div style={{ marginBottom: 40 }}>
-                    <TextField
-                      inputStyles={{
-                        width: 172,
+                    <div style={{ marginBottom: 40 }}>
+                      <TextField label="Address to receive video NFT" placeholder="Wallet address" value={account} />
+                    </div>
+
+                    <div style={{ marginBottom: 40 }}>
+                      <TextField
+                        inputStyles={{
+                          width: 172,
+                        }}
+                        label="Amount to pay"
+                        description={'Increase your bid to get your video earlier'}
+                        endText="ETH"
+                        type="number"
+                        placeholder={formatETH(parseFloat(creatorProfile.price)) + ' +'}
+                        onChange={handleChange('amount')}
+                        onBlur={(e) => {}}
+                        errorMessage={errors.amount}
+                      />
+                    </div>
+                    <PrimaryButton
+                      onPress={() => {
+                        validateForm();
+                        if (Object.keys(errors).length != 0) {
+                          toast.error('Please fix the errors.');
+                          return;
+                        }
+                        return handleSubmit();
                       }}
-                      type="number"
-                      label={`Request deadline (${initialValues.deadline} days minimum)`}
-                      description={
-                        'If your video isn’t delivered by your requested deadline, you will receive an automatic refund.'
-                      }
-                      endText="Days"
-                      onChange={handleChange('deadline')} //parseInt
-                      placeholder={`${(creatorProfile.deliveryTime)} days`}
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: 40 }}>
-                    <TextField
-                      inputElementType="textarea"
-                      label={`Instructions for ${creatorProfile.userName}`}
-                      placeholder="Say something nice..."
-                      onChange={handleChange('description')}
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: 40 }}>
-                    <TextField label="Address to receive video NFT" placeholder="Wallet address" value={account} />
-                  </div>
-
-                  <div style={{ marginBottom: 40 }}>
-                    <TextField
-                      inputStyles={{
-                        width: 172,
-                      }}
-                      label="Amount to pay"
-                      description={'Increase your bid to get your video earlier'}
-                      endText="ETH"
-                      type="number"
-                      placeholder={formatETH(parseFloat(creatorProfile.price)) + ' +'}
-                      onChange={handleChange('amount')}
-                      onBlur={(e) => {
-
-                      }}
-                      errorMessage={errors.amount}
-                    />
-                  </div>
-                  <PrimaryButton onPress={() => {
-                    validateForm();
-                    if (Object.keys(errors).length != 0) {
-                      toast.error('Please fix the errors.');
-                      return;
-                    }
-                    return handleSubmit();
-                  }} isDisabled={false}>
-                    Book now
-                  </PrimaryButton>
-                </>
-              )}
-            </Formik>}
+                      isDisabled={false}
+                    >
+                      Book now
+                    </PrimaryButton>
+                  </>
+                )}
+              </Formik>
+            )}
           </BookingCard>
         </PageGrid>
       </PageContentWrapper>
-    </PageWrapper >
+    </PageWrapper>
   );
 };
 
