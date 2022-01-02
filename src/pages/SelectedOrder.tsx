@@ -58,7 +58,6 @@ export interface ArweaveResponse {
   animation_url: string;
 }
 
-
 const SelectedOrderPage = (props: any) => {
   const theme = useTheme();
 
@@ -207,7 +206,10 @@ const SelectedOrderPage = (props: any) => {
                           toast.error('Request not found. Try reloading the page...');
                           return;
                         }
-                        const tx = await exchangeContract.deliverRequest(parseInt(requestId!), pfp);
+                        const tx = await exchangeContract.deliverRequest(
+                          parseInt(requestId!),
+                          'ar://' + uploadMetadata.animation_url.split('.').pop(),
+                        );
                         const receipt = await tx.wait();
                         const verificationResult = await axios
                           .post(`${API_URL}/request/finish`, { id: request.id })
@@ -225,7 +227,7 @@ const SelectedOrderPage = (props: any) => {
                     >
                       Mint and send NFT
                     </PrimaryButton>
-                    <PrimaryButton size="small" variant="secondary" onPress={() => setUploadMetadata('')}>
+                    <PrimaryButton size="small" variant="secondary" onPress={() => setUploadMetadata(undefined)}>
                       New upload
                     </PrimaryButton>
                   </div>
