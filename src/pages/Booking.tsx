@@ -127,7 +127,7 @@ const BookingPage = () => {
       tx = await exchangeContract.newRequest(creator, { value: ethers.utils.parseEther(amount) });
     } catch (e) {
       console.error('tx failed at Booking.tsx');
-      console.error(e);
+      toast.error('The transaction failed. ');
       return;
     }
     const receipt = await tx.wait();
@@ -276,7 +276,7 @@ const BookingPage = () => {
                         type="number"
                         placeholder={formatETH(parseFloat(creatorProfile.price)) + ' +'}
                         onChange={handleChange('amount')}
-                        onBlur={(e) => {}}
+                        onBlur={(e) => { }}
                         errorMessage={errors.amount}
                       />
                     </div>

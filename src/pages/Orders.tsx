@@ -50,10 +50,10 @@ const OrdersPage = () => {
     const getRequests = async () => {
       if (account) {
         const userRequests = await axios.get(`${API_URL}/request/receiver/${account}`);
-        setRequestsByUser(userRequests.data);
+        setRequestsByUser(userRequests.data.reverse());
 
         const creatorRequests = await axios.get(`${API_URL}/request/creator/${account}`);
-        setRequestsToUser(creatorRequests.data);
+        setRequestsToUser(creatorRequests.data.reverse());
       }
     };
     getRequests();
@@ -68,7 +68,7 @@ const OrdersPage = () => {
           <Tabs aria-label="View received and purchased orders">
             <Item key="purchased" title="Purchased">
               <TabContent>
-                {requestsToUser.reverse().map((i, n) => (
+                {requestsToUser.map((i, n) => (
                   <OrderCard key={i!.index!} request={i}>
                     {i.delivered && (
                       <PrimaryButton
@@ -116,7 +116,7 @@ const OrdersPage = () => {
             </Item>
             <Item key="received" title="Received">
               <TabContent>
-                {requestsByUser.reverse().map((i, n, f) => (
+                {requestsByUser.map((i, n, f) => (
                   <OrderCard key={i!.index!} request={i}>
                     {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
                       <PrimaryButton
@@ -129,10 +129,6 @@ const OrdersPage = () => {
                         style={{ marginTop: 20 }}
                       >
                         Upload clip
-                        {/* {console.log(i)}
-                        {console.log(n)}
-                        {console.log(f)}
-                        {console.log(i.position)} */}
                       </PrimaryButton>
                     )}
                     {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && (
