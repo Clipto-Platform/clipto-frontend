@@ -43,6 +43,7 @@ const ImageCardContainer = styled.div`
 const ImageCardImg = styled.img`
   object-fit: fill;
   user-select: none;
+  max-height: 450px;
 `;
 
 const UploadStatusContainer = styled.div`
@@ -50,10 +51,18 @@ const UploadStatusContainer = styled.div`
   flex-direction: column;
 `;
 
+export interface ArweaveResponse {
+  name: string;
+  description: string;
+  image: string;
+  animation_url: string;
+}
+
+
 const SelectedOrderPage = (props: any) => {
   const theme = useTheme();
 
-  const [upload, setUpload] = useState('');
+  const [uploadMetadata, setUploadMetadata] = useState<ArweaveResponse | undefined>(undefined);
   const [uploadStatus, setUploadStatus] = useState('');
   const [done, setDone] = useState(false);
   const { account } = useWeb3React<Web3Provider>();
@@ -68,21 +77,21 @@ const SelectedOrderPage = (props: any) => {
     const requestUuid = uploadReq.data.job_uuid;
     const resumableUrl = await extractResumeableUrl(uploadReq.data.upload_url);
     setUploadStatus('Uploading...');
-    const upload = UpChunk.createUpload({
+    const fileUpload = UpChunk.createUpload({
       endpoint: resumableUrl!,
       file: acceptedFiles[0],
       chunkSize: 5120, // Uploads the file in ~5mb chunks
     });
 
-    upload.on('error', (err) => {
+    fileUpload.on('error', (err) => {
       toast.error(`Error uploading: ${err.detail}`);
     });
 
-    upload.on('progress', (progress) => {
+    fileUpload.on('progress', (progress) => {
       console.log(`So far we've uploaded ${progress.detail}% of this file.`);
     });
 
-    upload.on('success', () => {
+    fileUpload.on('success', () => {
       setUploadStatus('Transcoding...');
       const checkUploadInterval = setInterval(async () => {
         const checkUploadStatus = await axios.get(
@@ -102,7 +111,9 @@ const SelectedOrderPage = (props: any) => {
               name: 'test',
             },
           );
-          console.log(finalizeResult);
+          const arweaveUrl = finalizeResult.data.arweave_metadata;
+          const arweaveMetadata = await axios.get<ArweaveResponse>(`https://arweave.net/${arweaveUrl}`);
+          setUploadMetadata(arweaveMetadata.data);
           setUploadStatus('');
         }
       }, 5000);
@@ -148,7 +159,7 @@ const SelectedOrderPage = (props: any) => {
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
                   <BookingCard style={{ textAlign: 'center', display: 'flex', marginBottom: 24 }}>
-                    {!upload && (
+                    {!uploadMetadata && (
                       <div style={{ margin: 'auto' }}>
                         {/** TODO(jonathanng) - Text size is off */}
                         {uploadStatus ? (
@@ -177,15 +188,15 @@ const SelectedOrderPage = (props: any) => {
                       </div>
                     )}
 
-                    {upload && (
+                    {uploadMetadata && (
                       <ImageCardContainer style={{ margin: 'auto' }}>
-                        <ImageCardImg src={pfp} />
+                        <ImageCardImg src={uploadMetadata.image} />
                       </ImageCardContainer>
                     )}
                   </BookingCard>
                 </div>
 
-                {upload && !done && (
+                {uploadMetadata && !done && (
                   <div style={{ display: 'flex', marginBottom: 20 }}>
                     <PrimaryButton
                       onPress={async () => {
@@ -214,7 +225,7 @@ const SelectedOrderPage = (props: any) => {
                     >
                       Mint and send NFT
                     </PrimaryButton>
-                    <PrimaryButton size="small" variant="secondary" onPress={() => setUpload('')}>
+                    <PrimaryButton size="small" variant="secondary" onPress={() => setUploadMetadata('')}>
                       New upload
                     </PrimaryButton>
                   </div>
