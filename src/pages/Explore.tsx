@@ -1,15 +1,13 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import styled, { useTheme } from 'styled-components';
 
+// Sample image assets
 // Components
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { User, UserDisplay } from '../components/UserDisplay';
 import { API_URL } from '../config/config';
-import { formatETH } from '../utils/format';
 
 const FeaturedContainerWrapper = styled(PageContentWrapper)`
   display: flex;

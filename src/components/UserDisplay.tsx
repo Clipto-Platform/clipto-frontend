@@ -1,11 +1,10 @@
-import axios from 'axios';
-import { CSSProperties, useEffect, useState } from 'react';
+import { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
-import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
+import { ContentWrapper, PageContentWrapper } from '../components/layout/Common';
 import { formatETH } from '../utils/format';
+
 export interface User {
   name: string;
   shortDescription: string;

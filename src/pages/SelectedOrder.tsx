@@ -1,25 +1,24 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
 import pfp from '../assets/images/pfps/sample-profile.png';
-import { AvatarOrb } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
 import { Card } from '../components/Card';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { ImagesSlider } from '../components/ImagesSlider';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { OrderCard } from '../components/OrderCard';
 import { API_URL } from '../config/config';
-import { useExchangeContract, useNFTContract } from '../hooks/useContracts';
+import { useExchangeContract } from '../hooks/useContracts';
 import { useProfile } from '../hooks/useProfile';
 import { colors } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
 import { CreateRequestDto } from './Booking';
+
 const BookingCard = styled.div`
   background: ${(props) => props.theme.lessDarkGray};
   border: 1px solid ${(props) => props.theme.border};

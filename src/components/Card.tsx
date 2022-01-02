@@ -1,12 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { CreateRequestDto } from '../pages/Booking';
 import { Label, Text } from '../styles/typography';
-import { getShortenedAddress } from '../utils/address';
-import { AvatarOrb } from './AvatarOrb';
-import { PrimaryButton } from './Button';
+
 const OrderCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.border};
   padding: 24px;

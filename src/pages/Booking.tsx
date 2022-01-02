@@ -8,8 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
-import pfp from '../assets/images/pfps/sample-profile.png';
-import { AvatarComponent, AvatarOrb } from '../components/AvatarOrb';
+import { AvatarComponent } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ImagesSlider } from '../components/ImagesSlider';
@@ -277,7 +276,7 @@ const BookingPage = () => {
                         type="number"
                         placeholder={formatETH(parseFloat(creatorProfile.price)) + ' +'}
                         onChange={handleChange('amount')}
-                        onBlur={(e) => {}}
+                        onBlur={(e) => { }}
                         errorMessage={errors.amount}
                       />
                     </div>

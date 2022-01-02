@@ -12,7 +12,7 @@ import { OrderCard } from '../components/OrderCard';
 import { Item, Tabs } from '../components/Tabs';
 import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
-import { checkIfDeadlinePassed, incrementDate, tests } from '../utils/time';
+import { checkIfDeadlinePassed } from '../utils/time';
 import { CreateRequestDto } from './Booking';
 
 export const Status = styled.div`

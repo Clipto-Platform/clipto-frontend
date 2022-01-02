@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { API_URL } from '../config/config';
@@ -10,8 +9,8 @@ import { Label, Text } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
 import { DAY, HOUR } from '../utils/time';
-import { AvatarComponent, AvatarOrb } from './AvatarOrb';
-import { PrimaryButton } from './Button';
+import { AvatarComponent } from './AvatarOrb';
+
 const OrderCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.border};
   padding: 24px;

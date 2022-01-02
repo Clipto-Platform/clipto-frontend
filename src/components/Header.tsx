@@ -18,7 +18,7 @@ import { Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { immer } from '../utils/zustand';
 import { injected, walletconnect } from '../web3/connectors';
-import { AvatarComponent, AvatarOrb } from './AvatarOrb';
+import { AvatarComponent } from './AvatarOrb';
 import { PrimaryButton } from './Button';
 import { ModalDialog } from './Dialog';
 import { Logo } from './Logo';

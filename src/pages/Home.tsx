@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 // Sample image assets
