@@ -54,13 +54,20 @@ const OnboardProfile = styled.img`
 
 const OnboardProfilePage = () => {
   const userProfile = useProfile();
-  const { account } = useWeb3React<Web3Provider>();
+  const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
   const [creator, setCreator] = useState();
   const navigate = useNavigate();
 
   const createUserProfile = async (vals: any) => {
     const profile = values(userProfile);
+
+    const messageToBeSigned = 'I am onboarding to Clipto';
+    const msg = `0x${Buffer.from(messageToBeSigned, 'utf8').toString('hex')}`;
+    const signature = await library?.send('personal_sign', [msg, account]);
+
+    vals.message = messageToBeSigned;
+    vals.signed = signature;
 
     console.log(profile);
     // const exampleOfValidReq = {
