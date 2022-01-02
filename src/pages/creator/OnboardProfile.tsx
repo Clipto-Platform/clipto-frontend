@@ -159,7 +159,7 @@ const OnboardProfilePage = () => {
                     };
                     console.log(vals);
                     createUserProfile(vals);
-                    setTimeout(() => {}, 1000);
+                    setTimeout(() => { }, 1000);
                     console.log(userProfile);
                   }}
                   validate={(values) => {
@@ -330,6 +330,7 @@ const OnboardProfilePage = () => {
                           validateForm();
                           if (Object.keys(errors).length != 0) {
                             toast.error('Please fix the errors.');
+                            return;
                           }
                           return handleSubmit();
                         }}
