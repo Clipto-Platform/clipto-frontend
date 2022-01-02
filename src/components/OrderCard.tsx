@@ -106,7 +106,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
       <OrderCardTopRowContainer>
         <Row>
           {creator && <AvatarComponent style={{ marginRight: 16 }} url={creator.profilePicture} />}
-          {!creator && <AvatarComponent /*style={{ marginRight: 16 }}*/ />}
+          {!creator && <AvatarComponent style={{ marginRight: 16 }} />}
           <Column>
             {/* TODO(jonathanng) - make dynamic */}
             <Label style={{ marginBottom: 2 }}>{creator?.userName}</Label>

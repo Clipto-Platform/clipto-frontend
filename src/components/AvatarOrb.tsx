@@ -53,7 +53,7 @@ const AvatarComponent: React.FC<AvatarProps> = (props) => {
   if (props.url) {
     return (
       <div style={{ ...props.style }}>
-        <AvatarOrb style={{ background: `url(${props.url})`, backgroundPosition: 'center', backgroundSize: `${(props.size === 'medium' ? '60px' : '40px')}` }} {...props} />
+        <AvatarOrb style={{ background: `url(${props.url})`, backgroundPosition: 'center', backgroundSize: `${(props.size === 'medium' ? '60px' : '40px')}` }} size={props.size} />
       </div>
     );
   } else if (props.address) {
