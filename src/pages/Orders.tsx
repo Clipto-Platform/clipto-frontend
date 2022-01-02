@@ -68,7 +68,7 @@ const OrdersPage = () => {
           <Tabs aria-label="View received and purchased orders">
             <Item key="purchased" title="Purchased">
               <TabContent>
-                {requestsToUser.map((i, n) => (
+                {requestsToUser.reverse().map((i, n) => (
                   <OrderCard key={i!.index!} request={i}>
                     {i.delivered && (
                       <PrimaryButton
@@ -116,7 +116,7 @@ const OrdersPage = () => {
             </Item>
             <Item key="received" title="Received">
               <TabContent>
-                {requestsByUser.map((i, n, f) => (
+                {requestsByUser.reverse().map((i, n, f) => (
                   <OrderCard key={i!.index!} request={i}>
                     {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
                       <PrimaryButton

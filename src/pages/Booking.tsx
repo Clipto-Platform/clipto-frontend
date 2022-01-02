@@ -186,21 +186,39 @@ const BookingPage = () => {
             {creatorProfile && account && (
               <Formik
                 initialValues={{
-                  deadline: creatorProfile.deliveryTime,
+                  deadline: 0,
                   description: '',
                   amount: 0,
                 }}
-                // validate={({ deadline, description, amount }) => {
-                //   try {
-                //     Number.parse(amount);
-                //     if (formatETH(amount) < formatETH(parseFloat(creatorProfile.price))) {
-                //       throw 'catch me';
-                //     }
-                //   } catch {
-                //     toast.error(`Amount must be greator than ${creatorProfile.price}`);
-                //     return;
-                //   }
-                // }}
+                validate={({ deadline, description, amount }) => {
+                  const errors: any = {}
+                  try {
+                    Number.parse(parseFloat(amount.toString()));
+                    if (formatETH(parseFloat(amount.toString())) < formatETH(parseFloat(creatorProfile.price))) {
+                      errors.amount = `Amount must be greator than ${creatorProfile.price}`
+                    }
+                  } catch {
+                    errors.amount = `Please enter a number.`
+                  }
+                  if (deadline.toString() != parseInt(deadline.toString()).toString()) {
+                    errors.deliveryTime = 'Delivery time cannot be a decimal or have leading zeros.';
+                  } else {
+                    try {
+                      Number.parse(parseInt(deadline.toString()));
+                      if (formatETH(parseInt(deadline.toString())) < formatETH(parseInt(creatorProfile.deliveryTime.toString()))) {
+                        errors.deadline = `Deadline must be greator than ${creatorProfile.deliveryTime}`
+                      }
+                    } catch {
+                      errors.deadline = `Please enter a deadline.`
+                    }
+                    if (description === '') {
+                      errors.description = 'Please write some instructions for the creator.'
+                    }
+                  }
+                  return errors
+                }}
+                validateOnBlur={false}
+                validateOnChange={false}
                 onSubmit={({ deadline, description, amount }) => {
                   makeBooking(account, creatorProfile.address, amount.toString(), description, deadline);
                 }}
@@ -220,13 +238,14 @@ const BookingPage = () => {
                           width: 172,
                         }}
                         type="number"
-                        label={`Request deadline (${initialValues.deadline} days minimum)`}
+                        label={`Request deadline (${creatorProfile.deliveryTime} days minimum)`}
                         description={
                           'If your video isn’t delivered by your requested deadline, you will receive an automatic refund.'
                         }
                         endText="Days"
                         onChange={handleChange('deadline')} //parseInt
                         placeholder={`${creatorProfile.deliveryTime} days`}
+                        errorMessage={errors.deadline}
                       />
                     </div>
 
@@ -236,6 +255,7 @@ const BookingPage = () => {
                         label={`Instructions for ${creatorProfile.userName}`}
                         placeholder="Say something nice..."
                         onChange={handleChange('description')}
+                        errorMessage={errors.description}
                       />
                     </div>
 
@@ -254,7 +274,7 @@ const BookingPage = () => {
                         type="number"
                         placeholder={formatETH(parseFloat(creatorProfile.price)) + ' +'}
                         onChange={handleChange('amount')}
-                        onBlur={(e) => {}}
+                        onBlur={(e) => { }}
                         errorMessage={errors.amount}
                       />
                     </div>
