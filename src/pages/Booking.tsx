@@ -191,31 +191,34 @@ const BookingPage = () => {
                   amount: 0,
                 }}
                 validate={({ deadline, description, amount }) => {
-                  const errors: any = {}
+                  const errors: any = {};
                   try {
                     Number.parse(parseFloat(amount.toString()));
                     if (formatETH(parseFloat(amount.toString())) < formatETH(parseFloat(creatorProfile.price))) {
-                      errors.amount = `Amount must be greator than ${creatorProfile.price}`
+                      errors.amount = `Amount must be greator than ${creatorProfile.price}`;
                     }
                   } catch {
-                    errors.amount = `Please enter a number.`
+                    errors.amount = `Please enter a number.`;
                   }
                   if (deadline.toString() != parseInt(deadline.toString()).toString()) {
                     errors.deliveryTime = 'Delivery time cannot be a decimal or have leading zeros.';
                   } else {
                     try {
                       Number.parse(parseInt(deadline.toString()));
-                      if (formatETH(parseInt(deadline.toString())) < formatETH(parseInt(creatorProfile.deliveryTime.toString()))) {
-                        errors.deadline = `Deadline must be greator than ${creatorProfile.deliveryTime}`
+                      if (
+                        formatETH(parseInt(deadline.toString())) <
+                        formatETH(parseInt(creatorProfile.deliveryTime.toString()))
+                      ) {
+                        errors.deadline = `Deadline must be greator than ${creatorProfile.deliveryTime}`;
                       }
                     } catch {
-                      errors.deadline = `Please enter a deadline.`
+                      errors.deadline = `Please enter a deadline.`;
                     }
                     if (description === '') {
-                      errors.description = 'Please write some instructions for the creator.'
+                      errors.description = 'Please write some instructions for the creator.';
                     }
                   }
-                  return errors
+                  return errors;
                 }}
                 validateOnBlur={false}
                 validateOnChange={false}
@@ -274,7 +277,7 @@ const BookingPage = () => {
                         type="number"
                         placeholder={formatETH(parseFloat(creatorProfile.price)) + ' +'}
                         onChange={handleChange('amount')}
-                        onBlur={(e) => { }}
+                        onBlur={(e) => {}}
                         errorMessage={errors.amount}
                       />
                     </div>
