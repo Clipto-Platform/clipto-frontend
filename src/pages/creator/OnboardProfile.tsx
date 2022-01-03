@@ -115,7 +115,7 @@ const OnboardProfilePage = () => {
   }, []);
   return (
     <>
-      {(DEV || creator) && (
+      {(true || creator) && (
         <PageWrapper>
           <HeaderSpacer />
           <HeaderContentGapSpacer />
