@@ -94,7 +94,7 @@ const SelectedOrderPage = (props: any) => {
       setUploadStatus('Transcoding...');
       const checkUploadInterval = setInterval(async () => {
         const checkUploadStatus = await axios.get(
-          `https://testing.glassapi.xyz/organizations/clipto/videos/${requestUuid}/status`,
+          `https://production.glassapi.xyz/organizations/clipto/videos/${requestUuid}/status`,
         );
         console.log(checkUploadStatus.data);
         if (
@@ -104,7 +104,7 @@ const SelectedOrderPage = (props: any) => {
         ) {
           clearInterval(checkUploadInterval);
           const finalizeResult = await axios.post(
-            `https://testing.glassapi.xyz/organizations/clipto/videos/${requestUuid}/finalize`,
+            `https://production.glassapi.xyz/organizations/clipto/videos/${requestUuid}/finalize`,
             {
               description: 'test',
               name: 'test',
