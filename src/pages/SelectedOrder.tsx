@@ -1,10 +1,13 @@
 import { Web3Provider } from '@ethersproject/providers';
+import * as UpChunk from '@mux/upchunk';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { useParams } from 'react-router-dom';
+import BounceLoader from 'react-spinners/BounceLoader';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import pfp from '../assets/images/pfps/sample-profile.png';
 import { PrimaryButton } from '../components/Button';
@@ -14,9 +17,8 @@ import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { OrderCard } from '../components/OrderCard';
 import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
-import { useProfile } from '../hooks/useProfile';
-import { colors } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
+import { extractResumeableUrl } from '../utils/http';
 import { CreateRequestDto } from './Booking';
 
 const BookingCard = styled.div`
@@ -41,18 +43,84 @@ const ImageCardContainer = styled.div`
 const ImageCardImg = styled.img`
   object-fit: fill;
   user-select: none;
+  max-height: 450px;
 `;
 
+const UploadStatusContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export interface ArweaveResponse {
+  name: string;
+  description: string;
+  image: string;
+  animation_url: string;
+}
+
 const SelectedOrderPage = (props: any) => {
-  const [upload, setUpload] = useState('');
+  const theme = useTheme();
+
+  const [uploadMetadata, setUploadMetadata] = useState<ArweaveResponse | undefined>(undefined);
+  const [uploadStatus, setUploadStatus] = useState('');
   const [done, setDone] = useState(false);
-  const location = useLocation();
-  const userProfile = useProfile();
   const { account } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
   const { creator, requestId } = useParams();
   const [request, setRequest] = useState<CreateRequestDto>();
   const [loaded, setLoaded] = useState<boolean>(false);
+
+  const onDrop = useCallback(async <T extends File>(acceptedFiles: T[]) => {
+    const uploadReq = await axios.post(`${API_URL}/upload`, { extension: acceptedFiles[0].name.split('.').pop() });
+
+    const requestUuid = uploadReq.data.job_uuid;
+    const resumableUrl = await extractResumeableUrl(uploadReq.data.upload_url);
+    setUploadStatus('Uploading...');
+    const fileUpload = UpChunk.createUpload({
+      endpoint: resumableUrl!,
+      file: acceptedFiles[0],
+      chunkSize: 5120, // Uploads the file in ~5mb chunks
+    });
+
+    fileUpload.on('error', (err) => {
+      toast.error(`Error uploading: ${err.detail}`);
+    });
+
+    fileUpload.on('progress', (progress) => {
+      console.log(`So far we've uploaded ${progress.detail}% of this file.`);
+    });
+
+    fileUpload.on('success', () => {
+      setUploadStatus('Transcoding...');
+      const checkUploadInterval = setInterval(async () => {
+        const checkUploadStatus = await axios.get(
+          `https://production.glassapi.xyz/organizations/clipto/videos/${requestUuid}/status`,
+        );
+        console.log(checkUploadStatus.data);
+        if (
+          checkUploadStatus.data.transcoding_complete === 'succeeded' &&
+          checkUploadStatus.data.image_complete === true &&
+          checkUploadStatus.data.video_complete === true
+        ) {
+          clearInterval(checkUploadInterval);
+          const finalizeResult = await axios.post(
+            `https://production.glassapi.xyz/organizations/clipto/videos/${requestUuid}/finalize`,
+            {
+              description: 'test',
+              name: 'test',
+            },
+          );
+          const arweaveUrl = finalizeResult.data.arweave_metadata;
+          const arweaveMetadata = await axios.get<ArweaveResponse>(`https://arweave.net/${arweaveUrl}`);
+          setUploadMetadata(arweaveMetadata.data);
+          setUploadStatus('');
+        }
+      }, 5000);
+    });
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
   useEffect(() => {
     // const creator = location?.state!.request.creator;
     // const requestId = location.state.request.requestId;
@@ -87,37 +155,47 @@ const SelectedOrderPage = (props: any) => {
               <HeaderSpacer />
               <HeaderContentGapSpacer />
               <PageContentWrapper style={{ display: 'block', maxWidth: '600px', margin: 'auto' }}>
-                <BookingCard style={{ textAlign: 'center', display: 'flex', marginBottom: 24 }}>
-                  {!upload && (
-                    <div style={{ margin: 'auto' }}>
-                      <div style={{}}>
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  <BookingCard style={{ textAlign: 'center', display: 'flex', marginBottom: 24 }}>
+                    {!uploadMetadata && (
+                      <div style={{ margin: 'auto' }}>
                         {/** TODO(jonathanng) - Text size is off */}
-                        <Label>Upload clip</Label>
+                        {uploadStatus ? (
+                          <UploadStatusContainer>
+                            <BounceLoader
+                              color={theme.yellow}
+                              loading={true}
+                              size={50}
+                              css={`
+                                display: block;
+                                margin: auto;
+                              `}
+                            />
+                            <Label>{uploadStatus}</Label>
+                          </UploadStatusContainer>
+                        ) : (
+                          <>
+                            <Label style={{ marginBottom: '8px' }}>Upload clip</Label>
+                            {isDragActive ? (
+                              <p>Drop the files here ...</p>
+                            ) : (
+                              <Description>Drag and drop an mp4 or click to select a file to upload</Description>
+                            )}
+                          </>
+                        )}
                       </div>
-                      <div>
-                        <Description>Drag and drop an mp4 or select a file to upload</Description>
-                      </div>
-                      {/** TODO(jonathanng) - colors off */}
-                      <PrimaryButton
-                        variant="secondary"
-                        size="small"
-                        style={{ color: colors.white, width: 120, margin: 'auto' }}
-                        onPress={() => {
-                          setUpload(pfp);
-                        }}
-                      >
-                        Select file
-                      </PrimaryButton>
-                    </div>
-                  )}
+                    )}
 
-                  {upload && (
-                    <ImageCardContainer style={{ margin: 'auto' }}>
-                      <ImageCardImg src={pfp} />
-                    </ImageCardContainer>
-                  )}
-                </BookingCard>
-                {upload && !done && (
+                    {uploadMetadata && (
+                      <ImageCardContainer style={{ margin: 'auto' }}>
+                        <ImageCardImg src={uploadMetadata.image} />
+                      </ImageCardContainer>
+                    )}
+                  </BookingCard>
+                </div>
+
+                {uploadMetadata && !done && (
                   <div style={{ display: 'flex', marginBottom: 20 }}>
                     <PrimaryButton
                       onPress={async () => {
@@ -126,7 +204,10 @@ const SelectedOrderPage = (props: any) => {
                           toast.error('Request not found. Try reloading the page...');
                           return;
                         }
-                        const tx = await exchangeContract.deliverRequest(parseInt(requestId!), pfp);
+                        const tx = await exchangeContract.deliverRequest(
+                          parseInt(requestId!),
+                          'ar://' + uploadMetadata.animation_url.split('.').pop(),
+                        );
                         const receipt = await tx.wait();
                         const verificationResult = await axios
                           .post(`${API_URL}/request/finish`, { id: request.id })
@@ -143,7 +224,7 @@ const SelectedOrderPage = (props: any) => {
                     >
                       Mint and send NFT
                     </PrimaryButton>
-                    <PrimaryButton size="small" variant="secondary" onPress={() => setUpload('')}>
+                    <PrimaryButton size="small" variant="secondary" onPress={() => setUploadMetadata(undefined)}>
                       New upload
                     </PrimaryButton>
                   </div>
