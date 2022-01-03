@@ -5,10 +5,11 @@ import styled from 'styled-components';
 import { API_URL } from '../config/config';
 import { UserProfile } from '../hooks/useProfile';
 import { CreateRequestDto } from '../pages/Booking';
+import { theme } from '../styles/theme';
 import { Label, Text } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
-import { DAY, HOUR } from '../utils/time';
+import { checkIfDeadlinePassed, DAY, HOUR } from '../utils/time';
 import { AvatarComponent } from './AvatarOrb';
 
 const OrderCardContainer = styled.div`
@@ -105,7 +106,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
       <OrderCardTopRowContainer>
         <Row>
           {creator && <AvatarComponent style={{ marginRight: 16 }} url={creator.profilePicture} />}
-          {!creator && <AvatarComponent /*style={{ marginRight: 16 }}*/ />}
+          {!creator && <AvatarComponent style={{ marginRight: 16 }} />}
           <Column>
             {/* TODO(jonathanng) - make dynamic */}
             <Label style={{ marginBottom: 2 }}>{creator?.userName}</Label>
@@ -115,7 +116,19 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
         <Row>
           <Column style={{ marginRight: 40, textAlign: 'right' }}>
             <SecondaryLabel style={{ marginBottom: 2 }}>Deadline</SecondaryLabel>
-            <Text style={{ color: '#ffffff' }}>{getDeadline()}</Text>
+            <Text
+              style={{
+                color: `${(() => {
+                  if (checkIfDeadlinePassed(new Date().toString(), props.request?.deadline)) {
+                    return theme.red;
+                  } else {
+                    return '#ffffff';
+                  }
+                })()}`,
+              }}
+            >
+              {getDeadline()}
+            </Text>
           </Column>
           <Column style={{ textAlign: 'right' }}>
             <SecondaryLabel style={{ marginBottom: 2 }}>Bid</SecondaryLabel>

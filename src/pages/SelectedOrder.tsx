@@ -121,8 +121,6 @@ const SelectedOrderPage = (props: any) => {
                   <div style={{ display: 'flex', marginBottom: 20 }}>
                     <PrimaryButton
                       onPress={async () => {
-                        // const id = location.state.request.id;
-                        // console.log(account);
                         //TODO(jonathanng) - get actual request
                         if (!request) {
                           toast.error('Request not found. Try reloading the page...');
@@ -137,7 +135,6 @@ const SelectedOrderPage = (props: any) => {
                             setDone(true);
                           })
                           .catch((e) => {
-                            console.log(e);
                             toast.error('Failed to mint NFT!');
                           });
                       }}
