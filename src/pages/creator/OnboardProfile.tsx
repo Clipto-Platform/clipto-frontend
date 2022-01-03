@@ -244,7 +244,8 @@ const OnboardProfilePage = () => {
                             placeholder={values.userName}
                             value={values.userName}
                             onBlur={handleBlur}
-                            errorMessage={errors.userName} />
+                            errorMessage={errors.userName}
+                          />
                         </div>
 
                         <div style={{ marginBottom: 48 }}>
@@ -255,7 +256,8 @@ const OnboardProfilePage = () => {
                             placeholder={account!}
                             value={account!}
                             onBlur={handleBlur}
-                            errorMessage={errors.address} />
+                            errorMessage={errors.address}
+                          />
                         </div>
 
                         <div style={{ marginBottom: 48 }}>
@@ -265,7 +267,8 @@ const OnboardProfilePage = () => {
                             label="Bio"
                             placeholder={'Say something nice'}
                             onBlur={handleBlur}
-                            errorMessage={errors.bio} />
+                            errorMessage={errors.bio}
+                          />
                         </div>
 
                         <div style={{ marginBottom: 48 }}>
@@ -276,7 +279,8 @@ const OnboardProfilePage = () => {
                             placeholder="3"
                             endText="Days"
                             onBlur={handleBlur}
-                            errorMessage={errors.deliveryTime} />
+                            errorMessage={errors.deliveryTime}
+                          />
                         </div>
 
                         <div style={{ marginBottom: 48 }}>
@@ -288,9 +292,12 @@ const OnboardProfilePage = () => {
                             type="number"
                             endText="MATIC"
                             onBlur={handleBlur}
-                            errorMessage={errors.price} />
+                            errorMessage={errors.price}
+                          />
                           {/* TODO(jonathanng) - make dynamic */}
-                          <Description style={{ fontSize: 10, marginTop: '8px' }}>* Includes a 10% fee to support the platform</Description>
+                          <Description style={{ fontSize: 10, marginTop: '8px' }}>
+                            * Includes a 10% fee to support the platform
+                          </Description>
                         </div>
 
                         <div style={{ marginBottom: 12 }}>
@@ -299,25 +306,28 @@ const OnboardProfilePage = () => {
                             description="Add links for demo videos that will display on your bookings page (these should be tweets)"
                             placeholder="Demo tweet video link 1"
                             onBlur={handleBlur}
-                            errorMessage={errors.demo1 || errors.demo2 || errors.demo3} />
+                            errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
+                          />
                         </div>
                         <div style={{ marginBottom: 12 }}>
                           <TextField
                             onChange={handleChange('demo2')}
                             placeholder="Demo tweet video link 2"
                             onBlur={handleBlur}
-                            errorMessage={errors.demo1 || errors.demo2 || errors.demo3} />
+                            errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
+                          />
                         </div>
                         <div style={{ marginBottom: 12 }}>
                           <TextField
                             onChange={handleChange('demo3')}
                             placeholder="Demo tweet video link 3"
                             onBlur={handleBlur}
-                            errorMessage={errors.demo1 || errors.demo2 || errors.demo3} />
+                            errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
+                          />
                         </div>
 
                         <PrimaryButton
-                          /*isDisabled={Object.keys(erros).length != 0}*/ 
+                          /*isDisabled={Object.keys(erros).length != 0}*/
                           style={{ marginBottom: '16px' }}
                           onPress={() => {
                             validateForm();
@@ -326,7 +336,7 @@ const OnboardProfilePage = () => {
                               return;
                             }
                             return handleSubmit();
-                          } }
+                          }}
                         >
                           Set up profile
                         </PrimaryButton>
