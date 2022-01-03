@@ -2,310 +2,419 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import { Provider } from '@ethersproject/providers';
-import type { CliptoExchange, CliptoExchangeInterface } from '../CliptoExchange';
+import { Contract, Signer, utils } from "ethers";
+import { Provider } from "@ethersproject/providers";
+import type {
+  CliptoExchange,
+  CliptoExchangeInterface,
+} from "../CliptoExchange";
 
 const _abi = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'implementation',
-        type: 'address',
+        internalType: "address",
+        name: "implementation",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "feeDestination",
+        type: "address",
       },
     ],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
+    stateMutability: "nonpayable",
+    type: "constructor",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: 'address',
-        name: 'creator',
-        type: 'address',
+        internalType: "address",
+        name: "creator",
+        type: "address",
       },
       {
         indexed: true,
-        internalType: 'contract CliptoToken',
-        name: 'token',
-        type: 'address',
+        internalType: "contract CliptoToken",
+        name: "token",
+        type: "address",
       },
     ],
-    name: 'CreatorRegistered',
-    type: 'event',
+    name: "CreatorRegistered",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: 'address',
-        name: 'creator',
-        type: 'address',
+        internalType: "address",
+        name: "creator",
+        type: "address",
       },
       {
         indexed: true,
-        internalType: 'address',
-        name: 'requester',
-        type: 'address',
+        internalType: "address",
+        name: "requester",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "tokenAddress",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
       },
     ],
-    name: 'DeliveredRequest',
-    type: 'event',
+    name: "DeliveredRequest",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: 'address',
-        name: 'creator',
-        type: 'address',
+        internalType: "address",
+        name: "creator",
+        type: "address",
       },
       {
         indexed: true,
-        internalType: 'address',
-        name: 'requester',
-        type: 'address',
+        internalType: "address",
+        name: "requester",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
       },
     ],
-    name: 'NewRequest',
-    type: 'event',
+    name: "NewRequest",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: 'address',
-        name: 'creator',
-        type: 'address',
+        internalType: "address",
+        name: "oldOwner",
+        type: "address",
       },
       {
         indexed: true,
-        internalType: 'address',
-        name: 'requester',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
       },
     ],
-    name: 'RefundedRequest',
-    type: 'event',
+    name: "OwnershipTransferred",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: 'address',
-        name: 'creator',
-        type: 'address',
+        internalType: "address",
+        name: "creator",
+        type: "address",
       },
       {
         indexed: true,
-        internalType: 'address',
-        name: 'requester',
-        type: 'address',
+        internalType: "address",
+        name: "requester",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'amountIncreased',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
       },
     ],
-    name: 'RequestUpdated',
-    type: 'event',
+    name: "RefundedRequest",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "creator",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "requester",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amountIncreased",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
+      },
+    ],
+    name: "RequestUpdated",
+    type: "event",
   },
   {
     inputs: [],
-    name: 'TOKEN_IMPLEMENTATION',
+    name: "TOKEN_IMPLEMENTATION",
     outputs: [
       {
-        internalType: 'address',
-        name: '',
-        type: 'address',
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'address',
-        name: '',
-        type: 'address',
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
-    name: 'creators',
+    name: "creators",
     outputs: [
       {
-        internalType: 'contract CliptoToken',
-        name: '',
-        type: 'address',
+        internalType: "contract CliptoToken",
+        name: "",
+        type: "address",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
       },
       {
-        internalType: 'string',
-        name: 'tokenURI',
-        type: 'string',
+        internalType: "string",
+        name: "tokenURI",
+        type: "string",
       },
     ],
-    name: 'deliverRequest',
+    name: "deliverRequest",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'creator',
-        type: 'address',
-      },
-    ],
-    name: 'newRequest',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'creator',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
-      },
-    ],
-    name: 'refundRequest',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'string',
-        name: 'creatorName',
-        type: 'string',
-      },
-    ],
-    name: 'registerCreator',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    name: 'requests',
+    inputs: [],
+    name: "feeRate",
     outputs: [
       {
-        internalType: 'address',
-        name: 'requester',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-      {
-        internalType: 'bool',
-        name: 'fulfilled',
-        type: 'bool',
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'creator',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
+        internalType: "address",
+        name: "creator",
+        type: "address",
       },
     ],
-    name: 'updateRequest',
+    name: "newRequest",
     outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "owner",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "creator",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
+      },
+    ],
+    name: "refundRequest",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "creatorName",
+        type: "string",
+      },
+    ],
+    name: "registerCreator",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "requests",
+    outputs: [
+      {
+        internalType: "address",
+        name: "requester",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "fulfilled",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "scale",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_feeRate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_scale",
+        type: "uint256",
+      },
+    ],
+    name: "setFee",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "creator",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "index",
+        type: "uint256",
+      },
+    ],
+    name: "updateRequest",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
   },
 ];
 
@@ -314,7 +423,10 @@ export class CliptoExchange__factory {
   static createInterface(): CliptoExchangeInterface {
     return new utils.Interface(_abi) as CliptoExchangeInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): CliptoExchange {
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): CliptoExchange {
     return new Contract(address, _abi, signerOrProvider) as CliptoExchange;
   }
 }

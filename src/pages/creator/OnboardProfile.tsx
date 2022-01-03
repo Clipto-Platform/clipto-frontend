@@ -303,7 +303,6 @@ const OnboardProfilePage = () => {
                       <div style={{ marginBottom: 12 }}>
                         <TextField
                           onChange={handleChange('demo1')}
-                          label="demo1"
                           description="Add links for demo videos that will display on your bookings page"
                           placeholder="Demo video link 1"
                           onBlur={handleBlur}
@@ -314,7 +313,6 @@ const OnboardProfilePage = () => {
                         <TextField
                           onChange={handleChange('demo2')}
                           placeholder="Demo video link 2"
-                          label="demo2"
                           onBlur={handleBlur}
                           errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
                         />
@@ -323,7 +321,6 @@ const OnboardProfilePage = () => {
                         <TextField
                           onChange={handleChange('demo3')}
                           placeholder="Demo video link 3"
-                          label="demo3"
                           onBlur={handleBlur}
                           errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
                         />
@@ -350,7 +347,7 @@ const OnboardProfilePage = () => {
           </PageContentWrapper>
         </PageWrapper>
       )}
-      {!creator && (
+      {/* {!creator && (
         <PageWrapper>
           <HeaderSpacer />
           <HeaderContentGapSpacer />
@@ -360,7 +357,7 @@ const OnboardProfilePage = () => {
             </ContentWrapper>
           </PageContentWrapper>
         </PageWrapper>
-      )}
+      )} */}
     </>
   );
 };
