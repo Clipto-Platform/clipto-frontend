@@ -13,9 +13,9 @@ import {
   Signer,
   utils,
 } from 'ethers';
-import { EventFragment, FunctionFragment, Result } from '@ethersproject/abi';
+import { FunctionFragment, Result, EventFragment } from '@ethersproject/abi';
 import { Listener, Provider } from '@ethersproject/providers';
-import { OnEvent, TypedEvent, TypedEventFilter, TypedListener } from './common';
+import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export interface ERC721Interface extends utils.Interface {
   functions: {

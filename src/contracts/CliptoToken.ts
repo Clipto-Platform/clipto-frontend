@@ -13,9 +13,9 @@ import {
   Signer,
   utils,
 } from 'ethers';
-import { EventFragment, FunctionFragment, Result } from '@ethersproject/abi';
+import { FunctionFragment, Result, EventFragment } from '@ethersproject/abi';
 import { Listener, Provider } from '@ethersproject/providers';
-import { OnEvent, TypedEvent, TypedEventFilter, TypedListener } from './common';
+import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export interface CliptoTokenInterface extends utils.Interface {
   functions: {
@@ -29,16 +29,20 @@ export interface CliptoTokenInterface extends utils.Interface {
     'isApprovedForAll(address,address)': FunctionFragment;
     'name()': FunctionFragment;
     'nonces(uint256)': FunctionFragment;
+    'owner()': FunctionFragment;
     'ownerOf(uint256)': FunctionFragment;
     'permit(address,uint256,uint256,bytes)': FunctionFragment;
     'royaltyInfo(uint256,uint256)': FunctionFragment;
+    'royaltyRate()': FunctionFragment;
     'safeMint(address,string)': FunctionFragment;
     'safeTransferFrom(address,address,uint256)': FunctionFragment;
+    'scale()': FunctionFragment;
     'setApprovalForAll(address,bool)': FunctionFragment;
     'setRoyaltyRate(uint256)': FunctionFragment;
     'supportsInterface(bytes4)': FunctionFragment;
     'symbol()': FunctionFragment;
     'tokenByIndex(uint256)': FunctionFragment;
+    'tokenIdCounter()': FunctionFragment;
     'tokenOfOwnerByIndex(address,uint256)': FunctionFragment;
     'tokenURI(uint256)': FunctionFragment;
     'totalSupply()': FunctionFragment;
@@ -56,16 +60,20 @@ export interface CliptoTokenInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'isApprovedForAll', values: [string, string]): string;
   encodeFunctionData(functionFragment: 'name', values?: undefined): string;
   encodeFunctionData(functionFragment: 'nonces', values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
   encodeFunctionData(functionFragment: 'ownerOf', values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: 'permit', values: [string, BigNumberish, BigNumberish, BytesLike]): string;
   encodeFunctionData(functionFragment: 'royaltyInfo', values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'royaltyRate', values?: undefined): string;
   encodeFunctionData(functionFragment: 'safeMint', values: [string, string]): string;
   encodeFunctionData(functionFragment: 'safeTransferFrom', values: [string, string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'scale', values?: undefined): string;
   encodeFunctionData(functionFragment: 'setApprovalForAll', values: [string, boolean]): string;
   encodeFunctionData(functionFragment: 'setRoyaltyRate', values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: 'supportsInterface', values: [BytesLike]): string;
   encodeFunctionData(functionFragment: 'symbol', values?: undefined): string;
   encodeFunctionData(functionFragment: 'tokenByIndex', values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'tokenIdCounter', values?: undefined): string;
   encodeFunctionData(functionFragment: 'tokenOfOwnerByIndex', values: [string, BigNumberish]): string;
   encodeFunctionData(functionFragment: 'tokenURI', values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: 'totalSupply', values?: undefined): string;
@@ -85,16 +93,20 @@ export interface CliptoTokenInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'isApprovedForAll', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'nonces', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'ownerOf', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'permit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'royaltyInfo', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'royaltyRate', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'safeMint', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'safeTransferFrom', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'scale', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setApprovalForAll', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setRoyaltyRate', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'supportsInterface', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'symbol', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'tokenByIndex', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'tokenIdCounter', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'tokenOfOwnerByIndex', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'tokenURI', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'totalSupply', data: BytesLike): Result;
@@ -186,6 +198,8 @@ export interface CliptoToken extends BaseContract {
 
     nonces(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
     permit(
@@ -201,6 +215,8 @@ export interface CliptoToken extends BaseContract {
       salePrice: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<[string, BigNumber]>;
+
+    royaltyRate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     safeMint(
       to: string,
@@ -223,6 +239,8 @@ export interface CliptoToken extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
+    scale(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     setApprovalForAll(
       operator: string,
       approved: boolean,
@@ -239,6 +257,8 @@ export interface CliptoToken extends BaseContract {
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
     tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    tokenIdCounter(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -300,6 +320,8 @@ export interface CliptoToken extends BaseContract {
 
   nonces(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
+  owner(overrides?: CallOverrides): Promise<string>;
+
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   permit(
@@ -311,6 +333,8 @@ export interface CliptoToken extends BaseContract {
   ): Promise<ContractTransaction>;
 
   royaltyInfo(tokenId: BigNumberish, salePrice: BigNumberish, overrides?: CallOverrides): Promise<[string, BigNumber]>;
+
+  royaltyRate(overrides?: CallOverrides): Promise<BigNumber>;
 
   safeMint(
     to: string,
@@ -333,6 +357,8 @@ export interface CliptoToken extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
+  scale(overrides?: CallOverrides): Promise<BigNumber>;
+
   setApprovalForAll(
     operator: string,
     approved: boolean,
@@ -349,6 +375,8 @@ export interface CliptoToken extends BaseContract {
   symbol(overrides?: CallOverrides): Promise<string>;
 
   tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+  tokenIdCounter(overrides?: CallOverrides): Promise<BigNumber>;
 
   tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -403,6 +431,8 @@ export interface CliptoToken extends BaseContract {
 
     nonces(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<string>;
+
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     permit(
@@ -418,6 +448,8 @@ export interface CliptoToken extends BaseContract {
       salePrice: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<[string, BigNumber]>;
+
+    royaltyRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     safeMint(to: string, _tokenURI: string, overrides?: CallOverrides): Promise<void>;
 
@@ -436,6 +468,8 @@ export interface CliptoToken extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<void>;
 
+    scale(overrides?: CallOverrides): Promise<BigNumber>;
+
     setApprovalForAll(operator: string, approved: boolean, overrides?: CallOverrides): Promise<void>;
 
     setRoyaltyRate(newRate: BigNumberish, overrides?: CallOverrides): Promise<void>;
@@ -445,6 +479,8 @@ export interface CliptoToken extends BaseContract {
     symbol(overrides?: CallOverrides): Promise<string>;
 
     tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    tokenIdCounter(overrides?: CallOverrides): Promise<BigNumber>;
 
     tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -525,6 +561,8 @@ export interface CliptoToken extends BaseContract {
 
     nonces(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     permit(
@@ -536,6 +574,8 @@ export interface CliptoToken extends BaseContract {
     ): Promise<BigNumber>;
 
     royaltyInfo(tokenId: BigNumberish, salePrice: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    royaltyRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     safeMint(
       to: string,
@@ -558,6 +598,8 @@ export interface CliptoToken extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
+    scale(overrides?: CallOverrides): Promise<BigNumber>;
+
     setApprovalForAll(
       operator: string,
       approved: boolean,
@@ -574,6 +616,8 @@ export interface CliptoToken extends BaseContract {
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    tokenIdCounter(overrides?: CallOverrides): Promise<BigNumber>;
 
     tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -636,6 +680,8 @@ export interface CliptoToken extends BaseContract {
 
     nonces(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     permit(
@@ -651,6 +697,8 @@ export interface CliptoToken extends BaseContract {
       salePrice: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
+
+    royaltyRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     safeMint(
       to: string,
@@ -673,6 +721,8 @@ export interface CliptoToken extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
+    scale(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     setApprovalForAll(
       operator: string,
       approved: boolean,
@@ -689,6 +739,8 @@ export interface CliptoToken extends BaseContract {
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     tokenByIndex(index: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    tokenIdCounter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

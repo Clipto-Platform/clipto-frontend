@@ -99,7 +99,7 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
                     <UserTitle style={{ marginBottom: 4 }}>{user.name}</UserTitle>
                     <UserDescription style={{ marginBottom: 16 }}>{user.shortDescription}</UserDescription>
                     <UserStartingPrice>
-                      From <span style={{ fontWeight: 700 }}>{formatETH(parseFloat(user.price))} ETH</span>
+                      From <span style={{ fontWeight: 700 }}>{formatETH(parseFloat(user.price))} MATIC</span>
                     </UserStartingPrice>
                   </UserCardContainer>
                 </Link>
