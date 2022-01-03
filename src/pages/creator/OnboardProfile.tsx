@@ -161,7 +161,6 @@ const OnboardProfilePage = () => {
                     };
                     console.log(vals);
                     createUserProfile(vals);
-                    setTimeout(() => {}, 1000);
                     console.log(userProfile);
                   }}
                   validate={(values) => {

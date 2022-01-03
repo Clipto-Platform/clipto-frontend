@@ -7,4 +7,4 @@ export const extractResumeableUrl = async (url: string): Promise<string | null> 
     },
   });
   return response.headers.get('location');
-}
+};
