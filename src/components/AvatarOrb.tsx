@@ -1,14 +1,29 @@
-import styled from 'styled-components';
+import styled, { CSSProperties } from 'styled-components';
 
-const AvatarOrb = styled.div`
-  height: 40px;
-  min-height: 40px;
-  max-height: 40px;
-  width: 40px;
-  min-width: 40px;
-  max-width: 40px;
+const AvatarOrb = styled.div<{
+  size?: 'large' | 'medium' | 'small';
+}>`
+  ${(props) => {
+    if (props.size !== 'medium') {
+      return `height: 40px;
+      min-height: 40px;
+      max-height: 40px;
+      width: 40px;
+      min-width: 40px;
+      max-width: 40px;
+      background-size: 40px;`;
+    }
+    return `height: 60px;
+    min-height: 60px;
+    max-height: 60px;
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+    background-size: 60px;`;
+  }}
   border-radius: 100%;
   background: linear-gradient(134.17deg, #ff9900 0%, #fff627 86.27%);
+  background-position: center;
 `;
 
 const XAvatarOrb = styled(AvatarOrb)`
@@ -23,7 +38,8 @@ const XAvatarOrb = styled(AvatarOrb)`
 export interface AvatarProps {
   address?: string;
   url?: string;
-  style?: any;
+  style?: CSSProperties;
+  size?: 'large' | 'medium' | 'small';
 }
 
 const AvatarComponent: React.FC<AvatarProps> = (props) => {
@@ -37,7 +53,14 @@ const AvatarComponent: React.FC<AvatarProps> = (props) => {
   if (props.url) {
     return (
       <div style={{ ...props.style }}>
-        <AvatarOrb style={{ background: `url(${props.url})` }} />
+        <AvatarOrb
+          style={{
+            background: `url(${props.url})`,
+            backgroundPosition: 'center',
+            backgroundSize: `${props.size === 'medium' ? '60px' : '40px'}`,
+          }}
+          size={props.size}
+        />
       </div>
     );
   } else if (props.address) {
@@ -47,11 +70,13 @@ const AvatarComponent: React.FC<AvatarProps> = (props) => {
           background: `linear-gradient(134.17deg, ${getColours(props.address.substring(2, 10))} 0%, ${getColours(
             props.address.substring(10, 18),
           )} 86.27%)`,
+          backgroundPosition: 'center',
         }}
+        {...props}
       />
     );
   } else {
-    return <AvatarOrb />;
+    return <AvatarOrb {...props} />;
   }
 };
 

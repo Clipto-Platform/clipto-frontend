@@ -1,10 +1,13 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
+import { ethers } from 'ethers';
+import { Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import { ZodError } from 'zod';
 
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
@@ -12,10 +15,12 @@ import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../component
 import { TextField } from '../../components/TextField';
 import { API_URL, DEV, HELP_EMAIL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
+import { CreateUserDto, CreateUserDtoFull, UserProfile } from '../../hooks/useProfile';
 import { useProfile, values } from '../../hooks/useProfile';
+import { Description } from '../../styles/typography';
 import { formatETH } from '../../utils/format';
-import { DeliveryTime, errorHandle, Number, Url } from '../../utils/validation';
-
+import { Address, DeliveryTime, errorHandle, Number, Url } from '../../utils/validation';
+import { CreateRequestDto } from '../Booking';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
   font-family: 'Scto Grotesk A';
@@ -53,31 +58,26 @@ const OnboardProfilePage = () => {
   const exchangeContract = useExchangeContract(true);
   const [creator, setCreator] = useState();
   const navigate = useNavigate();
-  const [formValid, setFormValid] = useState<boolean>(false);
-  const createUserProfile = async () => {
-    console.log(userProfile);
+
+  const createUserProfile = async (vals: any) => {
     const profile = values(userProfile);
 
-    try {
-      Number.parse(parseFloat(profile!.price));
-      DeliveryTime.parse(profile.deliveryTime);
-      for (let i = 0; i < profile.demos?.length; i++) {
-        const demo = profile.demos[i];
-        if (demo.trim() != '') {
-          Url.parse(demo);
-        }
-      }
-    } catch (e) {
-      console.log(e.issues);
-      errorHandle(e, toast.error);
-      toast.error('Please fix fields');
-      return;
-    }
-    profile.price = parseFloat(profile.price);
-    const verificationResult = await axios.post(`${API_URL}/user/create`, { ...profile }).catch((e) => {
+    console.log(profile);
+    // const exampleOfValidReq = {
+    //   "bio": "asdf",
+    //   "userName": "crypto test",
+    //   "profilePicture": "https://pbs.twimg.com/profile_images/1474767708512215050/mgDnq1_J_normal.png",
+    //   "deliveryTime": 3,
+    //   "price": 1,
+    //   "tweetUrl": "https://twitter.com/cryptot56280295/status/1475688719227232271",
+    //   "address": "0x4e78d8b8F17443dF9b92f07fd322d1aB1DA91365",
+    //   "demos": []
+    // }
+    const verificationResult = await axios.post(`${API_URL}/user/create`, { ...vals }).catch((e) => {
       console.log(e);
     });
-    if (verificationResult) {
+    //if was able to create a user in db or found a user in db already then...
+    if (creator || verificationResult) {
       if (verificationResult.status === 201) {
         const txResult = await exchangeContract.registerCreator(userProfile.userName!);
         toast.success('Profile created, waiting for confirmation!');
@@ -93,9 +93,21 @@ const OnboardProfilePage = () => {
   };
 
   useEffect(() => {
-    axios.get(`${API_URL}/user/${account}`).then((res) => {
-      setCreator(res.data.id);
-    });
+    if (!userProfile.tweetUrl) {
+      navigate('/onboarding');
+    }
+    //address should already be set from onboarding but if not then do this...
+    if (!userProfile.address) {
+      userProfile.setAddress(account!);
+    }
+    axios
+      .get(`${API_URL}/user/${account}`)
+      .then((res) => {
+        setCreator(res.data.id); // checking if user is already a creator
+      })
+      .catch(() => {
+        console.log('Creator not found');
+      });
   }, []);
   return (
     <>
@@ -112,83 +124,228 @@ const OnboardProfilePage = () => {
                   src={userProfile.profilePicture}
                   alt="user profile picture"
                 />
+                <Formik
+                  initialValues={{
+                    bio: userProfile.bio || '',
+                    userName: userProfile.userName || '',
+                    profilePicture: userProfile.profilePicture || '',
+                    deliveryTime: userProfile.deliveryTime?.toString() || '0',
+                    price: userProfile.price?.toString() || '0',
+                    tweetUrl: userProfile.tweetUrl || '',
+                    address: userProfile.address || account || '',
+                    demo1: userProfile.demos[0] || '',
+                    demo2: userProfile.demos[1] || '',
+                    demo3: userProfile.demos[2] || '',
+                  }} //TODO(jonathanng) - change to fetched values
+                  onSubmit={(values) => {
+                    console.log(values);
+                    userProfile.setAddress(values.address);
+                    userProfile.setBio(values.bio);
+                    userProfile.setDeliveryTime(parseInt(values.deliveryTime));
+                    const demos = [];
+                    values.demo1 && demos.push(values.demo1);
+                    values.demo2 && demos.push(values.demo2);
+                    values.demo3 && demos.push(values.demo3);
+                    userProfile.setDemos(demos);
+                    userProfile.setPrice(parseFloat(values.price));
+                    userProfile.setProfilePicture(values.profilePicture);
+                    userProfile.setTweetUrl(values.tweetUrl);
+                    userProfile.setUsername(values.userName);
 
-                <div style={{ marginBottom: 48 }}>
-                  <TextField
-                    onChange={(e) => userProfile.setUsername(e)}
-                    label="Name"
-                    placeholder={userProfile.userName}
-                    value={userProfile.userName}
-                  />
-                </div>
+                    //for some reason, the above set values do not work immediately, if you submit the form twice this will work else null
+                    const vals = {
+                      ...values,
+                      demos,
+                      deliveryTime: parseInt(values.deliveryTime),
+                      price: parseFloat(values.price),
+                    };
+                    console.log(vals);
+                    createUserProfile(vals);
+                    setTimeout(() => {}, 1000);
+                    console.log(userProfile);
+                  }}
+                  validate={(values) => {
+                    console.log();
+                    const errors: any = {};
+                    const { bio, userName, profilePicture, deliveryTime, price, tweetUrl, address } = values;
+                    const demo1 = values['demo1'];
+                    const demo2 = values['demo2'];
+                    const demo3 = values['demo3'];
 
-                <div style={{ marginBottom: 48 }}>
-                  <TextField
-                    label="Wallet Address"
-                    description="You will receive payments to this address"
-                    isReadOnly={true}
-                    placeholder={account!}
-                    value={account!}
-                  />
-                </div>
-
-                <div style={{ marginBottom: 48 }}>
-                  <TextField
-                    inputElementType="textarea"
-                    onChange={(e) => userProfile.setBio(e)}
-                    label="Bio"
-                    placeholder={'Say something nice'}
-                  />
-                </div>
-
-                <div style={{ marginBottom: 48 }}>
-                  <TextField
-                    onChange={(e) => userProfile.setDeliveryTime(parseFloat(e))}
-                    label="Minimum time to deliver"
-                    type="number"
-                    placeholder="3"
-                    endText="Days"
-                    onBlur={() => {
+                    if (bio == '') {
+                      errors.bio = 'Please enter a bio.';
+                    }
+                    if (userName == '') {
+                      errors.userName = 'Username cannot be empty.';
+                    }
+                    if (profilePicture == '') {
+                      errors.profilePicture = 'Profile picture can not be empty.';
+                    } else {
                       try {
-                        DeliveryTime.parse(userProfile.deliveryTime);
-                      } catch {
-                        toast.error('Invalid delivery time');
+                        Url.parse(profilePicture);
+                      } catch (error) {
+                        errors.profilePicture = 'Profile picture must be an url.';
                       }
-                    }}
-                  />
-                </div>
+                    }
+                    const dTime: number = parseInt(deliveryTime);
+                    try {
+                      Number.parse(dTime);
+                      if (dTime.toString() != deliveryTime) {
+                        errors.deliveryTime = 'Delivery time cannot be a decimal or have leading zeros.';
+                      }
+                      if (dTime <= 0) {
+                        errors.deliveryTime = 'Delivery time must be greater than 0 days.';
+                      }
+                    } catch (error) {
+                      errors.deliveryTime = 'Delivery time is not a number.';
+                    }
+                    try {
+                      demo1 != '' && Url.parse(demo1);
+                      demo2 != '' && Url.parse(demo2);
+                      demo3 != '' && Url.parse(demo3);
+                    } catch {
+                      errors.demo1 = 'One of your links is invalid.';
+                    }
+                    const p: number = parseFloat(price);
+                    try {
+                      Number.parse(p);
+                      if (p <= 0) {
+                        errors.price = 'Price must be greater than 0.';
+                      }
+                    } catch (error) {
+                      errors.price = 'Price is not a number.';
+                    }
 
-                <div style={{ marginBottom: 48 }}>
-                  <TextField
-                    onChange={(e) => userProfile.setPrice(formatETH(parseFloat(e)))}
-                    label="Minimum amount to charge for bookings"
-                    description="Fans will be able to pay this in ETH"
-                    placeholder="0.5"
-                    type="number"
-                    endText="ETH"
-                  />
-                </div>
+                    if (tweetUrl == '') {
+                      errors.tweetUrl = 'Tweet url can not be empty.';
+                    } else {
+                      try {
+                        Url.parse(tweetUrl);
+                      } catch (error) {
+                        errors.tweetUrl = 'Tweet url must be an url.';
+                      }
+                    }
 
-                <div style={{ marginBottom: 48 }}>
-                  <TextField
-                    onChange={(e) => userProfile.setDemos([e, userProfile.demos[1], userProfile.demos[2]])}
-                    label="Demo videos"
-                    description="Add links for demo videos that will display on your bookings page"
-                    placeholder="Demo video link 1"
-                  />
-                  <TextField
-                    onChange={(e) => userProfile.setDemos([userProfile.demos[0], e, userProfile.demos[2]])}
-                    placeholder="Demo video link 2"
-                  />
-                  <TextField
-                    onChange={(e) => userProfile.setDemos([userProfile.demos[1], userProfile.demos[2], e])}
-                    placeholder="Demo video link 3"
-                  />
-                </div>
+                    try {
+                      Address.parse(address);
+                    } catch (error) {
+                      errors.address = 'Please enter a valid address.';
+                    }
+                    return errors;
+                  }}
+                  validateOnBlur={false}
+                  validateOnChange={false}
+                >
+                  {({ handleChange, handleBlur, handleSubmit, values, errors, touched, validateForm }) => (
+                    <>
+                      <div style={{ marginBottom: 48 }}>
+                        <TextField
+                          onChange={handleChange('userName')}
+                          label="Name"
+                          placeholder={values.userName}
+                          value={values.userName}
+                          onBlur={handleBlur}
+                          errorMessage={errors.userName}
+                        />
+                      </div>
 
-                <PrimaryButton style={{ marginBottom: '16px' }} onPress={() => createUserProfile()}>
-                  Set up profile
-                </PrimaryButton>
+                      <div style={{ marginBottom: 48 }}>
+                        <TextField
+                          label="Wallet Address"
+                          description="You will receive payments to this address"
+                          isReadOnly={true}
+                          placeholder={account!}
+                          value={account!}
+                          onBlur={handleBlur}
+                          errorMessage={errors.address}
+                        />
+                      </div>
+
+                      <div style={{ marginBottom: 48 }}>
+                        <TextField
+                          inputElementType="textarea"
+                          onChange={handleChange('bio')}
+                          label="Bio"
+                          placeholder={'Say something nice'}
+                          onBlur={handleBlur}
+                          errorMessage={errors.bio}
+                        />
+                      </div>
+
+                      <div style={{ marginBottom: 48 }}>
+                        <TextField
+                          onChange={handleChange('deliveryTime')}
+                          label="Minimum time to deliver"
+                          type="number"
+                          placeholder="3"
+                          endText="Days"
+                          onBlur={handleBlur}
+                          errorMessage={errors.deliveryTime}
+                        />
+                      </div>
+
+                      <div style={{ marginBottom: 48 }}>
+                        <TextField
+                          onChange={handleChange('price')}
+                          label="Minimum amount to charge for bookings"
+                          description="Fans will be able to pay this in ETH"
+                          placeholder="0.5"
+                          type="number"
+                          endText="ETH"
+                          onBlur={handleBlur}
+                          errorMessage={errors.price}
+                        />
+                        {/* TODO(jonathanng) - make dynamic */}
+                        <Description style={{ fontSize: 10 }}>
+                          * Currently a 10% fee is in place to support our developers
+                        </Description>
+                      </div>
+
+                      <div style={{ marginBottom: 12 }}>
+                        <TextField
+                          onChange={handleChange('demo1')}
+                          label="demo1"
+                          description="Add links for demo videos that will display on your bookings page"
+                          placeholder="Demo video link 1"
+                          onBlur={handleBlur}
+                          errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
+                        />
+                      </div>
+                      <div style={{ marginBottom: 12 }}>
+                        <TextField
+                          onChange={handleChange('demo2')}
+                          placeholder="Demo video link 2"
+                          label="demo2"
+                          onBlur={handleBlur}
+                          errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
+                        />
+                      </div>
+                      <div style={{ marginBottom: 12 }}>
+                        <TextField
+                          onChange={handleChange('demo3')}
+                          placeholder="Demo video link 3"
+                          label="demo3"
+                          onBlur={handleBlur}
+                          errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
+                        />
+                      </div>
+
+                      <PrimaryButton
+                        /*isDisabled={Object.keys(errors).length != 0}*/ style={{ marginBottom: '16px' }}
+                        onPress={() => {
+                          validateForm();
+                          if (Object.keys(errors).length != 0) {
+                            toast.error('Please fix the errors.');
+                            return;
+                          }
+                          return handleSubmit();
+                        }}
+                      >
+                        Set up profile
+                      </PrimaryButton>
+                    </>
+                  )}
+                </Formik>
               </ProfileDetailsContainer>
             </ContentWrapper>
           </PageContentWrapper>

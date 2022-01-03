@@ -1,9 +1,10 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import { ethers } from 'ethers';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { errors, ethers, Transaction } from 'ethers';
+import { Formik } from 'formik';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
@@ -15,8 +16,10 @@ import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
 import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
-import { UserProfile } from '../hooks/useProfile';
+import { CreateUserDto, UserProfile } from '../hooks/useProfile';
+import { theme } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
+import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
 import { Number } from '../utils/validation';
 
@@ -81,10 +84,19 @@ export interface CreateRequestDto {
   description: string;
   deadline: number;
   txHash: string;
-  created: string;
-  id?: number;
-  delivered: boolean;
-  index?: number;
+}
+
+export interface ReadUserDto {
+  address: string;
+  bio: string;
+  deliveryTime: number;
+  demos: string[];
+  id: number;
+  profilePicture: string;
+  price: string;
+  tweetUrl: string;
+  userName: string;
+  twitterHandle: string;
 }
 
 const BookingPage = () => {
@@ -92,39 +104,55 @@ const BookingPage = () => {
   const { account } = useWeb3React<Web3Provider>();
 
   const exchangeContract = useExchangeContract(true);
-  const [creatorProfile, setCreatorProfile] = useState<Partial<UserProfile>>();
-
-  const [request, setRequest] = useState<Partial<CreateRequestDto>>({});
+  const [creatorProfile, setCreatorProfile] = useState<ReadUserDto>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getCreatorData = async () => {
       if (creatorId) {
-        const restContractProfile = await axios.get(`${API_URL}/user/${creatorId}`);
+        const restContractProfile: { data: ReadUserDto } = await axios.get(`${API_URL}/user/${creatorId}`);
+        console.log(restContractProfile.data);
         setCreatorProfile(restContractProfile.data);
-        // todo: get amount from server side, not yet implemented
-        setRequest({
-          creator: creatorId,
-          amount: formatETH(parseFloat(restContractProfile.data.price)),
-          deadline: restContractProfile.data.deliveryTime,
-        });
       }
     };
     getCreatorData();
   }, [creatorId]);
 
-  const makeBooking = async () => {
-    const tx = await exchangeContract.newRequest(request.creator!, { value: ethers.utils.parseEther(request.amount!) });
-    console.log('newRequest waiting');
+  const makeBooking = async (
+    requester: string,
+    creator: string,
+    amount: string,
+    description: string,
+    deadline: number,
+  ) => {
+    let tx;
+    try {
+      console.log(creator);
+      tx = await exchangeContract.newRequest(creator, { value: ethers.utils.parseEther(amount) });
+    } catch (e) {
+      console.error('tx failed at Booking.tsx');
+      toast.error('The transaction failed. ');
+      return;
+    }
     const receipt = await tx.wait();
-    const requestId = receipt.events?.at(0)?.args?.index.toNumber();
-    const requestDat = { ...request, requestId, txHash: tx.hash, requester: account! };
+    const requestId: number = receipt.events?.at(0)?.args?.index.toNumber();
+    const requestDat: CreateRequestDto = {
+      requester,
+      requestId,
+      creator,
+      amount,
+      description,
+      deadline: parseInt(deadline.toString()), //This was actually a string before this line... forms will automatically change it to string but ts doesn't see that
+      txHash: tx.hash,
+    };
     console.log(requestDat);
-    const requestResult = await axios.post(`${API_URL}/request/create`, requestDat).catch((e) => {
+    const requestResult = await axios.post(`${API_URL}/request/create`, { ...requestDat }).catch((e) => {
       console.error(e);
       toast.error(e);
     });
 
     if (requestResult && requestResult.status === 201) {
+      navigate('/orders');
       toast.success('Request created!');
     } else {
       toast.error('Something is wrong.');
@@ -141,14 +169,19 @@ const BookingPage = () => {
             <ImagesSlider images={creatorProfile?.demos || []} />
           </ImagesColumnContainer>
           <BookingCard>
-            <FlexRow style={{ marginBottom: 30 }}>
+            <FlexRow style={{ marginBottom: 12 }}>
               <div>
-                <Label style={{ marginBottom: 4 }}>{creatorProfile?.userName}</Label>
-                {/* todo: decide what to do with this, it's not currently included in our profile data */}
-                {/* <Description>Idea instigator</Description> */}
+                <Label style={{ marginBottom: 8 }}>{creatorProfile?.userName}</Label>
+                <Description>
+                  Twitter:{' '}
+                  <a href={`https://twitter.com/${creatorProfile?.twitterHandle}`} style={{ color: '#EDE641' }}>
+                    @{creatorProfile?.twitterHandle}
+                  </a>{' '}
+                </Description>
+                <Description>Address: {creatorProfile && getShortenedAddress(creatorProfile.address)}</Description>
               </div>
               <div>
-                <AvatarComponent url={creatorProfile?.profilePicture} />
+                <AvatarComponent url={creatorProfile?.profilePicture} size="medium" />
               </div>
             </FlexRow>
             <FlexRow style={{ marginBottom: 24 }}>
@@ -156,71 +189,127 @@ const BookingPage = () => {
             </FlexRow>
 
             <HR style={{ marginBottom: 36 }} />
-
-            <PurchaseOption style={{ marginBottom: 40 }}>
-              <FlexRow style={{ marginBottom: 7 }}>
-                <Label>Personal use</Label>
-                <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creatorProfile?.price))} ETH +</Label>
-              </FlexRow>
-              <Description>Personalized video for you or someone else</Description>
-            </PurchaseOption>
-            <div style={{ marginBottom: 40 }}>
-              <TextField
-                inputStyles={{
-                  width: 172,
+            {!creatorProfile && <Label>Error loading creatorProfile</Label>}
+            {!account && <Label>Error loading account</Label>}
+            {creatorProfile && account && (
+              <Formik
+                initialValues={{
+                  deadline: 0,
+                  description: '',
+                  amount: 0,
                 }}
-                type="number"
-                label={`Request deadline (${creatorProfile?.deliveryTime} days minimum)`}
-                description={
-                  'If your video isn’t delivered by your requested deadline, you will receive an automatic refund.'
-                }
-                endText="Days"
-                onChange={(e) => setRequest({ ...request, deadline: parseInt(e) })}
-                placeholder={`${(creatorProfile?.deliveryTime || 2) + 1} days`}
-              />
-            </div>
-
-            <div style={{ marginBottom: 40 }}>
-              <TextField
-                inputElementType="textarea"
-                label={`Instructions for ${creatorProfile?.userName}`}
-                placeholder="Say something nice..."
-                onChange={(e) => setRequest({ ...request, description: e })}
-              />
-            </div>
-
-            <div style={{ marginBottom: 40 }}>
-              <TextField label="Address to receive video NFT" placeholder="Wallet address" value={account!} />
-            </div>
-
-            <div style={{ marginBottom: 40 }}>
-              <TextField
-                inputStyles={{
-                  width: 172,
-                }}
-                label="Amount to pay"
-                description={'Increase your bid to get your video earlier'}
-                endText="ETH"
-                inputMode="numeric"
-                placeholder={formatETH(parseFloat(creatorProfile?.price)) + ' +'}
-                onChange={(e) => setRequest({ ...request, amount: e })}
-                onBlur={(e) => {
+                validate={({ deadline, description, amount }) => {
+                  const errors: any = {};
                   try {
-                    console.log(request.amount);
-                    Number.parse(parseFloat(request?.amount));
-                    if (formatETH(parseFloat(request?.amount)) < formatETH(parseFloat(creatorProfile?.price))) {
-                      throw 'catch me';
+                    Number.parse(parseFloat(amount.toString()));
+                    if (formatETH(parseFloat(amount.toString())) < formatETH(parseFloat(creatorProfile.price))) {
+                      errors.amount = `Amount must be greator than ${creatorProfile.price}`;
                     }
                   } catch {
-                    toast.error(`Amount must be greator than ${creatorProfile?.price}`);
-                    return;
+                    errors.amount = `Please enter a number.`;
                   }
+                  if (deadline.toString() != parseInt(deadline.toString()).toString()) {
+                    errors.deliveryTime = 'Delivery time cannot be a decimal or have leading zeros.';
+                  } else {
+                    try {
+                      Number.parse(parseInt(deadline.toString()));
+                      if (
+                        formatETH(parseInt(deadline.toString())) <
+                        formatETH(parseInt(creatorProfile.deliveryTime.toString()))
+                      ) {
+                        errors.deadline = `Deadline must be greator than ${creatorProfile.deliveryTime}`;
+                      }
+                    } catch {
+                      errors.deadline = `Please enter a deadline.`;
+                    }
+                    if (description === '') {
+                      errors.description = 'Please write some instructions for the creator.';
+                    }
+                  }
+                  return errors;
                 }}
-              />
-            </div>
-            <PrimaryButton onPress={() => makeBooking()} isDisabled={false}>
-              Book now
-            </PrimaryButton>
+                validateOnBlur={false}
+                validateOnChange={false}
+                onSubmit={({ deadline, description, amount }) => {
+                  makeBooking(account, creatorProfile.address, amount.toString(), description, deadline);
+                }}
+              >
+                {({ initialValues, handleChange, handleSubmit, errors, validateForm }) => (
+                  <>
+                    <PurchaseOption style={{ marginBottom: 40 }}>
+                      <FlexRow style={{ marginBottom: 7 }}>
+                        <Label>Personal use</Label>
+                        <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creatorProfile.price))} ETH +</Label>
+                      </FlexRow>
+                      <Description>Personalized video for you or someone else</Description>
+                    </PurchaseOption>
+                    <div style={{ marginBottom: 40 }}>
+                      <TextField
+                        inputStyles={{
+                          width: 172,
+                        }}
+                        type="number"
+                        label={`Request deadline (${creatorProfile.deliveryTime} days minimum)`}
+                        description={
+                          'If your video isn’t delivered by your requested deadline, you will receive an automatic refund.'
+                        }
+                        endText="Days"
+                        onChange={handleChange('deadline')} //parseInt
+                        placeholder={`${creatorProfile.deliveryTime} days`}
+                        errorMessage={errors.deadline}
+                      />
+                    </div>
+
+                    <div style={{ marginBottom: 40 }}>
+                      <TextField
+                        inputElementType="textarea"
+                        label={`Instructions for ${creatorProfile.userName}`}
+                        placeholder="Say something nice..."
+                        onChange={handleChange('description')}
+                        errorMessage={errors.description}
+                      />
+                    </div>
+
+                    <div style={{ marginBottom: 40 }}>
+                      <TextField label="Address to receive video NFT" placeholder="Wallet address" value={account} />
+                    </div>
+
+                    <div style={{ marginBottom: 40 }}>
+                      <TextField
+                        inputStyles={{
+                          width: 172,
+                        }}
+                        label="Amount to pay"
+                        description={'Increase your bid to get your video earlier'}
+                        endText="ETH"
+                        type="number"
+                        placeholder={formatETH(parseFloat(creatorProfile.price)) + ' +'}
+                        onChange={handleChange('amount')}
+                        onBlur={(e) => {}}
+                        errorMessage={errors.amount}
+                      />
+                      {/* TODO(jonathanng) - make dynamic */}
+                      <Description style={{ fontSize: 10 }}>
+                        * Currently a 10% fee is in place to support our developers
+                      </Description>
+                    </div>
+                    <PrimaryButton
+                      onPress={() => {
+                        validateForm();
+                        if (Object.keys(errors).length != 0) {
+                          toast.error('Please fix the errors.');
+                          return;
+                        }
+                        return handleSubmit();
+                      }}
+                      isDisabled={false}
+                    >
+                      Book now
+                    </PrimaryButton>
+                  </>
+                )}
+              </Formik>
+            )}
           </BookingCard>
         </PageGrid>
       </PageContentWrapper>

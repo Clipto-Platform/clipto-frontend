@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
+import { AvatarComponent } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
@@ -50,10 +51,10 @@ const OrdersPage = () => {
     const getRequests = async () => {
       if (account) {
         const userRequests = await axios.get(`${API_URL}/request/receiver/${account}`);
-        setRequestsByUser(userRequests.data);
+        setRequestsByUser(userRequests.data.reverse());
 
         const creatorRequests = await axios.get(`${API_URL}/request/creator/${account}`);
-        setRequestsToUser(creatorRequests.data);
+        setRequestsToUser(creatorRequests.data.reverse());
       }
     };
     getRequests();
@@ -129,10 +130,6 @@ const OrdersPage = () => {
                         style={{ marginTop: 20 }}
                       >
                         Upload clip
-                        {/* {console.log(i)}
-                        {console.log(n)}
-                        {console.log(f)}
-                        {console.log(i.position)} */}
                       </PrimaryButton>
                     )}
                     {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && (

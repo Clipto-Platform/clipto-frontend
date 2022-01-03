@@ -2,24 +2,40 @@ import create from 'zustand';
 
 import { immer } from '../utils/zustand';
 
-export type UserProfile = {
+export type CreateUserDto = {
   bio: string | undefined;
   userName: string | undefined;
   profilePicture: string | undefined;
   deliveryTime: number | undefined;
   demos: string[];
-  price: string | undefined;
+  price: number | undefined;
   tweetUrl: string | undefined;
   address: string | undefined;
+};
+
+export interface CreateUserDtoFull {
+  bio: string;
+  userName: string;
+  profilePicture: string;
+  deliveryTime: number;
+  demos: string[];
+  price: number;
+  tweetUrl: string;
+  address: string;
+}
+
+export type UserProfileSet = {
   setBio: (bio: string) => void;
   setUsername: (username: string) => void;
   setProfilePicture: (profilePicture: string) => void;
   setDeliveryTime: (deliveryTime: number) => void;
   setDemos: (demos: string[]) => void;
-  setPrice: (price: string) => void;
+  setPrice: (price: number) => void;
   setTweetUrl: (tweetUrl: string) => void;
   setAddress: (address: string) => void;
 };
+
+export type UserProfile = CreateUserDto & UserProfileSet;
 
 export const useProfile = create<UserProfile>(
   immer((set) => ({
@@ -51,7 +67,7 @@ export const useProfile = create<UserProfile>(
         draft.deliveryTime = deliveryTime;
       });
     },
-    setPrice: (price: string) => {
+    setPrice: (price: number) => {
       set((draft) => {
         draft.price = price;
       });
@@ -74,11 +90,14 @@ export const useProfile = create<UserProfile>(
   })),
 );
 
-//ew, todo: something saner
-export const values = (userProfile: UserProfile): Partial<UserProfile> => {
-  return Object.fromEntries(
-    Object.keys(userProfile)
-      .filter((i) => !i.startsWith('set'))
-      .map((i) => [i, userProfile[i as keyof UserProfile]]),
-  );
+/**
+ * Gets only keys that have values (not functions)
+ * @param userProfile
+ * @returns
+ */
+export const values = (userProfile: UserProfile): CreateUserDto => {
+  const keys = Object.keys(userProfile)
+    .filter((i) => !i.startsWith('set'))
+    .map((i) => [i, userProfile[i as keyof UserProfile]]);
+  return Object.fromEntries(keys);
 };
