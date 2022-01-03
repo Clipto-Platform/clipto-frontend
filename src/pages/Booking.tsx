@@ -135,6 +135,7 @@ const BookingPage = () => {
       return;
     }
     const receipt = await tx.wait();
+    console.log(receipt.events);
     const requestId: number = receipt.events?.at(0)?.args?.index.toNumber();
     const requestDat: CreateRequestDto = {
       requester,
@@ -239,7 +240,7 @@ const BookingPage = () => {
                     <PurchaseOption style={{ marginBottom: 40 }}>
                       <FlexRow style={{ marginBottom: 7 }}>
                         <Label>Personal use</Label>
-                        <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creatorProfile.price))} ETH +</Label>
+                        <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creatorProfile.price))} MATIC +</Label>
                       </FlexRow>
                       <Description>Personalized video for you or someone else</Description>
                     </PurchaseOption>

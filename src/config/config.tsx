@@ -20,8 +20,10 @@ export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
   [CHAIN_IDS.DAPPTOOLS]: '0x4EfAba0D61ffCe470934c69b9D78cBAF979451Db',
 };
 
-export const API_URL = 'https://api.clipto.io';
+
 export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
 
-export const DEV = false;
+export const DEV = true;
+
+export const API_URL = DEV ? 'http://localhost:8000' : 'https://api.clipto.io';
