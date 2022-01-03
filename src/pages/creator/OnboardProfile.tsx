@@ -62,7 +62,6 @@ const OnboardProfilePage = () => {
   const createUserProfile = async (vals: any) => {
     const profile = values(userProfile);
 
-    console.log(profile);
     // const exampleOfValidReq = {
     //   "bio": "asdf",
     //   "userName": "crypto test",
@@ -73,12 +72,17 @@ const OnboardProfilePage = () => {
     //   "address": "0x4e78d8b8F17443dF9b92f07fd322d1aB1DA91365",
     //   "demos": []
     // }
-    const verificationResult = await axios.post(`${API_URL}/user/create`, { ...vals }).catch((e) => {
-      console.log(e);
-    });
+    let verificationResult;
+    try {
+      verificationResult = await axios.post(`${API_URL}/user/create`, { ...vals });
+    } catch (ex) {
+      verificationResult = ex.response;
+    }
+
+    console.log(verificationResult);
     //if was able to create a user in db or found a user in db already then...
     if (creator || verificationResult) {
-      if (verificationResult.status === 201) {
+      if (verificationResult.status === 201 || verificationResult.data.message === 'User already created!') {
         const txResult = await exchangeContract.registerCreator(userProfile.userName!);
         toast.success('Profile created, waiting for confirmation!');
         await txResult.wait();
@@ -138,7 +142,6 @@ const OnboardProfilePage = () => {
                     demo3: userProfile.demos[2] || '',
                   }} //TODO(jonathanng) - change to fetched values
                   onSubmit={(values) => {
-                    console.log(values);
                     userProfile.setAddress(values.address);
                     userProfile.setBio(values.bio);
                     userProfile.setDeliveryTime(parseInt(values.deliveryTime));
@@ -151,7 +154,6 @@ const OnboardProfilePage = () => {
                     userProfile.setProfilePicture(values.profilePicture);
                     userProfile.setTweetUrl(values.tweetUrl);
                     userProfile.setUsername(values.userName);
-
                     //for some reason, the above set values do not work immediately, if you submit the form twice this will work else null
                     const vals = {
                       ...values,
@@ -159,12 +161,9 @@ const OnboardProfilePage = () => {
                       deliveryTime: parseInt(values.deliveryTime),
                       price: parseFloat(values.price),
                     };
-                    console.log(vals);
                     createUserProfile(vals);
-                    console.log(userProfile);
                   }}
                   validate={(values) => {
-                    console.log();
                     const errors: any = {};
                     const { bio, userName, profilePicture, deliveryTime, price, tweetUrl, address } = values;
                     const demo1 = values['demo1'];
