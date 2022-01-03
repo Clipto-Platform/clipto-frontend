@@ -234,112 +234,105 @@ const OnboardProfilePage = () => {
                   validateOnBlur={false}
                   validateOnChange={false}
                 >
-                  {({ handleChange, handleBlur, handleSubmit, values, errors, touched, validateForm }) => (
-                    <>
-                      <div style={{ marginBottom: 48 }}>
-                        <TextField
-                          onChange={handleChange('userName')}
-                          label="Name"
-                          placeholder={values.userName}
-                          value={values.userName}
-                          onBlur={handleBlur}
-                          errorMessage={errors.userName}
-                        />
-                      </div>
+                  {({ handleChange, handleBlur, handleSubmit, values, errors, touched, validateForm }) => {
+                    return (
+                      <>
+                        <div style={{ marginBottom: 48 }}>
+                          <TextField
+                            onChange={handleChange('userName')}
+                            label="Name"
+                            placeholder={values.userName}
+                            value={values.userName}
+                            onBlur={handleBlur}
+                            errorMessage={errors.userName} />
+                        </div>
 
-                      <div style={{ marginBottom: 48 }}>
-                        <TextField
-                          label="Wallet Address"
-                          description="You will receive payments to this address"
-                          isReadOnly={true}
-                          placeholder={account!}
-                          value={account!}
-                          onBlur={handleBlur}
-                          errorMessage={errors.address}
-                        />
-                      </div>
+                        <div style={{ marginBottom: 48 }}>
+                          <TextField
+                            label="Wallet Address"
+                            description="You will receive payments to this address"
+                            isReadOnly={true}
+                            placeholder={account!}
+                            value={account!}
+                            onBlur={handleBlur}
+                            errorMessage={errors.address} />
+                        </div>
 
-                      <div style={{ marginBottom: 48 }}>
-                        <TextField
-                          inputElementType="textarea"
-                          onChange={handleChange('bio')}
-                          label="Bio"
-                          placeholder={'Say something nice'}
-                          onBlur={handleBlur}
-                          errorMessage={errors.bio}
-                        />
-                      </div>
+                        <div style={{ marginBottom: 48 }}>
+                          <TextField
+                            inputElementType="textarea"
+                            onChange={handleChange('bio')}
+                            label="Bio"
+                            placeholder={'Say something nice'}
+                            onBlur={handleBlur}
+                            errorMessage={errors.bio} />
+                        </div>
 
-                      <div style={{ marginBottom: 48 }}>
-                        <TextField
-                          onChange={handleChange('deliveryTime')}
-                          label="Minimum time to deliver"
-                          type="number"
-                          placeholder="3"
-                          endText="Days"
-                          onBlur={handleBlur}
-                          errorMessage={errors.deliveryTime}
-                        />
-                      </div>
+                        <div style={{ marginBottom: 48 }}>
+                          <TextField
+                            onChange={handleChange('deliveryTime')}
+                            label="Minimum time to deliver"
+                            type="number"
+                            placeholder="3"
+                            endText="Days"
+                            onBlur={handleBlur}
+                            errorMessage={errors.deliveryTime} />
+                        </div>
 
-                      <div style={{ marginBottom: 48 }}>
-                        <TextField
-                          onChange={handleChange('price')}
-                          label="Minimum amount to charge for bookings"
-                          description="Fans will be able to pay this in MATIC"
-                          placeholder="0.5"
-                          type="number"
-                          endText="MATIC"
-                          onBlur={handleBlur}
-                          errorMessage={errors.price}
-                        />
-                        {/* TODO(jonathanng) - make dynamic */}
-                        <Description style={{ fontSize: 10 }}>
-                          * Currently a 10% fee is in place to support the platform
-                        </Description>
-                      </div>
+                        <div style={{ marginBottom: 48 }}>
+                          <TextField
+                            onChange={handleChange('price')}
+                            label="Minimum amount to charge for bookings"
+                            description="Fans will be able to pay this in MATIC"
+                            placeholder="0.5"
+                            type="number"
+                            endText="MATIC"
+                            onBlur={handleBlur}
+                            errorMessage={errors.price} />
+                          {/* TODO(jonathanng) - make dynamic */}
+                          <Description style={{ fontSize: 10, marginTop: '8px' }}>* Includes a 10% fee to support the platform</Description>
+                        </div>
 
-                      <div style={{ marginBottom: 12 }}>
-                        <TextField
-                          onChange={handleChange('demo1')}
-                          description="Add links for demo videos that will display on your bookings page"
-                          placeholder="Demo video link 1"
-                          onBlur={handleBlur}
-                          errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
-                        />
-                      </div>
-                      <div style={{ marginBottom: 12 }}>
-                        <TextField
-                          onChange={handleChange('demo2')}
-                          placeholder="Demo video link 2"
-                          onBlur={handleBlur}
-                          errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
-                        />
-                      </div>
-                      <div style={{ marginBottom: 12 }}>
-                        <TextField
-                          onChange={handleChange('demo3')}
-                          placeholder="Demo video link 3"
-                          onBlur={handleBlur}
-                          errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
-                        />
-                      </div>
+                        <div style={{ marginBottom: 12 }}>
+                          <TextField
+                            onChange={handleChange('demo1')}
+                            description="Add links for demo videos that will display on your bookings page (these should be tweets)"
+                            placeholder="Demo tweet video link 1"
+                            onBlur={handleBlur}
+                            errorMessage={errors.demo1 || errors.demo2 || errors.demo3} />
+                        </div>
+                        <div style={{ marginBottom: 12 }}>
+                          <TextField
+                            onChange={handleChange('demo2')}
+                            placeholder="Demo tweet video link 2"
+                            onBlur={handleBlur}
+                            errorMessage={errors.demo1 || errors.demo2 || errors.demo3} />
+                        </div>
+                        <div style={{ marginBottom: 12 }}>
+                          <TextField
+                            onChange={handleChange('demo3')}
+                            placeholder="Demo tweet video link 3"
+                            onBlur={handleBlur}
+                            errorMessage={errors.demo1 || errors.demo2 || errors.demo3} />
+                        </div>
 
-                      <PrimaryButton
-                        /*isDisabled={Object.keys(errors).length != 0}*/ style={{ marginBottom: '16px' }}
-                        onPress={() => {
-                          validateForm();
-                          if (Object.keys(errors).length != 0) {
-                            toast.error('Please fix the errors.');
-                            return;
-                          }
-                          return handleSubmit();
-                        }}
-                      >
-                        Set up profile
-                      </PrimaryButton>
-                    </>
-                  )}
+                        <PrimaryButton
+                          /*isDisabled={Object.keys(erros).length != 0}*/ 
+                          style={{ marginBottom: '16px' }}
+                          onPress={() => {
+                            validateForm();
+                            if (Object.keys(errors).length != 0) {
+                              toast.error('Please fix the errors.');
+                              return;
+                            }
+                            return handleSubmit();
+                          } }
+                        >
+                          Set up profile
+                        </PrimaryButton>
+                      </>
+                    );
+                  }}
                 </Formik>
               </ProfileDetailsContainer>
             </ContentWrapper>
