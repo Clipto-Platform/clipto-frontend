@@ -17,11 +17,11 @@ export const DEFAULT_CHAIN_ID = CHAIN_IDS.DAPPTOOLS;
 export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_MAINNET]: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
   [CHAIN_IDS.POLYGON_TESTNET]: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
-  [CHAIN_IDS.DAPPTOOLS]: '0xc8d8186307c07a7386F71565070536e5e6E05dDa',
+  [CHAIN_IDS.DAPPTOOLS]: '0x4D8F73460fCe0b79491AFa81337Dc3FA8c563320',
 };
 
 export const API_URL = 'http://localhost:8000';
-export const HELP_EMAIL = '<REPLACE ME>';
+export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
 
 export const DEV = true;

@@ -281,7 +281,7 @@ const BookingPage = () => {
                         }}
                         label="Amount to pay"
                         description={'Increase your bid to get your video earlier'}
-                        endText="ETH"
+                        endText="MATIC"
                         type="number"
                         placeholder={formatETH(parseFloat(creatorProfile.price)) + ' +'}
                         onChange={handleChange('amount')}
@@ -289,7 +289,7 @@ const BookingPage = () => {
                       />
                       {/* TODO(jonathanng) - make dynamic */}
                       <Description style={{ fontSize: 10 }}>
-                        * Currently a 10% fee is in place to support our developers
+                        * Currently a 10% fee is in place to support the platform
                       </Description>
                     </div>
                     <PrimaryButton

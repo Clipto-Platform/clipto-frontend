@@ -287,16 +287,16 @@ const OnboardProfilePage = () => {
                         <TextField
                           onChange={handleChange('price')}
                           label="Minimum amount to charge for bookings"
-                          description="Fans will be able to pay this in ETH"
+                          description="Fans will be able to pay this in MATIC"
                           placeholder="0.5"
                           type="number"
-                          endText="ETH"
+                          endText="MATIC"
                           onBlur={handleBlur}
                           errorMessage={errors.price}
                         />
                         {/* TODO(jonathanng) - make dynamic */}
                         <Description style={{ fontSize: 10 }}>
-                          * Currently a 10% fee is in place to support our developers
+                          * Currently a 10% fee is in place to support the platform
                         </Description>
                       </div>
 

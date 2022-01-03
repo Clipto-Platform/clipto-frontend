@@ -210,7 +210,11 @@ const SelectedOrderPage = (props: any) => {
                         );
                         const receipt = await tx.wait();
                         const verificationResult = await axios
-                          .post(`${API_URL}/request/finish`, { id: request.id })
+                          .post(`${API_URL}/request/finish`, {
+                            id: request.id,
+                            txHash: tx.hash,
+                            creatorAddress: account,
+                          })
                           .then(() => {
                             toast.success('Successfully completed order!');
                             setDone(true);
