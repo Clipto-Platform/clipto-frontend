@@ -135,7 +135,7 @@ const SelectedOrderPage = (props: any) => {
           setLoaded(true);
         });
     });
-  }, []);
+  }, [exchangeContract.address]);
 
   return (
     <>
