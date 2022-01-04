@@ -124,18 +124,16 @@ const SelectedOrderPage = (props: any) => {
   useEffect(() => {
     // const creator = location?.state!.request.creator;
     // const requestId = location.state.request.requestId;
-    exchangeContract.requests(creator!, requestId!).then((e) => {
-      axios
-        .get(`${API_URL}/request/creator/${creator}/${requestId}`)
-        .then((res) => {
-          setRequest(res.data);
-        })
-        .catch(console.error)
-        .finally(() => {
-          setLoaded(true);
-        });
-    });
-  }, [exchangeContract.address]);
+    axios
+      .get(`${API_URL}/request/creator/${creator}/${requestId}`)
+      .then((res) => {
+        setRequest(res.data);
+      })
+      .catch(console.error)
+      .finally(() => {
+        setLoaded(true);
+      });
+  }, []);
 
   return (
     <>
@@ -204,9 +202,11 @@ const SelectedOrderPage = (props: any) => {
                           toast.error('Request not found. Try reloading the page...');
                           return;
                         }
+                        console.log(requestId);
+                        console.log(uploadMetadata.animation_url.split('/').pop());
                         const tx = await exchangeContract.deliverRequest(
                           parseInt(requestId!),
-                          'ar://' + uploadMetadata.animation_url.split('.').pop(),
+                          'ar://' + uploadMetadata.animation_url.split('/').pop(),
                         );
                         const receipt = await tx.wait();
                         const verificationResult = await axios
