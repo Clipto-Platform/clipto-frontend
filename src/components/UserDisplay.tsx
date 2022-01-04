@@ -20,6 +20,7 @@ const ContainerWrapper = styled(PageContentWrapper)`
   flex: 1;
   width: 100%;
   // background-color: #0e0e0e;
+  
 `;
 
 const HeroTitle = styled.h1`
@@ -55,11 +56,13 @@ const UserCardContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  
 `;
 
 const UserImage = styled.img`
   max-height: 280px;
   width: 100%;
+  border-radius: 15px;
 `;
 
 const UserTitle = styled.div`

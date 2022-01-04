@@ -54,7 +54,7 @@ const OnboardProfile = styled.img`
 
 const OnboardProfilePage = () => {
   const userProfile = useProfile();
-  const { account } = useWeb3React<Web3Provider>();
+  const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
   const [creator, setCreator] = useState();
   const navigate = useNavigate();
