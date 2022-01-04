@@ -77,7 +77,9 @@ const OnboardingPage = () => {
     });
     if (verificationResult && verificationResult.data && verificationResult.data.includes) {
       userProfile.setUsername(verificationResult.data.includes.users[0].name);
-      userProfile.setProfilePicture(verificationResult.data.includes.users[0].profile_image_url);
+      userProfile.setProfilePicture(
+        verificationResult.data.includes.users[0].profile_image_url.replace('_normal', '_400x400'),
+      );
       userProfile.setAddress(account!);
       userProfile.setTweetUrl(tweetUrl);
       toast.success('Verified Twitter successfully!');

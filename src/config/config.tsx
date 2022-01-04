@@ -12,16 +12,17 @@ export const RPC_URLS: { [chainId: number]: string } = {
   [CHAIN_IDS.DAPPTOOLS]: 'http://localhost:8545',
 };
 
-export const DEFAULT_CHAIN_ID = CHAIN_IDS.DAPPTOOLS;
+export const DEFAULT_CHAIN_ID = CHAIN_IDS.POLYGON_MAINNET;
 
 export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
-  [CHAIN_IDS.POLYGON_MAINNET]: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
+  [CHAIN_IDS.POLYGON_MAINNET]: '0x475b5834085bf61A3B330eBd1c689ff8459258C2',
   [CHAIN_IDS.POLYGON_TESTNET]: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
-  [CHAIN_IDS.DAPPTOOLS]: '0x740985cFa783A763e57A0F04FE69F2bA29b34494',
+  [CHAIN_IDS.DAPPTOOLS]: '0x044F0f6f8e22d23687ED801EB7272E3AEB8606E5',
 };
 
-export const API_URL = 'http://localhost:8000';
-export const HELP_EMAIL = '<REPLACE ME>';
+export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
 
-export const DEV = true;
+export const DEV = false;
+
+export const API_URL = DEV ? 'http://localhost:8000' : 'https://api.clipto.io';

@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { Tweet } from 'react-twitter-widgets';
 import styled from 'styled-components';
 
 import { LeftChevronIcon, RightChevonIcon } from './Chevrons';
@@ -22,7 +23,7 @@ const ChevronContainer = styled.div`
 const ImageCardContainer = styled.div`
   width: 300px;
   min-width: 300px;
-  height: 440px;
+  height: 480px;
   object-fit: cover;
   border-radius: 16px;
   :not(:last-child) {
@@ -34,7 +35,7 @@ const ImageCardImg = styled.img`
   object-fit: cover;
   width: 300px;
   min-width: 300px;
-  height: 440px;
+  height: 480px;
   user-select: none;
 `;
 
@@ -56,6 +57,7 @@ const ImagesSliderContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: none;
+  overflow-y: hidden;
 `;
 
 const SliderControlsContainer = styled.div`
@@ -96,7 +98,7 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
         {props.images.map((imgSrc, n) => {
           return (
             <ImageCardContainer key={n.toString()}>
-              <ImageCardImg src={imgSrc} />
+              <Tweet options={{ theme: 'dark' }} tweetId={imgSrc.split('/').pop()?.split('?')[0] || '0'} />
             </ImageCardContainer>
           );
         })}

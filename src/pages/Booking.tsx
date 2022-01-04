@@ -41,7 +41,7 @@ const PageGrid = styled.div`
 
 const ImagesColumnContainer = styled.div`
   position: relative;
-  height: 440px;
+  height: 460px;
   max-width: 100%;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     overflow: hidden;
@@ -135,7 +135,8 @@ const BookingPage = () => {
       return;
     }
     const receipt = await tx.wait();
-    const requestId: number = receipt.events?.at(0)?.args?.index.toNumber();
+    console.log(receipt.events);
+    const requestId: number = receipt.events?.find((i) => i.event === 'NewRequest')?.args?.index.toNumber();
     const requestDat: CreateRequestDto = {
       requester,
       requestId,
@@ -239,7 +240,7 @@ const BookingPage = () => {
                     <PurchaseOption style={{ marginBottom: 40 }}>
                       <FlexRow style={{ marginBottom: 7 }}>
                         <Label>Personal use</Label>
-                        <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creatorProfile.price))} ETH +</Label>
+                        <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creatorProfile.price))} MATIC+</Label>
                       </FlexRow>
                       <Description>Personalized video for you or someone else</Description>
                     </PurchaseOption>
@@ -251,11 +252,11 @@ const BookingPage = () => {
                         type="number"
                         label={`Request deadline (${creatorProfile.deliveryTime} days minimum)`}
                         description={
-                          'If your video isn’t delivered by your requested deadline, you will receive an automatic refund.'
+                          "If your video isn't delivered by your requested deadline, you will be able to request a refund."
                         }
                         endText="Days"
                         onChange={handleChange('deadline')} //parseInt
-                        placeholder={`${creatorProfile.deliveryTime} days`}
+                        placeholder={`${creatorProfile.deliveryTime}+`}
                         errorMessage={errors.deadline}
                       />
                     </div>
@@ -281,16 +282,15 @@ const BookingPage = () => {
                         }}
                         label="Amount to pay"
                         description={'Increase your bid to get your video earlier'}
-                        endText="ETH"
+                        endText="MATIC"
                         type="number"
-                        placeholder={formatETH(parseFloat(creatorProfile.price)) + ' +'}
+                        placeholder={formatETH(parseFloat(creatorProfile.price)) + '+'}
                         onChange={handleChange('amount')}
-                        onBlur={(e) => {}}
                         errorMessage={errors.amount}
                       />
                       {/* TODO(jonathanng) - make dynamic */}
-                      <Description style={{ fontSize: 10 }}>
-                        * Currently a 10% fee is in place to support our developers
+                      <Description style={{ fontSize: 10, marginTop: '8px' }}>
+                        * Includes a 10% fee to support the platform
                       </Description>
                     </div>
                     <PrimaryButton

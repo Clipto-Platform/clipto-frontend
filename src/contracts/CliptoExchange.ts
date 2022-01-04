@@ -14,44 +14,60 @@ import {
   Signer,
   utils,
 } from 'ethers';
-import { EventFragment, FunctionFragment, Result } from '@ethersproject/abi';
+import { FunctionFragment, Result, EventFragment } from '@ethersproject/abi';
 import { Listener, Provider } from '@ethersproject/providers';
-import { OnEvent, TypedEvent, TypedEventFilter, TypedListener } from './common';
+import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export interface CliptoExchangeInterface extends utils.Interface {
   functions: {
     'TOKEN_IMPLEMENTATION()': FunctionFragment;
     'creators(address)': FunctionFragment;
     'deliverRequest(uint256,string)': FunctionFragment;
+    'feeRate()': FunctionFragment;
     'newRequest(address)': FunctionFragment;
+    'owner()': FunctionFragment;
     'refundRequest(address,uint256)': FunctionFragment;
     'registerCreator(string)': FunctionFragment;
     'requests(address,uint256)': FunctionFragment;
+    'scale()': FunctionFragment;
+    'setFee(uint256,uint256)': FunctionFragment;
+    'transferOwnership(address)': FunctionFragment;
     'updateRequest(address,uint256)': FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: 'TOKEN_IMPLEMENTATION', values?: undefined): string;
   encodeFunctionData(functionFragment: 'creators', values: [string]): string;
   encodeFunctionData(functionFragment: 'deliverRequest', values: [BigNumberish, string]): string;
+  encodeFunctionData(functionFragment: 'feeRate', values?: undefined): string;
   encodeFunctionData(functionFragment: 'newRequest', values: [string]): string;
+  encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
   encodeFunctionData(functionFragment: 'refundRequest', values: [string, BigNumberish]): string;
   encodeFunctionData(functionFragment: 'registerCreator', values: [string]): string;
   encodeFunctionData(functionFragment: 'requests', values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'scale', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'setFee', values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'transferOwnership', values: [string]): string;
   encodeFunctionData(functionFragment: 'updateRequest', values: [string, BigNumberish]): string;
 
   decodeFunctionResult(functionFragment: 'TOKEN_IMPLEMENTATION', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'creators', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'deliverRequest', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'feeRate', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'newRequest', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'refundRequest', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'registerCreator', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'requests', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'scale', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'setFee', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'transferOwnership', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'updateRequest', data: BytesLike): Result;
 
   events: {
     'CreatorRegistered(address,address)': EventFragment;
-    'DeliveredRequest(address,address,uint256,uint256)': EventFragment;
+    'DeliveredRequest(address,address,uint256,uint256,address,uint256)': EventFragment;
     'NewRequest(address,address,uint256,uint256)': EventFragment;
+    'OwnershipTransferred(address,address)': EventFragment;
     'RefundedRequest(address,address,uint256,uint256)': EventFragment;
     'RequestUpdated(address,address,uint256,uint256)': EventFragment;
   };
@@ -59,6 +75,7 @@ export interface CliptoExchangeInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'CreatorRegistered'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DeliveredRequest'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'NewRequest'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'RefundedRequest'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'RequestUpdated'): EventFragment;
 }
@@ -68,8 +85,15 @@ export type CreatorRegisteredEvent = TypedEvent<[string, string], { creator: str
 export type CreatorRegisteredEventFilter = TypedEventFilter<CreatorRegisteredEvent>;
 
 export type DeliveredRequestEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
-  { creator: string; requester: string; amount: BigNumber; index: BigNumber }
+  [string, string, BigNumber, BigNumber, string, BigNumber],
+  {
+    creator: string;
+    requester: string;
+    amount: BigNumber;
+    index: BigNumber;
+    tokenAddress: string;
+    tokenId: BigNumber;
+  }
 >;
 
 export type DeliveredRequestEventFilter = TypedEventFilter<DeliveredRequestEvent>;
@@ -80,6 +104,10 @@ export type NewRequestEvent = TypedEvent<
 >;
 
 export type NewRequestEventFilter = TypedEventFilter<NewRequestEvent>;
+
+export type OwnershipTransferredEvent = TypedEvent<[string, string], { oldOwner: string; newOwner: string }>;
+
+export type OwnershipTransferredEventFilter = TypedEventFilter<OwnershipTransferredEvent>;
 
 export type RefundedRequestEvent = TypedEvent<
   [string, string, BigNumber, BigNumber],
@@ -133,10 +161,14 @@ export interface CliptoExchange extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
+    feeRate(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     newRequest(
       creator: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
 
     refundRequest(
       creator: string,
@@ -161,6 +193,19 @@ export interface CliptoExchange extends BaseContract {
       }
     >;
 
+    scale(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    setFee(
+      _feeRate: BigNumberish,
+      _scale: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<ContractTransaction>;
+
     updateRequest(
       creator: string,
       index: BigNumberish,
@@ -178,10 +223,14 @@ export interface CliptoExchange extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
+  feeRate(overrides?: CallOverrides): Promise<BigNumber>;
+
   newRequest(
     creator: string,
     overrides?: PayableOverrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
 
   refundRequest(
     creator: string,
@@ -206,6 +255,19 @@ export interface CliptoExchange extends BaseContract {
     }
   >;
 
+  scale(overrides?: CallOverrides): Promise<BigNumber>;
+
+  setFee(
+    _feeRate: BigNumberish,
+    _scale: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> },
+  ): Promise<ContractTransaction>;
+
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> },
+  ): Promise<ContractTransaction>;
+
   updateRequest(
     creator: string,
     index: BigNumberish,
@@ -219,7 +281,11 @@ export interface CliptoExchange extends BaseContract {
 
     deliverRequest(index: BigNumberish, tokenURI: string, overrides?: CallOverrides): Promise<void>;
 
+    feeRate(overrides?: CallOverrides): Promise<BigNumber>;
+
     newRequest(creator: string, overrides?: CallOverrides): Promise<void>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
 
     refundRequest(creator: string, index: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -237,6 +303,12 @@ export interface CliptoExchange extends BaseContract {
       }
     >;
 
+    scale(overrides?: CallOverrides): Promise<BigNumber>;
+
+    setFee(_feeRate: BigNumberish, _scale: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    transferOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
+
     updateRequest(creator: string, index: BigNumberish, overrides?: CallOverrides): Promise<void>;
   };
 
@@ -244,17 +316,21 @@ export interface CliptoExchange extends BaseContract {
     'CreatorRegistered(address,address)'(creator?: string | null, token?: string | null): CreatorRegisteredEventFilter;
     CreatorRegistered(creator?: string | null, token?: string | null): CreatorRegisteredEventFilter;
 
-    'DeliveredRequest(address,address,uint256,uint256)'(
+    'DeliveredRequest(address,address,uint256,uint256,address,uint256)'(
       creator?: string | null,
       requester?: string | null,
       amount?: null,
       index?: null,
+      tokenAddress?: null,
+      tokenId?: null,
     ): DeliveredRequestEventFilter;
     DeliveredRequest(
       creator?: string | null,
       requester?: string | null,
       amount?: null,
       index?: null,
+      tokenAddress?: null,
+      tokenId?: null,
     ): DeliveredRequestEventFilter;
 
     'NewRequest(address,address,uint256,uint256)'(
@@ -264,6 +340,12 @@ export interface CliptoExchange extends BaseContract {
       index?: null,
     ): NewRequestEventFilter;
     NewRequest(creator?: string | null, requester?: string | null, amount?: null, index?: null): NewRequestEventFilter;
+
+    'OwnershipTransferred(address,address)'(
+      oldOwner?: string | null,
+      newOwner?: string | null,
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(oldOwner?: string | null, newOwner?: string | null): OwnershipTransferredEventFilter;
 
     'RefundedRequest(address,address,uint256,uint256)'(
       creator?: string | null,
@@ -303,7 +385,11 @@ export interface CliptoExchange extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
+    feeRate(overrides?: CallOverrides): Promise<BigNumber>;
+
     newRequest(creator: string, overrides?: PayableOverrides & { from?: string | Promise<string> }): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     refundRequest(
       creator: string,
@@ -317,6 +403,19 @@ export interface CliptoExchange extends BaseContract {
     ): Promise<BigNumber>;
 
     requests(arg0: string, arg1: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    scale(overrides?: CallOverrides): Promise<BigNumber>;
+
+    setFee(
+      _feeRate: BigNumberish,
+      _scale: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<BigNumber>;
 
     updateRequest(
       creator: string,
@@ -336,10 +435,14 @@ export interface CliptoExchange extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
+    feeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     newRequest(
       creator: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     refundRequest(
       creator: string,
@@ -353,6 +456,19 @@ export interface CliptoExchange extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     requests(arg0: string, arg1: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    scale(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    setFee(
+      _feeRate: BigNumberish,
+      _scale: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<PopulatedTransaction>;
 
     updateRequest(
       creator: string,
