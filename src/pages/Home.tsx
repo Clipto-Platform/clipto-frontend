@@ -1,11 +1,11 @@
 import styled, { useTheme } from 'styled-components';
 
 // Sample image assets
-import pfp1 from '../assets/images/pfps/1.png';
+import pfp1 from '../assets/images/pfps/g1.jpeg';
 import pfp2 from '../assets/images/pfps/2.png';
 import pfp3 from '../assets/images/pfps/3.png';
-import pfp4 from '../assets/images/pfps/4.png';
-import pfp5 from '../assets/images/pfps/5.png';
+import pfp4 from '../assets/images/pfps/g2.jpeg';
+import pfp5 from '../assets/images/pfps/cc.png';
 // Components
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
@@ -14,44 +14,52 @@ import { User, UserDisplay } from '../components/UserDisplay';
 // TODO(johnrjj) - Fetch remotely
 const featuredUsers: Array<User> = [
   {
-    name: 'Gabriel Haines',
-    shortDescription: 'Idea instigator',
-    price: '100 USDC',
+    name: 'Gabriel Haines.eth',
+    shortDescription: 'Protocol Designer',
+    price: '10 MATIC',
     src: pfp1,
     uid: '1111',
-    address: '1',
+    address: '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8',
   },
+  // {
+  //   name: 'Dave White',
+  //   shortDescription: 'Protocol Designer',
+  //   price: '100 USDC',
+  //   src: pfp2,
+  //   uid: '2222',
+  //   address: '1',
+  // },
+  // {
+  //   name: 'jseam',
+  //   shortDescription: 'Handy-dandy builder',
+  //   price: '100 USDC',
+  //   src: pfp3,
+  //   uid: '3333',
+  //   address: '1',
+  // },
+  // {
+  //   name: 'Artemilse',
+  //   shortDescription: 'Product designer',
+  //   price: '100 USDC',
+  //   src: pfp4,
+  //   uid: '4444',
+  //   address: '1',
+  // },
   {
-    name: 'Dave White',
-    shortDescription: 'Protocol Designer',
-    price: '100 USDC',
-    src: pfp2,
-    uid: '2222',
-    address: '1',
-  },
-  {
-    name: 'jseam',
-    shortDescription: 'Handy-dandy builder',
-    price: '100 USDC',
-    src: pfp3,
-    uid: '3333',
-    address: '1',
-  },
-  {
-    name: 'Artemilse',
-    shortDescription: 'Product designer',
-    price: '100 USDC',
+    name: 'Ape dev',
+    shortDescription: 'Lead engineer',
+    price: '1 MATIC',
     src: pfp4,
     uid: '4444',
-    address: '1',
+    address: '0x293d9eAb4a6b6DCD263d71e74C1bD7d83Fef5063',
   },
   {
     name: 'CC0maxi',
     shortDescription: 'Web3 designer',
-    price: '100 USDC',
+    price: '3 MATIC',
     src: pfp5,
     uid: '5555',
-    address: '1',
+    address: '0xD795A0743A105C40b4D174e7F9DbF8A60cB0Cf15',
   },
 ];
 
