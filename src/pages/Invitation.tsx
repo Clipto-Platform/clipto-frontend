@@ -5,7 +5,7 @@ import styled, { useTheme } from 'styled-components';
 import { PrimaryButton } from '../components/Button';
 import { HeaderSpacer } from '../components/Header';
 import TwitterIcon from '../components/icons/TwitterIcon';
-import { Container, PageContentWrapper, PageWrapper } from '../components/layout/Common';
+import { CenterContainer, Container, PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { useProfile } from '../hooks/useProfile';
 import { colors } from '../styles/theme';
 import { Description, Text } from '../styles/typography';
@@ -22,13 +22,6 @@ const OnboardTitle = styled.h1`
   display: block;
   margin: auto;
   margin-bottom: 30px;
-`;
-
-const CenterContainer = styled(Container)`
-  max-width: 1000px;
-  display: block;
-  margin: auto;
-  margin-top: 45px;
 `;
 
 export interface BountyConfirmationProps {
@@ -51,7 +44,7 @@ const InvitationPage = (props: BountyConfirmationProps) => {
         <PageContentWrapper>
           {/* TODO(jonathanng) - fix spacing to better match figma */}
           {/* paddingTop will probably need to change depending on what containers it is put in */}
-          <CenterContainer style={{ textAlign: 'center' }}>
+          <CenterContainer style={{ textAlign: 'center', maxWidth: 1000 }}>
             <OnboardTitle style={{ marginTop: '14px' }}>You have been invited to create a video NFT</OnboardTitle>
             {/* TODO(jonathanng) - add names below XAvatorOrb */}
             <Description style={{ marginTop: '50px', color: colors.white }}>

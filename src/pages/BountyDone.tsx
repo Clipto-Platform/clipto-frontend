@@ -7,7 +7,7 @@ import { PrimaryButton } from '../components/Button';
 import { HeaderSpacer } from '../components/Header';
 import SuccessIcon from '../components/icons/SuccessIcon';
 import TwitterIcon from '../components/icons/TwitterIcon';
-import { Container, PageContentWrapper, PageWrapper } from '../components/layout/Common';
+import { CenterContainer, Container, PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { useProfile } from '../hooks/useProfile';
 import { Description, Label, Text } from '../styles/typography';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
@@ -25,43 +25,6 @@ const OnboardTitle = styled.h1`
   margin-bottom: 30px;
 `;
 
-const Subtitle = styled(Text)`
-  text-align: center;
-  font-size: 18px;
-`;
-
-const CenterContainer = styled(Container)`
-  max-width: 700px;
-  display: block;
-  margin: auto;
-  margin-top: 45px;
-`;
-
-const StepLabel = styled(Text)`
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  margin-bottom: 4px;
-`;
-
-const OnboardingHr = styled.hr`
-  margin-left: -20px;
-  width: calc(100% + 40px);
-  height: 1px;
-  border: none;
-  background-color: ${({ theme }) => theme.border};
-  margin-top: 10px;
-  margin-bottom: 10px;
-`;
-
-const StepDescription = styled(Text)`
-  font-size: 18px;
-  line-height: 140%;
-`;
-
-const FieldWrapper = styled.div`
-  margin-bottom: 26px;
-`;
 export interface BountyConfirmationProps {
   // title: string;
   // instructions: string;
@@ -81,7 +44,7 @@ const BountyDone = (props: BountyConfirmationProps) => {
         <PageContentWrapper>
           {/* TODO(jonathanng) - fix spacing to better match figma */}
           {/* paddingTop will probably need to change depending on what containers it is put in */}
-          <CenterContainer style={{ textAlign: 'center' }}>
+          <CenterContainer style={{ textAlign: 'center', maxWidth: 700 }}>
             <SuccessIcon />
             <OnboardTitle style={{ marginTop: '14px' }}>Success</OnboardTitle>
             <div
@@ -114,7 +77,7 @@ const BountyDone = (props: BountyConfirmationProps) => {
             <PrimaryButton
               // style={{ borderWidth: 100, backgroundColor: colors.black, color: colors.yellow, borderColor: colors.yellow }}
               variant="secondary"
-              onPress={() => {}}
+              onPress={() => { }}
             >
               Copy Shareable Link
             </PrimaryButton>

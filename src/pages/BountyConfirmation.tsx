@@ -5,7 +5,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { PrimaryButton } from '../components/Button';
 import { ConfirmationText } from '../components/ConfirmationText';
-import { Container, FieldWrapper } from '../components/layout/Common';
+import { CenterContainer, Container, FieldWrapper } from '../components/layout/Common';
 import { useProfile } from '../hooks/useProfile';
 import { Text } from '../styles/typography';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
@@ -23,10 +23,6 @@ const OnboardTitle = styled.h1`
   margin-bottom: 30px;
 `;
 
-const Subtitle = styled(Text)`
-  text-align: center;
-  font-size: 18px;
-`;
 
 const HR = styled.div`
   height: 1px;
@@ -35,11 +31,6 @@ const HR = styled.div`
   background-color: ${(props) => props.theme.border};
 `;
 
-const CenterContainer = styled(Container)`
-  display: block;
-  margin: auto;
-  margin-top: 45px;
-`;
 
 export interface BountyConfirmationProps {
   title: string;

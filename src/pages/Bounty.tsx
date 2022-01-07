@@ -5,7 +5,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { Container, ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
+import { CenterContainer, Container, ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
 import { useProfile } from '../hooks/useProfile';
 import { Text } from '../styles/typography';
@@ -23,34 +23,6 @@ const OnboardTitle = styled.h1`
   display: block;
   margin: auto;
   margin-bottom: 30px;
-`;
-
-const Subtitle = styled(Text)`
-  text-align: center;
-  font-size: 18px;
-`;
-
-const CenterContainer = styled(Container)`
-  display: block;
-  margin: auto;
-  margin-top: 45px;
-`;
-
-const StepLabel = styled(Text)`
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  margin-bottom: 4px;
-`;
-
-const OnboardingHr = styled.hr`
-  margin-left: -20px;
-  width: calc(100% + 40px);
-  height: 1px;
-  border: none;
-  background-color: ${({ theme }) => theme.border};
-  margin-top: 10px;
-  margin-bottom: 10px;
 `;
 
 const FieldWrapper = styled.div`
