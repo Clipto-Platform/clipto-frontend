@@ -122,8 +122,6 @@ const SelectedOrderPage = (props: any) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   useEffect(() => {
-    // const creator = location?.state!.request.creator;
-    // const requestId = location.state.request.requestId;
     axios
       .get(`${API_URL}/request/creator/${creator}/${requestId}`)
       .then((res) => {

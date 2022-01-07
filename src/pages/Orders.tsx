@@ -2,6 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
@@ -46,7 +47,7 @@ const OrdersPage = () => {
   const [requestsToUser, setRequestsToUser] = useState<CreateRequestDto[]>([]);
   const { account } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const getRequests = async () => {
       if (account) {
@@ -73,9 +74,8 @@ const OrdersPage = () => {
                   <OrderCard key={i!.index!} request={i}>
                     {i.delivered && (
                       <PrimaryButton
-                        link={{
-                          to: `/orders/${i.creator}/${i.requestId}`,
-                          state: { request: i },
+                        onPress={() => {
+                          navigate(`/orders/${i.creator}/${i.requestId}`)
                         }}
                         size="small"
                         width="small"
@@ -121,9 +121,8 @@ const OrdersPage = () => {
                   <OrderCard key={i!.index!} request={i}>
                     {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
                       <PrimaryButton
-                        link={{
-                          to: `/orders/${i.creator}/${i.requestId}`,
-                          state: { request: i },
+                        onPress={() => {
+                          navigate(`/orders/${i.creator}/${i.requestId}`)
                         }}
                         size="small"
                         width="small"
@@ -137,9 +136,8 @@ const OrdersPage = () => {
                     )}
                     {i.delivered && (
                       <PrimaryButton
-                        link={{
-                          to: `/orders/${i.creator}/${i.requestId}`,
-                          state: { request: i },
+                        onPress={() => {
+                          navigate(`/orders/${i.creator}/${i.requestId}`)
                         }}
                         variant="secondary"
                         size="small"
