@@ -24,15 +24,6 @@ const PageGrid = styled.div`
   `}
 `;
 
-const ImagesColumnContainer = styled.div`
-  position: relative;
-  height: 440px;
-  max-width: 100%;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    overflow: hidden;
-  `}
-`;
-
 const BookingCard = styled.div`
   background: ${(props) => props.theme.black};
   border: 1px solid ${(props) => props.theme.border};

@@ -53,11 +53,6 @@ const OnboardingHr = styled.hr`
   margin-bottom: 10px;
 `;
 
-const StepDescription = styled(Text)`
-  font-size: 18px;
-  line-height: 140%;
-`;
-
 const FieldWrapper = styled.div`
   margin-bottom: 26px;
 `;
@@ -118,9 +113,8 @@ const BountyPage = () => {
                     onChange={(e) => setRequestDue(e)}
                     label="Request deadline (3 days minimum)"
                     description="If your video isn't delivered by your requested deadline, you will receive an automatic refund."
-                    placeholder={`${new Date().toLocaleString('default', { month: 'long' })} ${
-                      new Date().getDate() + 3
-                    }, ${new Date().getFullYear()}`}
+                    placeholder={`${new Date().toLocaleString('default', { month: 'long' })} ${new Date().getDate() + 3
+                      }, ${new Date().getFullYear()}`}
                   />
                 </FieldWrapper>
                 <FieldWrapper>

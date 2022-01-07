@@ -24,11 +24,6 @@ const OnboardTitle = styled.h1`
   margin-bottom: 30px;
 `;
 
-const Subtitle = styled(Text)`
-  text-align: center;
-  font-size: 18px;
-`;
-
 const CenterContainer = styled(Container)`
   max-width: 1000px;
   display: block;
@@ -36,31 +31,6 @@ const CenterContainer = styled(Container)`
   margin-top: 45px;
 `;
 
-const StepLabel = styled(Text)`
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  margin-bottom: 4px;
-`;
-
-const OnboardingHr = styled.hr`
-  margin-left: -20px;
-  width: calc(100% + 40px);
-  height: 1px;
-  border: none;
-  background-color: ${({ theme }) => theme.border};
-  margin-top: 10px;
-  margin-bottom: 10px;
-`;
-
-const StepDescription = styled(Text)`
-  font-size: 18px;
-  line-height: 140%;
-`;
-
-const FieldWrapper = styled.div`
-  margin-bottom: 26px;
-`;
 export interface BountyConfirmationProps {
   // title: string;
   // instructions: string;
