@@ -1,17 +1,16 @@
 export const DEV = true;
 
-const SYMBOLS = {
-  'ETH': 'ETH',
-  'MATIC': 'MATIC'
-}
-
-export const SYMBOL = DEV ? SYMBOLS.ETH : SYMBOLS.MATIC
-
 export const CHAIN_IDS = {
   POLYGON_MAINNET: 137,
   POLYGON_TESTNET: 80001,
   DAPPTOOLS: 99,
 };
+
+const SYMBOLS = {
+  [CHAIN_IDS.POLYGON_MAINNET]: 'MATIC',
+  [CHAIN_IDS.POLYGON_TESTNET]: 'MATIC',
+  [CHAIN_IDS.DAPPTOOLS]: 'ETH'
+}
 
 export const POLLING_INTERVAL = 12000;
 
@@ -22,6 +21,7 @@ export const RPC_URLS: { [chainId: number]: string } = {
 };
 
 export const DEFAULT_CHAIN_ID = DEV ? CHAIN_IDS.DAPPTOOLS : CHAIN_IDS.POLYGON_MAINNET;
+export const SYMBOL = SYMBOLS[DEFAULT_CHAIN_ID]
 
 export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_MAINNET]: '0x475b5834085bf61A3B330eBd1c689ff8459258C2',
