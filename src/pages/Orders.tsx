@@ -26,7 +26,7 @@ export type Request = {
   deadline: number
   delivered: boolean
   txHash: string
-  created: Date
+  created: string
 }
 
 export const Status = styled.div`
@@ -83,7 +83,7 @@ const OrdersPage = () => {
             <Item key="purchased" title="Purchased">
               <TabContent>
                 {requestsByUser.map((i, n) => (
-                  <OrderCard key={i!.index!} request={i}>
+                  <OrderCard key={i.id} request={i}>
                     {i.delivered && (
                       <PrimaryButton
                         onPress={() => {
@@ -92,6 +92,7 @@ const OrdersPage = () => {
                         size="small"
                         width="small"
                         style={{ marginTop: 20 }}
+                        isDisabled={true}
                       >
                         View clip
                       </PrimaryButton>
@@ -107,7 +108,7 @@ const OrdersPage = () => {
                         style={{ marginTop: 20 }}
                         onPress={async () => {
                           //TODO(jonathanng) - when refunded, ui doesn't update. Also reload results in view clip button
-                          const tx = await exchangeContract.refundRequest(i.creator, i.index!);
+                          const tx = await exchangeContract.refundRequest(i.creator, i.requestId);
                           await tx.wait();
                           const verificationResult = await axios
                             .post(`${API_URL}/request/finish`, { id: i.id })
@@ -130,7 +131,7 @@ const OrdersPage = () => {
             <Item key="received" title="Received">
               <TabContent>
                 {requestsToUser.map((i, n, f) => (
-                  <OrderCard key={i!.index!} request={i}>
+                  <OrderCard key={i.id} request={i}>
                     {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
                       <PrimaryButton
                         onPress={() => {
@@ -155,6 +156,7 @@ const OrdersPage = () => {
                         size="small"
                         width="small"
                         style={{ marginTop: 20 }}
+                        isDisabled={true}
                       >
                         View clip
                       </PrimaryButton>
