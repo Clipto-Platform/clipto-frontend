@@ -9,6 +9,7 @@ import create, { State } from 'zustand';
 
 import { API_URL, DEV } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
+import { useCreator } from '../hooks/useCreator';
 import { useEagerConnect } from '../hooks/useEagerConnect';
 import { useEns } from '../hooks/useEns';
 import { useInactiveListener } from '../hooks/useInactiveListener';
@@ -117,7 +118,7 @@ const useHeaderStore = create<HeaderStore>(
 );
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface HeaderProps {}
+export interface HeaderProps { }
 
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
@@ -132,7 +133,6 @@ const Header: React.FC<HeaderProps> = () => {
   const hasTriedEagerConnect = useEagerConnect();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loggedInProfile, setLoggedInProfile] = useState<Partial<UserProfile>>();
 
   useEffect(() => {
     setHasTriedEagerConnecting(hasTriedEagerConnect);
@@ -194,20 +194,8 @@ const Header: React.FC<HeaderProps> = () => {
 
   useInactiveListener(!hasTriedEagerConnect);
 
-  useEffect(() => {
-    const getCreatorData = async () => {
-      if (account) {
-        let userProfile;
-        try {
-          userProfile = await axios.get(`${API_URL}/user/${account}`);
-          setLoggedInProfile(userProfile.data);
-        } catch (e) {
-          console.log('Failed to find creator account for userProfile');
-        }
-      }
-    };
-    getCreatorData();
-  }, [account]);
+  const { creator } = useCreator(account);
+  const loggedInProfile = creator;
 
   return (
     <>

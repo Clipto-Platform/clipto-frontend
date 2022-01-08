@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { API_URL } from '../config/config';
+import { useCreator } from '../hooks/useCreator';
 import { UserProfile } from '../hooks/useProfile';
 import { CreateRequestDto } from '../pages/Booking';
 import { theme } from '../styles/theme';
@@ -79,8 +80,8 @@ const BidAmount = styled(Text)`
 `;
 
 const OrderCard: React.FC<OrderCardProps> = (props) => {
-  const [creator, setCreator] = useState<UserProfile>();
-  const getDeadline = () => {
+  const { creator, loaded } = useCreator(props.request.creator);
+  const getDeadline = () => { //TODO(jonathanng) - move to time.ts
     const creationDate: Date = new Date(props.request!.created!);
     creationDate.setDate(creationDate.getDate() + (props.request?.deadline || 0));
     const mmRemaining = creationDate.getTime() - Date.now();
@@ -91,16 +92,6 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
     return creationDate.toLocaleDateString();
   };
 
-  useEffect(() => {
-    console.log(props.request);
-    const getCreator = async () => {
-      const restContractProfile = await axios.get(`${API_URL}/user/${props.request.creator}`);
-      if (restContractProfile) {
-        setCreator(restContractProfile.data);
-      }
-    };
-    getCreator();
-  }, []);
   return (
     <OrderCardContainer>
       <OrderCardTopRowContainer>
