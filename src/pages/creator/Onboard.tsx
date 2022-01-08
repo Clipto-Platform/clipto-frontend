@@ -70,6 +70,7 @@ const OnboardingPage = () => {
   const navigate = useNavigate();
   const { account } = useWeb3React<Web3Provider>();
   const [tweetUrl, setTweetUrl] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const verifyTwitterUser = async () => {
     const verificationResult = await axios.post(`${API_URL}/user/verify`, { tweetUrl, address: account }).catch((e) => {
@@ -138,14 +139,17 @@ const OnboardingPage = () => {
 
               <PrimaryButton
                 style={{ marginBottom: '16px' }}
-                onPress={() => {
+                onPress={async () => {
+                  setLoading(true)
                   try {
                     Url.parse(tweetUrl);
-                    verifyTwitterUser();
+                    await verifyTwitterUser();
                   } catch (e) {
                     errorHandle(e, toast.error);
                   }
+                  setLoading(false)
                 }}
+                isDisabled={loading}
               >
                 Confirm
               </PrimaryButton>

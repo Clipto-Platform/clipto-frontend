@@ -20,7 +20,7 @@ import { useExchangeContract } from '../hooks/useContracts';
 import { Description, Label } from '../styles/typography';
 import { extractResumeableUrl } from '../utils/http';
 import { CreateRequestDto } from './Booking';
-
+import { Request } from './Orders';
 const BookingCard = styled.div`
   background: ${(props) => props.theme.lessDarkGray};
   border: 1px solid ${(props) => props.theme.border};
@@ -67,9 +67,9 @@ const SelectedOrderPage = (props: any) => {
   const { account } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
   const { creator, requestId } = useParams();
-  const [request, setRequest] = useState<CreateRequestDto>();
+  const [request, setRequest] = useState<Request>();
   const [loaded, setLoaded] = useState<boolean>(false);
-
+  const [loading, setLoading] = useState<boolean>(false);
   const onDrop = useCallback(async <T extends File>(acceptedFiles: T[]) => {
     const uploadReq = await axios.post(`${API_URL}/upload`, { extension: acceptedFiles[0].name.split('.').pop() });
 
@@ -195,7 +195,7 @@ const SelectedOrderPage = (props: any) => {
                   <div style={{ display: 'flex', marginBottom: 20 }}>
                     <PrimaryButton
                       onPress={async () => {
-                        //TODO(jonathanng) - get actual request
+
                         if (!request) {
                           toast.error('Request not found. Try reloading the page...');
                           return;
@@ -223,6 +223,8 @@ const SelectedOrderPage = (props: any) => {
                       }}
                       size="small"
                       style={{ marginRight: 20 }}
+                    //TODO(jonathanng) - can't test so will not mess with this
+                    //isDisabled={loading}
                     >
                       Mint and send NFT
                     </PrimaryButton>
