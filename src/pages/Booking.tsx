@@ -102,6 +102,7 @@ export interface ReadUserDto {
 const BookingPage = () => {
   const { creatorId } = useParams();
   const { account } = useWeb3React<Web3Provider>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const exchangeContract = useExchangeContract(true);
   const [creatorProfile, setCreatorProfile] = useState<ReadUserDto>();
@@ -195,15 +196,15 @@ const BookingPage = () => {
             {creatorProfile && account && (
               <Formik
                 initialValues={{
-                  deadline: 0,
+                  deadline: '0',
                   description: '',
-                  amount: 0,
+                  amount: '0',
                 }}
                 validate={({ deadline, description, amount }) => {
                   const errors: any = {};
                   try {
-                    Number.parse(parseFloat(amount.toString()));
-                    if (formatETH(parseFloat(amount.toString())) < formatETH(parseFloat(creatorProfile.price))) {
+                    Number.parse(parseFloat(amount));
+                    if (parseFloat(amount) < parseFloat(creatorProfile.price)) {
                       errors.amount = `Amount must be greator than ${creatorProfile.price}`;
                     }
                   } catch {
@@ -215,8 +216,8 @@ const BookingPage = () => {
                     try {
                       Number.parse(parseInt(deadline.toString()));
                       if (
-                        formatETH(parseInt(deadline.toString())) <
-                        formatETH(parseInt(creatorProfile.deliveryTime.toString()))
+                        parseInt(deadline.toString()) <
+                        parseInt(creatorProfile.deliveryTime.toString())
                       ) {
                         errors.deadline = `Deadline must be greator than ${creatorProfile.deliveryTime}`;
                       }
@@ -231,8 +232,10 @@ const BookingPage = () => {
                 }}
                 validateOnBlur={false}
                 validateOnChange={false}
-                onSubmit={({ deadline, description, amount }) => {
-                  makeBooking(account, creatorProfile.address, amount.toString(), description, deadline);
+                onSubmit={async ({ deadline, description, amount }) => {
+                  setLoading(true)
+                  await makeBooking(account, creatorProfile.address, amount.toString(), description, deadline);
+                  setLoading(false)
                 }}
               >
                 {({ initialValues, handleChange, handleSubmit, errors, validateForm }) => (
@@ -302,7 +305,7 @@ const BookingPage = () => {
                         }
                         return handleSubmit();
                       }}
-                      isDisabled={false}
+                      isDisabled={loading}
                     >
                       Book now
                     </PrimaryButton>
