@@ -15,7 +15,7 @@ import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../component
 import { TextField } from '../../components/TextField';
 import { API_URL, DEV, HELP_EMAIL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
-import { CreateUserDto, CreateUserDtoFull, UserProfile } from '../../hooks/useProfile';
+import { CreateUserDtoFull, UserProfile } from '../../hooks/useProfile';
 import { useProfile, values } from '../../hooks/useProfile';
 import { Description } from '../../styles/typography';
 import { formatETH } from '../../utils/format';
@@ -59,23 +59,13 @@ const OnboardProfilePage = () => {
   const [creator, setCreator] = useState();
   const navigate = useNavigate();
 
-  const createUserProfile = async (vals: any) => {
+  const createUserProfile = async (vals: CreateUserDtoFull) => {
     const profile = values(userProfile);
 
-    // const exampleOfValidReq = {
-    //   "bio": "asdf",
-    //   "userName": "crypto test",
-    //   "profilePicture": "https://pbs.twimg.com/profile_images/1474767708512215050/mgDnq1_J_normal.png",
-    //   "deliveryTime": 3,
-    //   "price": 1,
-    //   "tweetUrl": "https://twitter.com/cryptot56280295/status/1475688719227232271",
-    //   "address": "0x4e78d8b8F17443dF9b92f07fd322d1aB1DA91365",
-    //   "demos": []
-    // }
     let verificationResult;
     try {
       verificationResult = await axios.post(`${API_URL}/user/create`, { ...vals });
-    } catch (ex) {
+    } catch (ex: any) {
       verificationResult = ex.response;
     }
 
