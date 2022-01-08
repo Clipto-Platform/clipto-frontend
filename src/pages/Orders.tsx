@@ -15,7 +15,19 @@ import { Item, Tabs } from '../components/Tabs';
 import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { checkIfDeadlinePassed } from '../utils/time';
-import { CreateRequestDto } from './Booking';
+
+export type Request = {
+  id: number
+  requestId: number
+  requester: string
+  creator: string
+  amount: string
+  description: string
+  deadline: number
+  delivered: boolean
+  txHash: string
+  created: Date
+}
 
 export const Status = styled.div`
   width: 90px;
@@ -43,8 +55,8 @@ const SingleColumnPageContent = styled(PageContentWrapper)`
 `;
 
 const OrdersPage = () => {
-  const [requestsByUser, setRequestsByUser] = useState<CreateRequestDto[]>([]);
-  const [requestsToUser, setRequestsToUser] = useState<CreateRequestDto[]>([]);
+  const [requestsByUser, setRequestsByUser] = useState<Request[]>([]);
+  const [requestsToUser, setRequestsToUser] = useState<Request[]>([]);
   const { account } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
   const navigate = useNavigate();
