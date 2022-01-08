@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ContentWrapper, PageContentWrapper } from '../components/layout/Common';
+import { SYMBOL } from '../config/config';
 import { formatETH } from '../utils/format';
 
 export interface User {
@@ -102,7 +103,7 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
                     <UserTitle style={{ marginBottom: 4 }}>{user.name}</UserTitle>
                     <UserDescription style={{ marginBottom: 16 }}>{user.shortDescription}</UserDescription>
                     <UserStartingPrice>
-                      From <span style={{ fontWeight: 700 }}>{formatETH(parseFloat(user.price))} MATIC</span>
+                      From <span style={{ fontWeight: 700 }}>{formatETH(parseFloat(user.price))} {SYMBOL}</span>
                     </UserStartingPrice>
                   </UserCardContainer>
                 </Link>

@@ -9,6 +9,7 @@ import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/l
 import { User, UserDisplay } from '../components/UserDisplay';
 import { API_URL } from '../config/config';
 
+import { SYMBOL } from '../config/config';
 const FeaturedContainerWrapper = styled(PageContentWrapper)`
   display: flex;
   flex: 1;
@@ -27,7 +28,7 @@ const ExplorePage = () => {
           return {
             name: u.userName,
             shortDescription: u.twitterHandle,
-            price: u.price + ' ETH',
+            price: u.price + ' ' + SYMBOL,
             src: u.profilePicture,
             uid: u.id,
             address: u.address,

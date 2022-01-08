@@ -14,7 +14,7 @@ import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ImagesSlider } from '../components/ImagesSlider';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
-import { API_URL } from '../config/config';
+import { API_URL, SYMBOL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { CreateUserDto, UserProfile } from '../hooks/useProfile';
 import { theme } from '../styles/theme';
@@ -240,7 +240,7 @@ const BookingPage = () => {
                     <PurchaseOption style={{ marginBottom: 40 }}>
                       <FlexRow style={{ marginBottom: 7 }}>
                         <Label>Personal use</Label>
-                        <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creatorProfile.price))} MATIC+</Label>
+                        <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creatorProfile.price))} {SYMBOL}+</Label>
                       </FlexRow>
                       <Description>Personalized video for you or someone else</Description>
                     </PurchaseOption>
@@ -282,7 +282,7 @@ const BookingPage = () => {
                         }}
                         label="Amount to pay"
                         description={'Increase your bid to get your video earlier'}
-                        endText="MATIC"
+                        endText={SYMBOL}
                         type="number"
                         placeholder={formatETH(parseFloat(creatorProfile.price)) + '+'}
                         onChange={handleChange('amount')}

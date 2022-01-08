@@ -1,5 +1,12 @@
 export const DEV = true;
 
+const SYMBOLS = {
+  'ETH': 'ETH',
+  'MATIC': 'MATIC'
+}
+
+export const SYMBOL = DEV ? SYMBOLS.ETH : SYMBOLS.MATIC
+
 export const CHAIN_IDS = {
   POLYGON_MAINNET: 137,
   POLYGON_TESTNET: 80001,
