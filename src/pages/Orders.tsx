@@ -14,6 +14,7 @@ import { OrderCard } from '../components/OrderCard';
 import { Item, Tabs } from '../components/Tabs';
 import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
+import { Description, Label } from '../styles/typography';
 import { checkIfDeadlinePassed } from '../utils/time';
 
 export type Request = {
@@ -82,7 +83,25 @@ const OrdersPage = () => {
           <Tabs aria-label="View received and purchased orders">
             <Item key="purchased" title="Purchased">
               <TabContent>
-                {requestsByUser.map((i, n) => (
+                {requestsToUser.length === 0 && (
+                  <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
+                    <div style={{ display: 'block', width: '100%' }}>
+                      <Label style={{ marginBottom: '40px' }}>You haven’t made any booking requests yet.</Label>
+                      {/* <Description>Set up your creator profile to start receiving bookings.</Description> */}
+                      <PrimaryButton
+                        onPress={() => {
+                          navigate(`/explore`)
+                        }}
+                        size="small"
+                        width="small"
+                        style={{ marginTop: 20, margin: 'auto' }}
+                      >
+                        Explore creators
+                      </PrimaryButton>
+                    </div >
+                  </ div>
+                )}
+                {requestsToUser.length !== 0 && requestsByUser.map((i, n) => (
                   <OrderCard key={i.id} request={i}>
                     {i.delivered && (
                       <PrimaryButton
@@ -130,7 +149,16 @@ const OrdersPage = () => {
             </Item>
             <Item key="received" title="Received">
               <TabContent>
-                {requestsToUser.map((i, n, f) => (
+                {requestsToUser.length === 0 && (
+                  <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
+                    <div style={{ display: 'block', width: '100%' }}>
+                      <Label style={{ marginBottom: '24px' }}>You haven’t received any booking requests yet.</Label>
+                      {/* <Description>Set up your creator profile to start receiving bookings.</Description> */}
+                      {/* Note(jonathanng) - currently /orders is not accessible for noncreators */}
+                    </div >
+                  </ div>
+                )}
+                {requestsToUser.length !== 0 && requestsToUser.map((i, n, f) => (
                   <OrderCard key={i.id} request={i}>
                     {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
                       <PrimaryButton

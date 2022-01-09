@@ -9,6 +9,7 @@ export const PageWrapper = styled.div<{ blur?: boolean }>`
   min-height: 100vh;
   position: relative;
   overflow: hidden;
+  padding-bottom: 120px;
 `;
 
 export const PageContentWrapper = styled.div`

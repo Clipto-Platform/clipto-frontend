@@ -88,7 +88,7 @@ const HomePage = () => {
             </HeroTitle>
           </ContentWrapper>
         </PageContentWrapper>
-        <UserDisplay users={featuredUsers} title="Featured" style={{ marginBottom: 40 }} />
+        <UserDisplay users={featuredUsers} title="Featured" />
       </PageWrapper>
     </>
   );

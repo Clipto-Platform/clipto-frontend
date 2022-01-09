@@ -47,11 +47,7 @@ const ExplorePage = () => {
       <PageWrapper>
         <HeaderSpacer />
         <HeaderContentGapSpacer />
-        <FeaturedContainerWrapper>
-          <ContentWrapper>
-            <UserDisplay title="Explore the community" users={users} />
-          </ContentWrapper>
-        </FeaturedContainerWrapper>
+        <UserDisplay title="Explore the community" users={users} />
       </PageWrapper>
     </>
   );

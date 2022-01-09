@@ -3,7 +3,7 @@ import { OverlayContainer } from '@react-aria/overlays';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
 
@@ -23,6 +23,7 @@ import { AvatarComponent } from './AvatarOrb';
 import { PrimaryButton } from './Button';
 import { ModalDialog } from './Dialog';
 import { Logo } from './Logo';
+import { NavLink } from './NavLink';
 // import { MetamaskIcon } from './icons/MetamaskIcon';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
 
@@ -79,7 +80,9 @@ const RightWrapper = styled.div`
   cursor: pointer;
 `;
 
-const StyledSpan = styled.span`
+
+
+const StyledSpan2 = styled.span`
   display: block;
   text-decoration: none;
   font-style: normal;
@@ -123,7 +126,7 @@ export interface HeaderProps { }
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
   const { activate, account, deactivate } = useWeb3React<Web3Provider>();
-
+  const { pathname } = useLocation();
   const showLoginDialog = useHeaderStore((s) => s.showDialog);
   const setShowLoginDialog = useHeaderStore((s) => s.setShowDialog);
   const setHasTriedEagerConnecting = useHeaderStore((s) => s.setHasTriedEagerConnecting);
@@ -218,41 +221,38 @@ const Header: React.FC<HeaderProps> = () => {
               )}
               {account && (
                 <>
-                  {loggedInProfile && (
-                    <RightWrapper>
-                      <Link to={'/explore'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
-                      </Link>
-                      <Link to={'/orders'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
-                      </Link>
-                      <RightWrapper onClick={logoutUser}>
-                        <StyledSpan style={{ marginRight: 16 }}>
-                          {userEnsName ?? getShortenedAddress(account, 6, 4)}
-                        </StyledSpan>
-                        <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
-                      </RightWrapper>
+                  <RightWrapper>
+                    <NavLink
+                      to={'/explore'}
+                      style={{ marginRight: 40 }}
+                      name='Explore'
+                      pathname={pathname}
+                    />
+                    <NavLink
+                      to={'/orders'}
+                      style={{ marginRight: 40 }}
+                      name='Orders'
+                      pathname={pathname}
+                    />
+                    {!loggedInProfile && (
+                      <NavLink
+                        to={'/onboarding'}
+                        style={{ marginRight: 40 }}
+                        name='Onboarding'
+                        pathname={pathname}
+                      />
+                    )}
+                    <RightWrapper onClick={logoutUser}>
+                      <NavLink
+                        to={'/onboarding'}
+                        style={{ marginRight: 40 }}
+                        name={userEnsName ?? getShortenedAddress(account, 6, 4)}
+                        pathname={pathname}
+                      />
+                      <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
                     </RightWrapper>
-                  )}
-                  {!loggedInProfile && (
-                    <RightWrapper>
-                      <Link to={'/explore'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
-                      </Link>
-                      <Link to={'/orders'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
-                      </Link>
-                      <Link to={'/onboarding'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Become a creator</StyledSpan>
-                      </Link>
-                      <RightWrapper onClick={logoutUser}>
-                        <StyledSpan style={{ marginRight: 16 }}>
-                          {userEnsName ?? getShortenedAddress(account, 6, 4)}
-                        </StyledSpan>
-                        <AvatarComponent address={account} />
-                      </RightWrapper>
-                    </RightWrapper>
-                  )}
+                  </RightWrapper>
+
                 </>
               )}
             </>
@@ -260,59 +260,64 @@ const Header: React.FC<HeaderProps> = () => {
         </HeaderWrapperInner>
       </HeaderWrapperOuter>
 
-      {showLoginDialog && (
-        <OverlayContainer>
-          <ModalDialog containerStyles={{}} isOpen onClose={() => setShowLoginDialog(false)} isDismissable>
-            <>
-              <div
-                style={{
-                  marginBottom: 16,
-                  fontWeight: 700,
-                  fontSize: 18,
-                  textAlign: 'left',
-                }}
-              >
-                Connect a wallet
-              </div>
-              {errorMessage && (
-                <div style={{ marginBottom: 12, color: '#FF6868', textAlign: 'left' }}>{errorMessage}</div>
-              )}
-
-              <PrimaryButton
-                variant={'secondary'}
-                style={{ marginBottom: 16, minWidth: 310 }}
-                isDisabled={currentlyActivating === 'metamask'}
-                onPress={activeWithMetamask}
-              >
+      {
+        showLoginDialog && (
+          <OverlayContainer>
+            <ModalDialog containerStyles={{
+              border: '1px solid #b3b3b3',
+              padding: '24px'
+            }} isOpen onClose={() => setShowLoginDialog(false)} isDismissable>
+              <>
                 <div
                   style={{
-                    display: 'flex',
-                    verticalAlign: 'middle',
+                    marginBottom: 16,
+                    fontWeight: 700,
+                    fontSize: 18,
+                    textAlign: 'left',
                   }}
                 >
-                  {currentlyActivating === 'metamask' ? <>{'Confirm in your wallet'}</> : 'Continue with Metamask'}
+                  Connect a wallet
                 </div>
-              </PrimaryButton>
+                {errorMessage && (
+                  <div style={{ marginBottom: 12, color: '#FF6868', textAlign: 'left' }}>{errorMessage}</div>
+                )}
 
-              <PrimaryButton
-                variant={'secondary'}
-                style={{ marginBottom: 16, minWidth: 310 }}
-                isDisabled={currentlyActivating === 'wc'}
-                onPress={activeWithWalletConnect}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    verticalAlign: 'middle',
-                  }}
+                <PrimaryButton
+                  variant={'secondary'}
+                  style={{ marginBottom: 16, minWidth: 310 }}
+                  isDisabled={currentlyActivating === 'metamask'}
+                  onPress={activeWithMetamask}
                 >
-                  {currentlyActivating === 'wc' ? <>{'Confirm in your wallet'}</> : 'Continue with mobile wallet'}
-                </div>
-              </PrimaryButton>
-            </>
-          </ModalDialog>
-        </OverlayContainer>
-      )}
+                  <div
+                    style={{
+                      display: 'flex',
+                      verticalAlign: 'middle',
+                    }}
+                  >
+                    {currentlyActivating === 'metamask' ? <>{'Confirm in your wallet'}</> : 'Continue with Metamask'}
+                  </div>
+                </PrimaryButton>
+
+                <PrimaryButton
+                  variant={'secondary'}
+                  style={{ marginBottom: 16, minWidth: 310 }}
+                  isDisabled={currentlyActivating === 'wc'}
+                  onPress={activeWithWalletConnect}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      verticalAlign: 'middle',
+                    }}
+                  >
+                    {currentlyActivating === 'wc' ? <>{'Confirm in your wallet'}</> : 'Continue with mobile wallet'}
+                  </div>
+                </PrimaryButton>
+              </>
+            </ModalDialog>
+          </OverlayContainer>
+        )
+      }
     </>
   );
 };

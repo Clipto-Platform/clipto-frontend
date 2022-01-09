@@ -6,14 +6,14 @@ import { ThemeProvider } from 'styled-components';
 
 import { Header } from './components/Header';
 import { BookingPage } from './pages/Booking';
-import { BountyPage } from './pages/Bounty';
-import { BountyDone } from './pages/BountyDone';
+import { BountyPage } from './pages/bounty/Bounty';
+import { BountyDone } from './pages/bounty/BountyDone';
 import { OnboardingPage } from './pages/creator/Onboard';
 import { OnboardProfilePage } from './pages/creator/OnboardProfile';
 import { ExplorePage } from './pages/Explore';
 import { HomePage } from './pages/Home';
-import { InvitationPage } from './pages/Invitation';
-import { MintPage } from './pages/Mint';
+import { InvitationPage } from './pages/bounty/Invitation';
+import { MintPage } from './pages/bounty/Mint';
 import { NotFoundPage } from './pages/NotFound';
 import { OrdersPage } from './pages/Orders';
 import { SelectedOrderPage } from './pages/SelectedOrder';
