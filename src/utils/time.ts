@@ -20,7 +20,7 @@ export const HOUR = 1000 * 60 * 60;
 export const MINUTE = 1000 * 60;
 export const tests = () => {
   // increments date by 1
-  const today = new Date();
+  const today: any = new Date();
   const tomorrow = incrementDate(new Date(today), 1);
   if (tomorrow.getTime() - today.getTime() !== DAY) {
     console.log(today.getTime() - tomorrow.getTime());

@@ -6,13 +6,13 @@ import { API_URL } from '../config/config';
 import { useCreator } from '../hooks/useCreator';
 import { UserProfile } from '../hooks/useProfile';
 import { CreateRequestDto } from '../pages/Booking';
+import { Request } from '../pages/Orders';
 import { theme } from '../styles/theme';
 import { Label, Text } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
 import { checkIfDeadlinePassed, DAY, HOUR } from '../utils/time';
 import { AvatarComponent } from './AvatarOrb';
-
 const OrderCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.border};
   padding: 24px;
@@ -65,7 +65,7 @@ type UserOrderCardStates = 'pending' | 'accepted' | 'cancelled' | 'done' | 'reje
 // }
 
 export interface OrderCardProps {
-  request: CreateRequestDto;
+  request: Request;
   txHash?: string;
   key: number;
 }
@@ -83,7 +83,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
   const { creator, loaded } = useCreator(props.request.creator);
   const getDeadline = () => {
     //TODO(jonathanng) - move to time.ts
-    const creationDate: Date = new Date(props.request!.created!);
+    const creationDate: Date = new Date(props.request.created!);
     creationDate.setDate(creationDate.getDate() + (props.request?.deadline || 0));
     const mmRemaining = creationDate.getTime() - Date.now();
     if (mmRemaining < DAY && DAY - mmRemaining > 0) {
