@@ -140,14 +140,14 @@ const OnboardingPage = () => {
               <PrimaryButton
                 style={{ marginBottom: '16px' }}
                 onPress={async () => {
-                  setLoading(true)
+                  setLoading(true);
                   try {
                     Url.parse(tweetUrl);
                     await verifyTwitterUser();
                   } catch (e) {
                     errorHandle(e, toast.error);
                   }
-                  setLoading(false)
+                  setLoading(false);
                 }}
                 isDisabled={loading}
               >

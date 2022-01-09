@@ -25,15 +25,7 @@ const OnboardTitle = styled.h1`
   margin-bottom: 30px;
 `;
 
-export interface BountyConfirmationProps {
-  // title: string;
-  // instructions: string;
-  // requestDue: string;
-  // offerAmount: string;
-  // recipientWallet: string;
-}
-
-const BountyDone = (props: BountyConfirmationProps) => {
+const BountyDone = (props: any) => {
   const theme = useTheme();
   const userProfile = useProfile();
   const { account } = useWeb3React<Web3Provider>();
@@ -77,7 +69,6 @@ const BountyDone = (props: BountyConfirmationProps) => {
             <PrimaryButton
               // style={{ borderWidth: 100, backgroundColor: colors.black, color: colors.yellow, borderColor: colors.yellow }}
               variant="secondary"
-              onPress={() => { }}
             >
               Copy Shareable Link
             </PrimaryButton>

@@ -81,7 +81,8 @@ const BidAmount = styled(Text)`
 
 const OrderCard: React.FC<OrderCardProps> = (props) => {
   const { creator, loaded } = useCreator(props.request.creator);
-  const getDeadline = () => { //TODO(jonathanng) - move to time.ts
+  const getDeadline = () => {
+    //TODO(jonathanng) - move to time.ts
     const creationDate: Date = new Date(props.request!.created!);
     creationDate.setDate(creationDate.getDate() + (props.request?.deadline || 0));
     const mmRemaining = creationDate.getTime() - Date.now();

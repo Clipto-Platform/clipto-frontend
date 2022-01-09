@@ -24,15 +24,7 @@ const OnboardTitle = styled.h1`
   margin-bottom: 30px;
 `;
 
-export interface BountyConfirmationProps {
-  // title: string;
-  // instructions: string;
-  // requestDue: string;
-  // offerAmount: string;
-  // recipientWallet: string;
-}
-
-const InvitationPage = (props: BountyConfirmationProps) => {
+const InvitationPage = (props: any) => {
   const theme = useTheme();
   const userProfile = useProfile();
   const { account } = useWeb3React<Web3Provider>();

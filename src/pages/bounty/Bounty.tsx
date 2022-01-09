@@ -3,12 +3,18 @@ import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { PrimaryButton } from '../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { CenterContainer, Container, ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
-import { TextField } from '../components/TextField';
-import { useProfile } from '../hooks/useProfile';
-import { Text } from '../styles/typography';
+import { PrimaryButton } from '../../components/Button';
+import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
+import {
+  CenterContainer,
+  Container,
+  ContentWrapper,
+  PageContentWrapper,
+  PageWrapper,
+} from '../../components/layout/Common';
+import { TextField } from '../../components/TextField';
+import { useProfile } from '../../hooks/useProfile';
+import { Text } from '../../styles/typography';
 import { BountyConfirmation } from './BountyConfirmation';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
@@ -85,8 +91,9 @@ const BountyPage = () => {
                     onChange={(e) => setRequestDue(e)}
                     label="Request deadline (3 days minimum)"
                     description="If your video isn't delivered by your requested deadline, you will receive an automatic refund."
-                    placeholder={`${new Date().toLocaleString('default', { month: 'long' })} ${new Date().getDate() + 3
-                      }, ${new Date().getFullYear()}`}
+                    placeholder={`${new Date().toLocaleString('default', { month: 'long' })} ${
+                      new Date().getDate() + 3
+                    }, ${new Date().getFullYear()}`}
                   />
                 </FieldWrapper>
                 <FieldWrapper>

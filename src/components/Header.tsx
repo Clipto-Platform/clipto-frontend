@@ -80,8 +80,6 @@ const RightWrapper = styled.div`
   cursor: pointer;
 `;
 
-
-
 const StyledSpan2 = styled.span`
   display: block;
   text-decoration: none;
@@ -121,7 +119,7 @@ const useHeaderStore = create<HeaderStore>(
 );
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface HeaderProps { }
+export interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
@@ -222,25 +220,10 @@ const Header: React.FC<HeaderProps> = () => {
               {account && (
                 <>
                   <RightWrapper>
-                    <NavLink
-                      to={'/explore'}
-                      style={{ marginRight: 40 }}
-                      name='Explore'
-                      pathname={pathname}
-                    />
-                    <NavLink
-                      to={'/orders'}
-                      style={{ marginRight: 40 }}
-                      name='Orders'
-                      pathname={pathname}
-                    />
+                    <NavLink to={'/explore'} style={{ marginRight: 40 }} name="Explore" pathname={pathname} />
+                    <NavLink to={'/orders'} style={{ marginRight: 40 }} name="Orders" pathname={pathname} />
                     {!loggedInProfile && (
-                      <NavLink
-                        to={'/onboarding'}
-                        style={{ marginRight: 40 }}
-                        name='Onboarding'
-                        pathname={pathname}
-                      />
+                      <NavLink to={'/onboarding'} style={{ marginRight: 40 }} name="Onboarding" pathname={pathname} />
                     )}
                     <RightWrapper onClick={logoutUser}>
                       <NavLink
@@ -252,7 +235,6 @@ const Header: React.FC<HeaderProps> = () => {
                       <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
                     </RightWrapper>
                   </RightWrapper>
-
                 </>
               )}
             </>
@@ -260,64 +242,67 @@ const Header: React.FC<HeaderProps> = () => {
         </HeaderWrapperInner>
       </HeaderWrapperOuter>
 
-      {
-        showLoginDialog && (
-          <OverlayContainer>
-            <ModalDialog containerStyles={{
+      {showLoginDialog && (
+        <OverlayContainer>
+          <ModalDialog
+            containerStyles={{
               border: '1px solid #b3b3b3',
-              padding: '24px'
-            }} isOpen onClose={() => setShowLoginDialog(false)} isDismissable>
-              <>
+              padding: '24px',
+            }}
+            isOpen
+            onClose={() => setShowLoginDialog(false)}
+            isDismissable
+          >
+            <>
+              <div
+                style={{
+                  marginBottom: 16,
+                  fontWeight: 700,
+                  fontSize: 18,
+                  textAlign: 'left',
+                }}
+              >
+                Connect a wallet
+              </div>
+              {errorMessage && (
+                <div style={{ marginBottom: 12, color: '#FF6868', textAlign: 'left' }}>{errorMessage}</div>
+              )}
+
+              <PrimaryButton
+                variant={'secondary'}
+                style={{ marginBottom: 16, minWidth: 310 }}
+                isDisabled={currentlyActivating === 'metamask'}
+                onPress={activeWithMetamask}
+              >
                 <div
                   style={{
-                    marginBottom: 16,
-                    fontWeight: 700,
-                    fontSize: 18,
-                    textAlign: 'left',
+                    display: 'flex',
+                    verticalAlign: 'middle',
                   }}
                 >
-                  Connect a wallet
+                  {currentlyActivating === 'metamask' ? <>{'Confirm in your wallet'}</> : 'Continue with Metamask'}
                 </div>
-                {errorMessage && (
-                  <div style={{ marginBottom: 12, color: '#FF6868', textAlign: 'left' }}>{errorMessage}</div>
-                )}
+              </PrimaryButton>
 
-                <PrimaryButton
-                  variant={'secondary'}
-                  style={{ marginBottom: 16, minWidth: 310 }}
-                  isDisabled={currentlyActivating === 'metamask'}
-                  onPress={activeWithMetamask}
+              <PrimaryButton
+                variant={'secondary'}
+                style={{ marginBottom: 16, minWidth: 310 }}
+                isDisabled={currentlyActivating === 'wc'}
+                onPress={activeWithWalletConnect}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    verticalAlign: 'middle',
+                  }}
                 >
-                  <div
-                    style={{
-                      display: 'flex',
-                      verticalAlign: 'middle',
-                    }}
-                  >
-                    {currentlyActivating === 'metamask' ? <>{'Confirm in your wallet'}</> : 'Continue with Metamask'}
-                  </div>
-                </PrimaryButton>
-
-                <PrimaryButton
-                  variant={'secondary'}
-                  style={{ marginBottom: 16, minWidth: 310 }}
-                  isDisabled={currentlyActivating === 'wc'}
-                  onPress={activeWithWalletConnect}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      verticalAlign: 'middle',
-                    }}
-                  >
-                    {currentlyActivating === 'wc' ? <>{'Confirm in your wallet'}</> : 'Continue with mobile wallet'}
-                  </div>
-                </PrimaryButton>
-              </>
-            </ModalDialog>
-          </OverlayContainer>
-        )
-      }
+                  {currentlyActivating === 'wc' ? <>{'Confirm in your wallet'}</> : 'Continue with mobile wallet'}
+                </div>
+              </PrimaryButton>
+            </>
+          </ModalDialog>
+        </OverlayContainer>
+      )}
     </>
   );
 };

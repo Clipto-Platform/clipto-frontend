@@ -195,7 +195,6 @@ const SelectedOrderPage = (props: any) => {
                   <div style={{ display: 'flex', marginBottom: 20 }}>
                     <PrimaryButton
                       onPress={async () => {
-
                         if (!request) {
                           toast.error('Request not found. Try reloading the page...');
                           return;
@@ -223,8 +222,8 @@ const SelectedOrderPage = (props: any) => {
                       }}
                       size="small"
                       style={{ marginRight: 20 }}
-                    //TODO(jonathanng) - can't test so will not mess with this
-                    //isDisabled={loading}
+                      //TODO(jonathanng) - can't test so will not mess with this
+                      //isDisabled={loading}
                     >
                       Mint and send NFT
                     </PrimaryButton>

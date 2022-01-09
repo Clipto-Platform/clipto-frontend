@@ -205,10 +205,7 @@ const BookingPage = () => {
                   } else {
                     try {
                       Number.parse(parseInt(deadline.toString()));
-                      if (
-                        parseInt(deadline.toString()) <
-                        parseInt(creator.deliveryTime.toString())
-                      ) {
+                      if (parseInt(deadline.toString()) < parseInt(creator.deliveryTime.toString())) {
                         errors.deadline = `Deadline must be greator than ${creator.deliveryTime}`;
                       }
                     } catch {
@@ -223,9 +220,9 @@ const BookingPage = () => {
                 validateOnBlur={false}
                 validateOnChange={false}
                 onSubmit={async ({ deadline, description, amount }) => {
-                  setLoading(true)
+                  setLoading(true);
                   await makeBooking(account, creator.address, amount.toString(), description, parseInt(deadline));
-                  setLoading(false)
+                  setLoading(false);
                 }}
               >
                 {({ initialValues, handleChange, handleSubmit, errors, validateForm }) => (
@@ -233,7 +230,9 @@ const BookingPage = () => {
                     <PurchaseOption style={{ marginBottom: 40 }}>
                       <FlexRow style={{ marginBottom: 7 }}>
                         <Label>Personal use</Label>
-                        <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creator.price))} {SYMBOL}+</Label>
+                        <Label style={{ fontSize: 14 }}>
+                          {formatETH(parseFloat(creator.price))} {SYMBOL}+
+                        </Label>
                       </FlexRow>
                       <Description>Personalized video for you or someone else</Description>
                     </PurchaseOption>

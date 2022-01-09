@@ -18,17 +18,17 @@ import { Description, Label } from '../styles/typography';
 import { checkIfDeadlinePassed } from '../utils/time';
 
 export type Request = {
-  id: number
-  requestId: number
-  requester: string
-  creator: string
-  amount: string
-  description: string
-  deadline: number
-  delivered: boolean
-  txHash: string
-  created: string
-}
+  id: number;
+  requestId: number;
+  requester: string;
+  creator: string;
+  amount: string;
+  description: string;
+  deadline: number;
+  delivered: boolean;
+  txHash: string;
+  created: string;
+};
 
 export const Status = styled.div`
   width: 90px;
@@ -90,7 +90,7 @@ const OrdersPage = () => {
                       {/* <Description>Set up your creator profile to start receiving bookings.</Description> */}
                       <PrimaryButton
                         onPress={() => {
-                          navigate(`/explore`)
+                          navigate(`/explore`);
                         }}
                         size="small"
                         width="small"
@@ -98,53 +98,54 @@ const OrdersPage = () => {
                       >
                         Explore creators
                       </PrimaryButton>
-                    </div >
-                  </ div>
+                    </div>
+                  </div>
                 )}
-                {requestsToUser.length !== 0 && requestsByUser.map((i, n) => (
-                  <OrderCard key={i.id} request={i}>
-                    {i.delivered && (
-                      <PrimaryButton
-                        onPress={() => {
-                          navigate(`/orders/${i.creator}/${i.requestId}`)
-                        }}
-                        size="small"
-                        width="small"
-                        style={{ marginTop: 20 }}
-                        isDisabled={true}
-                      >
-                        View clip
-                      </PrimaryButton>
-                    )}
-                    {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
-                      <Status style={{ marginTop: 20 }}>PENDING</Status>
-                    )}
-                    {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && (
-                      <PrimaryButton
-                        size="small"
-                        width="small"
-                        variant="secondary"
-                        style={{ marginTop: 20 }}
-                        onPress={async () => {
-                          //TODO(jonathanng) - when refunded, ui doesn't update. Also reload results in view clip button
-                          const tx = await exchangeContract.refundRequest(i.creator, i.requestId);
-                          await tx.wait();
-                          const verificationResult = await axios
-                            .post(`${API_URL}/request/finish`, { id: i.id })
-                            .then(() => {
-                              toast.success('Successfully on refund!');
-                            })
-                            .catch((e) => {
-                              console.log(e);
-                              toast.error('Error on refund!');
-                            });
-                        }}
-                      >
-                        Claim refund
-                      </PrimaryButton>
-                    )}
-                  </OrderCard>
-                ))}
+                {requestsToUser.length !== 0 &&
+                  requestsByUser.map((i, n) => (
+                    <OrderCard key={i.id} request={i}>
+                      {i.delivered && (
+                        <PrimaryButton
+                          onPress={() => {
+                            navigate(`/orders/${i.creator}/${i.requestId}`);
+                          }}
+                          size="small"
+                          width="small"
+                          style={{ marginTop: 20 }}
+                          isDisabled={true}
+                        >
+                          View clip
+                        </PrimaryButton>
+                      )}
+                      {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
+                        <Status style={{ marginTop: 20 }}>PENDING</Status>
+                      )}
+                      {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && (
+                        <PrimaryButton
+                          size="small"
+                          width="small"
+                          variant="secondary"
+                          style={{ marginTop: 20 }}
+                          onPress={async () => {
+                            //TODO(jonathanng) - when refunded, ui doesn't update. Also reload results in view clip button
+                            const tx = await exchangeContract.refundRequest(i.creator, i.requestId);
+                            await tx.wait();
+                            const verificationResult = await axios
+                              .post(`${API_URL}/request/finish`, { id: i.id })
+                              .then(() => {
+                                toast.success('Successfully on refund!');
+                              })
+                              .catch((e) => {
+                                console.log(e);
+                                toast.error('Error on refund!');
+                              });
+                          }}
+                        >
+                          Claim refund
+                        </PrimaryButton>
+                      )}
+                    </OrderCard>
+                  ))}
               </TabContent>
             </Item>
             <Item key="received" title="Received">
@@ -155,42 +156,43 @@ const OrdersPage = () => {
                       <Label style={{ marginBottom: '24px' }}>You haven’t received any booking requests yet.</Label>
                       {/* <Description>Set up your creator profile to start receiving bookings.</Description> */}
                       {/* Note(jonathanng) - currently /orders is not accessible for noncreators */}
-                    </div >
-                  </ div>
+                    </div>
+                  </div>
                 )}
-                {requestsToUser.length !== 0 && requestsToUser.map((i, n, f) => (
-                  <OrderCard key={i.id} request={i}>
-                    {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
-                      <PrimaryButton
-                        onPress={() => {
-                          navigate(`/orders/${i.creator}/${i.requestId}`)
-                        }}
-                        size="small"
-                        width="small"
-                        style={{ marginTop: 20 }}
-                      >
-                        Upload clip
-                      </PrimaryButton>
-                    )}
-                    {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && (
-                      <Status style={{ marginTop: 20, minWidth: 160 }}>PAST DEADLINE</Status>
-                    )}
-                    {i.delivered && (
-                      <PrimaryButton
-                        onPress={() => {
-                          navigate(`/orders/${i.creator}/${i.requestId}`)
-                        }}
-                        variant="secondary"
-                        size="small"
-                        width="small"
-                        style={{ marginTop: 20 }}
-                        isDisabled={true}
-                      >
-                        View clip
-                      </PrimaryButton>
-                    )}
-                  </OrderCard>
-                ))}
+                {requestsToUser.length !== 0 &&
+                  requestsToUser.map((i, n, f) => (
+                    <OrderCard key={i.id} request={i}>
+                      {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
+                        <PrimaryButton
+                          onPress={() => {
+                            navigate(`/orders/${i.creator}/${i.requestId}`);
+                          }}
+                          size="small"
+                          width="small"
+                          style={{ marginTop: 20 }}
+                        >
+                          Upload clip
+                        </PrimaryButton>
+                      )}
+                      {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && (
+                        <Status style={{ marginTop: 20, minWidth: 160 }}>PAST DEADLINE</Status>
+                      )}
+                      {i.delivered && (
+                        <PrimaryButton
+                          onPress={() => {
+                            navigate(`/orders/${i.creator}/${i.requestId}`);
+                          }}
+                          variant="secondary"
+                          size="small"
+                          width="small"
+                          style={{ marginTop: 20 }}
+                          isDisabled={true}
+                        >
+                          View clip
+                        </PrimaryButton>
+                      )}
+                    </OrderCard>
+                  ))}
               </TabContent>
             </Item>
           </Tabs>

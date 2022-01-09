@@ -1,11 +1,11 @@
 import styled, { useTheme } from 'styled-components';
 
-// Sample image assets
-import pfp1 from '../assets/images/pfps/g1.jpeg';
 import pfp2 from '../assets/images/pfps/2.png';
 import pfp3 from '../assets/images/pfps/3.png';
-import pfp4 from '../assets/images/pfps/g2.jpeg';
 import pfp5 from '../assets/images/pfps/cc.png';
+// Sample image assets
+import pfp1 from '../assets/images/pfps/g1.jpeg';
+import pfp4 from '../assets/images/pfps/g2.jpeg';
 // Components
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
@@ -41,7 +41,7 @@ const featuredUsers: Array<User> = [
     name: 'Artemilse',
     shortDescription: 'Product designer',
     price: '5 MATIC',
-    src: "https://pbs.twimg.com/profile_images/1478236456594276355/ZZSznv7o_400x400.jpg",
+    src: 'https://pbs.twimg.com/profile_images/1478236456594276355/ZZSznv7o_400x400.jpg',
     uid: '4444',
     address: '0x811AA4E4A28A80fda4F87DA8350D98E14b4959c3',
   },
@@ -49,7 +49,7 @@ const featuredUsers: Array<User> = [
     name: 'jseam',
     shortDescription: 'Handy-dandy builder',
     price: '10 MATIC',
-    src: "https://pbs.twimg.com/profile_images/1478433965723643908/YY4hbFep_400x400.jpg",
+    src: 'https://pbs.twimg.com/profile_images/1478433965723643908/YY4hbFep_400x400.jpg',
     uid: '3333',
     address: '0x2632Dd0fE665F6068bf92f3524Fc61A8C49EC811',
   },

@@ -3,11 +3,11 @@ import { useWeb3React } from '@web3-react/core';
 import { Link } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
-import { PrimaryButton } from '../components/Button';
-import { ConfirmationText } from '../components/ConfirmationText';
-import { CenterContainer, Container, FieldWrapper } from '../components/layout/Common';
-import { useProfile } from '../hooks/useProfile';
-import { Text } from '../styles/typography';
+import { PrimaryButton } from '../../components/Button';
+import { ConfirmationText } from '../../components/ConfirmationText';
+import { CenterContainer, Container, FieldWrapper } from '../../components/layout/Common';
+import { useProfile } from '../../hooks/useProfile';
+import { Text } from '../../styles/typography';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
   font-family: 'Scto Grotesk A';
@@ -23,14 +23,12 @@ const OnboardTitle = styled.h1`
   margin-bottom: 30px;
 `;
 
-
 const HR = styled.div`
   height: 1px;
   margin-left: -24px;
   width: calc(100% + 48px);
   background-color: ${(props) => props.theme.border};
 `;
-
 
 export interface BountyConfirmationProps {
   title: string;
@@ -70,9 +68,7 @@ const BountyConfirmation = (props: BountyConfirmationProps) => {
         </FieldWrapper>
         <HR style={{ marginBottom: 36 }} />
         <Link to={'/bountyDone'}>
-          <PrimaryButton style={{ marginBottom: '16px' }} onPress={() => { }}>
-            Place order {props.offerAmount}
-          </PrimaryButton>
+          <PrimaryButton style={{ marginBottom: '16px' }}>Place order {props.offerAmount}</PrimaryButton>
         </Link>
       </CenterContainer>
     </>

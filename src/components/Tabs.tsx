@@ -6,7 +6,7 @@ import React from 'react';
 import styled, { CSSProperties } from 'styled-components';
 
 /* eslint-disable @typescript-eslint/no-empty-interface */
-interface ITabState { }
+interface ITabState {}
 
 interface ITabListProps<T> extends TabListProps<T> {
   containerStyles?: CSSProperties;

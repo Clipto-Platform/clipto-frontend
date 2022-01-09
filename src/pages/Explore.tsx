@@ -8,7 +8,6 @@ import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { User, UserDisplay } from '../components/UserDisplay';
 import { API_URL } from '../config/config';
-
 import { SYMBOL } from '../config/config';
 const FeaturedContainerWrapper = styled(PageContentWrapper)`
   display: flex;
