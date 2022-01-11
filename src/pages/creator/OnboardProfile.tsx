@@ -57,6 +57,7 @@ const OnboardProfilePage = () => {
   const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
   const [creator, setCreator] = useState();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const createUserProfile = async (vals: CreateUserDtoFull) => {
@@ -136,7 +137,8 @@ const OnboardProfilePage = () => {
                     demo2: userProfile.demos[1] || '',
                     demo3: userProfile.demos[2] || '',
                   }} //TODO(jonathanng) - change to fetched values
-                  onSubmit={(values) => {
+                  onSubmit={async (values) => {
+                    setLoading(true);
                     userProfile.setAddress(values.address);
                     userProfile.setBio(values.bio);
                     userProfile.setDeliveryTime(parseInt(values.deliveryTime));
@@ -156,7 +158,8 @@ const OnboardProfilePage = () => {
                       deliveryTime: parseInt(values.deliveryTime),
                       price: parseFloat(values.price),
                     };
-                    createUserProfile(vals);
+                    await createUserProfile(vals);
+                    setLoading(false)
                   }}
                   validate={(values) => {
                     const errors: any = {};
@@ -330,8 +333,9 @@ const OnboardProfilePage = () => {
                               toast.error('Please fix the errors.');
                               return;
                             }
-                            return handleSubmit();
+                            handleSubmit();
                           }}
+                          isDisabled={loading}
                         >
                           Set up profile
                         </PrimaryButton>
