@@ -73,11 +73,16 @@ const OnboardProfilePage = () => {
     //if was able to create a user in db or found a user in db already then...
     if (creator || verificationResult) {
       if (verificationResult.status === 201 || verificationResult.data.message === 'User already created!') {
-        const txResult = await exchangeContract.registerCreator(userProfile.userName!);
-        toast.success('Profile created, waiting for confirmation!');
-        await txResult.wait();
-        toast.success('Success!');
-        navigate(`/creator/${userProfile.address}`);
+        try {
+          const txResult = await exchangeContract.registerCreator(userProfile.userName!)
+          toast.success('Profile created, waiting for confirmation!');
+          await txResult.wait();
+          toast.success('Success!');
+          navigate(`/creator/${userProfile.address}`);
+        } catch (err: any) {
+          //if txResult fails then print transaction error message
+          toast.error(err.data.message)
+        }
       } else {
         toast.error(verificationResult.data.message);
       }
