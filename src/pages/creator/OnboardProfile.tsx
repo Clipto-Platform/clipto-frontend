@@ -13,7 +13,7 @@ import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { API_URL, DEV, HELP_EMAIL } from '../../config/config';
+import { API_URL, DEV, HELP_EMAIL, SYMBOL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
 import { CreateUserDtoFull, UserProfile } from '../../hooks/useProfile';
 import { useProfile, values } from '../../hooks/useProfile';
@@ -277,10 +277,10 @@ const OnboardProfilePage = () => {
                           <TextField
                             onChange={handleChange('price')}
                             label="Minimum amount to charge for bookings"
-                            description="Fans will be able to pay this in MATIC"
+                            description={`Fans will be able to pay this in ${SYMBOL}`}
                             placeholder="0.5"
                             type="number"
-                            endText="MATIC"
+                            endText={SYMBOL}
                             onBlur={handleBlur}
                             errorMessage={errors.price}
                           />
