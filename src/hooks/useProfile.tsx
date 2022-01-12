@@ -24,6 +24,18 @@ export interface CreateUserDtoFull {
   address: string;
 }
 
+export interface GetUserResponse {
+  bio: string;
+  userName: string;
+  profilePicture: string;
+  deliveryTime: number;
+  demos: string[];
+  price: string;
+  twitterHandle: string;
+  address: string;
+  id: number;
+}
+
 export type UserProfileSet = {
   setBio: (bio: string) => void;
   setUsername: (username: string) => void;

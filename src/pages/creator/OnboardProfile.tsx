@@ -15,7 +15,7 @@ import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../component
 import { TextField } from '../../components/TextField';
 import { API_URL, DEV, HELP_EMAIL, SYMBOL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
-import { CreateUserDtoFull, UserProfile } from '../../hooks/useProfile';
+import { CreateUserDtoFull, GetUserResponse, UserProfile } from '../../hooks/useProfile';
 import { useProfile, values } from '../../hooks/useProfile';
 import { Description } from '../../styles/typography';
 import { formatETH } from '../../utils/format';
@@ -56,10 +56,26 @@ const OnboardProfilePage = () => {
   const userProfile = useProfile();
   const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
-  const [creator, setCreator] = useState();
   const [loading, setLoading] = useState(false);
+  const [hasAccount, setHasAccount] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const updateUserProfile = async (vals: CreateUserDtoFull) => {
+    //for auth
+    const messageToBeSigned = 'I am onboarding to Clipto';
+    const msg = `0x${Buffer.from(messageToBeSigned, 'utf8').toString('hex')}`;
+    const signature = await library?.send('personal_sign', [msg, account]);
 
+    vals.message = messageToBeSigned;
+    vals.signed = signature;
+
+    let verificationResult;
+    try {
+      verificationResult = await axios.put(`${API_URL}/user/${vals.address}`, { ...vals });
+    } catch (ex: any) {
+      verificationResult = ex.response;
+    }
+  }
   const createUserProfile = async (vals: CreateUserDtoFull) => {
     const profile = values(userProfile);
 
@@ -81,7 +97,7 @@ const OnboardProfilePage = () => {
 
     console.log(verificationResult);
     //if was able to create a user in db or found a user in db already then...
-    if (creator || verificationResult) {
+    if (hasAccount || verificationResult) {
       if (verificationResult.status === 201 || verificationResult.data.message === 'User already created!') {
         try {
           const txResult = await exchangeContract.registerCreator(userProfile.userName!)
@@ -102,25 +118,40 @@ const OnboardProfilePage = () => {
   };
 
   useEffect(() => {
-    if (!userProfile.tweetUrl) {
-      navigate('/onboarding');
-    }
-    //address should already be set from onboarding but if not then do this...
-    if (!userProfile.address) {
-      userProfile.setAddress(account!);
-    }
-    axios
-      .get(`${API_URL}/user/${account}`)
-      .then((res) => {
-        setCreator(res.data.id); // checking if user is already a creator
+    if (account) {
+      //if userProfile does not have tweetUrl
+      const res = axios.get<GetUserResponse>(`${API_URL}/user/${account}`).then(res => {
+        // if creator is found then set up userProfile
+        if (res.status === 200) {
+          //creator found
+          setHasAccount(true);
+          userProfile.setAddress(res.data.address);
+          userProfile.setBio(res.data.bio);
+          userProfile.setDeliveryTime(res.data.deliveryTime);
+          userProfile.setDemos(res.data.demos);
+          userProfile.setPrice(parseFloat(res.data.price));
+          userProfile.setProfilePicture(res.data.profilePicture);
+          userProfile.setTweetUrl(res.data.twitterHandle);
+          userProfile.setUsername(res.data.userName);
+          navigate('/onboarding/profile')
+        } else {
+          throw 'Something is wrong'
+        }
+      }).catch(() => {
+        if (!userProfile.tweetUrl) {
+          //if creator is not found and userProfile has not verified twitter then...
+          navigate('/onboarding');
+        }
       })
-      .catch(() => {
-        console.log('Creator not found');
-      });
-  }, []);
+    }
+  }, [account]);
+  useEffect(() => {
+    setLoaded(true)
+    console.log(userProfile)
+  }, [userProfile.address])
   return (
     <>
-      {(true || creator) && (
+      {account && loaded && (
         <PageWrapper>
           <HeaderSpacer />
           <HeaderContentGapSpacer />
