@@ -63,6 +63,15 @@ const OnboardProfilePage = () => {
   const createUserProfile = async (vals: CreateUserDtoFull) => {
     const profile = values(userProfile);
 
+    //for auth
+    const messageToBeSigned = 'I am onboarding to Clipto';
+    const msg = `0x${Buffer.from(messageToBeSigned, 'utf8').toString('hex')}`;
+    const signature = await library?.send('personal_sign', [msg, account]);
+
+    vals.message = messageToBeSigned;
+    vals.signed = signature;
+
+
     let verificationResult;
     try {
       verificationResult = await axios.post(`${API_URL}/user/create`, { ...vals });
