@@ -55,7 +55,7 @@ export const useProfile = create<UserProfile>(
     userName: undefined,
     profilePicture: undefined,
     deliveryTime: undefined,
-    demos: ['', '', ''],
+    demos: [],
     price: undefined,
     tweetUrl: undefined,
     address: undefined,

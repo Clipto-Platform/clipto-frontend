@@ -82,8 +82,12 @@ const OnboardProfilePage = () => {
     //for auth
     const messageToBeSigned = 'I am onboarding to Clipto';
     const msg = `0x${Buffer.from(messageToBeSigned, 'utf8').toString('hex')}`;
-    const signature = await library?.send('personal_sign', [msg, account]);
-
+    let signature;
+    try {
+      signature = await library?.send('personal_sign', [msg, account]);
+    } catch (err) {
+      return;
+    }
     vals.message = messageToBeSigned;
     vals.signed = signature;
 
@@ -125,14 +129,15 @@ const OnboardProfilePage = () => {
         if (res.status === 200) {
           //creator found
           setHasAccount(true);
-          userProfile.setAddress(res.data.address);
-          userProfile.setBio(res.data.bio);
-          userProfile.setDeliveryTime(res.data.deliveryTime);
-          userProfile.setDemos(res.data.demos);
-          userProfile.setPrice(parseFloat(res.data.price));
-          userProfile.setProfilePicture(res.data.profilePicture);
-          userProfile.setTweetUrl(res.data.twitterHandle);
-          userProfile.setUsername(res.data.userName);
+          // userProfile.setAddress(res.data.address);
+          // userProfile.setBio(res.data.bio);
+          // userProfile.setDeliveryTime(res.data.deliveryTime);
+          // userProfile.setDemos(res.data.demos);
+          // userProfile.setPrice(parseFloat(res.data.price));
+          // userProfile.setProfilePicture(res.data.profilePicture);
+          // userProfile.setTweetUrl(res.data.twitterHandle);
+          // userProfile.setUsername(res.data.userName);
+
           navigate('/onboarding/profile')
         } else {
           throw 'Something is wrong'
@@ -367,13 +372,17 @@ const OnboardProfilePage = () => {
                         <PrimaryButton
                           /*isDisabled={Object.keys(erros).length != 0}*/
                           style={{ marginBottom: '16px' }}
-                          onPress={() => {
-                            validateForm();
+                          onPress={async () => {
+                            setLoading(true)
+                            const errors = await validateForm();
                             if (Object.keys(errors).length != 0) {
+
+                              console.log(errors)
                               toast.error('Please fix the errors.');
-                              return;
+                            } else {
+                              handleSubmit();
                             }
-                            handleSubmit();
+                            setLoading(false)
                           }}
                           isDisabled={loading}
                         >

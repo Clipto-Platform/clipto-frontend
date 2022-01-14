@@ -286,13 +286,15 @@ const BookingPage = () => {
                       </Description>
                     </div>
                     <PrimaryButton
-                      onPress={() => {
-                        validateForm();
+                      onPress={async () => {
+                        setLoading(true)
+                        await validateForm();
                         if (Object.keys(errors).length != 0) {
                           toast.error('Please fix the errors.');
-                          return;
+                        } else {
+                          handleSubmit();
                         }
-                        return handleSubmit();
+                        setLoading(false)
                       }}
                       isDisabled={loading}
                     >
