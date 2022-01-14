@@ -3,7 +3,7 @@ import { OverlayContainer } from '@react-aria/overlays';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
 
@@ -194,7 +194,7 @@ const Header: React.FC<HeaderProps> = () => {
   }, [deactivate]);
 
   useInactiveListener(!hasTriedEagerConnect);
-
+  const navigate = useNavigate();
   const { creator } = useCreator(account);
   const loggedInProfile = creator;
 
@@ -225,7 +225,10 @@ const Header: React.FC<HeaderProps> = () => {
                     {!loggedInProfile && (
                       <NavLink to={'/onboarding'} style={{ marginRight: 40 }} name="Become a creator" pathname={pathname} />
                     )}
-                    <RightWrapper onClick={logoutUser}>
+                    <RightWrapper onClick={() => {
+                      //logoutUser(); //TODO(jonathanng) - logout with menu
+                      navigate('/onboarding/profile')
+                    }}>
                       <NavLink
                         to={'/onboarding'}
                         style={{ marginRight: 40 }}

@@ -58,77 +58,76 @@ const OnboardProfilePage = () => {
   const exchangeContract = useExchangeContract(true);
   const [loading, setLoading] = useState(false);
   const [hasAccount, setHasAccount] = useState<boolean>(false);
+  const [userProfileDB, setUserProfileDB] = useState<GetUserResponse>();
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState<boolean>(false);
   const updateUserProfile = async (vals: CreateUserDtoFull) => {
     //for auth
-    const messageToBeSigned = 'I am onboarding to Clipto';
+    const messageToBeSigned = 'I am updating my profile in Clipto';
     const msg = `0x${Buffer.from(messageToBeSigned, 'utf8').toString('hex')}`;
     const signature = await library?.send('personal_sign', [msg, account]);
 
     vals.message = messageToBeSigned;
     vals.signed = signature;
 
-    let verificationResult;
     try {
-      verificationResult = await axios.put(`${API_URL}/user/${vals.address}`, { ...vals });
-    } catch (ex: any) {
-      verificationResult = ex.response;
+      await axios.put(`${API_URL}/user/${vals.address}`, { ...vals });
+    } catch (err: any) {
+      toast.error(err.message)
     }
   }
   const createUserProfile = async (vals: CreateUserDtoFull) => {
     const profile = values(userProfile);
-
+    //TODO: when user declines 2nd transaction, we need to remove the user from db or need to check if user is in contracts
     //for auth
+
+    //bug when not enough money
+
+    try {
+      const txResult = await exchangeContract.registerCreator(userProfile.userName!)
+      toast.success('Profile created, waiting for confirmation!');
+      await txResult.wait();
+      toast.success('Success!');
+    } catch (err: any) {
+      //if txResult fails then print transaction error message
+      if (err.message) {
+        toast.error(err.message)
+      } else if (err.data && err.data.message) {
+        toast.error(err.data.message)
+      }
+    }
+
     const messageToBeSigned = 'I am onboarding to Clipto';
     const msg = `0x${Buffer.from(messageToBeSigned, 'utf8').toString('hex')}`;
     let signature;
     try {
       signature = await library?.send('personal_sign', [msg, account]);
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(err.message)
       return;
     }
     vals.message = messageToBeSigned;
     vals.signed = signature;
-
-
-    let verificationResult;
+    let verificationResult
     try {
       verificationResult = await axios.post(`${API_URL}/user/create`, { ...vals });
-    } catch (ex: any) {
-      verificationResult = ex.response;
+      navigate(`/creator/${userProfile.address}`);
+    } catch (err: any) {
+      toast.error(err.message)
     }
 
-    console.log(verificationResult);
-    //if was able to create a user in db or found a user in db already then...
-    if (hasAccount || verificationResult) {
-      if (verificationResult.status === 201 || verificationResult.data.message === 'User already created!') {
-        try {
-          const txResult = await exchangeContract.registerCreator(userProfile.userName!)
-          toast.success('Profile created, waiting for confirmation!');
-          await txResult.wait();
-          toast.success('Success!');
-          navigate(`/creator/${userProfile.address}`);
-        } catch (err: any) {
-          //if txResult fails then print transaction error message
-          toast.error(err.data.message)
-        }
-      } else {
-        toast.error(verificationResult.data.message);
-      }
-    } else {
-      toast.error('You may already have an account');
-    }
   };
 
   useEffect(() => {
     if (account) {
       //if userProfile does not have tweetUrl
-      const res = axios.get<GetUserResponse>(`${API_URL}/user/${account}`).then(res => {
+      axios.get<GetUserResponse>(`${API_URL}/user/${account}`).then(res => {
         // if creator is found then set up userProfile
         if (res.status === 200) {
           //creator found
           setHasAccount(true);
+          setUserProfileDB({ ...res.data })
+
           // userProfile.setAddress(res.data.address);
           // userProfile.setBio(res.data.bio);
           // userProfile.setDeliveryTime(res.data.deliveryTime);
@@ -138,64 +137,67 @@ const OnboardProfilePage = () => {
           // userProfile.setTweetUrl(res.data.twitterHandle);
           // userProfile.setUsername(res.data.userName);
 
-          navigate('/onboarding/profile')
+          //navigate('/onboarding/profile')
         } else {
           throw 'Something is wrong'
         }
+        setLoaded(true)
       }).catch(() => {
         if (!userProfile.tweetUrl) {
           //if creator is not found and userProfile has not verified twitter then...
           navigate('/onboarding');
+        } else {
+          setLoaded(true)
         }
       })
     }
   }, [account]);
   useEffect(() => {
-    setLoaded(true)
     console.log(userProfile)
-  }, [userProfile.address])
+    console.log(userProfileDB)
+  }, [userProfile.address, userProfileDB?.id])
   return (
     <>
-      {account && loaded && (
+      {loaded && (
         <PageWrapper>
           <HeaderSpacer />
           <HeaderContentGapSpacer />
           <PageContentWrapper>
             <ContentWrapper>
               <ProfileDetailsContainer>
-                <OnboardTitle style={{ marginBottom: '50px' }}>Set up your creator profile</OnboardTitle>
+                <OnboardTitle style={{ marginBottom: '50px' }}>{hasAccount ? "Edit your creator profile" : "Set up your creator profile"}</OnboardTitle>
                 <OnboardProfile
                   style={{ marginBottom: '50px' }}
-                  src={userProfile.profilePicture}
+                  src={userProfile.profilePicture || userProfileDB?.profilePicture}
                   alt="user profile picture"
                 />
                 <Formik
                   initialValues={{
-                    bio: userProfile.bio || '',
-                    userName: userProfile.userName || '',
-                    profilePicture: userProfile.profilePicture || '',
-                    deliveryTime: userProfile.deliveryTime?.toString() || '0',
-                    price: userProfile.price?.toString() || '0',
+                    bio: userProfile.bio || userProfileDB?.bio || '',
+                    userName: userProfile.userName || userProfileDB?.userName || '',
+                    profilePicture: userProfile.profilePicture || userProfileDB?.profilePicture || '',
+                    deliveryTime: userProfile.deliveryTime?.toString() || userProfileDB?.deliveryTime?.toString() || '',
+                    price: userProfile.price?.toString() || userProfileDB?.price?.toString() || '',
                     tweetUrl: userProfile.tweetUrl || '',
                     address: userProfile.address || account || '',
-                    demo1: userProfile.demos[0] || '',
-                    demo2: userProfile.demos[1] || '',
-                    demo3: userProfile.demos[2] || '',
+                    demo1: userProfile.demos[0] || userProfileDB?.demos[0] || '',
+                    demo2: userProfile.demos[1] || userProfileDB?.demos[1] || '',
+                    demo3: userProfile.demos[2] || userProfileDB?.demos[2] || '',
                   }} //TODO(jonathanng) - change to fetched values
                   onSubmit={async (values) => {
                     setLoading(true);
-                    userProfile.setAddress(values.address);
-                    userProfile.setBio(values.bio);
-                    userProfile.setDeliveryTime(parseInt(values.deliveryTime));
+                    // userProfile.setAddress(values.address);
+                    // userProfile.setBio(values.bio);
+                    // userProfile.setDeliveryTime(parseInt(values.deliveryTime));
                     const demos = [];
                     values.demo1 && demos.push(values.demo1);
                     values.demo2 && demos.push(values.demo2);
                     values.demo3 && demos.push(values.demo3);
-                    userProfile.setDemos(demos);
-                    userProfile.setPrice(parseFloat(values.price));
-                    userProfile.setProfilePicture(values.profilePicture);
-                    userProfile.setTweetUrl(values.tweetUrl);
-                    userProfile.setUsername(values.userName);
+                    // userProfile.setDemos(demos);
+                    // userProfile.setPrice(parseFloat(values.price));
+                    // userProfile.setProfilePicture(values.profilePicture);
+                    // userProfile.setTweetUrl(values.tweetUrl);
+                    // userProfile.setUsername(values.userName);
                     //for some reason, the above set values do not work immediately, if you submit the form twice this will work else null
                     const vals = {
                       ...values,
@@ -203,7 +205,7 @@ const OnboardProfilePage = () => {
                       deliveryTime: parseInt(values.deliveryTime),
                       price: parseFloat(values.price),
                     };
-                    await createUserProfile(vals);
+                    hasAccount ? await updateUserProfile(vals) : await createUserProfile(vals);
                     setLoading(false)
                   }}
                   validate={(values) => {
@@ -240,12 +242,28 @@ const OnboardProfilePage = () => {
                     } catch (error) {
                       errors.deliveryTime = 'Delivery time is not a number.';
                     }
+
+
+                    //TODO(jonathanng) - bad code
                     try {
+                      console.log(demo1)
                       demo1 != '' && Url.parse(demo1);
+                    } catch {
+                      errors.demo1 = 'This link is invalid.';
+                    }
+
+                    try {
+                      console.log(demo2)
                       demo2 != '' && Url.parse(demo2);
+                    } catch {
+                      errors.demo2 = 'This link is invalid.';
+                    }
+
+                    try {
+                      console.log(demo3)
                       demo3 != '' && Url.parse(demo3);
                     } catch {
-                      errors.demo1 = 'One of your links is invalid.';
+                      errors.demo3 = 'This link is invalid.';
                     }
                     const p: number = parseFloat(price);
                     try {
@@ -256,14 +274,16 @@ const OnboardProfilePage = () => {
                     } catch (error) {
                       errors.price = 'Price is not a number.';
                     }
-
-                    if (tweetUrl == '') {
-                      errors.tweetUrl = 'Tweet url can not be empty.';
-                    } else {
-                      try {
-                        Url.parse(tweetUrl);
-                      } catch (error) {
-                        errors.tweetUrl = 'Tweet url must be an url.';
+                    //update profile does not need this validation
+                    if (!hasAccount) {
+                      if (tweetUrl == '') {
+                        errors.tweetUrl = 'Tweet url can not be empty.';
+                      } else {
+                        try {
+                          Url.parse(tweetUrl);
+                        } catch (error) {
+                          errors.tweetUrl = 'Tweet url must be an url.';
+                        }
                       }
                     }
 
@@ -309,6 +329,7 @@ const OnboardProfilePage = () => {
                             onChange={handleChange('bio')}
                             label="Bio"
                             placeholder={'Say something nice'}
+                            value={values.bio}
                             onBlur={handleBlur}
                             errorMessage={errors.bio}
                           />
@@ -320,6 +341,7 @@ const OnboardProfilePage = () => {
                             label="Minimum time to deliver"
                             type="number"
                             placeholder="3"
+                            value={values.deliveryTime}
                             endText="Days"
                             onBlur={handleBlur}
                             errorMessage={errors.deliveryTime}
@@ -332,6 +354,7 @@ const OnboardProfilePage = () => {
                             label="Minimum amount to charge for bookings"
                             description={`Fans will be able to pay this in ${SYMBOL}`}
                             placeholder="0.5"
+                            value={values.price}
                             type="number"
                             endText={SYMBOL}
                             onBlur={handleBlur}
@@ -348,24 +371,27 @@ const OnboardProfilePage = () => {
                             onChange={handleChange('demo1')}
                             description="Add links for demo videos that will display on your bookings page (these should be tweets)"
                             placeholder="Demo tweet video link 1"
+                            value={values.demo1}
                             onBlur={handleBlur}
-                            errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
+                            errorMessage={errors.demo1}
                           />
                         </div>
                         <div style={{ marginBottom: 12 }}>
                           <TextField
                             onChange={handleChange('demo2')}
                             placeholder="Demo tweet video link 2"
+                            value={values.demo2}
                             onBlur={handleBlur}
-                            errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
+                            errorMessage={errors.demo2}
                           />
                         </div>
                         <div style={{ marginBottom: 12 }}>
                           <TextField
                             onChange={handleChange('demo3')}
                             placeholder="Demo tweet video link 3"
+                            value={values.demo3}
                             onBlur={handleBlur}
-                            errorMessage={errors.demo1 || errors.demo2 || errors.demo3}
+                            errorMessage={errors.demo3}
                           />
                         </div>
 
@@ -386,7 +412,7 @@ const OnboardProfilePage = () => {
                           }}
                           isDisabled={loading}
                         >
-                          Set up profile
+                          {hasAccount ? "Update profile" : "Set up profile"}
                         </PrimaryButton>
                       </>
                     );
