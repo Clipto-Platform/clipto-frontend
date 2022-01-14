@@ -14,8 +14,9 @@ import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ImagesSlider } from '../components/ImagesSlider';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
-import { API_URL } from '../config/config';
+import { API_URL, SYMBOL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
+import { useCreator } from '../hooks/useCreator';
 import { CreateUserDto, UserProfile } from '../hooks/useProfile';
 import { theme } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
@@ -102,21 +103,11 @@ export interface ReadUserDto {
 const BookingPage = () => {
   const { creatorId } = useParams();
   const { account } = useWeb3React<Web3Provider>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const exchangeContract = useExchangeContract(true);
-  const [creatorProfile, setCreatorProfile] = useState<ReadUserDto>();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const getCreatorData = async () => {
-      if (creatorId) {
-        const restContractProfile: { data: ReadUserDto } = await axios.get(`${API_URL}/user/${creatorId}`);
-        console.log(restContractProfile.data);
-        setCreatorProfile(restContractProfile.data);
-      }
-    };
-    getCreatorData();
-  }, [creatorId]);
+  const { creator, loaded } = useCreator(creatorId);
 
   const makeBooking = async (
     requester: string,
@@ -167,44 +158,44 @@ const BookingPage = () => {
       <PageContentWrapper>
         <PageGrid>
           <ImagesColumnContainer>
-            <ImagesSlider images={creatorProfile?.demos || []} />
+            <ImagesSlider images={creator?.demos || []} />
           </ImagesColumnContainer>
           <BookingCard>
             <FlexRow style={{ marginBottom: 12 }}>
               <div>
-                <Label style={{ marginBottom: 8 }}>{creatorProfile?.userName}</Label>
+                <Label style={{ marginBottom: 8 }}>{creator?.userName}</Label>
                 <Description>
                   Twitter:{' '}
-                  <a href={`https://twitter.com/${creatorProfile?.twitterHandle}`} style={{ color: '#EDE641' }}>
-                    @{creatorProfile?.twitterHandle}
+                  <a href={`https://twitter.com/${creator?.twitterHandle}`} style={{ color: '#EDE641' }}>
+                    @{creator?.twitterHandle}
                   </a>{' '}
                 </Description>
-                <Description>Address: {creatorProfile && getShortenedAddress(creatorProfile.address)}</Description>
+                <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
               </div>
               <div>
-                <AvatarComponent url={creatorProfile?.profilePicture} size="medium" />
+                <AvatarComponent url={creator?.profilePicture} size="medium" />
               </div>
             </FlexRow>
             <FlexRow style={{ marginBottom: 24 }}>
-              <Description>{creatorProfile?.bio}</Description>
+              <Description>{creator?.bio}</Description>
             </FlexRow>
 
             <HR style={{ marginBottom: 36 }} />
-            {!creatorProfile && <Label>Error loading creatorProfile</Label>}
+            {!creator && <Label>Error loading creator</Label>}
             {!account && <Label>Error loading account</Label>}
-            {creatorProfile && account && (
+            {creator && account && (
               <Formik
                 initialValues={{
-                  deadline: 0,
+                  deadline: '0',
                   description: '',
-                  amount: 0,
+                  amount: '0',
                 }}
                 validate={({ deadline, description, amount }) => {
                   const errors: any = {};
                   try {
-                    Number.parse(parseFloat(amount.toString()));
-                    if (formatETH(parseFloat(amount.toString())) < formatETH(parseFloat(creatorProfile.price))) {
-                      errors.amount = `Amount must be greator than ${creatorProfile.price}`;
+                    Number.parse(parseFloat(amount));
+                    if (parseFloat(amount) < parseFloat(creator.price)) {
+                      errors.amount = `Amount must be greator than ${creator.price}`;
                     }
                   } catch {
                     errors.amount = `Please enter a number.`;
@@ -214,11 +205,8 @@ const BookingPage = () => {
                   } else {
                     try {
                       Number.parse(parseInt(deadline.toString()));
-                      if (
-                        formatETH(parseInt(deadline.toString())) <
-                        formatETH(parseInt(creatorProfile.deliveryTime.toString()))
-                      ) {
-                        errors.deadline = `Deadline must be greator than ${creatorProfile.deliveryTime}`;
+                      if (parseInt(deadline.toString()) < parseInt(creator.deliveryTime.toString())) {
+                        errors.deadline = `Deadline must be greator than ${creator.deliveryTime}`;
                       }
                     } catch {
                       errors.deadline = `Please enter a deadline.`;
@@ -231,8 +219,10 @@ const BookingPage = () => {
                 }}
                 validateOnBlur={false}
                 validateOnChange={false}
-                onSubmit={({ deadline, description, amount }) => {
-                  makeBooking(account, creatorProfile.address, amount.toString(), description, deadline);
+                onSubmit={async ({ deadline, description, amount }) => {
+                  setLoading(true);
+                  await makeBooking(account, creator.address, amount.toString(), description, parseInt(deadline));
+                  setLoading(false);
                 }}
               >
                 {({ initialValues, handleChange, handleSubmit, errors, validateForm }) => (
@@ -240,7 +230,9 @@ const BookingPage = () => {
                     <PurchaseOption style={{ marginBottom: 40 }}>
                       <FlexRow style={{ marginBottom: 7 }}>
                         <Label>Personal use</Label>
-                        <Label style={{ fontSize: 14 }}>{formatETH(parseFloat(creatorProfile.price))} MATIC+</Label>
+                        <Label style={{ fontSize: 14 }}>
+                          {formatETH(parseFloat(creator.price))} {SYMBOL}+
+                        </Label>
                       </FlexRow>
                       <Description>Personalized video for you or someone else</Description>
                     </PurchaseOption>
@@ -250,13 +242,13 @@ const BookingPage = () => {
                           width: 172,
                         }}
                         type="number"
-                        label={`Request deadline (${creatorProfile.deliveryTime} days minimum)`}
+                        label={`Request deadline (${creator.deliveryTime} days minimum)`}
                         description={
                           "If your video isn't delivered by your requested deadline, you will be able to request a refund."
                         }
                         endText="Days"
                         onChange={handleChange('deadline')} //parseInt
-                        placeholder={`${creatorProfile.deliveryTime}+`}
+                        placeholder={`${creator.deliveryTime}+`}
                         errorMessage={errors.deadline}
                       />
                     </div>
@@ -264,7 +256,7 @@ const BookingPage = () => {
                     <div style={{ marginBottom: 40 }}>
                       <TextField
                         inputElementType="textarea"
-                        label={`Instructions for ${creatorProfile.userName}`}
+                        label={`Instructions for ${creator.userName}`}
                         placeholder="Say something nice..."
                         onChange={handleChange('description')}
                         errorMessage={errors.description}
@@ -282,9 +274,9 @@ const BookingPage = () => {
                         }}
                         label="Amount to pay"
                         description={'Increase your bid to get your video earlier'}
-                        endText="MATIC"
+                        endText={SYMBOL}
                         type="number"
-                        placeholder={formatETH(parseFloat(creatorProfile.price)) + '+'}
+                        placeholder={formatETH(parseFloat(creator.price)) + '+'}
                         onChange={handleChange('amount')}
                         errorMessage={errors.amount}
                       />
@@ -294,15 +286,17 @@ const BookingPage = () => {
                       </Description>
                     </div>
                     <PrimaryButton
-                      onPress={() => {
-                        validateForm();
+                      onPress={async () => {
+                        setLoading(true)
+                        await validateForm();
                         if (Object.keys(errors).length != 0) {
                           toast.error('Please fix the errors.');
-                          return;
+                        } else {
+                          handleSubmit();
                         }
-                        return handleSubmit();
+                        setLoading(false)
                       }}
-                      isDisabled={false}
+                      isDisabled={loading}
                     >
                       Book now
                     </PrimaryButton>

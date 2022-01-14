@@ -38,6 +38,7 @@ function TextField(props: AriaTextFieldOptions<'input' | 'textarea'> & TextField
             {...(inputProps as any)}
             min="0"
             step="1"
+            onWheel={(e) => (e.target as HTMLElement).blur()}
             ref={ref}
             style={props.errorMessage ? { ...inputStyles, borderColor: 'red' } : { ...inputStyles }}
           />

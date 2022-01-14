@@ -3,12 +3,18 @@ import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import { PrimaryButton } from '../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { Container, ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
-import { TextField } from '../components/TextField';
-import { useProfile } from '../hooks/useProfile';
-import { Text } from '../styles/typography';
+import { PrimaryButton } from '../../components/Button';
+import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
+import {
+  CenterContainer,
+  Container,
+  ContentWrapper,
+  PageContentWrapper,
+  PageWrapper,
+} from '../../components/layout/Common';
+import { TextField } from '../../components/TextField';
+import { useProfile } from '../../hooks/useProfile';
+import { Text } from '../../styles/typography';
 import { BountyConfirmation } from './BountyConfirmation';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
@@ -23,39 +29,6 @@ const OnboardTitle = styled.h1`
   display: block;
   margin: auto;
   margin-bottom: 30px;
-`;
-
-const Subtitle = styled(Text)`
-  text-align: center;
-  font-size: 18px;
-`;
-
-const CenterContainer = styled(Container)`
-  display: block;
-  margin: auto;
-  margin-top: 45px;
-`;
-
-const StepLabel = styled(Text)`
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  margin-bottom: 4px;
-`;
-
-const OnboardingHr = styled.hr`
-  margin-left: -20px;
-  width: calc(100% + 40px);
-  height: 1px;
-  border: none;
-  background-color: ${({ theme }) => theme.border};
-  margin-top: 10px;
-  margin-bottom: 10px;
-`;
-
-const StepDescription = styled(Text)`
-  font-size: 18px;
-  line-height: 140%;
 `;
 
 const FieldWrapper = styled.div`

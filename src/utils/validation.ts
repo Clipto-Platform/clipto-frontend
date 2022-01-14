@@ -1,3 +1,4 @@
+import React from 'react';
 import { z } from 'zod';
 
 import { MIN_DELIVERY_TIME } from '../config/config';
@@ -14,11 +15,11 @@ export type DeliveryTime = z.infer<typeof DeliveryTime>;
 export const Address = z.string().length(42);
 export type Address = z.infer<typeof Address>;
 
-export const errorHandle = (e: any, cb: () => void, done?: () => void) => {
+export const errorHandle = (e: any, cb: (content: any, options?: any) => React.ReactText, done?: () => void) => {
   if (e instanceof z.ZodError) {
     for (let i = 0; i < e.issues.length; i++) {
       if (e && e.issues) {
-        cb(e.issues.at(i).message);
+        cb(e.issues[i].message);
       }
     }
   }

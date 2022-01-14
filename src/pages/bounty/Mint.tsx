@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-import { XAvatarOrb } from '../components/AvatarOrb';
-import { PrimaryButton } from '../components/Button';
-import { ConfirmationText } from '../components/ConfirmationText';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { FieldWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
-import { colors } from '../styles/theme';
-import { Description, Label } from '../styles/typography';
+import { XAvatarOrb } from '../../components/AvatarOrb';
+import { PrimaryButton } from '../../components/Button';
+import { ConfirmationText } from '../../components/ConfirmationText';
+import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
+import { FieldWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
+import { colors } from '../../styles/theme';
+import { Description, Label } from '../../styles/typography';
 
 const PageGrid = styled.div`
   display: grid;
@@ -21,15 +21,6 @@ const PageGrid = styled.div`
     grid-column-gap: 40px;
     grid-row-gap: 30px;
     max-width: 100%;
-  `}
-`;
-
-const ImagesColumnContainer = styled.div`
-  position: relative;
-  height: 440px;
-  max-width: 100%;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    overflow: hidden;
   `}
 `;
 

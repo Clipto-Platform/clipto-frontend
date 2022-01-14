@@ -3,12 +3,13 @@ import { OverlayContainer } from '@react-aria/overlays';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
 
 import { API_URL, DEV } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
+import { useCreator } from '../hooks/useCreator';
 import { useEagerConnect } from '../hooks/useEagerConnect';
 import { useEns } from '../hooks/useEns';
 import { useInactiveListener } from '../hooks/useInactiveListener';
@@ -22,6 +23,7 @@ import { AvatarComponent } from './AvatarOrb';
 import { PrimaryButton } from './Button';
 import { ModalDialog } from './Dialog';
 import { Logo } from './Logo';
+import { NavLink } from './NavLink';
 // import { MetamaskIcon } from './icons/MetamaskIcon';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
 
@@ -78,7 +80,7 @@ const RightWrapper = styled.div`
   cursor: pointer;
 `;
 
-const StyledSpan = styled.span`
+const StyledSpan2 = styled.span`
   display: block;
   text-decoration: none;
   font-style: normal;
@@ -117,12 +119,12 @@ const useHeaderStore = create<HeaderStore>(
 );
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface HeaderProps {}
+export interface HeaderProps { }
 
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
   const { activate, account, deactivate } = useWeb3React<Web3Provider>();
-
+  const { pathname } = useLocation();
   const showLoginDialog = useHeaderStore((s) => s.showDialog);
   const setShowLoginDialog = useHeaderStore((s) => s.setShowDialog);
   const setHasTriedEagerConnecting = useHeaderStore((s) => s.setHasTriedEagerConnecting);
@@ -132,7 +134,6 @@ const Header: React.FC<HeaderProps> = () => {
   const hasTriedEagerConnect = useEagerConnect();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loggedInProfile, setLoggedInProfile] = useState<Partial<UserProfile>>();
 
   useEffect(() => {
     setHasTriedEagerConnecting(hasTriedEagerConnect);
@@ -193,21 +194,9 @@ const Header: React.FC<HeaderProps> = () => {
   }, [deactivate]);
 
   useInactiveListener(!hasTriedEagerConnect);
-
-  useEffect(() => {
-    const getCreatorData = async () => {
-      if (account) {
-        let userProfile;
-        try {
-          userProfile = await axios.get(`${API_URL}/user/${account}`);
-          setLoggedInProfile(userProfile.data);
-        } catch (e) {
-          console.log('Failed to find creator account for userProfile');
-        }
-      }
-    };
-    getCreatorData();
-  }, [account]);
+  const navigate = useNavigate();
+  const { creator } = useCreator(account);
+  const loggedInProfile = creator;
 
   return (
     <>
@@ -230,41 +219,25 @@ const Header: React.FC<HeaderProps> = () => {
               )}
               {account && (
                 <>
-                  {loggedInProfile && (
-                    <RightWrapper>
-                      <Link to={'/explore'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
-                      </Link>
-                      <Link to={'/orders'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
-                      </Link>
-                      <RightWrapper onClick={logoutUser}>
-                        <StyledSpan style={{ marginRight: 16 }}>
-                          {userEnsName ?? getShortenedAddress(account, 6, 4)}
-                        </StyledSpan>
-                        <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
-                      </RightWrapper>
+                  <RightWrapper>
+                    <NavLink to={'/explore'} style={{ marginRight: 40 }} name="Explore" pathname={pathname} />
+                    <NavLink to={'/orders'} style={{ marginRight: 40 }} name="Orders" pathname={pathname} />
+                    {!loggedInProfile && (
+                      <NavLink to={'/onboarding'} style={{ marginRight: 40 }} name="Become a creator" pathname={pathname} />
+                    )}
+                    <RightWrapper onClick={() => {
+                      //logoutUser(); //TODO(jonathanng) - logout with menu
+                      navigate('/onboarding/profile')
+                    }}>
+                      <NavLink
+                        to={'/onboarding'}
+                        style={{ marginRight: 40 }}
+                        name={userEnsName ?? getShortenedAddress(account, 6, 4)}
+                        pathname={pathname}
+                      />
+                      <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
                     </RightWrapper>
-                  )}
-                  {!loggedInProfile && (
-                    <RightWrapper>
-                      <Link to={'/explore'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
-                      </Link>
-                      <Link to={'/orders'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
-                      </Link>
-                      <Link to={'/onboarding'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Become a creator</StyledSpan>
-                      </Link>
-                      <RightWrapper onClick={logoutUser}>
-                        <StyledSpan style={{ marginRight: 16 }}>
-                          {userEnsName ?? getShortenedAddress(account, 6, 4)}
-                        </StyledSpan>
-                        <AvatarComponent address={account} />
-                      </RightWrapper>
-                    </RightWrapper>
-                  )}
+                  </RightWrapper>
                 </>
               )}
             </>
@@ -274,7 +247,15 @@ const Header: React.FC<HeaderProps> = () => {
 
       {showLoginDialog && (
         <OverlayContainer>
-          <ModalDialog containerStyles={{}} isOpen onClose={() => setShowLoginDialog(false)} isDismissable>
+          <ModalDialog
+            containerStyles={{
+              border: '1px solid #b3b3b3',
+              padding: '24px',
+            }}
+            isOpen
+            onClose={() => setShowLoginDialog(false)}
+            isDismissable
+          >
             <>
               <div
                 style={{

@@ -9,6 +9,7 @@ export const PageWrapper = styled.div<{ blur?: boolean }>`
   min-height: 100vh;
   position: relative;
   overflow: hidden;
+  padding-bottom: 120px;
 `;
 
 export const PageContentWrapper = styled.div`
@@ -37,6 +38,11 @@ export const Container = styled.div`
   padding: 20px;
 `;
 
+export const CenterContainer = styled(Container)`
+  display: block;
+  margin: auto;
+  margin-top: 45px;
+`;
 export const OutlinedContainer = styled.div`
   max-width: 512px;
   padding: 20px;

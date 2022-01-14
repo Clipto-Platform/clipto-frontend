@@ -3,15 +3,16 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { API_URL } from '../config/config';
+import { useCreator } from '../hooks/useCreator';
 import { UserProfile } from '../hooks/useProfile';
 import { CreateRequestDto } from '../pages/Booking';
+import { Request } from '../pages/Orders';
 import { theme } from '../styles/theme';
 import { Label, Text } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
 import { checkIfDeadlinePassed, DAY, HOUR } from '../utils/time';
 import { AvatarComponent } from './AvatarOrb';
-
 const OrderCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.border};
   padding: 24px;
@@ -64,7 +65,7 @@ type UserOrderCardStates = 'pending' | 'accepted' | 'cancelled' | 'done' | 'reje
 // }
 
 export interface OrderCardProps {
-  request: CreateRequestDto;
+  request: Request;
   txHash?: string;
   key: number;
 }
@@ -79,9 +80,10 @@ const BidAmount = styled(Text)`
 `;
 
 const OrderCard: React.FC<OrderCardProps> = (props) => {
-  const [creator, setCreator] = useState<UserProfile>();
+  const { creator, loaded } = useCreator(props.request.creator);
   const getDeadline = () => {
-    const creationDate: Date = new Date(props.request!.created!);
+    //TODO(jonathanng) - move to time.ts
+    const creationDate: Date = new Date(props.request.created!);
     creationDate.setDate(creationDate.getDate() + (props.request?.deadline || 0));
     const mmRemaining = creationDate.getTime() - Date.now();
     if (mmRemaining < DAY && DAY - mmRemaining > 0) {
@@ -91,16 +93,6 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
     return creationDate.toLocaleDateString();
   };
 
-  useEffect(() => {
-    console.log(props.request);
-    const getCreator = async () => {
-      const restContractProfile = await axios.get(`${API_URL}/user/${props.request.creator}`);
-      if (restContractProfile) {
-        setCreator(restContractProfile.data);
-      }
-    };
-    getCreator();
-  }, []);
   return (
     <OrderCardContainer>
       <OrderCardTopRowContainer>
