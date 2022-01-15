@@ -158,7 +158,13 @@ const BookingPage = () => {
       <PageContentWrapper>
         <PageGrid>
           <ImagesColumnContainer>
-            <ImagesSlider images={creator?.demos || []} />
+            {creator && creator.demos && creator.demos.length !== 0 && <ImagesSlider images={creator?.demos} />}
+            {creator && creator.demos && creator.demos.length === 0 && (
+              <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
+                <div style={{ display: 'block', width: '100%' }}>
+                  <Label style={{ marginBottom: '40px' }}>This creator does not have any videos shared.</Label>
+                </div>
+              </div>)}
           </ImagesColumnContainer>
           <BookingCard>
             <FlexRow style={{ marginBottom: 12 }}>
