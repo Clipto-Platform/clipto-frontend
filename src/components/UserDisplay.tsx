@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { ContentWrapper, PageContentWrapper } from '../components/layout/Common';
 import { SYMBOL } from '../config/config';
 import { formatETH } from '../utils/format';
+import { UserImage } from './UserImage';
 
 export interface User {
   name: string;
@@ -56,12 +57,6 @@ const UserCardContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-`;
-
-const UserImage = styled.img`
-  max-height: 280px;
-  width: 100%;
-  border-radius: 15px;
 `;
 
 const UserTitle = styled.div`

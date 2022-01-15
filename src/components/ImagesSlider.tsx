@@ -31,14 +31,6 @@ const ImageCardContainer = styled.div`
   }
 `;
 
-const ImageCardImg = styled.img`
-  object-fit: cover;
-  width: 300px;
-  min-width: 300px;
-  height: 480px;
-  user-select: none;
-`;
-
 const ImageSliderContainerScrolllShadowContainer = styled.div`
   position: absolute;
   right: 0;
