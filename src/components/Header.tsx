@@ -119,7 +119,7 @@ const useHeaderStore = create<HeaderStore>(
 );
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface HeaderProps { }
+export interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
@@ -223,12 +223,19 @@ const Header: React.FC<HeaderProps> = () => {
                     <NavLink to={'/explore'} style={{ marginRight: 40 }} name="Explore" pathname={pathname} />
                     <NavLink to={'/orders'} style={{ marginRight: 40 }} name="Orders" pathname={pathname} />
                     {!loggedInProfile && (
-                      <NavLink to={'/onboarding'} style={{ marginRight: 40 }} name="Become a creator" pathname={pathname} />
+                      <NavLink
+                        to={'/onboarding'}
+                        style={{ marginRight: 40 }}
+                        name="Become a creator"
+                        pathname={pathname}
+                      />
                     )}
-                    <RightWrapper onClick={() => {
-                      //logoutUser(); //TODO(jonathanng) - logout with menu
-                      navigate('/onboarding/profile')
-                    }}>
+                    <RightWrapper
+                      onClick={() => {
+                        //logoutUser(); //TODO(jonathanng) - logout with menu
+                        navigate('/onboarding/profile');
+                      }}
+                    >
                       <NavLink
                         to={'/onboarding'}
                         style={{ marginRight: 40 }}

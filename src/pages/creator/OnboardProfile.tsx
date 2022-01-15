@@ -66,19 +66,19 @@ const OnboardProfilePage = () => {
   const updateUserProfile = async (vals: CreateUserDtoFull) => {
     try {
       const messageToBeSigned = 'I am updating my profile in Clipto';
-      const signed = await signMessage(library, account, messageToBeSigned)
-      const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed }
+      const signed = await signMessage(library, account, messageToBeSigned);
+      const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed };
       await axios.put(`${API_URL}/user/${vals.address}`, createUserSignable);
-      toast.success('Success!')
+      toast.success('Success!');
       navigate(`/creator/${account}`);
     } catch (err: any) {
-      toast.error(err.message)
+      toast.error(err.message);
       return;
     }
-  }
+  };
   const createUserProfile = async (vals: CreateUserDtoFull) => {
     if (!account) {
-      toast.error('Connect your wallet and reload the page!')
+      toast.error('Connect your wallet and reload the page!');
       return;
     }
 
@@ -86,23 +86,23 @@ const OnboardProfilePage = () => {
     try {
       userOnChain = await isCreatorOnChain(exchangeContract, account);
     } catch (err) {
-      console.error(err)
-      toast.error('Error connecting to wallet. Toggle your networks and reload.')
+      console.error(err);
+      toast.error('Error connecting to wallet. Toggle your networks and reload.');
       return;
     }
 
     //registers creator on chain if user is not already on chain
     if (!userOnChain) {
       try {
-        const txResult = await exchangeContract.registerCreator(userProfile.userName!)
+        const txResult = await exchangeContract.registerCreator(userProfile.userName!);
         toast.loading('Profile created, waiting for confirmation!');
         await txResult.wait();
       } catch (err: any) {
         //if txResult fails then print transaction error message
         if (err.message) {
-          toast.error(err.message)
+          toast.error(err.message);
         } else if (err.data && err.data.message) {
-          toast.error(err.data.message)
+          toast.error(err.data.message);
         }
         //if creator is not on chain and the transaction to create an creator fails (user declines transaction, not enough balance, already has an account), then exit profile creation. A row in the db will not be created.
         return;
@@ -112,17 +112,17 @@ const OnboardProfilePage = () => {
     try {
       const messageToBeSigned = 'I am onboarding to Clipto';
       const signed = await signMessage(library, account, messageToBeSigned);
-      const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed }
+      const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed };
       if (!hasAccount) {
         await axios.post(`${API_URL}/user/create`, createUserSignable);
         toast.dismiss(); // used to remove the loading toast
         toast.success('Success!');
         navigate(`/creator/${account}`);
       } else {
-        toast.error('User already has account. Please reload the page')
+        toast.error('User already has account. Please reload the page');
       }
     } catch (err: any) {
-      toast.error(err.message)
+      toast.error(err.message);
       return;
     }
   };
@@ -130,41 +130,44 @@ const OnboardProfilePage = () => {
   useEffect(() => {
     if (account) {
       //if userProfile does not have tweetUrl
-      axios.get<GetUserResponse>(`${API_URL}/user/${account}`).then(res => {
-        // if creator is found then set up userProfile
-        if (res.status === 200) {
-          //creator found
-          setHasAccount(true);
-          setUserProfileDB({ ...res.data })
+      axios
+        .get<GetUserResponse>(`${API_URL}/user/${account}`)
+        .then((res) => {
+          // if creator is found then set up userProfile
+          if (res.status === 200) {
+            //creator found
+            setHasAccount(true);
+            setUserProfileDB({ ...res.data });
 
-          // userProfile.setAddress(res.data.address);
-          // userProfile.setBio(res.data.bio);
-          // userProfile.setDeliveryTime(res.data.deliveryTime);
-          // userProfile.setDemos(res.data.demos);
-          // userProfile.setPrice(parseFloat(res.data.price));
-          // userProfile.setProfilePicture(res.data.profilePicture);
-          // userProfile.setTweetUrl(res.data.twitterHandle);
-          // userProfile.setUsername(res.data.userName);
+            // userProfile.setAddress(res.data.address);
+            // userProfile.setBio(res.data.bio);
+            // userProfile.setDeliveryTime(res.data.deliveryTime);
+            // userProfile.setDemos(res.data.demos);
+            // userProfile.setPrice(parseFloat(res.data.price));
+            // userProfile.setProfilePicture(res.data.profilePicture);
+            // userProfile.setTweetUrl(res.data.twitterHandle);
+            // userProfile.setUsername(res.data.userName);
 
-          //navigate('/onboarding/profile')
-        } else {
-          throw 'Something is wrong'
-        }
-        setLoaded(true)
-      }).catch(() => {
-        if (!userProfile.tweetUrl) {
-          //if creator is not found and userProfile has not verified twitter then...
-          navigate('/onboarding');
-        } else {
-          setLoaded(true)
-        }
-      })
+            //navigate('/onboarding/profile')
+          } else {
+            throw 'Something is wrong';
+          }
+          setLoaded(true);
+        })
+        .catch(() => {
+          if (!userProfile.tweetUrl) {
+            //if creator is not found and userProfile has not verified twitter then...
+            navigate('/onboarding');
+          } else {
+            setLoaded(true);
+          }
+        });
     }
   }, [account]);
   useEffect(() => {
-    console.log(userProfile)
-    console.log(userProfileDB)
-  }, [userProfile.address, userProfileDB?.id])
+    console.log(userProfile);
+    console.log(userProfileDB);
+  }, [userProfile.address, userProfileDB?.id]);
   return (
     <>
       {loaded && (
@@ -174,7 +177,9 @@ const OnboardProfilePage = () => {
           <PageContentWrapper>
             <ContentWrapper>
               <ProfileDetailsContainer>
-                <OnboardTitle style={{ marginBottom: '50px' }}>{hasAccount ? "Edit your creator profile" : "Set up your creator profile"}</OnboardTitle>
+                <OnboardTitle style={{ marginBottom: '50px' }}>
+                  {hasAccount ? 'Edit your creator profile' : 'Set up your creator profile'}
+                </OnboardTitle>
                 <OnboardProfile
                   style={{ marginBottom: '50px' }}
                   src={userProfile.profilePicture || userProfileDB?.profilePicture}
@@ -215,8 +220,8 @@ const OnboardProfilePage = () => {
                       price: parseFloat(values.price),
                     };
                     hasAccount ? await updateUserProfile(vals) : await createUserProfile(vals);
-                    console.log('I got here')
-                    setLoading(false)
+                    console.log('I got here');
+                    setLoading(false);
                   }}
                   validate={(values) => {
                     const errors: any = {};
@@ -253,24 +258,23 @@ const OnboardProfilePage = () => {
                       errors.deliveryTime = 'Delivery time is not a number.';
                     }
 
-
                     //TODO(jonathanng) - bad code
                     try {
-                      console.log(demo1)
+                      console.log(demo1);
                       demo1 != '' && Url.parse(demo1);
                     } catch {
                       errors.demo1 = 'This link is invalid.';
                     }
 
                     try {
-                      console.log(demo2)
+                      console.log(demo2);
                       demo2 != '' && Url.parse(demo2);
                     } catch {
                       errors.demo2 = 'This link is invalid.';
                     }
 
                     try {
-                      console.log(demo3)
+                      console.log(demo3);
                       demo3 != '' && Url.parse(demo3);
                     } catch {
                       errors.demo3 = 'This link is invalid.';
@@ -409,20 +413,19 @@ const OnboardProfilePage = () => {
                           /*isDisabled={Object.keys(erros).length != 0}*/
                           style={{ marginBottom: '16px' }}
                           onPress={async () => {
-                            setLoading(true)
+                            setLoading(true);
                             const errors = await validateForm();
                             if (Object.keys(errors).length != 0) {
-
-                              console.log(errors)
+                              console.log(errors);
                               toast.error('Please fix the errors.');
                             } else {
                               handleSubmit();
                             }
-                            setLoading(false)
+                            setLoading(false);
                           }}
                           isDisabled={loading}
                         >
-                          {hasAccount ? "Update profile" : "Set up profile"}
+                          {hasAccount ? 'Update profile' : 'Set up profile'}
                         </PrimaryButton>
                       </>
                     );

@@ -83,7 +83,7 @@ const OnboardingPage = () => {
       );
       userProfile.setAddress(account!);
       userProfile.setTweetUrl(tweetUrl);
-      console.log(userProfile)
+      console.log(userProfile);
       toast.success('Verified Twitter successfully!');
       navigate('/onboarding/profile');
     } else {
