@@ -18,6 +18,7 @@ import { useExchangeContract } from '../../hooks/useContracts';
 import { CreateUserDtoFull, CreateUserDtoSignable, GetUserResponse, UserProfile } from '../../hooks/useProfile';
 import { useProfile, values } from '../../hooks/useProfile';
 import { Description } from '../../styles/typography';
+import { isCreatorOnChain, signMessage } from '../../utils/address';
 import { formatETH } from '../../utils/format';
 import { Address, DeliveryTime, errorHandle, Number, Url } from '../../utils/validation';
 import { CreateRequestDto } from '../Booking';
@@ -61,25 +62,18 @@ const OnboardProfilePage = () => {
   const [userProfileDB, setUserProfileDB] = useState<GetUserResponse>();
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState<boolean>(false);
+
   const updateUserProfile = async (vals: CreateUserDtoFull) => {
-    //for auth
-    const messageToBeSigned = 'I am updating my profile in Clipto';
-    const msg = `0x${Buffer.from(messageToBeSigned, 'utf8').toString('hex')}`;
-    let signature;
     try {
-      signature = await library?.send('personal_sign', [msg, account]);
-    } catch (err: any) {
-      toast.error(err.message)
-      return;
-    }
-    const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed: signature }
-
-
-    try {
+      const messageToBeSigned = 'I am updating my profile in Clipto';
+      const signed = await signMessage(library, account, messageToBeSigned)
+      const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed }
       await axios.put(`${API_URL}/user/${vals.address}`, createUserSignable);
+      toast.success('Success!')
       navigate(`/creator/${account}`);
     } catch (err: any) {
       toast.error(err.message)
+      return;
     }
   }
   const createUserProfile = async (vals: CreateUserDtoFull) => {
@@ -87,29 +81,17 @@ const OnboardProfilePage = () => {
       toast.error('Connect your wallet and reload the page!')
       return;
     }
-    //TODO(jonathanng) - come back to this to see if this should be in the useProfile or another hook
-    let userOnChain = false;
-    let cliptoTokenAddress: string | undefined;
+
+    let userOnChain;
     try {
-      cliptoTokenAddress = await exchangeContract.creators(account)
+      userOnChain = await isCreatorOnChain(exchangeContract, account);
     } catch (err) {
-      console.log(err)
-      console.log('This should never happen unless you put an invalid address or if you redeployed your testnet,I think metamask is still point to the old deployment so thats why there are missing headers')
-      console.log('If you get the missing headers metamask error, try switching the network and back')
+      console.error(err)
+      toast.error('Error connecting to wallet. Toggle your networks and reload.')
+      return;
     }
-    console.log(cliptoTokenAddress)
 
-    if (parseInt(cliptoTokenAddress!) === 0) {
-      console.log('User is not a registered creator.')
-      userOnChain = false;
-    } else {
-      userOnChain = true;
-    }
-    //TODO: when user declines 2nd transaction, we need to remove the user from db or need to check if user is in contracts
-    //for auth
-    //bug when not enough money
-
-    //registers creator on chain
+    //registers creator on chain if user is not already on chain
     if (!userOnChain) {
       try {
         const txResult = await exchangeContract.registerCreator(userProfile.userName!)
@@ -122,34 +104,27 @@ const OnboardProfilePage = () => {
         } else if (err.data && err.data.message) {
           toast.error(err.data.message)
         }
-        return; //return to prevent backend from creating account
+        //if creator is not on chain and the transaction to create an creator fails (user declines transaction, not enough balance, already has an account), then exit profile creation. A row in the db will not be created.
+        return;
       }
     }
 
-    const messageToBeSigned = 'I am onboarding to Clipto';
-    const msg = `0x${Buffer.from(messageToBeSigned, 'utf8').toString('hex')}`;
-    let signature;
     try {
-      signature = await library?.send('personal_sign', [msg, account]);
-    } catch (err: any) {
-      toast.error(err.message)
-      return;
-    }
-    const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed: signature }
-
-    if (!hasAccount) {
-      try {
+      const messageToBeSigned = 'I am onboarding to Clipto';
+      const signed = await signMessage(library, account, messageToBeSigned);
+      const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed }
+      if (!hasAccount) {
         await axios.post(`${API_URL}/user/create`, createUserSignable);
         toast.dismiss(); // used to remove the loading toast
         toast.success('Success!');
         navigate(`/creator/${account}`);
-      } catch (err: any) {
-        toast.error(err.message)
+      } else {
+        toast.error('User already has account. Please reload the page')
       }
-    } else {
-      toast.error('User already has account')
+    } catch (err: any) {
+      toast.error(err.message)
+      return;
     }
-
   };
 
   useEffect(() => {
