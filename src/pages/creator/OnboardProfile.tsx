@@ -101,6 +101,8 @@ const OnboardProfilePage = () => {
 
     if (parseInt(cliptoTokenAddress!) === 0) {
       console.log('User is not a registered creator.')
+      userOnChain = false;
+    } else {
       userOnChain = true;
     }
     //TODO: when user declines 2nd transaction, we need to remove the user from db or need to check if user is in contracts
