@@ -24,6 +24,28 @@ export interface CreateUserDtoFull {
   address: string;
 }
 
+export type CreateUserDto1 = {
+  bio: string;
+  userName: string;
+  profilePicture: string;
+  deliveryTime: number;
+  demos: string[];
+  price: number;
+  tweetUrl: string;
+  address: string;
+}
+
+type Signable = {
+  message: string,
+  signed: any
+}
+
+export type CreateUserDtoSignable = CreateUserDto1 & Signable
+
+export interface CreateUserDtoSigned {
+
+}
+
 export interface GetUserResponse {
   bio: string;
   userName: string;

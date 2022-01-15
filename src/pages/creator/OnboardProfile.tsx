@@ -15,7 +15,7 @@ import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../component
 import { TextField } from '../../components/TextField';
 import { API_URL, DEV, HELP_EMAIL, SYMBOL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
-import { CreateUserDtoFull, GetUserResponse, UserProfile } from '../../hooks/useProfile';
+import { CreateUserDtoFull, CreateUserDtoSignable, GetUserResponse, UserProfile } from '../../hooks/useProfile';
 import { useProfile, values } from '../../hooks/useProfile';
 import { Description } from '../../styles/typography';
 import { formatETH } from '../../utils/format';
@@ -56,8 +56,8 @@ const OnboardProfilePage = () => {
   const userProfile = useProfile();
   const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
-  const [loading, setLoading] = useState(false);
-  const [hasAccount, setHasAccount] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false); //state of form button
+  const [hasAccount, setHasAccount] = useState<boolean>(false); //state of if the user is a creator or not
   const [userProfileDB, setUserProfileDB] = useState<GetUserResponse>();
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -65,35 +65,63 @@ const OnboardProfilePage = () => {
     //for auth
     const messageToBeSigned = 'I am updating my profile in Clipto';
     const msg = `0x${Buffer.from(messageToBeSigned, 'utf8').toString('hex')}`;
-    const signature = await library?.send('personal_sign', [msg, account]);
+    let signature;
+    try {
+      signature = await library?.send('personal_sign', [msg, account]);
+    } catch (err: any) {
+      toast.error(err.message)
+      return;
+    }
+    const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed: signature }
 
-    vals.message = messageToBeSigned;
-    vals.signed = signature;
 
     try {
-      await axios.put(`${API_URL}/user/${vals.address}`, { ...vals });
+      await axios.put(`${API_URL}/user/${vals.address}`, createUserSignable);
+      navigate(`/creator/${account}`);
     } catch (err: any) {
       toast.error(err.message)
     }
   }
   const createUserProfile = async (vals: CreateUserDtoFull) => {
-    const profile = values(userProfile);
+    if (!account) {
+      toast.error('Connect your wallet and reload the page!')
+      return;
+    }
+    //TODO(jonathanng) - come back to this to see if this should be in the useProfile or another hook
+    let userOnChain = false;
+    let cliptoTokenAddress: string | undefined;
+    try {
+      cliptoTokenAddress = await exchangeContract.creators(account)
+    } catch (err) {
+      console.log(err)
+      console.log('This should never happen unless you put an invalid address')
+      console.log('If you get the missing headers metamask error, try switching the network and back')
+    }
+    console.log(cliptoTokenAddress)
+
+    if (parseInt(cliptoTokenAddress!) === 0) {
+      console.log('User is not a registered creator.')
+      userOnChain = true;
+    }
     //TODO: when user declines 2nd transaction, we need to remove the user from db or need to check if user is in contracts
     //for auth
-
     //bug when not enough money
 
-    try {
-      const txResult = await exchangeContract.registerCreator(userProfile.userName!)
-      toast.success('Profile created, waiting for confirmation!');
-      await txResult.wait();
-      toast.success('Success!');
-    } catch (err: any) {
-      //if txResult fails then print transaction error message
-      if (err.message) {
-        toast.error(err.message)
-      } else if (err.data && err.data.message) {
-        toast.error(err.data.message)
+    //registers creator on chain
+    if (!userOnChain) {
+      try {
+        const txResult = await exchangeContract.registerCreator(userProfile.userName!)
+        toast.success('Profile created, waiting for confirmation!');
+        await txResult.wait();
+        toast.success('Success!');
+      } catch (err: any) {
+        //if txResult fails then print transaction error message
+        if (err.message) {
+          toast.error(err.message)
+        } else if (err.data && err.data.message) {
+          toast.error(err.data.message)
+        }
+        return; //return to prevent backend from creating account
       }
     }
 
@@ -106,14 +134,17 @@ const OnboardProfilePage = () => {
       toast.error(err.message)
       return;
     }
-    vals.message = messageToBeSigned;
-    vals.signed = signature;
-    let verificationResult
-    try {
-      verificationResult = await axios.post(`${API_URL}/user/create`, { ...vals });
-      navigate(`/creator/${userProfile.address}`);
-    } catch (err: any) {
-      toast.error(err.message)
+    const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed: signature }
+
+    if (!hasAccount) {
+      try {
+        await axios.post(`${API_URL}/user/create`, createUserSignable);
+        navigate(`/creator/${account}`);
+      } catch (err: any) {
+        toast.error(err.message)
+      }
+    } else {
+      toast.error('User already has account')
     }
 
   };
@@ -206,6 +237,7 @@ const OnboardProfilePage = () => {
                       price: parseFloat(values.price),
                     };
                     hasAccount ? await updateUserProfile(vals) : await createUserProfile(vals);
+                    console.log('I got here')
                     setLoading(false)
                   }}
                   validate={(values) => {
