@@ -94,7 +94,7 @@ const OnboardProfilePage = () => {
       cliptoTokenAddress = await exchangeContract.creators(account)
     } catch (err) {
       console.log(err)
-      console.log('This should never happen unless you put an invalid address')
+      console.log('This should never happen unless you put an invalid address or if you redeployed your testnet,I think metamask is still point to the old deployment so thats why there are missing headers')
       console.log('If you get the missing headers metamask error, try switching the network and back')
     }
     console.log(cliptoTokenAddress)
@@ -113,9 +113,8 @@ const OnboardProfilePage = () => {
     if (!userOnChain) {
       try {
         const txResult = await exchangeContract.registerCreator(userProfile.userName!)
-        toast.success('Profile created, waiting for confirmation!');
+        toast.loading('Profile created, waiting for confirmation!');
         await txResult.wait();
-        toast.success('Success!');
       } catch (err: any) {
         //if txResult fails then print transaction error message
         if (err.message) {
@@ -141,6 +140,8 @@ const OnboardProfilePage = () => {
     if (!hasAccount) {
       try {
         await axios.post(`${API_URL}/user/create`, createUserSignable);
+        toast.dismiss(); // used to remove the loading toast
+        toast.success('Success!');
         navigate(`/creator/${account}`);
       } catch (err: any) {
         toast.error(err.message)
