@@ -11,7 +11,8 @@ const Image = styled.img`
 
 export interface UserImageProps {
   src: string,
-  style: CSSProperties
+  style: CSSProperties,
+  onLoad: () => void
 }
 
 export const UserImage: React.FC<UserImageProps> = (props) => {
@@ -28,7 +29,7 @@ export const UserImage: React.FC<UserImageProps> = (props) => {
   }, [])
   return (
     <>
-      <Image {...props} src={image} />
+      <Image {...props} src={image} onLoad={props.onLoad} />
       {/* <LoadingUserImage {...props} /> */}
     </>
   )

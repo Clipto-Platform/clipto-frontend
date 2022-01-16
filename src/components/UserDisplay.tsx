@@ -1,10 +1,12 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ContentWrapper, PageContentWrapper } from '../components/layout/Common';
 import { SYMBOL } from '../config/config';
+import { useImagesLoaded } from '../hooks/useImagesLoaded';
 import { formatETH } from '../utils/format';
+import { UserDisplayLoading } from './UserDisplayLoading';
 import { UserImage } from './UserImage';
 
 export interface User {
@@ -82,30 +84,47 @@ interface UserDisplayProps {
 
 const UserDisplay: React.FC<UserDisplayProps> = (props) => {
   const { users, title, style } = props;
+  const { imagesDone, handleLoad } = useImagesLoaded(users.length);
+  useEffect(() => { console.log(imagesDone) }, [imagesDone])
   return (
     <>
       <ContainerWrapper style={{ ...style }}>
         <ContentWrapper>
           <Title style={{ marginTop: 64, marginBottom: 36 }}>{title}</Title>
-          <Grid>
-            {users.map((user) => {
-              return (
-                <Link key={user.address} to={`/creator/${user.address}`}>
-                  <UserCardContainer key={user.uid}>
-                    <UserImage src={user.src} style={{ marginBottom: 24 }} />
-                    <UserTitle style={{ marginBottom: 4 }}>{user.name}</UserTitle>
-                    <UserDescription style={{ marginBottom: 16 }}>{user.shortDescription}</UserDescription>
-                    <UserStartingPrice>
-                      From{' '}
-                      <span style={{ fontWeight: 700 }}>
-                        {formatETH(parseFloat(user.price))} {SYMBOL}
-                      </span>
-                    </UserStartingPrice>
-                  </UserCardContainer>
-                </Link>
-              );
-            })}
-          </Grid>
+          <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+            {/* special overlay until images are all loaded */}
+            {!imagesDone && <UserDisplayLoading style={{
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              opacity: 1,
+              background: '#000000',
+              zIndex: 9,
+              marginTop: -36
+            }} />}
+
+            <Grid>
+              {users.map((user) => {
+                return (
+                  <Link key={user.address} to={`/creator/${user.address}`}>
+                    <UserCardContainer key={user.uid}>
+                      <UserImage src={user.src} onLoad={handleLoad} style={{ marginBottom: 24 }} />
+                      <UserTitle style={{ marginBottom: 4 }}>{user.name}</UserTitle>
+                      <UserDescription style={{ marginBottom: 16 }}>{user.shortDescription}</UserDescription>
+                      <UserStartingPrice>
+                        From{' '}
+                        <span style={{ fontWeight: 700 }}>
+                          {formatETH(parseFloat(user.price))} {SYMBOL}
+                        </span>
+                      </UserStartingPrice>
+                    </UserCardContainer>
+                  </Link>
+                );
+              })}
+            </Grid>
+          </div>
         </ContentWrapper>
       </ContainerWrapper>
     </>
