@@ -26,6 +26,7 @@ import { formatETH } from '../utils/format';
 import { Number } from '../utils/validation';
 import { RightPanel } from '../components/Booking/RightPanel';
 import { ImagesSliderLoading } from '../components/Booking/ImagesSliderLoading';
+import { useImagesLoaded } from '../hooks/useImagesLoaded';
 
 const PageGrid = styled.div`
   display: grid;
@@ -109,24 +110,6 @@ const BookingPage = () => {
 
   const exchangeContract = useExchangeContract(true);
   const { creator, loaded } = useCreator(creatorId);
-  const [imagesLoaded, setImagesLoaded] = useState<number>(0);
-  const [allImagesLoaded, setAllImagesLoaded] = useState<boolean>(false);
-  useEffect(() => {
-    console.log(imagesLoaded)
-    console.log('asdfasdfa')
-    console.log(imagesLoaded)
-    console.log(creator?.demos.length)
-    if (creator && imagesLoaded >= creator.demos.length) {
-      console.log('loaded!!!')
-      setAllImagesLoaded(true)
-    }
-  }, [imagesLoaded])
-  useEffect(() => {
-    console.log(allImagesLoaded)
-  })
-  function handleLoad() {
-    setImagesLoaded(imagesLoaded + 1)
-  }
 
   return (
     <PageWrapper>
@@ -135,14 +118,7 @@ const BookingPage = () => {
       <PageContentWrapper>
         <PageGrid>
           <ImagesColumnContainer>
-            {(!loaded || !allImagesLoaded) && <ImagesSliderLoading style={{ width: '100%', height: 460 }} />}
-            {loaded && creator && creator.demos && creator.demos.length !== 0 && <ImagesSlider onLoad={handleLoad} isHidden={!allImagesLoaded} images={creator.demos} />}
-            {loaded && creator && creator.demos && creator.demos.length === 0 && (
-              <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
-                <div style={{ display: 'block', width: '100%' }}>
-                  <Label style={{ marginBottom: '40px' }}>This creator does not have any videos shared.</Label>
-                </div>
-              </div>)}
+            {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
           </ImagesColumnContainer>
           {!loaded && <RightPanelLoading style={{ width: '100%' }} />}
           {!creator && loaded && <Label>Error loading creator</Label>}

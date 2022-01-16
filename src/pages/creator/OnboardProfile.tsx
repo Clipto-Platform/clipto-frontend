@@ -100,8 +100,10 @@ const OnboardProfilePage = () => {
       } catch (err: any) {
         //if txResult fails then print transaction error message
         if (err.message) {
+          toast.dismiss();
           toast.error(err.message);
         } else if (err.data && err.data.message) {
+          toast.dismiss();
           toast.error(err.data.message);
         }
         //if creator is not on chain and the transaction to create an creator fails (user declines transaction, not enough balance, already has an account), then exit profile creation. A row in the db will not be created.
@@ -119,9 +121,11 @@ const OnboardProfilePage = () => {
         toast.success('Success!');
         navigate(`/creator/${account}`);
       } else {
+        toast.dismiss();
         toast.error('User already has account. Please reload the page');
       }
     } catch (err: any) {
+      toast.dismiss();
       toast.error(err.message);
       return;
     }

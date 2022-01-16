@@ -14,7 +14,7 @@ import { AvatarComponent } from '../AvatarOrb';
 
 import { Number } from '../../utils/validation'
 import { formatETH } from '../../utils/format';
-import { SYMBOL } from '../../config/config';
+import { API_URL, SYMBOL } from '../../config/config';
 import { TextField } from '../TextField';
 import { PrimaryButton } from '../Button';
 import { useExchangeContract } from '../../hooks/useContracts';

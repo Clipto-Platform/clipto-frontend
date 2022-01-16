@@ -1,8 +1,11 @@
 import { useRef } from 'react';
 import { Tweet } from 'react-twitter-widgets';
 import styled from 'styled-components';
+import { useImagesLoaded } from '../../hooks/useImagesLoaded';
+import { Label } from '../../styles/typography';
 
 import { LeftChevronIcon, RightChevonIcon } from '../Chevrons';
+import { ImagesSliderLoading } from './ImagesSliderLoading';
 
 const ChevronContainer = styled.div`
   height: 32px;
@@ -61,11 +64,10 @@ const SliderControlsContainer = styled.div`
 
 export interface ImagesSliderProps {
   images: string[];
-  onLoad: () => void;
-  isHidden: boolean;
 }
 
 const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
+  const { handleLoad, imagesDone } = useImagesLoaded(props.images.length);
   // TODO(johnrjj) - Implement grab to scroll
   const imageSliderContainerRef = useRef<HTMLDivElement>(null);
 
@@ -87,26 +89,33 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
 
   return (
     <>
+      {!imagesDone && <ImagesSliderLoading style={{ width: '100%', height: 460 }} />}
       <ImageSliderContainerScrolllShadowContainer />
       <ImagesSliderContainer ref={imageSliderContainerRef} style={{ marginBottom: 8 }}>
+        {imagesDone && props.images.length === 0 && (
+          <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
+            <div style={{ display: 'block', width: '100%' }}>
+              <Label style={{ marginBottom: '40px' }}>This creator does not have any videos shared.</Label>
+            </div>
+          </div>)}
         {props.images.map((imgSrc, n) => {
           return (
             <ImageCardContainer key={n.toString()} >
               <div >
-                <Tweet onLoad={props.onLoad} options={{ theme: 'dark' }} tweetId={imgSrc.split('/').pop()?.split('?')[0] || '0'} />
+                <Tweet onLoad={handleLoad} options={{ theme: 'dark' }} tweetId={imgSrc.split('/').pop()?.split('?')[0] || '0'} />
               </div>
             </ImageCardContainer>
           );
         })}
       </ImagesSliderContainer>
-      <SliderControlsContainer>
+      {imagesDone && <SliderControlsContainer>
         <ChevronContainer style={{ marginRight: 16 }} onClick={handleScrollLeft}>
           <LeftChevronIcon />
         </ChevronContainer>
         <ChevronContainer onClick={handleScrollRight}>
           <RightChevonIcon />
         </ChevronContainer>
-      </SliderControlsContainer>
+      </SliderControlsContainer>}
     </>
   );
 };
