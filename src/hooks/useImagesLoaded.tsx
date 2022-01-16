@@ -8,6 +8,7 @@ export const useImagesLoaded = (totalImagesToLoad: number) => {
 
   return {
     handleLoad,
-    imagesDone: totalImagesToLoad <= imagesLoaded
+    imagesDone: totalImagesToLoad <= imagesLoaded,
+    singleLoaded: 1 <= imagesLoaded || totalImagesToLoad <= imagesLoaded
   }
 }

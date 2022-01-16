@@ -20,7 +20,7 @@ import { useProfile, values } from '../../hooks/useProfile';
 import { Description } from '../../styles/typography';
 import { isCreatorOnChain, signMessage } from '../../web3/request';
 import { formatETH } from '../../utils/format';
-import { Address, DeliveryTime, errorHandle, Number, Url } from '../../utils/validation';
+import { Address, DeliveryTime, errorHandle, Number, TweetUrl, Url } from '../../utils/validation';
 import { CreateRequestDto } from '../Booking';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
@@ -265,21 +265,21 @@ const OnboardProfilePage = () => {
                     //TODO(jonathanng) - bad code
                     try {
                       console.log(demo1);
-                      demo1 != '' && Url.parse(demo1);
+                      demo1 != '' && TweetUrl.parse(demo1);
                     } catch {
                       errors.demo1 = 'This link is invalid.';
                     }
 
                     try {
                       console.log(demo2);
-                      demo2 != '' && Url.parse(demo2);
+                      demo2 != '' && TweetUrl.parse(demo2);
                     } catch {
                       errors.demo2 = 'This link is invalid.';
                     }
 
                     try {
                       console.log(demo3);
-                      demo3 != '' && Url.parse(demo3);
+                      demo3 != '' && TweetUrl.parse(demo3);
                     } catch {
                       errors.demo3 = 'This link is invalid.';
                     }
@@ -387,7 +387,8 @@ const OnboardProfilePage = () => {
                         <div style={{ marginBottom: 12 }}>
                           <TextField
                             onChange={handleChange('demo1')}
-                            description="Add links for demo videos that will display on your bookings page (these should be tweets)"
+                            label="Tweets"
+                            description="Add links for demo videos that will display on your bookings page"
                             placeholder="Demo tweet video link 1"
                             value={values.demo1}
                             onBlur={handleBlur}

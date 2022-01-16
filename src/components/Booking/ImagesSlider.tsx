@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { Tweet } from 'react-twitter-widgets';
 import styled from 'styled-components';
 import { useImagesLoaded } from '../../hooks/useImagesLoaded';
-import { Label } from '../../styles/typography';
+import { Description, Label } from '../../styles/typography';
 
 import { LeftChevronIcon, RightChevonIcon } from '../Chevrons';
 import { ImagesSliderLoading } from './ImagesSliderLoading';
@@ -67,7 +67,7 @@ export interface ImagesSliderProps {
 }
 
 const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
-  const { handleLoad, imagesDone } = useImagesLoaded(props.images.length);
+  const { handleLoad, imagesDone, singleLoaded } = useImagesLoaded(props.images.length);
   // TODO(johnrjj) - Implement grab to scroll
   const imageSliderContainerRef = useRef<HTMLDivElement>(null);
 
@@ -89,8 +89,9 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
 
   return (
     <>
-      {!imagesDone && <ImagesSliderLoading style={{ width: '100%', height: 460 }} />}
+
       <ImageSliderContainerScrolllShadowContainer />
+      {!singleLoaded && <ImagesSliderLoading style={{ width: '100%', height: 460 }} />}
       <ImagesSliderContainer ref={imageSliderContainerRef} style={{ marginBottom: 8 }}>
         {imagesDone && props.images.length === 0 && (
           <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
@@ -102,13 +103,21 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
           return (
             <ImageCardContainer key={n.toString()} >
               <div >
-                <Tweet onLoad={handleLoad} options={{ theme: 'dark' }} tweetId={imgSrc.split('/').pop()?.split('?')[0] || '0'} />
+                <Tweet onLoad={handleLoad} renderError={() => {
+                  console.error(`Error loading this tweet: ${imgSrc}`)
+                  return (
+                    <Description style={{ margin: 'auto', marginTop: 100, maxWidth: 200 }}>
+                      Error loading this tweet. If you are the creator, go to settings and check your tweets
+                    </Description>
+                  )
+                }} options={{ theme: 'dark' }} tweetId={imgSrc.split('/').pop()?.split('?')[0] || '0'} />
               </div>
             </ImageCardContainer>
           );
         })}
       </ImagesSliderContainer>
-      {imagesDone && <SliderControlsContainer>
+
+      {singleLoaded && <SliderControlsContainer>
         <ChevronContainer style={{ marginRight: 16 }} onClick={handleScrollLeft}>
           <LeftChevronIcon />
         </ChevronContainer>
