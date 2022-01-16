@@ -1,22 +1,6 @@
-
-import { Web3Provider } from '@ethersproject/providers';
-import { useWeb3React } from '@web3-react/core';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
-import { AvatarComponent } from '../AvatarOrb';
-import { PrimaryButton } from '../Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../Header';
-import { PageContentWrapper, PageWrapper } from '../layout/Common';
-import { OrderCard } from '../OrderCard';
-import { Item, Tabs } from '../Tabs';
-import { API_URL } from '../../config/config';
-import { useExchangeContract } from '../../hooks/useContracts';
-import { Description, Label } from '../../styles/typography';
-import { checkIfDeadlinePassed } from '../../utils/time';
+import { Label } from '../../styles/typography';
 
 export type Request = {
   id: number;
@@ -48,12 +32,6 @@ export const Status = styled.div`
 
 const TabContent = styled.div`
   margin-top: 48px;
-`;
-
-const SingleColumnPageContent = styled(PageContentWrapper)`
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
 `;
 
 export interface OrdersTabProps {
