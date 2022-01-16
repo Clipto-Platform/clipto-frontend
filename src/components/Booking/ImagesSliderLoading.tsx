@@ -1,6 +1,7 @@
-import React from "react"
-import ContentLoader from "react-content-loader"
-import { BookingCard } from "./RightPanel"
+import React from 'react';
+import ContentLoader from 'react-content-loader';
+
+import { BookingCard } from './RightPanel';
 
 const ImagesSliderLoading = (props: any) => (
   <ContentLoader
@@ -14,6 +15,6 @@ const ImagesSliderLoading = (props: any) => (
   >
     <path d="M 0.48 0.8 h 149.04 v 248.4 H 0.48 z M 170.56 0.4 H 319.6 v 248.4 H 170.56 z" />
   </ContentLoader>
-)
+);
 
-export { ImagesSliderLoading }
+export { ImagesSliderLoading };

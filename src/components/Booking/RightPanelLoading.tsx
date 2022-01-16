@@ -1,6 +1,7 @@
-import React from "react"
-import ContentLoader from "react-content-loader"
-import { BookingCard } from "./RightPanel"
+import React from 'react';
+import ContentLoader from 'react-content-loader';
+
+import { BookingCard } from './RightPanel';
 
 const RightPanelLoading = (props: any) => (
   <BookingCard>
@@ -17,6 +18,6 @@ const RightPanelLoading = (props: any) => (
       <path d="M 1.245 33.41 h 144.15 v 13.02 H 1.245 z M 1.2 0.69 h 105.4 v 19.84 H 1.2 z M 1.095 118.63 h 498.17 v 44.64 H 1.095 z M 1.175 58.79 h 144.15 v 13.02 H 1.175 z" />
     </ContentLoader>
   </BookingCard>
-)
+);
 
-export { RightPanelLoading }
+export { RightPanelLoading };

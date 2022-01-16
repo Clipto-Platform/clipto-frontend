@@ -6,7 +6,7 @@ import { MIN_DELIVERY_TIME } from '../config/config';
 export const Url = z.string().url();
 export type Url = z.infer<typeof Url>;
 
-export const TweetUrl = Url.regex(/^https\:\/\/twitter\.com\/\w{2,}\/status\/\d{2,}/)
+export const TweetUrl = Url.regex(/^https:\/\/twitter\.com\/\w{2,}\/status\/\d{2,}/);
 export type TweetUrl = z.infer<typeof TweetUrl>;
 
 export const Number = z.number();

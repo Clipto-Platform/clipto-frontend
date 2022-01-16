@@ -85,7 +85,9 @@ interface UserDisplayProps {
 const UserDisplay: React.FC<UserDisplayProps> = (props) => {
   const { users, title, style } = props;
   const { imagesDone, handleLoad } = useImagesLoaded(users.length);
-  useEffect(() => { console.log(imagesDone) }, [imagesDone])
+  useEffect(() => {
+    console.log(imagesDone);
+  }, [imagesDone]);
   return (
     <>
       <ContainerWrapper style={{ ...style }}>

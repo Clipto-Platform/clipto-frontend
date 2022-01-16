@@ -1,9 +1,9 @@
 import { useRef } from 'react';
 import { Tweet } from 'react-twitter-widgets';
 import styled from 'styled-components';
+
 import { useImagesLoaded } from '../../hooks/useImagesLoaded';
 import { Description, Label } from '../../styles/typography';
-
 import { LeftChevronIcon, RightChevonIcon } from '../Chevrons';
 import { ImagesSliderLoading } from './ImagesSliderLoading';
 
@@ -89,7 +89,6 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
 
   return (
     <>
-
       <ImageSliderContainerScrolllShadowContainer />
       {!singleLoaded && <ImagesSliderLoading style={{ width: '100%', height: 460 }} />}
       <ImagesSliderContainer ref={imageSliderContainerRef} style={{ marginBottom: 8 }}>
@@ -98,33 +97,41 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
             <div style={{ display: 'block', width: '100%' }}>
               <Label style={{ marginBottom: '40px' }}>This creator does not have any videos shared.</Label>
             </div>
-          </div>)}
+          </div>
+        )}
         {props.images.map((imgSrc, n) => {
           return (
-            <ImageCardContainer key={n.toString()} >
-              <div >
-                <Tweet onLoad={handleLoad} renderError={() => {
-                  console.error(`Error loading this tweet: ${imgSrc}`)
-                  return (
-                    <Description style={{ margin: 'auto', marginTop: 100, maxWidth: 200 }}>
-                      Error loading this tweet. If you are the creator, go to settings and check your tweets
-                    </Description>
-                  )
-                }} options={{ theme: 'dark' }} tweetId={imgSrc.split('/').pop()?.split('?')[0] || '0'} />
+            <ImageCardContainer key={n.toString()}>
+              <div>
+                <Tweet
+                  onLoad={handleLoad}
+                  renderError={() => {
+                    console.error(`Error loading this tweet: ${imgSrc}`);
+                    return (
+                      <Description style={{ margin: 'auto', marginTop: 100, maxWidth: 200 }}>
+                        Error loading this tweet. If you are the creator, go to settings and check your tweets
+                      </Description>
+                    );
+                  }}
+                  options={{ theme: 'dark' }}
+                  tweetId={imgSrc.split('/').pop()?.split('?')[0] || '0'}
+                />
               </div>
             </ImageCardContainer>
           );
         })}
       </ImagesSliderContainer>
 
-      {singleLoaded && <SliderControlsContainer>
-        <ChevronContainer style={{ marginRight: 16 }} onClick={handleScrollLeft}>
-          <LeftChevronIcon />
-        </ChevronContainer>
-        <ChevronContainer onClick={handleScrollRight}>
-          <RightChevonIcon />
-        </ChevronContainer>
-      </SliderControlsContainer>}
+      {singleLoaded && (
+        <SliderControlsContainer>
+          <ChevronContainer style={{ marginRight: 16 }} onClick={handleScrollLeft}>
+            <LeftChevronIcon />
+          </ChevronContainer>
+          <ChevronContainer onClick={handleScrollRight}>
+            <RightChevonIcon />
+          </ChevronContainer>
+        </SliderControlsContainer>
+      )}
     </>
   );
 };

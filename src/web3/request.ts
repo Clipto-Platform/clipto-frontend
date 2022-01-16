@@ -1,5 +1,6 @@
-import { Web3Provider } from "@ethersproject/providers";
-import { CliptoExchange } from "../contracts";
+import { Web3Provider } from '@ethersproject/providers';
+
+import { CliptoExchange } from '../contracts';
 
 /**
  *

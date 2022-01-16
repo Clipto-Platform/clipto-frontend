@@ -35,19 +35,19 @@ const TabContent = styled.div`
 `;
 
 export interface OrdersTabProps {
-  FallbackWhenNoRequests: () => JSX.Element,
-  requests: Request[],
-  loaded: boolean,
-  children: (requests: Request[]) => React.ReactNode
+  FallbackWhenNoRequests: () => JSX.Element;
+  requests: Request[];
+  loaded: boolean;
+  children: (requests: Request[]) => React.ReactNode;
 }
 
 export const OrdersTab: React.FC<OrdersTabProps> = (props) => {
   const { FallbackWhenNoRequests, requests, loaded } = props;
   return (
-    <TabContent >
+    <TabContent>
       {!loaded && <Label>Loading Animation here</Label>}
       {loaded && requests.length === 0 && <FallbackWhenNoRequests />}
       {loaded && requests.length !== 0 && props.children(requests)}
     </TabContent>
-  )
-}
+  );
+};

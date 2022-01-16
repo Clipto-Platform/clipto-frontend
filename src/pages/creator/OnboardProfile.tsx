@@ -18,9 +18,9 @@ import { useExchangeContract } from '../../hooks/useContracts';
 import { CreateUserDtoFull, CreateUserDtoSignable, GetUserResponse, UserProfile } from '../../hooks/useProfile';
 import { useProfile, values } from '../../hooks/useProfile';
 import { Description } from '../../styles/typography';
-import { isCreatorOnChain, signMessage } from '../../web3/request';
 import { formatETH } from '../../utils/format';
 import { Address, DeliveryTime, errorHandle, Number, TweetUrl, Url } from '../../utils/validation';
+import { isCreatorOnChain, signMessage } from '../../web3/request';
 import { CreateRequestDto } from '../Booking';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`

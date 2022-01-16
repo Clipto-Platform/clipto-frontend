@@ -9,24 +9,24 @@ import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
 import { AvatarComponent } from '../components/AvatarOrb';
+import { ImagesSlider } from '../components/Booking/ImagesSlider';
+import { ImagesSliderLoading } from '../components/Booking/ImagesSliderLoading';
+import { RightPanel } from '../components/Booking/RightPanel';
+import { RightPanelLoading } from '../components/Booking/RightPanelLoading';
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { ImagesSlider } from '../components/Booking/ImagesSlider';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
-import { RightPanelLoading } from '../components/Booking/RightPanelLoading'
 import { TextField } from '../components/TextField';
 import { API_URL, SYMBOL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useCreator } from '../hooks/useCreator';
+import { useImagesLoaded } from '../hooks/useImagesLoaded';
 import { CreateUserDto, UserProfile } from '../hooks/useProfile';
 import { theme } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
 import { Number } from '../utils/validation';
-import { RightPanel } from '../components/Booking/RightPanel';
-import { ImagesSliderLoading } from '../components/Booking/ImagesSliderLoading';
-import { useImagesLoaded } from '../hooks/useImagesLoaded';
 
 const PageGrid = styled.div`
   display: grid;
@@ -162,11 +162,7 @@ const BookingPage = () => {
           <ImagesColumnContainer>
             {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
           </ImagesColumnContainer>
-          <RightPanel
-            creator={creator}
-            account={account}
-            loaded={loaded}
-          >
+          <RightPanel creator={creator} account={account} loaded={loaded}>
             {(creator, account) => (
               <BookingCard>
                 <FlexRow style={{ marginBottom: 12 }}>

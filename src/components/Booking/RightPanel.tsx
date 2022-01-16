@@ -7,20 +7,19 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+
+import { API_URL, SYMBOL } from '../../config/config';
+import { CliptoExchange } from '../../contracts';
+import { useExchangeContract } from '../../hooks/useContracts';
 import { CreateRequestDto, ReadUserDto } from '../../pages/Booking';
 import { Description, Label } from '../../styles/typography';
 import { getShortenedAddress } from '../../utils/address';
-import { AvatarComponent } from '../AvatarOrb';
-
-import { Number } from '../../utils/validation'
 import { formatETH } from '../../utils/format';
-import { API_URL, SYMBOL } from '../../config/config';
-import { TextField } from '../TextField';
+import { Number } from '../../utils/validation';
+import { AvatarComponent } from '../AvatarOrb';
 import { PrimaryButton } from '../Button';
-import { useExchangeContract } from '../../hooks/useContracts';
-import { CliptoExchange } from '../../contracts';
+import { TextField } from '../TextField';
 import { RightPanelLoading } from './RightPanelLoading';
-
 
 export const BookingCard = styled.div`
   background: ${(props) => props.theme.black};
@@ -50,12 +49,11 @@ const HR = styled.div`
   background-color: ${(props) => props.theme.border};
 `;
 
-
 export interface RightPanelProps {
-  creator?: ReadUserDto,
-  account?: string | null,
-  loaded: boolean,
-  children: (creator: ReadUserDto, account: string) => React.ReactNode
+  creator?: ReadUserDto;
+  account?: string | null;
+  loaded: boolean;
+  children: (creator: ReadUserDto, account: string) => React.ReactNode;
 }
 
 export const RightPanel: React.FC<RightPanelProps> = (props) => {
@@ -68,5 +66,5 @@ export const RightPanel: React.FC<RightPanelProps> = (props) => {
       {loaded && !account && <Label>Error loading account</Label>}
       {loaded && creator && account && props.children(creator, account)}
     </>
-  )
-}
+  );
+};
