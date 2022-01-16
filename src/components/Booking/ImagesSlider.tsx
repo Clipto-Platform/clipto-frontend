@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { Tweet } from 'react-twitter-widgets';
 import styled from 'styled-components';
 
-import { LeftChevronIcon, RightChevonIcon } from './Chevrons';
+import { LeftChevronIcon, RightChevonIcon } from '../Chevrons';
 
 const ChevronContainer = styled.div`
   height: 32px;
@@ -61,6 +61,8 @@ const SliderControlsContainer = styled.div`
 
 export interface ImagesSliderProps {
   images: string[];
+  onLoad: () => void;
+  isHidden: boolean;
 }
 
 const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
@@ -89,8 +91,10 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
       <ImagesSliderContainer ref={imageSliderContainerRef} style={{ marginBottom: 8 }}>
         {props.images.map((imgSrc, n) => {
           return (
-            <ImageCardContainer key={n.toString()}>
-              <Tweet options={{ theme: 'dark' }} tweetId={imgSrc.split('/').pop()?.split('?')[0] || '0'} />
+            <ImageCardContainer key={n.toString()} >
+              <div >
+                <Tweet onLoad={props.onLoad} options={{ theme: 'dark' }} tweetId={imgSrc.split('/').pop()?.split('?')[0] || '0'} />
+              </div>
             </ImageCardContainer>
           );
         })}
