@@ -7,15 +7,31 @@ const RightPanelLoading = (props: any) => (
   <BookingCard>
     <ContentLoader
       speed={2}
-      width={500}
-      height={160}
-      viewBox="0 0 500 160"
+      width={443}
+      height={1062}
+      viewBox="0 0 443 1062"
       backgroundColor="#2b2b2b"
       foregroundColor="#1c1c1c"
       {...props}
     >
-      <path d="M 446.07 1.1 c 24.111 0 43.68 19.569 43.68 43.68 s -19.569 43.68 -43.68 43.68 s -43.68 -19.569 -43.68 -43.68 S 421.959 1.1 446.07 1.1 z" />
-      <path d="M 1.245 33.41 h 144.15 v 13.02 H 1.245 z M 1.2 0.69 h 105.4 v 19.84 H 1.2 z M 1.095 118.63 h 498.17 v 44.64 H 1.095 z M 1.175 58.79 h 144.15 v 13.02 H 1.175 z" />
+      <circle cx="419" cy="24" r="24" />
+      <rect x="2" y="0" rx="8" ry="8" width="120" height="16" />
+      <rect x="3" y="523" rx="10" ry="10" width="440" height="176" />
+      <rect x="3" y="24" rx="8" ry="8" width="120" height="16" />
+      <rect x="2" y="310" rx="8" ry="8" width="273" height="16" />
+      <rect x="3" y="488" rx="8" ry="8" width="176" height="16" />
+      <rect x="3" y="745" rx="8" ry="8" width="225" height="16" />
+      <rect x="3" y="1014" rx="24" ry="24" width="440" height="48" />
+      <rect x="3" y="869" rx="8" ry="8" width="136" height="16" />
+      <rect x="2" y="894" rx="8" ry="8" width="280" height="16" />
+      <rect x="3" y="398" rx="10" ry="10" width="176" height="48" />
+      <rect x="3" y="781" rx="10" ry="10" width="440" height="48" />
+      <rect x="0" y="926" rx="10" ry="10" width="260" height="48" />
+      <rect x="2" y="334" rx="8" ry="8" width="348" height="16" />
+      <rect x="3" y="358" rx="8" ry="8" width="348" height="16" />
+      <rect x="2" y="81" rx="8" ry="8" width="440" height="16" />
+      <rect x="2" y="105" rx="8" ry="8" width="440" height="16" />
+      <rect x="3" y="178" rx="10" ry="10" width="440" height="96" />
     </ContentLoader>
   </BookingCard>
 );

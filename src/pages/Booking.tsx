@@ -161,6 +161,7 @@ const BookingPage = () => {
         <PageGrid>
           <ImagesColumnContainer>
             {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
+            <ImagesSliderLoading style={{ width: '100%', height: 460 }} />
           </ImagesColumnContainer>
           <RightPanel creator={creator} account={account} loaded={loaded}>
             {(creator, account) => (

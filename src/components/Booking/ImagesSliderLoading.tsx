@@ -6,14 +6,17 @@ import { BookingCard } from './RightPanel';
 const ImagesSliderLoading = (props: any) => (
   <ContentLoader
     speed={2}
-    width={320}
-    height={250}
-    viewBox="0 0 320 250"
+    width={505}
+    height={496}
+    viewBox="0 0 505 496"
     backgroundColor="#2b2b2b"
     foregroundColor="#1c1c1c"
     {...props}
   >
-    <path d="M 0.48 0.8 h 149.04 v 248.4 H 0.48 z M 170.56 0.4 H 319.6 v 248.4 H 170.56 z" />
+    <circle cx="489" cy="480" r="16" />
+    <rect x="0" y="0" rx="10" ry="10" width="300" height="440" />
+    <rect x="324" y="0" rx="10" ry="10" width="175" height="440" />
+    <circle cx="440" cy="480" r="16" />
   </ContentLoader>
 );
 
