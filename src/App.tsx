@@ -20,7 +20,6 @@ import { SelectedOrderPage } from './pages/SelectedOrder';
 import { theme } from './styles/theme';
 import { Loader } from './components/Loader';
 import React, { useState, useEffect } from 'react';
-
 import { LOADING_SCREEN } from './config/config';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
