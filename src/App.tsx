@@ -21,6 +21,8 @@ import { theme } from './styles/theme';
 import { Loader } from './components/Loader';
 import React, { useState, useEffect } from 'react';
 
+import { LOADING_SCREEN } from './config/config';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -29,15 +31,10 @@ function getLibrary(provider: any): Web3Provider {
 }
 
 function App() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 6000);
-  }, []);
 
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      {loading === false ? (
+      {LOADING_SCREEN === false ? (
         <ThemeProvider theme={theme}>
           <ToastContainer />
           <BrowserRouter>
