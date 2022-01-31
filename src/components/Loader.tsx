@@ -5,7 +5,7 @@ import styled, { CSSProperties } from 'styled-components';
 const LoaderDiv = styled.div`
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 200px;
+  margin-top: 300px;
   display: flex;
   align-items: center;
   padding: 4px;
