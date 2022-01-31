@@ -15,7 +15,7 @@ const LoaderDiv = styled.div`
 const Loader = () => {
   return (
     <LoaderDiv>
-      <ReactLoading type={'spin'} color="#fff" height={400} width={200} />
+      <ReactLoading type={'spin'} color="#fff" height={100} width={100} />
     </LoaderDiv>
   );
 };
