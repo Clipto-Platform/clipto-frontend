@@ -108,6 +108,23 @@ const StyledSpan = styled.span`
   }
 `;
 
+const ConnectWallet = styled.div`
+  margin-bottom: 16,
+  font-weight: 700,
+  font-size: 18,
+  text-align: 'left',
+`;
+
+const Error = styled.div`
+  margin-bottom: 12, 
+  color: #FF6868, 
+  text-align: left
+`;
+
+const ConnectWalletPopup = styled.div`
+  display: flex,
+  vertical-align: middle,
+`;
 interface HeaderStore extends State {
   showProfileDropDown: boolean;
   showDialog: boolean;
@@ -371,18 +388,11 @@ const Header: React.FC<HeaderProps> = () => {
         <OverlayContainer>
           <ModalDialog containerStyles={{}} isOpen onClose={() => setShowLoginDialog(false)} isDismissable>
             <>
-              <div
-                style={{
-                  marginBottom: 16,
-                  fontWeight: 700,
-                  fontSize: 18,
-                  textAlign: 'left',
-                }}
-              >
+              <ConnectWallet>
                 Connect a wallet
-              </div>
+              </ConnectWallet>
               {errorMessage && (
-                <div style={{ marginBottom: 12, color: '#FF6868', textAlign: 'left' }}>{errorMessage}</div>
+                <Error >{errorMessage}</Error>
               )}
 
               <PrimaryButton
@@ -391,14 +401,9 @@ const Header: React.FC<HeaderProps> = () => {
                 isDisabled={currentlyActivating === 'metamask'}
                 onPress={() => activeWithMetamask(account)}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    verticalAlign: 'middle',
-                  }}
-                >
+                <ConnectWalletPopup>
                   {currentlyActivating === 'metamask' ? <>{'Confirm in your wallet'}</> : 'Continue with Metamask'}
-                </div>
+                </ConnectWalletPopup>
               </PrimaryButton>
 
               <PrimaryButton
@@ -407,14 +412,9 @@ const Header: React.FC<HeaderProps> = () => {
                 isDisabled={currentlyActivating === 'wc'}
                 onPress={() => activeWithWalletConnect(account)}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    verticalAlign: 'middle',
-                  }}
-                >
+                <ConnectWalletPopup>
                   {currentlyActivating === 'wc' ? <>{'Confirm in your wallet'}</> : 'Continue with mobile wallet'}
-                </div>
+                </ConnectWalletPopup>
               </PrimaryButton>
             </>
           </ModalDialog>
