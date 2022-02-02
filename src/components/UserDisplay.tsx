@@ -1,13 +1,12 @@
-import { CSSProperties, useEffect, useState } from 'react';
+import { CSSProperties, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
 import { ContentWrapper, PageContentWrapper } from '../components/layout/Common';
 import { SYMBOL } from '../config/config';
 import { useImagesLoaded } from '../hooks/useImagesLoaded';
 import { formatETH } from '../utils/format';
-import { UserDisplayLoading } from './UserDisplayLoading';
 import { UserImage } from './UserImage';
+
 
 export interface User {
   name: string;

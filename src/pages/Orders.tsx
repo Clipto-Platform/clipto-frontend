@@ -5,8 +5,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-
-import { AvatarComponent } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
@@ -15,8 +13,9 @@ import { OrdersTab } from '../components/Orders/OrdersTab';
 import { Item, Tabs } from '../components/Tabs';
 import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
-import { Description, Label } from '../styles/typography';
+import { Label } from '../styles/typography';
 import { checkIfDeadlinePassed } from '../utils/time';
+
 
 export type Request = {
   id: number;

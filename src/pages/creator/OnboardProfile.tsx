@@ -1,27 +1,22 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import { ethers } from 'ethers';
 import { Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-import { ZodError } from 'zod';
-
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { API_URL, DEV, HELP_EMAIL, SYMBOL } from '../../config/config';
+import { API_URL, SYMBOL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
-import { CreateUserDtoFull, CreateUserDtoSignable, GetUserResponse, UserProfile } from '../../hooks/useProfile';
-import { useProfile, values } from '../../hooks/useProfile';
+import { CreateUserDtoFull, CreateUserDtoSignable, GetUserResponse, useProfile } from '../../hooks/useProfile';
 import { Description } from '../../styles/typography';
-import { formatETH } from '../../utils/format';
-import { Address, DeliveryTime, errorHandle, Number, TweetUrl, Url } from '../../utils/validation';
+import { Address, Number, TweetUrl, Url } from '../../utils/validation';
 import { isCreatorOnChain, signMessage } from '../../web3/request';
-import { CreateRequestDto } from '../Booking';
+
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
   font-family: 'Scto Grotesk A';

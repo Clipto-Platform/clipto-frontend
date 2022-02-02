@@ -1,11 +1,5 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-import { API_URL } from '../config/config';
 import { useCreator } from '../hooks/useCreator';
-import { UserProfile } from '../hooks/useProfile';
-import { CreateRequestDto } from '../pages/Booking';
 import { Request } from '../pages/Orders';
 import { theme } from '../styles/theme';
 import { Label, Text } from '../styles/typography';
@@ -13,6 +7,7 @@ import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
 import { checkIfDeadlinePassed, DAY, HOUR } from '../utils/time';
 import { AvatarComponent } from './AvatarOrb';
+
 const OrderCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.border};
   padding: 24px;

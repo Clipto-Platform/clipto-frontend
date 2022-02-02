@@ -8,8 +8,6 @@ import { useParams } from 'react-router-dom';
 import BounceLoader from 'react-spinners/BounceLoader';
 import { toast } from 'react-toastify';
 import styled, { useTheme } from 'styled-components';
-
-import pfp from '../assets/images/pfps/sample-profile.png';
 import { PrimaryButton } from '../components/Button';
 import { Card } from '../components/Card';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
@@ -19,8 +17,8 @@ import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { Description, Label } from '../styles/typography';
 import { extractResumeableUrl } from '../utils/http';
-import { CreateRequestDto } from './Booking';
 import { Request } from './Orders';
+
 const BookingCard = styled.div`
   background: ${(props) => props.theme.lessDarkGray};
   border: 1px solid ${(props) => props.theme.border};

@@ -1,7 +1,4 @@
 import styled, { useTheme } from 'styled-components';
-
-import pfp2 from '../assets/images/pfps/2.png';
-import pfp3 from '../assets/images/pfps/3.png';
 import pfp5 from '../assets/images/pfps/cc.png';
 // Sample image assets
 import pfp1 from '../assets/images/pfps/g1.jpeg';
@@ -10,6 +7,7 @@ import pfp4 from '../assets/images/pfps/g2.jpeg';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { User, UserDisplay } from '../components/UserDisplay';
+
 
 // TODO(johnrjj) - Fetch remotely
 const featuredUsers: Array<User> = [

@@ -1,25 +1,8 @@
-import { Web3Provider } from '@ethersproject/providers';
-import { useWeb3React } from '@web3-react/core';
-import axios from 'axios';
-import { errors, ethers, Transaction } from 'ethers';
-import { Formik } from 'formik';
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import styled from 'styled-components';
-
-import { API_URL, SYMBOL } from '../../config/config';
-import { CliptoExchange } from '../../contracts';
-import { useExchangeContract } from '../../hooks/useContracts';
-import { CreateRequestDto, ReadUserDto } from '../../pages/Booking';
-import { Description, Label } from '../../styles/typography';
-import { getShortenedAddress } from '../../utils/address';
-import { formatETH } from '../../utils/format';
-import { Number } from '../../utils/validation';
-import { AvatarComponent } from '../AvatarOrb';
-import { PrimaryButton } from '../Button';
-import { TextField } from '../TextField';
+import { ReadUserDto } from '../../pages/Booking';
+import { Label } from '../../styles/typography';
 import { RightPanelLoading } from './RightPanelLoading';
+
 
 export const BookingCard = styled.div`
   background: ${(props) => props.theme.black};

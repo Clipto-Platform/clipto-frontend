@@ -2,20 +2,17 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
 import {
-  CenterContainer,
-  Container,
-  ContentWrapper,
+  CenterContainer, ContentWrapper,
   PageContentWrapper,
-  PageWrapper,
+  PageWrapper
 } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
 import { useProfile } from '../../hooks/useProfile';
-import { Text } from '../../styles/typography';
 import { BountyConfirmation } from './BountyConfirmation';
+
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
   font-family: 'Scto Grotesk A';

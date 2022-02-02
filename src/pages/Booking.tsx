@@ -1,18 +1,16 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import { errors, ethers, Transaction } from 'ethers';
+import { ethers } from 'ethers';
 import { Formik } from 'formik';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-
 import { AvatarComponent } from '../components/AvatarOrb';
 import { ImagesSlider } from '../components/Booking/ImagesSlider';
 import { ImagesSliderLoading } from '../components/Booking/ImagesSliderLoading';
 import { RightPanel } from '../components/Booking/RightPanel';
-import { RightPanelLoading } from '../components/Booking/RightPanelLoading';
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
@@ -20,13 +18,11 @@ import { TextField } from '../components/TextField';
 import { API_URL, SYMBOL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useCreator } from '../hooks/useCreator';
-import { useImagesLoaded } from '../hooks/useImagesLoaded';
-import { CreateUserDto, UserProfile } from '../hooks/useProfile';
-import { theme } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
 import { Number } from '../utils/validation';
+
 
 const PageGrid = styled.div`
   display: grid;

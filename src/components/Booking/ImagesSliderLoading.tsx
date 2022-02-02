@@ -1,7 +1,6 @@
 import React from 'react';
 import ContentLoader from 'react-content-loader';
 
-import { BookingCard } from './RightPanel';
 
 const ImagesSliderLoading = (props: any) => (
   <ContentLoader
