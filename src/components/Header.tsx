@@ -1,19 +1,16 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { OverlayContainer } from '@react-aria/overlays';
 import { useWeb3React } from '@web3-react/core';
-import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
-
-import { API_URL, DEV } from '../config/config';
+import { DEV } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useCreator } from '../hooks/useCreator';
 import { useEagerConnect } from '../hooks/useEagerConnect';
 import { useEns } from '../hooks/useEns';
 import { useInactiveListener } from '../hooks/useInactiveListener';
-import { UserProfile } from '../hooks/useProfile';
 import { MAX_CONTENT_WIDTH_PX } from '../styles/theme';
 import { Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
@@ -24,6 +21,7 @@ import { PrimaryButton } from './Button';
 import { ModalDialog } from './Dialog';
 import { Logo } from './Logo';
 import { NavLink } from './NavLink';
+
 // import { MetamaskIcon } from './icons/MetamaskIcon';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
 
