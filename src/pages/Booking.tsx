@@ -157,7 +157,6 @@ const BookingPage = () => {
         <PageGrid>
           <ImagesColumnContainer>
             {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
-            <ImagesSliderLoading style={{ width: '100%', height: 460 }} />
           </ImagesColumnContainer>
           <RightPanel creator={creator} account={account} loaded={loaded}>
             {(creator, account) => (
@@ -286,7 +285,7 @@ const BookingPage = () => {
                       <PrimaryButton
                         onPress={async () => {
                           setLoading(true);
-                          await validateForm();
+                          const errors = await validateForm();
                           if (Object.keys(errors).length != 0) {
                             toast.error('Please fix the errors.');
                           } else {
