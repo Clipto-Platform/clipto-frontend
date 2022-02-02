@@ -93,19 +93,6 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
         <ContentWrapper>
           <Title style={{ marginTop: 64, marginBottom: 36 }}>{title}</Title>
           <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-            {/* special overlay until images are all loaded */}
-            {/* {!imagesDone && <UserDisplayLoading style={{
-              width: '100%',
-              height: '100%',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              opacity: 1,
-              background: '#000000',
-              zIndex: 9,
-              marginTop: -36
-            }} />} */}
-
             <Grid>
               {users.map((user) => {
                 return (

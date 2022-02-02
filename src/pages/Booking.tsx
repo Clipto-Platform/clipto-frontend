@@ -9,7 +9,6 @@ import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { AvatarComponent } from '../components/AvatarOrb';
 import { ImagesSlider } from '../components/Booking/ImagesSlider';
-import { ImagesSliderLoading } from '../components/Booking/ImagesSliderLoading';
 import { RightPanel } from '../components/Booking/RightPanel';
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
