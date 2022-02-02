@@ -221,8 +221,9 @@ const Header: React.FC<HeaderProps> = () => {
 
   const logoutUser = useCallback(async () => {
     deactivate();
-    setCheckLogin(false);
+    setShowProfileDropDown(false)
     localStorage.removeItem('user');
+    setCheckLogin(false);
   }, [deactivate]);
 
   useInactiveListener(!hasTriedEagerConnect);
@@ -306,7 +307,11 @@ const Header: React.FC<HeaderProps> = () => {
                                 <DropDownItem>Settings</DropDownItem>
                               </Link>
                               <Divider />
-                              <DropDownItem onClick={logoutUser}>Log out</DropDownItem>
+                              <DropDownItem onClick={(e) =>{ 
+                                e.stopPropagation();
+                                logoutUser();
+                              }}
+                                >Log out</DropDownItem>
                             </DropDown>
                           </OverlayProvider>
                         )}
@@ -344,7 +349,11 @@ const Header: React.FC<HeaderProps> = () => {
                               onClose={() => setShowProfileDropDown(false)}
                               isDismissable
                             >
-                              <DropDownItem onClick={logoutUser}>Logout</DropDownItem>
+                              <DropDownItem onClick={(e) =>{ 
+                                e.stopPropagation();
+                                logoutUser();
+                              }}
+                                >Logout</DropDownItem>
                             </DropDown>
                           </OverlayProvider>
                         )}
