@@ -1,9 +1,9 @@
 import { useDialog } from '@react-aria/dialog';
 import { FocusScope } from '@react-aria/focus';
-import { useModal, useOverlay, usePreventScroll } from '@react-aria/overlays';
+import { useModal, useOverlay, useOverlayPosition, usePreventScroll } from '@react-aria/overlays';
 import { animated } from '@react-spring/web';
 import { AriaDialogProps } from '@react-types/dialog';
-import React from 'react';
+import React, { RefObject } from 'react';
 import { CSSProperties } from 'styled-components';
 
 interface DialogProps {
@@ -41,6 +41,8 @@ type ModalProps = OverlayProps &
   DialogProps & {
     containerStyles: CSSProperties;
   };
+
+type DropDownProps = ModalProps & { triggerRef: RefObject<HTMLElement> };
 
 const ModalDialog: React.FC<ModalProps> = (props) => {
   const { title, children, containerStyles } = props;
@@ -103,4 +105,77 @@ const ModalDialog: React.FC<ModalProps> = (props) => {
   );
 };
 
-export { ModalDialog };
+const DropDown: React.FC<DropDownProps> = (props) => {
+  const { title, children, containerStyles } = props;
+
+  // Handle interacting outside the dialog and pressing
+  // the Escape key to close the modal.
+  const ref = React.useRef<HTMLDivElement | null>(null);
+  const { overlayProps: positionalProps } = useOverlayPosition({
+    targetRef: props.triggerRef,
+    overlayRef: ref,
+    placement: 'bottom',
+    isOpen: true,
+  });
+
+  // Prevent scrolling while the modal is open, and hide content
+  // outside the modal from screen readers.
+  usePreventScroll();
+  const { overlayProps } = useOverlay(
+    {
+      onClose: props.onClose,
+      isOpen: props.isOpen,
+      isDismissable: true,
+    },
+    ref,
+  );
+
+  // Get props for the dialog and its title
+  const { modalProps } = useModal();
+
+  // Get props for the dialog and its title
+  const { dialogProps, titleProps } = useDialog(props, ref);
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        background: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        marginTop: 40,
+        justifyContent: 'center',
+        ...positionalProps.style,
+      }}
+    >
+      {/* eslint-disable-next-line jsx-a11y/no-autofocus  */}
+      <FocusScope contain restoreFocus autoFocus>
+        <animated.div
+          ref={ref}
+          {...overlayProps}
+          {...modalProps}
+          {...dialogProps}
+          style={{
+            background: '#000000',
+            color: '#ffffff',
+            borderRadius: 10,
+            borderWidth: 2,
+            borderStyle: 'solid',
+            borderColor: '#121212',
+            boxShadow: `0.3px 0.3px 2.2px rgba(0, 0, 0, 0.02), 0.7px 0.8px 5.3px rgba(0, 0, 0, 0.028),
+            1.3px 1.5px 10px rgba(0, 0, 0, 0.035), 2.2px 2.7px 17.9px rgba(0, 0, 0, 0.042),
+            4.2px 5px 33.4px rgba(0, 0, 0, 0.05), 10px 12px 80px rgba(0, 0, 0, 0.07)`,
+            ...containerStyles,
+          }}
+        >
+          <h3 {...titleProps} style={{ marginTop: 0 }}>
+            {title}
+          </h3>
+          {children}
+        </animated.div>
+      </FocusScope>
+    </div>
+  );
+};
+
+export { DropDown, ModalDialog };

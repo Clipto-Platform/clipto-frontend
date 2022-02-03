@@ -1,13 +1,13 @@
 import { Web3Provider } from '@ethersproject/providers';
-import { OverlayContainer } from '@react-aria/overlays';
+import { OverlayContainer, OverlayProvider } from '@react-aria/overlays';
+import { useAsyncList } from '@react-stately/data';
 import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
 import { DEV } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
-import { useCreator } from '../hooks/useCreator';
 import { useEagerConnect } from '../hooks/useEagerConnect';
 import { useEns } from '../hooks/useEns';
 import { useInactiveListener } from '../hooks/useInactiveListener';
@@ -18,10 +18,8 @@ import { immer } from '../utils/zustand';
 import { injected, walletconnect } from '../web3/connectors';
 import { AvatarComponent } from './AvatarOrb';
 import { PrimaryButton } from './Button';
-import { ModalDialog } from './Dialog';
+import { DropDown, ModalDialog } from './Dialog';
 import { Logo } from './Logo';
-import { NavLink } from './NavLink';
-
 // import { MetamaskIcon } from './icons/MetamaskIcon';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
 
@@ -78,7 +76,22 @@ const RightWrapper = styled.div`
   cursor: pointer;
 `;
 
-const StyledSpan2 = styled.span`
+const DropDownItem = styled.div`
+  display: block;
+  width: 100%;
+  padding: 10px 60px 10px 30px;
+  color: #888f96;
+  font-weight: bold;
+  :hover {
+    color: #ffffff;
+  }
+`;
+
+const Divider = styled.hr`
+  border: 1px solid #121212;
+`;
+
+const StyledSpan = styled.span`
   display: block;
   text-decoration: none;
   font-style: normal;
@@ -92,17 +105,42 @@ const StyledSpan2 = styled.span`
   }
 `;
 
+const ConnectWallet = styled.div`
+  margin-bottom: 16,
+  font-weight: 700,
+  font-size: 18,
+  text-align: 'left',
+`;
+
+const Error = styled.div`
+  margin-bottom: 12, 
+  color: #FF6868, 
+  text-align: left
+`;
+
+const ConnectWalletPopup = styled.div`
+  display: flex,
+  vertical-align: middle,
+`;
 interface HeaderStore extends State {
+  showProfileDropDown: boolean;
   showDialog: boolean;
   hasTriedEagerConnecting: boolean;
+  setShowProfileDropDown: (show: boolean) => void;
   setShowDialog: (show: boolean) => void;
   setHasTriedEagerConnecting: (hasEagerConnected: boolean) => void;
 }
 
 const useHeaderStore = create<HeaderStore>(
   immer((set) => ({
+    showProfileDropDown: false,
     showDialog: false,
     hasTriedEagerConnecting: false,
+    setShowProfileDropDown: (show: boolean) => {
+      set((draft) => {
+        draft.showProfileDropDown = show;
+      });
+    },
     setShowDialog: (show: boolean) => {
       set((draft) => {
         draft.showDialog = show;
@@ -115,35 +153,41 @@ const useHeaderStore = create<HeaderStore>(
     },
   })),
 );
-
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
+  const [checkLogin,setCheckLogin] = useState<boolean | null>(false);
   const { activate, account, deactivate } = useWeb3React<Web3Provider>();
-  const { pathname } = useLocation();
+  
   const showLoginDialog = useHeaderStore((s) => s.showDialog);
   const setShowLoginDialog = useHeaderStore((s) => s.setShowDialog);
   const setHasTriedEagerConnecting = useHeaderStore((s) => s.setHasTriedEagerConnecting);
+
+  const showProfileDropDown = useHeaderStore((s) => s.showProfileDropDown);
+  const setShowProfileDropDown = useHeaderStore((s) => s.setShowProfileDropDown);
+  const dropDropRef = React.useRef<HTMLDivElement>(null);
 
   const userEnsName = useEns();
 
   const hasTriedEagerConnect = useEagerConnect();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+  const [loggedInProfile, setLoggedInProfile] = useState<Partial<UserProfile> | null>();
+  const navigate = useNavigate();
   useEffect(() => {
     setHasTriedEagerConnecting(hasTriedEagerConnect);
   }, [hasTriedEagerConnect, setHasTriedEagerConnecting]);
 
   const [currentlyActivating, setCurrentlyActivating] = useState<'metamask' | 'wc' | undefined>(undefined);
 
-  const activeWithMetamask = useCallback(async () => {
+  const activeWithMetamask = useCallback(async (account) => {
     setErrorMessage(null);
     setCurrentlyActivating('metamask');
     try {
       await activate(injected, undefined, true);
+      setCheckLogin(true);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.log(e.name);
@@ -169,11 +213,13 @@ const Header: React.FC<HeaderProps> = () => {
     }, 1500);
   }, [activate, setShowLoginDialog]);
 
-  const activeWithWalletConnect = useCallback(async () => {
+  const activeWithWalletConnect = useCallback(async (account) => {
     setErrorMessage(null);
+
     setCurrentlyActivating('wc');
     try {
       await activate(walletconnect, undefined, true);
+      setCheckLogin(true);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       setCurrentlyActivating(undefined);
@@ -189,12 +235,37 @@ const Header: React.FC<HeaderProps> = () => {
 
   const logoutUser = useCallback(async () => {
     deactivate();
+    setShowProfileDropDown(false)
+    localStorage.removeItem('user');
+    setCheckLogin(false);
   }, [deactivate]);
 
   useInactiveListener(!hasTriedEagerConnect);
-  const navigate = useNavigate();
-  const { creator } = useCreator(account);
-  const loggedInProfile = creator;
+
+  useEffect(() => {
+    const getCreatorData = async () => {
+      if (account) {
+        if(localStorage.getItem('user')&&localStorage.getItem('user')===account){
+          setCheckLogin(true);
+        }
+        else if(localStorage.getItem('user')&&localStorage.getItem('user')!==account){
+          localStorage.setItem('user',account);
+        }
+        let userProfile;
+        try {
+          userProfile = await axios.get(`${API_URL}/user/${account}`)
+          setLoggedInProfile(userProfile.data);
+          
+        } catch (e) {
+          console.log('Failed to find creator account for userProfile');
+          setLoggedInProfile(null);
+        }
+      }
+      navigate("/");
+    };
+    getCreatorData();
+   
+  }, [account]);
 
   return (
     <>
@@ -208,41 +279,101 @@ const Header: React.FC<HeaderProps> = () => {
           </LeftWrapper>
           {hasTriedEagerConnect && (
             <>
-              {!account && (
+              {!checkLogin  && (
                 <RightWrapper>
                   <PrimaryButton size={'small'} variant={'secondary'} onPress={() => setShowLoginDialog(true)}>
                     Connect Wallet
                   </PrimaryButton>
                 </RightWrapper>
               )}
-              {account && (
+              {checkLogin && account && (
                 <>
-                  <RightWrapper>
-                    <NavLink to={'/explore'} style={{ marginRight: 40 }} name="Explore" pathname={pathname} />
-                    <NavLink to={'/orders'} style={{ marginRight: 40 }} name="Orders" pathname={pathname} />
-                    {!loggedInProfile && (
-                      <NavLink
-                        to={'/onboarding'}
-                        style={{ marginRight: 40 }}
-                        name="Become a creator"
-                        pathname={pathname}
-                      />
-                    )}
-                    <RightWrapper
-                      onClick={() => {
-                        //logoutUser(); //TODO(jonathanng) - logout with menu
-                        navigate('/onboarding/profile');
-                      }}
-                    >
-                      <NavLink
-                        to={'/onboarding'}
-                        style={{ marginRight: 40 }}
-                        name={userEnsName ?? getShortenedAddress(account, 6, 4)}
-                        pathname={pathname}
-                      />
-                      <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
+                {localStorage.setItem('user',account)}
+                  {loggedInProfile && (
+                    <RightWrapper>
+                      <Link to={'/explore'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
+                      </Link>
+                      <Link to={'/orders'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
+                      </Link>
+                      <RightWrapper
+                        ref={dropDropRef}
+                        onClick={() => {
+                          setShowProfileDropDown(true);
+                        }}
+                        style={{ position: 'relative' }}
+                      >
+                        <StyledSpan style={{ marginRight: 16 }}>
+                          {userEnsName ?? getShortenedAddress(account, 6, 4)}
+                        </StyledSpan>
+                        <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
+                        {showProfileDropDown && (
+                          <OverlayProvider>
+                            <DropDown
+                              triggerRef={dropDropRef}
+                              containerStyles={{}}
+                              isOpen={showProfileDropDown}
+                              onClose={() => setShowProfileDropDown(false)}
+                              isDismissable
+                            >
+                              <Link to={"onboarding/profile"}>
+                                <DropDownItem>Settings</DropDownItem>
+                              </Link>
+                              <Divider />
+                              <DropDownItem onClick={(e) =>{ 
+                                e.stopPropagation();
+                                logoutUser();
+                              }}
+                                >Log out</DropDownItem>
+                            </DropDown>
+                          </OverlayProvider>
+                        )}
+                      </RightWrapper>
                     </RightWrapper>
-                  </RightWrapper>
+                  )}
+                  {!loggedInProfile && (
+                    <RightWrapper>
+                      <Link to={'/explore'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
+                      </Link>
+                      <Link to={'/orders'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
+                      </Link>
+                      <Link to={'/onboarding'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Become a creator</StyledSpan>
+                      </Link>
+                      <RightWrapper
+                        ref={dropDropRef}
+                        onClick={() => {
+                          setShowProfileDropDown(true);
+                        }}
+                        style={{ position: 'relative' }}
+                      >
+                        <StyledSpan style={{ marginRight: 16 }}>
+                          {userEnsName ?? getShortenedAddress(account, 6, 4)}
+                        </StyledSpan>
+                        <AvatarComponent address={account} />
+                        {showProfileDropDown && (
+                          <OverlayProvider>
+                            <DropDown
+                              triggerRef={dropDropRef}
+                              containerStyles={{}}
+                              isOpen={showProfileDropDown}
+                              onClose={() => setShowProfileDropDown(false)}
+                              isDismissable
+                            >
+                              <DropDownItem onClick={(e) =>{ 
+                                e.stopPropagation();
+                                logoutUser();
+                              }}
+                                >Logout</DropDownItem>
+                            </DropDown>
+                          </OverlayProvider>
+                        )}
+                      </RightWrapper>
+                    </RightWrapper>
+                  )}
                 </>
               )}
             </>
@@ -252,60 +383,35 @@ const Header: React.FC<HeaderProps> = () => {
 
       {showLoginDialog && (
         <OverlayContainer>
-          <ModalDialog
-            containerStyles={{
-              border: '1px solid #b3b3b3',
-              padding: '24px',
-            }}
-            isOpen
-            onClose={() => setShowLoginDialog(false)}
-            isDismissable
-          >
+          <ModalDialog containerStyles={{}} isOpen onClose={() => setShowLoginDialog(false)} isDismissable>
             <>
-              <div
-                style={{
-                  marginBottom: 16,
-                  fontWeight: 700,
-                  fontSize: 18,
-                  textAlign: 'left',
-                }}
-              >
+              <ConnectWallet>
                 Connect a wallet
-              </div>
+              </ConnectWallet>
               {errorMessage && (
-                <div style={{ marginBottom: 12, color: '#FF6868', textAlign: 'left' }}>{errorMessage}</div>
+                <Error >{errorMessage}</Error>
               )}
 
               <PrimaryButton
                 variant={'secondary'}
                 style={{ marginBottom: 16, minWidth: 310 }}
                 isDisabled={currentlyActivating === 'metamask'}
-                onPress={activeWithMetamask}
+                onPress={() => activeWithMetamask(account)}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    verticalAlign: 'middle',
-                  }}
-                >
+                <ConnectWalletPopup>
                   {currentlyActivating === 'metamask' ? <>{'Confirm in your wallet'}</> : 'Continue with Metamask'}
-                </div>
+                </ConnectWalletPopup>
               </PrimaryButton>
 
               <PrimaryButton
                 variant={'secondary'}
                 style={{ marginBottom: 16, minWidth: 310 }}
                 isDisabled={currentlyActivating === 'wc'}
-                onPress={activeWithWalletConnect}
+                onPress={() => activeWithWalletConnect(account)}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    verticalAlign: 'middle',
-                  }}
-                >
+                <ConnectWalletPopup>
                   {currentlyActivating === 'wc' ? <>{'Confirm in your wallet'}</> : 'Continue with mobile wallet'}
-                </div>
+                </ConnectWalletPopup>
               </PrimaryButton>
             </>
           </ModalDialog>
