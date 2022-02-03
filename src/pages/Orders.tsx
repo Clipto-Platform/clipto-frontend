@@ -5,17 +5,17 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-
-import { AvatarComponent } from '../components/AvatarOrb';
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { OrderCard } from '../components/OrderCard';
+import { OrdersTab } from '../components/Orders/OrdersTab';
 import { Item, Tabs } from '../components/Tabs';
 import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
-import { Description, Label } from '../styles/typography';
+import { Label } from '../styles/typography';
 import { checkIfDeadlinePassed } from '../utils/time';
+
 
 export type Request = {
   id: number;
@@ -60,6 +60,7 @@ const OrdersPage = () => {
   const [requestsToUser, setRequestsToUser] = useState<Request[]>([]);
   const { account } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
+  const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     const getRequests = async () => {
@@ -69,6 +70,7 @@ const OrdersPage = () => {
 
         const creatorRequests = await axios.get(`${API_URL}/request/creator/${account}`);
         setRequestsToUser(creatorRequests.data.reverse());
+        setLoaded(true);
       }
     };
     getRequests();
@@ -82,8 +84,10 @@ const OrdersPage = () => {
         <SingleColumnPageContent>
           <Tabs aria-label="View received and purchased orders">
             <Item key="purchased" title="Purchased">
-              <TabContent>
-                {requestsByUser.length === 0 && (
+              <OrdersTab
+                loaded={loaded}
+                requests={requestsByUser}
+                FallbackWhenNoRequests={() => (
                   <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
                     <div style={{ display: 'block', width: '100%' }}>
                       <Label style={{ marginBottom: '40px' }}>You haven’t made any booking requests yet.</Label>
@@ -101,8 +105,9 @@ const OrdersPage = () => {
                     </div>
                   </div>
                 )}
-                {requestsByUser.length !== 0 &&
-                  requestsByUser.map((i, n) => (
+              >
+                {(requests) =>
+                  requests.map((i, n) => (
                     <OrderCard key={i.id} request={i}>
                       {i.delivered && (
                         <PrimaryButton
@@ -145,12 +150,15 @@ const OrdersPage = () => {
                         </PrimaryButton>
                       )}
                     </OrderCard>
-                  ))}
-              </TabContent>
+                  ))
+                }
+              </OrdersTab>
             </Item>
             <Item key="received" title="Received">
-              <TabContent>
-                {requestsToUser.length === 0 && (
+              <OrdersTab
+                loaded={loaded}
+                requests={requestsToUser}
+                FallbackWhenNoRequests={() => (
                   <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
                     <div style={{ display: 'block', width: '100%' }}>
                       <Label style={{ marginBottom: '24px' }}>You haven’t received any booking requests yet.</Label>
@@ -159,8 +167,9 @@ const OrdersPage = () => {
                     </div>
                   </div>
                 )}
-                {requestsToUser.length !== 0 &&
-                  requestsToUser.map((i, n, f) => (
+              >
+                {(requests) =>
+                  requests.map((i, n, f) => (
                     <OrderCard key={i.id} request={i}>
                       {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
                         <PrimaryButton
@@ -192,8 +201,9 @@ const OrdersPage = () => {
                         </PrimaryButton>
                       )}
                     </OrderCard>
-                  ))}
-              </TabContent>
+                  ))
+                }
+              </OrdersTab>
             </Item>
           </Tabs>
         </SingleColumnPageContent>

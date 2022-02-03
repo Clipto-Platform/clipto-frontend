@@ -1,15 +1,15 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import styled, { useTheme } from 'styled-components';
-
 import { XAvatarOrb } from '../../components/AvatarOrb';
 import { PrimaryButton } from '../../components/Button';
 import { HeaderSpacer } from '../../components/Header';
 import SuccessIcon from '../../components/icons/SuccessIcon';
 import TwitterIcon from '../../components/icons/TwitterIcon';
-import { CenterContainer, Container, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
+import { CenterContainer, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { useProfile } from '../../hooks/useProfile';
-import { Description, Label, Text } from '../../styles/typography';
+import { Description, Label } from '../../styles/typography';
+
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
   font-family: 'Scto Grotesk A';
