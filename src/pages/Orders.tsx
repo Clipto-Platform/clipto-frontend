@@ -83,7 +83,7 @@ const OrdersPage = () => {
           <Tabs aria-label="View received and purchased orders">
             <Item key="purchased" title="Purchased">
               <TabContent>
-                {requestsToUser.length === 0 && (
+                {requestsByUser.length === 0 && (
                   <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
                     <div style={{ display: 'block', width: '100%' }}>
                       <Label style={{ marginBottom: '40px' }}>You haven’t made any booking requests yet.</Label>
@@ -101,7 +101,7 @@ const OrdersPage = () => {
                     </div>
                   </div>
                 )}
-                {requestsToUser.length !== 0 &&
+                {requestsByUser.length !== 0 &&
                   requestsByUser.map((i, n) => (
                     <OrderCard key={i.id} request={i}>
                       {i.delivered && (
