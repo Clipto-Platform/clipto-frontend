@@ -316,10 +316,8 @@ const OnboardProfilePage = () => {
                       {hasAccount &&
                           <div style={{ marginBottom: 48 }}>
                             <TextField
-                              onChange={(e) => {
-                                userProfile.setProfilePicture(e);
-                                handleChange('profilePicture');
-                              }}
+                              onInput={(e) => userProfile.setProfilePicture(e.target.value)}
+                              onChange={handleChange('profilePicture')}
                               label="Profile Picture"
                               placeholder={values.profilePicture}
                               value={values.profilePicture}
