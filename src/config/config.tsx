@@ -32,4 +32,4 @@ export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
 export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
 
-export const API_URL = DEV ? 'http://localhost:8000' : 'http://api.clipto.io';
+export const API_URL = DEV ? 'http://localhost:8000' : 'https://api.clipto.io';
