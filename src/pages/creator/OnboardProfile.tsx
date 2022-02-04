@@ -313,6 +313,21 @@ const OnboardProfilePage = () => {
                   {({ handleChange, handleBlur, handleSubmit, values, errors, touched, validateForm }) => {
                     return (
                       <>
+                      {hasAccount &&
+                          <div style={{ marginBottom: 48 }}>
+                            <TextField
+                              onChange={(e) => {
+                                userProfile.setProfilePicture(e);
+                                handleChange('profilePicture');
+                              }}
+                              label="Profile Picture"
+                              placeholder={values.profilePicture}
+                              value={values.profilePicture}
+                              onBlur={handleBlur}
+                              errorMessage={errors.profilePicture}
+                            />
+                          </div>
+                        }
                         <div style={{ marginBottom: 48 }}>
                           <TextField
                             onChange={handleChange('userName')}

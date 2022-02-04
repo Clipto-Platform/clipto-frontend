@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
-import { DEV } from '../config/config';
+import { API_URL, DEV } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useEagerConnect } from '../hooks/useEagerConnect';
 import { useEns } from '../hooks/useEns';
@@ -20,6 +20,8 @@ import { AvatarComponent } from './AvatarOrb';
 import { PrimaryButton } from './Button';
 import { DropDown, ModalDialog } from './Dialog';
 import { Logo } from './Logo';
+import axios from 'axios';
+import { UserProfile } from '../hooks/useProfile';
 // import { MetamaskIcon } from './icons/MetamaskIcon';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
 
@@ -261,7 +263,6 @@ const Header: React.FC<HeaderProps> = () => {
           setLoggedInProfile(null);
         }
       }
-      navigate("/");
     };
     getCreatorData();
    
