@@ -106,21 +106,21 @@ const StyledSpan = styled.span`
 `;
 
 const ConnectWallet = styled.div`
-  margin-bottom: 16,
-  font-weight: 700,
-  font-size: 18,
-  text-align: 'left',
+  margin-bottom: 16;
+  font-weight: 700;
+  font-size: 18;
+  text-align: 'left';
 `;
 
 const Error = styled.div`
-  margin-bottom: 12, 
-  color: #FF6868, 
-  text-align: left
+  margin-bottom: 12;
+  color: #FF6868;
+  text-align: left;
 `;
 
 const ConnectWalletPopup = styled.div`
-  display: flex,
-  vertical-align: middle,
+  display: flex;
+  vertical-align: middle;
 `;
 interface HeaderStore extends State {
   showProfileDropDown: boolean;
