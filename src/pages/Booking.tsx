@@ -120,7 +120,7 @@ const BookingPage = () => {
       tx = await exchangeContract.newRequest(creator, { value: ethers.utils.parseEther(amount) });
     } catch (e) {
       console.error('tx failed at Booking.tsx');
-      toast.error('The transaction failed. ');
+      toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
       return;
     }
     const receipt = await tx.wait();
