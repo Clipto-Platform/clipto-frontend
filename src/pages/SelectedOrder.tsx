@@ -230,7 +230,7 @@ const SelectedOrderPage = (props: any) => {
                     </PrimaryButton>
                   </div>
                 )}
-                {request && <OrderCard request={request!} key={1} />}
+                {request && <OrderCard request={request!} key={1} isReceived={true} />}
                 {!request && <Label>Could not find request</Label>}
 
                 {done && (

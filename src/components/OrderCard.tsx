@@ -44,6 +44,10 @@ const Column = styled.div`
   flex-direction: column;
 `;
 
+const AvatarContainer = styled.div`
+  margin-right: 16px;
+`
+
 type CreatorCardStates = 'rejected' | 'past-deadline' | 'upload-clip' | 'accept-booking' | 'done';
 type UserOrderCardStates = 'pending' | 'accepted' | 'cancelled' | 'done' | 'rejected';
 
@@ -63,6 +67,7 @@ export interface OrderCardProps {
   request: Request;
   txHash?: string;
   key: number;
+  isReceived: boolean;
 }
 
 const SecondaryLabel = styled(Text)`
@@ -75,15 +80,18 @@ const BidAmount = styled(Text)`
 `;
 
 const OrderCard: React.FC<OrderCardProps> = (props) => {
+  const { isReceived } = props;
   const { creator, loaded } = useCreator(props.request.creator);
+  const userAddress = props.isReceived ? props.request.requester : props.request.creator;
+
   const getDeadline = () => {
     //TODO(jonathanng) - move to time.ts
     const creationDate: Date = new Date(props.request.created!);
     creationDate.setDate(creationDate.getDate() + (props.request?.deadline || 0));
     const mmRemaining = creationDate.getTime() - Date.now();
     if (mmRemaining < DAY && DAY - mmRemaining > 0) {
-      //TODO(jonathanng) - can go to minutes
-      return ((mmRemaining - (mmRemaining % HOUR)) / HOUR).toString() + ' Hours';
+      const remaining = (mmRemaining - (mmRemaining % HOUR)) / HOUR;
+      return remaining > 0 ? ` ${remaining} Hours` : 'Expired';
     }
     return creationDate.toLocaleDateString();
   };
@@ -92,12 +100,14 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
     <OrderCardContainer>
       <OrderCardTopRowContainer>
         <Row>
-          {creator && <AvatarComponent style={{ marginRight: 16 }} url={creator.profilePicture} />}
-          {!creator && <AvatarComponent style={{ marginRight: 16 }} />}
+          <AvatarContainer>
+            {isReceived && <AvatarComponent address={userAddress} />}
+            {!isReceived && creator && <AvatarComponent url={creator.profilePicture} />}
+          </AvatarContainer>
           <Column>
             {/* TODO(jonathanng) - make dynamic */}
-            <Label style={{ marginBottom: 2 }}>{creator?.userName}</Label>
-            <Text>{props.request?.creator ? getShortenedAddress(props.request?.creator) : ''}</Text>
+            {!isReceived && <Label style={{ marginBottom: 2 }}>{creator?.userName}</Label>}
+            <Text>{getShortenedAddress(userAddress)}</Text>
           </Column>
         </Row>
         <Row>

@@ -110,7 +110,7 @@ const OrdersPage = () => {
         <HeaderContentGapSpacer />
         <SingleColumnPageContent>
           <Tabs aria-label="View received and purchased orders">
-            <Item key="purchased" title="Purchased">
+            <Item key="ordered" title="Ordered">
               <OrdersTab
                 loaded={loaded}
                 requests={requestsByUser}
@@ -135,7 +135,7 @@ const OrdersPage = () => {
               >
                 {(requests) =>
                   requests.map((i, n) => (
-                    <OrderCard key={i.id} request={i}>
+                    <OrderCard key={i.id} request={i} isReceived={false}>
                       {i.delivered && (
                         <PrimaryButton
                           onPress={() => {
@@ -189,7 +189,7 @@ const OrdersPage = () => {
               >
                 {(requests) =>
                   requests.map((i, n, f) => (
-                    <OrderCard key={i.id} request={i}>
+                    <OrderCard key={i.id} request={i} isReceived={true}>
                       {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
                         <PrimaryButton
                           onPress={() => {
