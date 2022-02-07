@@ -33,18 +33,14 @@ export type CreateUserDto1 = {
   price: number;
   tweetUrl: string;
   address: string;
-}
+};
 
 type Signable = {
-  message: string,
-  signed: any
-}
+  message: string;
+  signed: any;
+};
 
-export type CreateUserDtoSignable = CreateUserDto1 & Signable
-
-export interface CreateUserDtoSigned {
-
-}
+export type CreateUserDtoSignable = CreateUserDto1 & Signable;
 
 export interface GetUserResponse {
   bio: string;

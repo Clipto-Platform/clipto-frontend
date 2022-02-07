@@ -1,28 +1,27 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import { errors, ethers, Transaction } from 'ethers';
+import { ethers } from 'ethers';
 import { Formik } from 'formik';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-
 import { AvatarComponent } from '../components/AvatarOrb';
+import { ImagesSlider } from '../components/Booking/ImagesSlider';
+import { RightPanel } from '../components/Booking/RightPanel';
 import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { ImagesSlider } from '../components/ImagesSlider';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
 import { API_URL, SYMBOL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useCreator } from '../hooks/useCreator';
-import { CreateUserDto, UserProfile } from '../hooks/useProfile';
-import { theme } from '../styles/theme';
 import { Description, Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
 import { Number } from '../utils/validation';
+
 
 const PageGrid = styled.div`
   display: grid;
@@ -103,12 +102,11 @@ export interface ReadUserDto {
 const BookingPage = () => {
   const { creatorId } = useParams();
   const { account } = useWeb3React<Web3Provider>();
+
   const [loading, setLoading] = useState<boolean>(false);
-
-  const exchangeContract = useExchangeContract(true);
   const navigate = useNavigate();
+  const exchangeContract = useExchangeContract(true);
   const { creator, loaded } = useCreator(creatorId);
-
   const makeBooking = async (
     requester: string,
     creator: string,
@@ -150,7 +148,6 @@ const BookingPage = () => {
       toast.error('Something is wrong.');
     }
   };
-
   return (
     <PageWrapper>
       <HeaderSpacer />
@@ -158,153 +155,153 @@ const BookingPage = () => {
       <PageContentWrapper>
         <PageGrid>
           <ImagesColumnContainer>
-            <ImagesSlider images={creator?.demos || []} />
+            {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
           </ImagesColumnContainer>
-          <BookingCard>
-            <FlexRow style={{ marginBottom: 12 }}>
-              <div>
-                <Label style={{ marginBottom: 8 }}>{creator?.userName}</Label>
-                <Description>
-                  Twitter:{' '}
-                  <a href={`https://twitter.com/${creator?.twitterHandle}`} style={{ color: '#EDE641' }}>
-                    @{creator?.twitterHandle}
-                  </a>{' '}
-                </Description>
-                <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
-              </div>
-              <div>
-                <AvatarComponent url={creator?.profilePicture} size="medium" />
-              </div>
-            </FlexRow>
-            <FlexRow style={{ marginBottom: 24 }}>
-              <Description>{creator?.bio}</Description>
-            </FlexRow>
+          <RightPanel creator={creator} account={account} loaded={loaded}>
+            {(creator, account) => (
+              <BookingCard>
+                <FlexRow style={{ marginBottom: 12 }}>
+                  <div>
+                    <Label style={{ marginBottom: 8 }}>{creator.userName}</Label>
+                    <Description>
+                      Twitter:{' '}
+                      <a href={`https://twitter.com/${creator.twitterHandle}`} style={{ color: '#EDE641' }}>
+                        @{creator.twitterHandle}
+                      </a>{' '}
+                    </Description>
+                    <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
+                  </div>
+                  <div>
+                    <AvatarComponent url={creator.profilePicture} size="medium" />
+                  </div>
+                </FlexRow>
+                <FlexRow style={{ marginBottom: 24 }}>
+                  <Description>{creator.bio}</Description>
+                </FlexRow>
 
-            <HR style={{ marginBottom: 36 }} />
-            {!creator && <Label>Error loading creator</Label>}
-            {!account && <Label>Error loading account</Label>}
-            {creator && account && (
-              <Formik
-                initialValues={{
-                  deadline: '0',
-                  description: '',
-                  amount: '0',
-                }}
-                validate={({ deadline, description, amount }) => {
-                  const errors: any = {};
-                  try {
-                    Number.parse(parseFloat(amount));
-                    if (parseFloat(amount) < parseFloat(creator.price)) {
-                      errors.amount = `Amount must be greator than ${creator.price}`;
-                    }
-                  } catch {
-                    errors.amount = `Please enter a number.`;
-                  }
-                  if (deadline.toString() != parseInt(deadline.toString()).toString()) {
-                    errors.deliveryTime = 'Delivery time cannot be a decimal or have leading zeros.';
-                  } else {
+                <HR style={{ marginBottom: 36 }} />
+                <Formik
+                  initialValues={{
+                    deadline: '0',
+                    description: '',
+                    amount: '0',
+                  }}
+                  validate={({ deadline, description, amount }) => {
+                    const errors: any = {};
                     try {
-                      Number.parse(parseInt(deadline.toString()));
-                      if (parseInt(deadline.toString()) < parseInt(creator.deliveryTime.toString())) {
-                        errors.deadline = `Deadline must be greator than ${creator.deliveryTime}`;
+                      Number.parse(parseFloat(amount));
+                      if (parseFloat(amount) < parseFloat(creator.price)) {
+                        errors.amount = `Amount must be greator than ${creator.price}`;
                       }
                     } catch {
-                      errors.deadline = `Please enter a deadline.`;
+                      errors.amount = `Please enter a number.`;
                     }
-                    if (description === '') {
-                      errors.description = 'Please write some instructions for the creator.';
+                    if (deadline.toString() != parseInt(deadline.toString()).toString()) {
+                      errors.deliveryTime = 'Delivery time cannot be a decimal or have leading zeros.';
+                    } else {
+                      try {
+                        Number.parse(parseInt(deadline.toString()));
+                        if (parseInt(deadline.toString()) < parseInt(creator.deliveryTime.toString())) {
+                          errors.deadline = `Deadline must be greator than ${creator.deliveryTime}`;
+                        }
+                      } catch {
+                        errors.deadline = `Please enter a deadline.`;
+                      }
+                      if (description === '') {
+                        errors.description = 'Please write some instructions for the creator.';
+                      }
                     }
-                  }
-                  return errors;
-                }}
-                validateOnBlur={false}
-                validateOnChange={false}
-                onSubmit={async ({ deadline, description, amount }) => {
-                  setLoading(true);
-                  await makeBooking(account, creator.address, amount.toString(), description, parseInt(deadline));
-                  setLoading(false);
-                }}
-              >
-                {({ initialValues, handleChange, handleSubmit, errors, validateForm }) => (
-                  <>
-                    <PurchaseOption style={{ marginBottom: 40 }}>
-                      <FlexRow style={{ marginBottom: 7 }}>
-                        <Label>Personal use</Label>
-                        <Label style={{ fontSize: 14 }}>
-                          {formatETH(parseFloat(creator.price))} {SYMBOL}+
-                        </Label>
-                      </FlexRow>
-                      <Description>Personalized video for you or someone else</Description>
-                    </PurchaseOption>
-                    <div style={{ marginBottom: 40 }}>
-                      <TextField
-                        inputStyles={{
-                          width: 172,
+                    return errors;
+                  }}
+                  validateOnBlur={false}
+                  validateOnChange={false}
+                  onSubmit={async ({ deadline, description, amount }) => {
+                    setLoading(true);
+                    await makeBooking(account, creator.address, amount.toString(), description, parseInt(deadline));
+                    setLoading(false);
+                  }}
+                >
+                  {({ initialValues, handleChange, handleSubmit, errors, validateForm }) => (
+                    <>
+                      <PurchaseOption style={{ marginBottom: 40 }}>
+                        <FlexRow style={{ marginBottom: 7 }}>
+                          <Label>Personal use</Label>
+                          <Label style={{ fontSize: 14 }}>
+                            {formatETH(parseFloat(creator.price))} {SYMBOL}+
+                          </Label>
+                        </FlexRow>
+                        <Description>Personalized video for you or someone else</Description>
+                      </PurchaseOption>
+                      <div style={{ marginBottom: 40 }}>
+                        <TextField
+                          inputStyles={{
+                            width: 172,
+                          }}
+                          type="number"
+                          label={`Request deadline (${creator.deliveryTime} days minimum)`}
+                          description={
+                            "If your video isn't delivered by your requested deadline, you will be able to request a refund."
+                          }
+                          endText="Days"
+                          onChange={handleChange('deadline')} //parseInt
+                          placeholder={`${creator.deliveryTime}+`}
+                          errorMessage={errors.deadline}
+                        />
+                      </div>
+
+                      <div style={{ marginBottom: 40 }}>
+                        <TextField
+                          inputElementType="textarea"
+                          label={`Instructions for ${creator.userName}`}
+                          placeholder="Say something nice..."
+                          onChange={handleChange('description')}
+                          errorMessage={errors.description}
+                        />
+                      </div>
+
+                      <div style={{ marginBottom: 40 }}>
+                        <TextField label="Address to receive video NFT" placeholder="Wallet address" value={account} />
+                      </div>
+
+                      <div style={{ marginBottom: 40 }}>
+                        <TextField
+                          inputStyles={{
+                            width: 172,
+                          }}
+                          label="Amount to pay"
+                          description={'Increase your bid to get your video earlier'}
+                          endText={SYMBOL}
+                          type="number"
+                          placeholder={formatETH(parseFloat(creator.price)) + '+'}
+                          onChange={handleChange('amount')}
+                          errorMessage={errors.amount}
+                        />
+                        {/* TODO(jonathanng) - make dynamic */}
+                        <Description style={{ fontSize: 10, marginTop: '8px' }}>
+                          * Includes a 10% fee to support the platform
+                        </Description>
+                      </div>
+                      <PrimaryButton
+                        onPress={async () => {
+                          setLoading(true);
+                          const errors = await validateForm();
+                          if (Object.keys(errors).length != 0) {
+                            toast.error('Please fix the errors.');
+                          } else {
+                            handleSubmit();
+                          }
+                          setLoading(false);
                         }}
-                        type="number"
-                        label={`Request deadline (${creator.deliveryTime} days minimum)`}
-                        description={
-                          "If your video isn't delivered by your requested deadline, you will be able to request a refund."
-                        }
-                        endText="Days"
-                        onChange={handleChange('deadline')} //parseInt
-                        placeholder={`${creator.deliveryTime}+`}
-                        errorMessage={errors.deadline}
-                      />
-                    </div>
-
-                    <div style={{ marginBottom: 40 }}>
-                      <TextField
-                        inputElementType="textarea"
-                        label={`Instructions for ${creator.userName}`}
-                        placeholder="Say something nice..."
-                        onChange={handleChange('description')}
-                        errorMessage={errors.description}
-                      />
-                    </div>
-
-                    <div style={{ marginBottom: 40 }}>
-                      <TextField label="Address to receive video NFT" placeholder="Wallet address" value={account} />
-                    </div>
-
-                    <div style={{ marginBottom: 40 }}>
-                      <TextField
-                        inputStyles={{
-                          width: 172,
-                        }}
-                        label="Amount to pay"
-                        description={'Increase your bid to get your video earlier'}
-                        endText={SYMBOL}
-                        type="number"
-                        placeholder={formatETH(parseFloat(creator.price)) + '+'}
-                        onChange={handleChange('amount')}
-                        errorMessage={errors.amount}
-                      />
-                      {/* TODO(jonathanng) - make dynamic */}
-                      <Description style={{ fontSize: 10, marginTop: '8px' }}>
-                        * Includes a 10% fee to support the platform
-                      </Description>
-                    </div>
-                    <PrimaryButton
-                      onPress={async () => {
-                        setLoading(true)
-                        await validateForm();
-                        if (Object.keys(errors).length != 0) {
-                          toast.error('Please fix the errors.');
-                        } else {
-                          handleSubmit();
-                        }
-                        setLoading(false)
-                      }}
-                      isDisabled={loading}
-                    >
-                      Book now
-                    </PrimaryButton>
-                  </>
-                )}
-              </Formik>
+                        isDisabled={loading}
+                      >
+                        Book now
+                      </PrimaryButton>
+                    </>
+                  )}
+                </Formik>
+              </BookingCard>
             )}
-          </BookingCard>
+          </RightPanel>
         </PageGrid>
       </PageContentWrapper>
     </PageWrapper>

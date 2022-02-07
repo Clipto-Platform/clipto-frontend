@@ -1,14 +1,13 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
-
 // Sample image assets
 // Components
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
+import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { User, UserDisplay } from '../components/UserDisplay';
-import { API_URL } from '../config/config';
-import { SYMBOL } from '../config/config';
+import { API_URL, SYMBOL } from '../config/config';
+
 const FeaturedContainerWrapper = styled(PageContentWrapper)`
   display: flex;
   flex: 1;
