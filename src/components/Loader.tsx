@@ -3,19 +3,19 @@ import ReactLoading from 'react-loading';
 import styled, { CSSProperties } from 'styled-components';
 
 const LoaderDiv = styled.div`
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 300px;
-  display: flex;
-  align-items: center;
-  padding: 4px;
-  margin-left: -4px;
+  width:200px;
+  height:200px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -100px;
+  margin-left: -100px;
 `;
 
 const Loader = () => {
   return (
     <LoaderDiv>
-      <ReactLoading type={'spin'} color="#fff" height={100} width={100} />
+      <ReactLoading type={'spin'} color="#fff" height={75} width={75} />
     </LoaderDiv>
   );
 };
