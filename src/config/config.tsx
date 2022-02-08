@@ -1,4 +1,5 @@
 export const DEV = false;
+export const ENV = DEV ? 'DEV' : 'TEST';
 
 export const CHAIN_IDS = {
   POLYGON_MAINNET: 4,
@@ -11,6 +12,12 @@ const SYMBOLS = {
   [CHAIN_IDS.POLYGON_TESTNET]: 'MATIC',
   [CHAIN_IDS.DAPPTOOLS]: 'ETH',
 };
+
+export const CHAIN_NAMES: { [chainId: number]: string } = {
+  '4': 'Rinkeby Testnet',
+  '80001': 'Ploygon testnet',
+  '99': 'Dapp tools localhost',
+}
 
 export const POLLING_INTERVAL = 12000;
 
@@ -33,3 +40,18 @@ export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
 
 export const API_URL = DEV ? 'http://localhost:8000' : 'https://api.clipto.io';
+
+export const getContractLink = (addr: string) =>
+  (ENV === 'TEST')
+    ? `https://rinkeby.etherscan.io/token/${addr}`
+    : `https://etherscan.io/token/${addr}`;
+
+export const getEtherscan = (addr: string) =>
+  (ENV === 'TEST')
+    ? `https://rinkeby.etherscan.io/address/${addr}`
+    : `https://etherscan.io/address/${addr}`;
+
+export const getOpensea = (addr: string, index: number) =>
+  (ENV === 'TEST')
+    ? `https://testnets.opensea.io/assets/${addr}/${index}`
+    : `https://opensea.io/assets/${addr}/${index}`;
