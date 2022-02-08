@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { Formik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -91,6 +91,22 @@ const BookingPage = () => {
   const navigate = useNavigate();
   const exchangeContract = useExchangeContract(true);
   const { creator, loaded } = useCreator(creatorId);
+  const [feePercent, setFeePercent] = useState('');
+
+  useEffect(() => {
+    if (exchangeContract) {
+      fetchFeePercent();
+    }
+  }, [exchangeContract]);
+
+  const fetchFeePercent = async () => {
+    try {
+      const scale = await exchangeContract.scale();
+      const feeRate = await exchangeContract.feeRate();
+      const percent = feeRate.toNumber() / scale.toNumber();
+      setFeePercent(`${percent}%`);
+    } catch (err) { }
+  }
 
   const makeBooking = async (values: BookingFormValues) => {
     try {
@@ -244,7 +260,7 @@ const BookingPage = () => {
                       </div>
 
                       <div style={{ marginBottom: 40 }}>
-                        <TextField label="Address to receive video NFT" placeholder="Wallet address" value={account} />
+                        <TextField label="Address to receive video NFT" placeholder="Wallet address" value={account} isDisabled />
                       </div>
 
                       <div style={{ marginBottom: 40 }}>
@@ -260,10 +276,11 @@ const BookingPage = () => {
                           onChange={handleChange('amount')}
                           errorMessage={errors.amount}
                         />
-                        {/* TODO(jonathanng) - make dynamic */}
-                        <Description style={{ fontSize: 10, marginTop: '8px' }}>
-                          * Includes a 10% fee to support the platform
-                        </Description>
+                        {feePercent &&
+                          <Description style={{ fontSize: 10, marginTop: '8px' }}>
+                            * Includes a {feePercent} fee to support the platform
+                          </Description>
+                        }
                       </div>
                       <PrimaryButton
                         onPress={async () => {

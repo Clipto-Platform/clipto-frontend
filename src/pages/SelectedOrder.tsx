@@ -15,7 +15,7 @@ import { PageContentWrapper, PageWrapper, Row } from '../components/layout/Commo
 import { Link } from '../components/Link';
 import { OrderCard } from '../components/OrderCard';
 import { TextField } from '../components/TextField';
-import { CHAIN_NAMES, DEFAULT_CHAIN_ID, ENV, getContractLink, getEtherscan, getOpensea } from '../config/config';
+import { CHAIN_NAMES, DEFAULT_CHAIN_ID, getContractLink, getEtherscan, getOpensea } from '../config/config';
 import { CliptoToken__factory } from '../contracts';
 import { getProviderOrSigner, useExchangeContract } from '../hooks/useContracts';
 import { Description, Label } from '../styles/typography';
@@ -162,16 +162,18 @@ const SelectedOrderPage = (props: any) => {
       });
 
       fileUpload.on('success', () => {
-        setUploadStatus('Transcoding...');
         const checkUploadInterval = setInterval(async () => {
           try {
             const checkUploadStatus = await api.getUploadFileStatus(uploadUuid);
+            setUploadStatus('Transcoding...');
+
             if (
               checkUploadStatus.data.transcoding_complete === 'succeeded' &&
               checkUploadStatus.data.image_complete === true &&
               checkUploadStatus.data.video_complete === true
             ) {
               clearInterval(checkUploadInterval);
+              setUploadStatus('Transcoding Complete...');
 
               const finalizeResult = await api.finalizeFileUpload({
                 uploadUuid: uploadUuid,
@@ -205,7 +207,8 @@ const SelectedOrderPage = (props: any) => {
 
     try {
       setMinting(true);
-      // TODO: may need to use ar:// 
+      const messageToSign = 'I am completing an order';
+      const signed = await signMessage(library, account, messageToSign);
       const tx = await exchangeContract.deliverRequest(request.requestId, 'https://arweave.net/' + tokenUri);
       const receipt = await tx.wait();
       const eventArgs = receipt.events?.find((i) => i.event === 'DeliveredRequest')?.args;
@@ -215,8 +218,9 @@ const SelectedOrderPage = (props: any) => {
 
       await api.completeBooking({
         id: request.id,
-        txHash: tx.hash,
-        creatorAddress: account,
+        address: account || '',
+        message: messageToSign,
+        signed: signed,
       });
       toast.success('Successfully completed order!');
       setDone(true);
@@ -256,7 +260,7 @@ const SelectedOrderPage = (props: any) => {
 
   const fetchNFTDetails = async () => {
     const tokenAddress = await exchangeContract.creators(account || '');
-    fetchNFT(tokenAddress, 0);
+    fetchNFT(tokenAddress, 0); // TODO: change to tokenId, once figured out how to store
   }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -366,7 +370,7 @@ const SelectedOrderPage = (props: any) => {
 
             {clipDetails &&
               <ImageCardContainer style={{ margin: 'auto' }}>
-                <VideoCard src={clipDetails} width={600} controls autoPlay muted />
+                <VideoCard src={clipDetails} width={600} controls autoPlay muted/>
               </ImageCardContainer>
             }
 
