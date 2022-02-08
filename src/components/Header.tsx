@@ -22,6 +22,7 @@ import { DropDown, ModalDialog } from './Dialog';
 import { Logo } from './Logo';
 import axios from 'axios';
 import { UserProfile } from '../hooks/useProfile';
+import {useSelector , useDispatch} from 'react-redux';
 // import { MetamaskIcon } from './icons/MetamaskIcon';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
 
@@ -161,7 +162,7 @@ export interface HeaderProps {}
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
   const [checkLogin,setCheckLogin] = useState<boolean | null>(false);
-  const { activate, account, deactivate } = useWeb3React<Web3Provider>();
+  const { activate, account, deactivate, active, connector } = useWeb3React<Web3Provider>();
   
   const showLoginDialog = useHeaderStore((s) => s.showDialog);
   const setShowLoginDialog = useHeaderStore((s) => s.setShowDialog);
@@ -177,14 +178,19 @@ const Header: React.FC<HeaderProps> = () => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loggedInProfile, setLoggedInProfile] = useState<Partial<UserProfile> | null>();
+
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
+  
   const navigate = useNavigate();
+
   useEffect(() => {
     setHasTriedEagerConnecting(hasTriedEagerConnect);
   }, [hasTriedEagerConnect, setHasTriedEagerConnecting]);
 
   const [currentlyActivating, setCurrentlyActivating] = useState<'metamask' | 'wc' | undefined>(undefined);
 
-  const activeWithMetamask = useCallback(async (account) => {
+  const activeWithMetamask = useCallback(async () => {
     setErrorMessage(null);
     setCurrentlyActivating('metamask');
     try {
@@ -215,7 +221,7 @@ const Header: React.FC<HeaderProps> = () => {
     }, 1500);
   }, [activate, setShowLoginDialog]);
 
-  const activeWithWalletConnect = useCallback(async (account) => {
+  const activeWithWalletConnect = useCallback(async () => {
     setErrorMessage(null);
 
     setCurrentlyActivating('wc');
@@ -238,20 +244,21 @@ const Header: React.FC<HeaderProps> = () => {
   const logoutUser = useCallback(async () => {
     deactivate();
     setShowProfileDropDown(false)
-    localStorage.removeItem('user');
+    dispatch({type:'logout',payload:{user:null}});
     setCheckLogin(false);
+    navigate('/');
   }, [deactivate]);
 
   useInactiveListener(!hasTriedEagerConnect);
 
-  useEffect(() => {
+  useEffect( () => {
     const getCreatorData = async () => {
       if (account) {
-        if(localStorage.getItem('user')&&localStorage.getItem('user')===account){
+        if(user&&user===account){
           setCheckLogin(true);
         }
-        else if(localStorage.getItem('user')&&localStorage.getItem('user')!==account){
-          localStorage.setItem('user',account);
+        else if(user&&user!==account){
+          dispatch({type:'login',payload:{user:account}});
         }
         let userProfile;
         try {
@@ -267,6 +274,38 @@ const Header: React.FC<HeaderProps> = () => {
     getCreatorData();
    
   }, [account]);
+  
+  useEffect( () => {
+    const getCreatorData = async () => {
+      if (account) {
+        if(user&&user===account){
+          setCheckLogin(true);
+        }
+        else if(user&&user!==account){
+          dispatch({type:'login',payload:{user:account}});
+        }
+        let userProfile;
+        try {
+          userProfile = await axios.get(`${API_URL}/user/${account}`)
+          setLoggedInProfile(userProfile.data);
+          
+        } catch (e) {
+          console.log('Failed to find creator account for userProfile');
+          setLoggedInProfile(null);
+        }
+      }
+    };
+    getCreatorData();
+   
+  }, [account]);
+
+  useEffect(() => {
+  
+    if(checkLogin && account){
+      dispatch({type:'login',payload:{user:account}}); 
+    }
+   
+  }, [checkLogin]);
 
   return (
     <>
@@ -289,7 +328,6 @@ const Header: React.FC<HeaderProps> = () => {
               )}
               {checkLogin && account && (
                 <>
-                {localStorage.setItem('user',account)}
                   {loggedInProfile && (
                     <RightWrapper>
                       <Link to={'/explore'}>
@@ -397,7 +435,7 @@ const Header: React.FC<HeaderProps> = () => {
                 variant={'secondary'}
                 style={{ marginBottom: 16, minWidth: 310 }}
                 isDisabled={currentlyActivating === 'metamask'}
-                onPress={() => activeWithMetamask(account)}
+                onPress={() => activeWithMetamask()}
               >
                 <ConnectWalletPopup>
                   {currentlyActivating === 'metamask' ? <>{'Confirm in your wallet'}</> : 'Continue with Metamask'}
@@ -408,7 +446,7 @@ const Header: React.FC<HeaderProps> = () => {
                 variant={'secondary'}
                 style={{ marginBottom: 16, minWidth: 310 }}
                 isDisabled={currentlyActivating === 'wc'}
-                onPress={() => activeWithWalletConnect(account)}
+                onPress={() => activeWithWalletConnect()}
               >
                 <ConnectWalletPopup>
                   {currentlyActivating === 'wc' ? <>{'Confirm in your wallet'}</> : 'Continue with mobile wallet'}
