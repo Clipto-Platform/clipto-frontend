@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import { ReadUserDto } from '../../pages/Booking';
 import { Label } from '../../styles/typography';
 import { RightPanelLoading } from './RightPanelLoading';
-
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
 export const BookingCard = styled.div`
   background: ${(props) => props.theme.black};
@@ -41,13 +42,19 @@ export interface RightPanelProps {
 
 export const RightPanel: React.FC<RightPanelProps> = (props) => {
   const { creator, account, loaded } = props;
+  const [user,setUser] = useState();
+  const getUser = useSelector(state => state.user);
 
+  useEffect(() =>{
+    setUser(getUser);
+  },[getUser]);
+  
   return (
     <>
       {!loaded && <RightPanelLoading style={{ width: '100%' }} />}
       {loaded && !creator && <Label>Error loading creator</Label>}
-      {loaded && !account && <Label>Please Connect your wallet</Label>}
-      {loaded && creator && account && props.children(creator, account)}
+      {loaded && !user && <Label>Please Connect your wallet</Label>}
+      {loaded && creator && user && props.children(creator, account)}
     </>
   );
 };
