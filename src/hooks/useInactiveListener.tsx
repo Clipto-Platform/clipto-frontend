@@ -1,31 +1,54 @@
 import { useWeb3React } from '@web3-react/core';
 import { useEffect } from 'react';
 
-import { injected } from '../web3/connectors';
+import { injected, walletconnect } from '../web3/connectors';
 
 export function useInactiveListener(suppress = false) {
   const { active, error, activate } = useWeb3React();
-
+  const WC = localStorage.getItem('walletconnect');
+  const WcObject = WC ? JSON.parse(WC) : null;
+  const isWcConnected = WcObject && WcObject.connected;
   useEffect((): any => {
     const { ethereum } = window as any;
     if (ethereum && ethereum.on && !active && !error && !suppress) {
       const handleConnect = () => {
         console.log("Handling 'connect' event");
-        activate(injected);
+        if(isWcConnected){
+          activate(walletconnect);
+        }
+        else{
+          activate(injected);
+        }
+       
       };
       const handleChainChanged = (chainId: string | number) => {
         console.log("Handling 'chainChanged' event with payload", chainId);
-        activate(injected);
+        if(isWcConnected){
+          activate(walletconnect);
+        }
+        else{
+          activate(injected);
+        }
       };
       const handleAccountsChanged = (accounts: string[]) => {
         console.log("Handling 'accountsChanged' event with payload", accounts);
         if (accounts.length > 0) {
-          activate(injected);
+          if(isWcConnected){
+            activate(walletconnect);
+          }
+          else{
+            activate(injected);
+          }
         }
       };
       const handleNetworkChanged = (networkId: string | number) => {
         console.log("Handling 'networkChanged' event with payload", networkId);
-        activate(injected);
+        if(isWcConnected){
+          activate(walletconnect);
+        }
+        else{
+          activate(injected);
+        }
       };
 
       ethereum.on('connect', handleConnect);
