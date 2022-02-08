@@ -144,7 +144,6 @@ const OrdersPage = () => {
                           size="small"
                           width="small"
                           style={{ marginTop: 20 }}
-                          isDisabled={true}
                         >
                           View clip
                         </PrimaryButton>
@@ -214,7 +213,6 @@ const OrdersPage = () => {
                           size="small"
                           width="small"
                           style={{ marginTop: 20 }}
-                          isDisabled={true}
                         >
                           View clip
                         </PrimaryButton>

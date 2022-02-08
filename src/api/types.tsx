@@ -10,3 +10,16 @@ export interface CreateRequest {
     address: string;  // current user's address
     message: string;
 }
+
+export interface UploadFileLinkRequest { 
+    extension: string;
+    signed: string;
+    address: string;  // current user's address
+    message: string;
+}
+
+export interface FinalizeFileUpload {
+    uploadUuid: string;
+    name: string;
+    description: string;
+}
