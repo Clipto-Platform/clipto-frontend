@@ -263,8 +263,7 @@ const SelectedOrderPage = (props: any) => {
       request.creator,
       request.requester
     );
-    const latestBlock = await getProvider().getBlockNumber();
-    const events = await exchangeContract.queryFilter(filter, 0, latestBlock);
+    const events = await exchangeContract.queryFilter(filter);
     const filtered = events.filter((event) => {
       const index = event.args.index.toNumber();
       return index === request.requestId;
