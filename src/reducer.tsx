@@ -5,6 +5,9 @@ interface Action {
         user: string; 
     };
 }
+export interface UserState {
+    user: string | null;
+}
 const initialState = {
     user: localStorage.getItem('user')
 }

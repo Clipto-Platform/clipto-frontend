@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ReadUserDto } from '../../pages/Booking';
+import { Creator } from '../../hooks/useCreator';
 import { Label } from '../../styles/typography';
 import { RightPanelLoading } from './RightPanelLoading';
 import { useSelector } from 'react-redux';
@@ -34,27 +34,27 @@ const HR = styled.div`
 `;
 
 export interface RightPanelProps {
-  creator?: ReadUserDto;
+  creator?: Creator;
   account?: string | null;
   loaded: boolean;
-  children: (creator: ReadUserDto, account: string) => React.ReactNode;
+  children: (creator: Creator, account: string) => React.ReactNode;
 }
 
 export const RightPanel: React.FC<RightPanelProps> = (props) => {
   const { creator, account, loaded } = props;
-  const [user,setUser] = useState();
-  const getUser = useSelector(state => state.user);
+  const [user, setUser] = useState();
+  const getUser = useSelector((state: any) => state.user);
 
-  useEffect(() =>{
+  useEffect(() => {
     setUser(getUser);
-  },[getUser]);
-  
+  }, [getUser]);
+
   return (
     <>
       {!loaded && <RightPanelLoading style={{ width: '100%' }} />}
       {loaded && !creator && <Label>Error loading creator</Label>}
       {loaded && !user && <Label>Please Connect your wallet</Label>}
-      {loaded && creator && user && props.children(creator, account)}
+      {loaded && creator && user && props.children(creator, account || '')}
     </>
   );
 };
