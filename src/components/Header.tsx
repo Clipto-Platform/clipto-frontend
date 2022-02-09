@@ -21,8 +21,6 @@ import { AvatarComponent } from './AvatarOrb';
 import { PrimaryButton } from './Button';
 import { DropDown, ModalDialog } from './Dialog';
 import { Logo } from './Logo';
-import axios from 'axios';
-import { UserProfile } from '../hooks/useProfile';
 import {useSelector , useDispatch} from 'react-redux';
 // import { MetamaskIcon } from './icons/MetamaskIcon';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
