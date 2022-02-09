@@ -41,12 +41,12 @@ export const MIN_DELIVERY_TIME = 3;
 
 export const API_URL = DEV ? 'http://localhost:8000' : 'https://api.clipto.io';
 
-export const getContractLink = (addr: string) =>
+export const getEtherscan = (addr: string) =>
   (ENV === 'TEST')
     ? `https://rinkeby.etherscan.io/token/${addr}`
     : `https://etherscan.io/token/${addr}`;
 
-export const getEtherscan = (addr: string) =>
+export const getContractLink = (addr: string) =>
   (ENV === 'TEST')
     ? `https://rinkeby.etherscan.io/address/${addr}`
     : `https://etherscan.io/address/${addr}`;

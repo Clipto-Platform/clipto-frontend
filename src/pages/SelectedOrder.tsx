@@ -17,7 +17,7 @@ import { OrderCard } from '../components/OrderCard';
 import { TextField } from '../components/TextField';
 import { CHAIN_NAMES, DEFAULT_CHAIN_ID, getContractLink, getEtherscan, getOpensea } from '../config/config';
 import { CliptoToken__factory } from '../contracts';
-import { getProviderOrSigner, useExchangeContract } from '../hooks/useContracts';
+import { getProvider, getProviderOrSigner, useExchangeContract } from '../hooks/useContracts';
 import { Description, Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { signMessage } from '../web3/request';
@@ -237,7 +237,7 @@ const SelectedOrderPage = (props: any) => {
 
   const fetchNFT = async (tokenAddress: string, tokenIndex: number) => {
     try {
-
+      toast.success('Fetching your NFT');
       const token = getNftToken(tokenAddress);
       const metadata = await token.tokenURI(tokenIndex);
       setNftDetails({
@@ -258,9 +258,24 @@ const SelectedOrderPage = (props: any) => {
     }
   }
 
-  const fetchNFTDetails = async () => {
-    const tokenAddress = await exchangeContract.creators(account || '');
-    fetchNFT(tokenAddress, 0); // TODO: change to tokenId, once figured out how to store
+  const filterEvents = async (request: Request) => {
+    const filter = exchangeContract.filters.DeliveredRequest(
+      request.creator,
+      request.requester
+    );
+    const latestBlock = await getProvider().getBlockNumber();
+    const events = await exchangeContract.queryFilter(filter, 0, latestBlock);
+    const filtered = events.filter((event) => {
+      const index = event.args.index.toNumber();
+      return index === request.requestId;
+    });
+    return filtered[0].args.tokenId.toNumber();
+  }
+
+  const fetchNFTDetails = async (request: Request) => {
+    const tokenAddress = await exchangeContract.creators(request.creator);
+    const tokenId = await filterEvents(request);
+    fetchNFT(tokenAddress, tokenId);
   }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -272,7 +287,7 @@ const SelectedOrderPage = (props: any) => {
           setRequest(res.data);
 
           if (res.data.delivered && exchangeContract) {
-            fetchNFTDetails();
+            fetchNFTDetails(res.data);
           }
         })
         .finally(() => setLoaded(true));
@@ -370,7 +385,7 @@ const SelectedOrderPage = (props: any) => {
 
             {clipDetails &&
               <ImageCardContainer style={{ margin: 'auto' }}>
-                <VideoCard src={clipDetails} width={600} controls autoPlay muted/>
+                <VideoCard src={clipDetails} width={600} controls autoPlay />
               </ImageCardContainer>
             }
 
