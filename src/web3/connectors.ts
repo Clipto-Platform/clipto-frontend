@@ -13,7 +13,7 @@ export const walletconnect = new WalletConnectConnector({
   clientMeta: {
     name: 'Clipto',
     description: 'Clipto',
-    url: `https://clipto.xyz`,
+    url: `https://*`,
     icons: [],
   },
 });
