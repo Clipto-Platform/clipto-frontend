@@ -1,16 +1,17 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { OverlayContainer, OverlayProvider } from '@react-aria/overlays';
-import { useAsyncList } from '@react-stately/data';
 import { useWeb3React } from '@web3-react/core';
+import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
-import { API_URL, DEV } from '../config/config';
+import { API_URL, CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useEagerConnect } from '../hooks/useEagerConnect';
 import { useEns } from '../hooks/useEns';
 import { useInactiveListener } from '../hooks/useInactiveListener';
+import { UserProfile } from '../hooks/useProfile';
 import { MAX_CONTENT_WIDTH_PX } from '../styles/theme';
 import { Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
@@ -20,8 +21,6 @@ import { AvatarComponent } from './AvatarOrb';
 import { PrimaryButton } from './Button';
 import { DropDown, ModalDialog } from './Dialog';
 import { Logo } from './Logo';
-import axios from 'axios';
-import { UserProfile } from '../hooks/useProfile';
 // import { MetamaskIcon } from './icons/MetamaskIcon';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
 
@@ -43,6 +42,27 @@ const HeaderWrapperOuter = styled.div`
   z-index: 100;
 
   padding: 0 32px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0 16px;
+  `}
+
+  position: absolute;
+  left: 0;
+  right: 0;
+`;
+
+const ChainContainer = styled.div`
+  position: relative;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+  margin-top: ${HEADER_HEIGHT_IN_PX};
+  background: ${(props) => props.theme.yellow};
+  z-index: 100;
+  color: black;
+  font-weight: bold;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 0 16px;
   `}
@@ -156,13 +176,15 @@ const useHeaderStore = create<HeaderStore>(
   })),
 );
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface HeaderProps {}
+export interface HeaderProps { }
 
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
-  const [checkLogin,setCheckLogin] = useState<boolean | null>(false);
-  const { activate, account, deactivate } = useWeb3React<Web3Provider>();
-  
+  const [checkLogin, setCheckLogin] = useState<boolean | null>(false);
+  const { activate, account, deactivate, chainId } = useWeb3React<Web3Provider>();
+  const [chainDialog, setChainDialog] = useState<boolean | null>(false);
+  const currentChainName = CHAIN_NAMES[DEFAULT_CHAIN_ID];
+
   const showLoginDialog = useHeaderStore((s) => s.showDialog);
   const setShowLoginDialog = useHeaderStore((s) => s.setShowDialog);
   const setHasTriedEagerConnecting = useHeaderStore((s) => s.setHasTriedEagerConnecting);
@@ -247,17 +269,17 @@ const Header: React.FC<HeaderProps> = () => {
   useEffect(() => {
     const getCreatorData = async () => {
       if (account) {
-        if(localStorage.getItem('user')&&localStorage.getItem('user')===account){
+        if (localStorage.getItem('user') && localStorage.getItem('user') === account) {
           setCheckLogin(true);
         }
-        else if(localStorage.getItem('user')&&localStorage.getItem('user')!==account){
-          localStorage.setItem('user',account);
+        else if (localStorage.getItem('user') && localStorage.getItem('user') !== account) {
+          localStorage.setItem('user', account);
         }
         let userProfile;
         try {
           userProfile = await axios.get(`${API_URL}/user/${account}`)
           setLoggedInProfile(userProfile.data);
-          
+
         } catch (e) {
           console.log('Failed to find creator account for userProfile');
           setLoggedInProfile(null);
@@ -265,8 +287,16 @@ const Header: React.FC<HeaderProps> = () => {
       }
     };
     getCreatorData();
-   
+
   }, [account]);
+
+  useEffect(() => {
+    if (chainId !== DEFAULT_CHAIN_ID) {
+      setChainDialog(true);
+    } else if (chainId) {
+      setChainDialog(false);
+    }
+  }, [chainId]);
 
   return (
     <>
@@ -280,7 +310,7 @@ const Header: React.FC<HeaderProps> = () => {
           </LeftWrapper>
           {hasTriedEagerConnect && (
             <>
-              {!checkLogin  && (
+              {!checkLogin && (
                 <RightWrapper>
                   <PrimaryButton size={'small'} variant={'secondary'} onPress={() => setShowLoginDialog(true)}>
                     Connect Wallet
@@ -289,7 +319,7 @@ const Header: React.FC<HeaderProps> = () => {
               )}
               {checkLogin && account && (
                 <>
-                {localStorage.setItem('user',account)}
+                  {localStorage.setItem('user', account)}
                   {loggedInProfile && (
                     <RightWrapper>
                       <Link to={'/explore'}>
@@ -322,11 +352,11 @@ const Header: React.FC<HeaderProps> = () => {
                                 <DropDownItem>Settings</DropDownItem>
                               </Link>
                               <Divider />
-                              <DropDownItem onClick={(e) =>{ 
+                              <DropDownItem onClick={(e) => {
                                 e.stopPropagation();
                                 logoutUser();
                               }}
-                                >Log out</DropDownItem>
+                              >Log out</DropDownItem>
                             </DropDown>
                           </OverlayProvider>
                         )}
@@ -364,11 +394,11 @@ const Header: React.FC<HeaderProps> = () => {
                               onClose={() => setShowProfileDropDown(false)}
                               isDismissable
                             >
-                              <DropDownItem onClick={(e) =>{ 
+                              <DropDownItem onClick={(e) => {
                                 e.stopPropagation();
                                 logoutUser();
                               }}
-                                >Logout</DropDownItem>
+                              >Logout</DropDownItem>
                             </DropDown>
                           </OverlayProvider>
                         )}
@@ -418,6 +448,15 @@ const Header: React.FC<HeaderProps> = () => {
           </ModalDialog>
         </OverlayContainer>
       )}
+
+      {checkLogin && chainDialog && (
+        <>
+          <ChainContainer>
+            {`Please change your network chain to ${currentChainName}(${DEFAULT_CHAIN_ID}) in your metamask`}
+          </ChainContainer>
+        </>
+      )}
+
     </>
   );
 };

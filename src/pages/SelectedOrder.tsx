@@ -14,9 +14,10 @@ import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { PageContentWrapper, PageWrapper, Row } from '../components/layout/Common';
 import { Link } from '../components/Link';
 import { OrderCard } from '../components/OrderCard';
-import { CHAIN_NAMES, DEFAULT_CHAIN_ID, ENV, getContractLink, getEtherscan, getOpensea } from '../config/config';
+import { TextField } from '../components/TextField';
+import { CHAIN_NAMES, DEFAULT_CHAIN_ID, getContractLink, getEtherscan, getOpensea } from '../config/config';
 import { CliptoToken__factory } from '../contracts';
-import { getProviderOrSigner, useExchangeContract } from '../hooks/useContracts';
+import { getProvider, getProviderOrSigner, useExchangeContract } from '../hooks/useContracts';
 import { Description, Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { signMessage } from '../web3/request';
@@ -73,6 +74,11 @@ const Key = styled(Label)`
   font-weight: 500;
 `;
 
+const Divider = styled.div`
+  margin-top: 20px;
+  margin-bottom: 20px;
+`;
+
 export interface ArweaveResponse {
   name: string;
   description: string;
@@ -90,6 +96,11 @@ export interface NFTDetails {
   chain: string;
 }
 
+export interface NFTFormError {
+  name?: string;
+  description?: string;
+}
+
 const SelectedOrderPage = (props: any) => {
   const theme = useTheme();
 
@@ -105,8 +116,24 @@ const SelectedOrderPage = (props: any) => {
   const [minting, setMinting] = useState<boolean>(false);
   const [nftDetails, setNftDetails] = useState<NFTDetails>();
   const [clipDetails, setClipDetails] = useState('');
+  const [nftName, setNftName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [error, setError] = useState<NFTFormError>();
+
+  const validate = (name: string, desc: string) => {
+    if (name.length === 0) return { name: 'This field cannot be empty' };
+    else if (desc.length === 0) return { description: 'This field cannot be empty' };
+    return;
+  }
 
   const onDrop = useCallback(async <T extends File>(acceptedFiles: T[]) => {
+    const error = validate(nftName, description)
+    if (error) {
+      setError(error); return;
+    } else {
+      setError({});
+    }
+
     try {
       const messageToSign = 'I am uploading a video to complete the Order';
       const signed = await signMessage(library, account, messageToSign);
@@ -129,26 +156,29 @@ const SelectedOrderPage = (props: any) => {
         toast.error(`Error uploading: ${err.detail}`);
       });
 
-      fileUpload.on('progress', (progress) => {
-        console.log(`So far we've uploaded ${progress.detail}% of this file.`);
+      fileUpload.on('progress', (prog) => {
+        const progress = parseInt(prog.detail).toFixed(0);
+        setUploadStatus(`Uploading ${progress}%...`);
       });
 
       fileUpload.on('success', () => {
-        setUploadStatus('Transcoding...');
         const checkUploadInterval = setInterval(async () => {
           try {
             const checkUploadStatus = await api.getUploadFileStatus(uploadUuid);
+            setUploadStatus('Transcoding...');
+
             if (
               checkUploadStatus.data.transcoding_complete === 'succeeded' &&
               checkUploadStatus.data.image_complete === true &&
               checkUploadStatus.data.video_complete === true
             ) {
               clearInterval(checkUploadInterval);
+              setUploadStatus('Transcoding Complete...');
 
               const finalizeResult = await api.finalizeFileUpload({
                 uploadUuid: uploadUuid,
-                description: 'this is desc',
-                name: 'this is name'
+                description: description,
+                name: nftName
               });
 
               const arweaveUrl = finalizeResult.data.arweave_metadata;
@@ -167,7 +197,7 @@ const SelectedOrderPage = (props: any) => {
       toast.error(`Error uploading file`);
       return;
     }
-  }, []);
+  }, [nftName, description]);
 
   const completeBooking = async () => {
     if (!request) {
@@ -177,8 +207,9 @@ const SelectedOrderPage = (props: any) => {
 
     try {
       setMinting(true);
-      // TODO: may need to use ar:// 
-      const tx = await exchangeContract.deliverRequest(request.id, 'https://arweave.net/' + tokenUri);
+      const messageToSign = 'I am completing an order';
+      const signed = await signMessage(library, account, messageToSign);
+      const tx = await exchangeContract.deliverRequest(request.requestId, 'https://arweave.net/' + tokenUri);
       const receipt = await tx.wait();
       const eventArgs = receipt.events?.find((i) => i.event === 'DeliveredRequest')?.args;
       const tokenAddress = eventArgs?.tokenAddress;
@@ -187,8 +218,9 @@ const SelectedOrderPage = (props: any) => {
 
       await api.completeBooking({
         id: request.id,
-        txHash: tx.hash,
-        creatorAddress: account,
+        address: account || '',
+        message: messageToSign,
+        signed: signed,
       });
       toast.success('Successfully completed order!');
       setDone(true);
@@ -205,7 +237,7 @@ const SelectedOrderPage = (props: any) => {
 
   const fetchNFT = async (tokenAddress: string, tokenIndex: number) => {
     try {
-
+      toast.success('Fetching your NFT');
       const token = getNftToken(tokenAddress);
       const metadata = await token.tokenURI(tokenIndex);
       setNftDetails({
@@ -226,9 +258,23 @@ const SelectedOrderPage = (props: any) => {
     }
   }
 
-  const fetchNFTDetails = async () => {
-    const tokenAddress = await exchangeContract.creators(account || '');
-    fetchNFT(tokenAddress, 0);
+  const filterEvents = async (request: Request) => {
+    const filter = exchangeContract.filters.DeliveredRequest(
+      request.creator,
+      request.requester
+    );
+    const events = await exchangeContract.queryFilter(filter);
+    const filtered = events.filter((event) => {
+      const index = event.args.index.toNumber();
+      return index === request.requestId;
+    });
+    return filtered[0].args.tokenId.toNumber();
+  }
+
+  const fetchNFTDetails = async (request: Request) => {
+    const tokenAddress = await exchangeContract.creators(request.creator);
+    const tokenId = await filterEvents(request);
+    fetchNFT(tokenAddress, tokenId);
   }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -240,7 +286,7 @@ const SelectedOrderPage = (props: any) => {
           setRequest(res.data);
 
           if (res.data.delivered && exchangeContract) {
-            fetchNFTDetails();
+            fetchNFTDetails(res.data);
           }
         })
         .finally(() => setLoaded(true));
@@ -255,45 +301,69 @@ const SelectedOrderPage = (props: any) => {
           <HeaderContentGapSpacer />
           <PageContentWrapper style={{ display: 'block', maxWidth: '600px', margin: 'auto' }}>
             {!((request && request.delivered) || done) && (
-              <div {...getRootProps()}>
-                <input {...getInputProps()} />
-                <BookingCard style={{ textAlign: 'center', display: 'flex', marginBottom: 24 }}>
-                  {!uploadMetadata && (
-                    <div style={{ margin: 'auto' }}>
-                      {/** TODO(jonathanng) - Text size is off */}
-                      {uploadStatus ? (
-                        <UploadStatusContainer>
-                          <BounceLoader
-                            color={theme.yellow}
-                            loading={true}
-                            size={50}
-                            css={`
+              <>
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  <BookingCard style={{ textAlign: 'center', display: 'flex', marginBottom: 24 }}>
+                    {!uploadMetadata && (
+                      <div style={{ margin: 'auto' }}>
+                        {/** TODO(jonathanng) - Text size is off */}
+                        {uploadStatus ? (
+                          <UploadStatusContainer>
+                            <BounceLoader
+                              color={theme.yellow}
+                              loading={true}
+                              size={50}
+                              css={`
                                 display: block;
                                 margin: auto;
                               `}
-                          />
-                          <Label>{uploadStatus}</Label>
-                        </UploadStatusContainer>
-                      ) : (
-                        <>
-                          <Label style={{ marginBottom: '8px' }}>Upload clip</Label>
-                          {isDragActive ? (
-                            <p>Drop the files here ...</p>
-                          ) : (
-                            <Description>Drag and drop an mp4 or click to select a file to upload</Description>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  )}
+                            />
+                            <Label>{uploadStatus}</Label>
+                          </UploadStatusContainer>
+                        ) : (
+                          <>
+                            <Label style={{ marginBottom: '8px' }}>Upload clip</Label>
+                            {isDragActive ? (
+                              <p>Drop the files here ...</p>
+                            ) : (
+                              <Description>Drag and drop an mp4 or click to select a file to upload</Description>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    )}
 
-                  {uploadMetadata && (
-                    <ImageCardContainer style={{ margin: 'auto' }}>
-                      <ImageCardImg src={uploadMetadata.image} />
-                    </ImageCardContainer>
-                  )}
-                </BookingCard>
-              </div>
+                    {uploadMetadata && (
+                      <ImageCardContainer style={{ margin: 'auto' }}>
+                        <ImageCardImg src={uploadMetadata.image} />
+                      </ImageCardContainer>
+                    )}
+                  </BookingCard>
+                </div>
+
+                <Divider>
+                  <TextField
+                    type='text'
+                    label={'Title for the NFT'}
+                    placeholder={`Give an awesome title`}
+                    value={nftName}
+                    onChange={setNftName}
+                    errorMessage={error?.name}
+                  />
+                </Divider>
+
+                <Divider>
+                  <TextField
+                    inputElementType='textarea'
+                    label={'Description for the NFT'}
+                    placeholder="Some good description"
+                    value={description}
+                    onChange={setDescription}
+                    errorMessage={error?.description}
+                  />
+                </Divider>
+              </>
             )}
 
             {uploadMetadata && !done && tokenUri && (
@@ -314,7 +384,7 @@ const SelectedOrderPage = (props: any) => {
 
             {clipDetails &&
               <ImageCardContainer style={{ margin: 'auto' }}>
-                <VideoCard src={clipDetails} width={600} controls autoPlay muted />
+                <VideoCard src={clipDetails} width={600} controls autoPlay />
               </ImageCardContainer>
             }
 
@@ -333,7 +403,7 @@ const SelectedOrderPage = (props: any) => {
                     </Row>
                     <Row>
                       <Key>Token ID</Key>
-                      <Value>10</Value>
+                      <Value>{nftDetails.tokenId}</Value>
                     </Row>
                     <Row>
                       <Key>Chain</Key>

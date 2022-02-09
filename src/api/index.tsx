@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL } from '../config/config';
-import { CreateRequest, FinalizeFileUpload, UploadFileLinkRequest } from './types';
+import { CompleteBooking, CreateRequest, FinalizeFileUpload, UploadFileLinkRequest } from './types';
 
 // Axios config
 const axiosInstance = axios.create({
@@ -11,7 +11,7 @@ export const createBooking = (data: CreateRequest) => {
     return axiosInstance.post('/request/create', data);
 }
 
-export const completeBooking = (data: any) => {
+export const completeBooking = (data: CompleteBooking) => {
     return axiosInstance.post('/request/finish', data);
 }
 

@@ -23,3 +23,10 @@ export interface FinalizeFileUpload {
     name: string;
     description: string;
 }
+
+export interface CompleteBooking {
+    id: number | string;
+    address: string;
+    signed: string;
+    message: string;
+}
