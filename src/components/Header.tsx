@@ -286,7 +286,7 @@ const Header: React.FC<HeaderProps> = () => {
         try {
           userProfile = await axios.get(`${API_URL}/user/${account}`)
           setLoggedInProfile(userProfile.data);
-
+          
         } catch (e) {
           console.log('Failed to find creator account for userProfile');
           setLoggedInProfile(null);
@@ -294,7 +294,7 @@ const Header: React.FC<HeaderProps> = () => {
       }
     };
     getCreatorData();
-
+   
   }, [account]);
   
   useEffect( () => {
@@ -320,6 +320,14 @@ const Header: React.FC<HeaderProps> = () => {
     getCreatorData();
    
   }, [account]);
+
+  useEffect(() => {
+  
+    if(checkLogin && account){
+      dispatch({type:'login',payload:{user:account}}); 
+    }
+   
+  }, [checkLogin]);
 
   useEffect(() => {
   
