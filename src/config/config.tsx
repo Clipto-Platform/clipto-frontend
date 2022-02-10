@@ -15,7 +15,7 @@ const SYMBOLS = {
 
 export const CHAIN_NAMES: { [chainId: number]: string } = {
   '4': 'Rinkeby Testnet',
-  '80001': 'Ploygon testnet',
+  '80001': 'Polygon testnet',
   '99': 'Dapp tools localhost',
 }
 
@@ -27,12 +27,12 @@ export const RPC_URLS: { [chainId: number]: string } = {
   [CHAIN_IDS.DAPPTOOLS]: 'http://localhost:8545',
 };
 
-export const DEFAULT_CHAIN_ID = DEV ? CHAIN_IDS.DAPPTOOLS : CHAIN_IDS.POLYGON_MAINNET;
+export const DEFAULT_CHAIN_ID = DEV ? CHAIN_IDS.DAPPTOOLS : CHAIN_IDS.POLYGON_TESTNET;
 export const SYMBOL = SYMBOLS[DEFAULT_CHAIN_ID];
 
 export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_MAINNET]: '0x3C78bF376815C322d216899d041ff90Ed86bbFa7',
-  [CHAIN_IDS.POLYGON_TESTNET]: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
+  [CHAIN_IDS.POLYGON_TESTNET]: '0x36A9F25B8AA6b941B0c8177684E8ecff59376D9a',
   [CHAIN_IDS.DAPPTOOLS]: '0x500fB9CAE50b307Fb82C9282f5eaCBdF14fa8cC2',
 };
 
@@ -41,17 +41,17 @@ export const MIN_DELIVERY_TIME = 3;
 
 export const API_URL = DEV ? 'http://localhost:8000' : 'https://api.clipto.io';
 
-export const getEtherscan = (addr: string) =>
+export const getPolygonScan = (addr: string) =>
   (ENV === 'TEST')
-    ? `https://rinkeby.etherscan.io/token/${addr}`
-    : `https://etherscan.io/token/${addr}`;
+    ? `https://mumbai.polygonscan.com/token/${addr}`
+    : `https://polygonscan.com/token/${addr}`;
 
 export const getContractLink = (addr: string) =>
   (ENV === 'TEST')
-    ? `https://rinkeby.etherscan.io/address/${addr}`
-    : `https://etherscan.io/address/${addr}`;
+    ? `https://mumbai.polygonscan.com/address/${addr}`
+    : `https://polygonscan.com/address/${addr}`;
 
 export const getOpensea = (addr: string, index: number) =>
   (ENV === 'TEST')
-    ? `https://testnets.opensea.io/assets/${addr}/${index}`
-    : `https://opensea.io/assets/${addr}/${index}`;
+    ? `https://testnets.opensea.io/assets/matic/${addr}/${index}`
+    : `https://opensea.io/assets/matic/${addr}/${index}`;

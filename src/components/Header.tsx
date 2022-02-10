@@ -54,13 +54,13 @@ const HeaderWrapperOuter = styled.div`
 
 const ChainContainer = styled.div`
   position: relative;
+  z-index: 0;
   align-items: center;
   text-align: center;
   width: 100%;
   padding: 10px;
   margin-top: ${HEADER_HEIGHT_IN_PX};
   background: ${(props) => props.theme.yellow};
-  z-index: 100;
   color: black;
   font-weight: bold;
 
