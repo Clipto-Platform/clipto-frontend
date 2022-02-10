@@ -86,12 +86,12 @@ const OrdersPage = () => {
     try {
       const tx = await exchangeContract.refundRequest(request.creator, request.requestId);
       await tx.wait();
-      
+
       await axios.post(`${API_URL}/request/refund`, { id: request.id });
       toast.success('Successfully refunded!');
 
       const updated = requestsByUser.map((req) => {
-        if(req.id === request.id) {
+        if (req.id === request.id) {
           req.refunded = true;
         }
         return req;
