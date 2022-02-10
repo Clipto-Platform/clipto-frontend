@@ -17,7 +17,7 @@ import { OrderCard } from '../components/OrderCard';
 import { TextField } from '../components/TextField';
 import { CHAIN_NAMES, DEFAULT_CHAIN_ID, getContractLink, getEtherscan, getOpensea } from '../config/config';
 import { CliptoToken__factory } from '../contracts';
-import { getProvider, getProviderOrSigner, useExchangeContract } from '../hooks/useContracts';
+import { getProviderOrSigner, useExchangeContract } from '../hooks/useContracts';
 import { Description, Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { signMessage } from '../web3/request';
@@ -101,6 +101,12 @@ export interface NFTFormError {
   description?: string;
 }
 
+export interface NFTHistory {
+  from: string;
+  to: string;
+  timestamp: string;
+}
+
 const SelectedOrderPage = (props: any) => {
   const theme = useTheme();
 
@@ -119,6 +125,7 @@ const SelectedOrderPage = (props: any) => {
   const [nftName, setNftName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [error, setError] = useState<NFTFormError>();
+  const [history, setHistory] = useState<NFTHistory[]>();
 
   const validate = (name: string, desc: string) => {
     if (name.length === 0) return { name: 'This field cannot be empty' };
@@ -271,10 +278,36 @@ const SelectedOrderPage = (props: any) => {
     return filtered[0].args.tokenId.toNumber();
   }
 
+  const getDate = (timestamp: number) => {
+    const date = new Date(0);
+    date.setUTCSeconds(timestamp)
+    return date.toLocaleDateString();
+  }
+
+  const fetchNFTHistory = async (tokenAddress: string, tokenId: number) => {
+    try {
+      const token = getNftToken(tokenAddress);
+      const filter = token.filters.Transfer(null, null, tokenId);
+      const events = await token.queryFilter(filter);
+      const promises = events.map(async (event) => {
+        return {
+          from: event.args.from,
+          to: event.args.to,
+          timestamp: getDate((await event.getBlock()).timestamp)
+        }
+      });
+      const histories = await Promise.all(promises);
+      setHistory(histories.reverse());
+    } catch (err) {
+
+    }
+  }
+
   const fetchNFTDetails = async (request: Request) => {
     const tokenAddress = await exchangeContract.creators(request.creator);
     const tokenId = await filterEvents(request);
     fetchNFT(tokenAddress, tokenId);
+    fetchNFTHistory(tokenAddress, tokenId);
   }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -425,6 +458,32 @@ const SelectedOrderPage = (props: any) => {
                 </Card>
               </>
             )}
+
+            {history && (
+              <>
+                <Card title="History">
+                  <RowContainer>
+                    {history.map((record) => {
+                      return (
+                        <Row>
+                          <Key>
+                            <Label>
+                              {
+                                parseInt(record.from) === 0
+                                  ? `Minted NFT to ${getShortenedAddress(record.to)}`
+                                  : `${getShortenedAddress(record.from)} transfered to ${getShortenedAddress(record.to)}`
+                              }
+                            </Label>
+                          </Key>
+                          <Value>{record.timestamp}</Value>
+                        </Row>
+                      )
+                    })}
+                  </RowContainer>
+                </Card>
+              </>
+            )}
+
           </PageContentWrapper>
         </PageWrapper>
       )}
