@@ -72,10 +72,10 @@ const OrdersPage = () => {
     const getRequests = async () => {
       if (account) {
         const userRequests = await axios.get(`${API_URL}/request/receiver/${account}`);
-        setRequestsByUser(userRequests.data.reverse());
+        setRequestsByUser(userRequests.data);
 
         const creatorRequests = await axios.get(`${API_URL}/request/creator/${account}`);
-        setRequestsToUser(creatorRequests.data.reverse());
+        setRequestsToUser(creatorRequests.data);
         setLoaded(true);
       }
     };
@@ -135,7 +135,7 @@ const OrdersPage = () => {
               >
                 {(requests) =>
                   requests.map((i, n) => (
-                    <OrderCard key={i.id} request={i} isReceived={false}>
+                    <OrderCard key={i.id} request={i} isReceived={false} isDelivered={i.delivered}>
                       {i.delivered && (
                         <PrimaryButton
                           onPress={() => {
@@ -188,7 +188,7 @@ const OrdersPage = () => {
               >
                 {(requests) =>
                   requests.map((i, n, f) => (
-                    <OrderCard key={i.id} request={i} isReceived={true}>
+                    <OrderCard key={i.id} request={i} isReceived={true} isDelivered={i.delivered}>
                       {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
                         <PrimaryButton
                           onPress={() => {

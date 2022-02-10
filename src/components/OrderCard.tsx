@@ -68,6 +68,7 @@ export interface OrderCardProps {
   txHash?: string;
   key: number;
   isReceived: boolean;
+  isDelivered: boolean;
 }
 
 const SecondaryLabel = styled(Text)`
@@ -80,10 +81,10 @@ const BidAmount = styled(Text)`
 `;
 
 const OrderCard: React.FC<OrderCardProps> = (props) => {
-  const { isReceived } = props;
+  const { isReceived, isDelivered } = props;
   const { creator, loaded } = useCreator(props.request.creator);
   const userAddress = props.isReceived ? props.request.requester : props.request.creator;
-
+  const status = isDelivered ? isReceived ? 'Received' : 'Paid' : 'Bid';
   const getDeadline = () => {
     //TODO(jonathanng) - move to time.ts
     const creationDate: Date = new Date(props.request.created!);
@@ -128,7 +129,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
             </Text>
           </Column>
           <Column style={{ textAlign: 'right' }}>
-            <SecondaryLabel style={{ marginBottom: 2 }}>Bid</SecondaryLabel>
+          <SecondaryLabel style={{ marginBottom: 2 }}> {status} </SecondaryLabel>
             <BidAmount>{formatETH(parseFloat(props.request?.amount))} ETH</BidAmount>
           </Column>
         </Row>
