@@ -15,7 +15,7 @@ import { PageContentWrapper, PageWrapper, Row } from '../components/layout/Commo
 import { Link } from '../components/Link';
 import { OrderCard } from '../components/OrderCard';
 import { TextField } from '../components/TextField';
-import { CHAIN_NAMES, DEFAULT_CHAIN_ID, getContractLink, getEtherscan, getOpensea } from '../config/config';
+import { CHAIN_NAMES, DEFAULT_CHAIN_ID, getContractLink, getPolygonScan, getOpensea } from '../config/config';
 import { CliptoToken__factory } from '../contracts';
 import { getProviderOrSigner, useExchangeContract } from '../hooks/useContracts';
 import { Description, Label } from '../styles/typography';
@@ -251,7 +251,7 @@ const SelectedOrderPage = (props: any) => {
         chain: CHAIN_NAMES[DEFAULT_CHAIN_ID],
         contractAddress: getShortenedAddress(tokenAddress),
         tokenId: tokenIndex,
-        etherscan: getEtherscan(tokenAddress),
+        etherscan: getPolygonScan(tokenAddress),
         opensea: getOpensea(tokenAddress, tokenIndex),
         contractLink: getContractLink(tokenAddress),
         metadata: `https://arweave.net/${metadata.split('/').pop()}`,
@@ -447,7 +447,7 @@ const SelectedOrderPage = (props: any) => {
                       <Value><Link url={nftDetails.metadata} /></Value>
                     </Row>
                     <Row>
-                      <Key>View on Etherscan</Key>
+                      <Key>View on Polygonscan</Key>
                       <Value><Link url={nftDetails.etherscan} /></Value>
                     </Row>
                     <Row>

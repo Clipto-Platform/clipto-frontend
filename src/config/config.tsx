@@ -41,7 +41,7 @@ export const MIN_DELIVERY_TIME = 3;
 
 export const API_URL = DEV ? 'http://localhost:8000' : 'https://api.clipto.io';
 
-export const getEtherscan = (addr: string) =>
+export const getPolygonScan = (addr: string) =>
   (ENV === 'TEST')
     ? `https://mumbai.polygonscan.com/token/${addr}`
     : `https://polygonscan.com/token/${addr}`;
