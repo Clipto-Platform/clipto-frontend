@@ -313,7 +313,7 @@ const OnboardProfilePage = () => {
                   {({ handleChange, handleBlur, handleSubmit, values, errors, touched, validateForm }) => {
                     return (
                       <>
-                      {hasAccount &&
+                        {hasAccount &&
                           <div style={{ marginBottom: 48 }}>
                             <TextField
                               onInput={(e: React.ChangeEvent<HTMLInputElement>) => userProfile.setProfilePicture(e.target.value)}
