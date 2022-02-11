@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect } from 'react';
+import { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ContentWrapper, PageContentWrapper } from '../components/layout/Common';
@@ -84,9 +84,7 @@ interface UserDisplayProps {
 const UserDisplay: React.FC<UserDisplayProps> = (props) => {
   const { users, title, style } = props;
   const { imagesDone, handleLoad } = useImagesLoaded(users.length);
-  useEffect(() => {
-    console.log(imagesDone);
-  }, [imagesDone]);
+
   return (
     <>
       <ContainerWrapper style={{ ...style }}>

@@ -15,11 +15,10 @@ import { PageContentWrapper, PageWrapper, Row } from '../components/layout/Commo
 import { Link } from '../components/Link';
 import { OrderCard } from '../components/OrderCard';
 import { TextField } from '../components/TextField';
-import { CHAIN_NAMES, DEFAULT_CHAIN_ID, getContractLink, getPolygonScan, getOpensea } from '../config/config';
-import { CliptoToken__factory } from '../contracts';
-import { getProviderOrSigner, useExchangeContract } from '../hooks/useContracts';
+import { useExchangeContract } from '../hooks/useContracts';
 import { Description, Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
+import { getNFTDetails, getNFTHistory, getTokenIdAndAddress } from '../web3/nft';
 import { signMessage } from '../web3/request';
 import { Request } from './Orders';
 
@@ -237,77 +236,28 @@ const SelectedOrderPage = (props: any) => {
     }
   }
 
-  const getNftToken = (nftAddress: string) => {
-    const provider = getProviderOrSigner(library, account);
-    return CliptoToken__factory.connect(nftAddress, provider);
+  const getNFTVideo = async (id: string) => {
+    const metadata = await api.getArweaveMetadata(id);
+    setClipDetails(metadata.data.animation_url);
   }
 
-  const fetchNFT = async (tokenAddress: string, tokenIndex: number) => {
-    try {
-      toast.success('Fetching your NFT');
-      const token = getNftToken(tokenAddress);
-      const metadata = await token.tokenURI(tokenIndex);
-      setNftDetails({
-        chain: CHAIN_NAMES[DEFAULT_CHAIN_ID],
-        contractAddress: getShortenedAddress(tokenAddress),
-        tokenId: tokenIndex,
-        etherscan: getPolygonScan(tokenAddress),
-        opensea: getOpensea(tokenAddress, tokenIndex),
-        contractLink: getContractLink(tokenAddress),
-        metadata: `https://arweave.net/${metadata.split('/').pop()}`,
-      });
-
-      const response = await api.getArweaveMetadata(metadata.split('/').pop() || '');
-      setClipDetails(response.data.animation_url);
-
-    } catch (err) {
-      toast.error('Error fetching NFT details');
-    }
-  }
-
-  const filterEvents = async (request: Request) => {
-    const filter = exchangeContract.filters.DeliveredRequest(
-      request.creator,
-      request.requester
-    );
-    const events = await exchangeContract.queryFilter(filter);
-    const filtered = events.filter((event) => {
-      const index = event.args.index.toNumber();
-      return index === request.requestId;
+  const fetchNFT = async (tokenAddress: string, tokenId: number) => {
+    getNFTDetails(tokenAddress, tokenId).then((details) => {
+      if (details) {
+        setNftDetails(details);
+        getNFTVideo(details.arweave);
+      }
     });
-    return filtered[0].args.tokenId.toNumber();
-  }
 
-  const getDate = (timestamp: number) => {
-    const date = new Date(0);
-    date.setUTCSeconds(timestamp)
-    return date.toLocaleDateString();
-  }
-
-  const fetchNFTHistory = async (tokenAddress: string, tokenId: number) => {
-    try {
-      const token = getNftToken(tokenAddress);
-      const filter = token.filters.Transfer(null, null, tokenId);
-      const events = await token.queryFilter(filter);
-      const promises = events.map(async (event) => {
-        return {
-          from: event.args.from,
-          to: event.args.to,
-          timestamp: getDate((await event.getBlock()).timestamp)
-        }
-      });
-      const histories = await Promise.all(promises);
-      setHistory(histories.reverse());
-    } catch (err) {
-
-    }
+    getNFTHistory(tokenAddress, tokenId).then((histories) => {
+      setHistory(histories);
+    });
   }
 
   const fetchNFTDetails = async (request: Request) => {
-    const tokenAddress = await exchangeContract.creators(request.creator);
-    const tokenId = await filterEvents(request);
+    toast.success('Fetching NFT details');
+    const { tokenId, tokenAddress } = await getTokenIdAndAddress(request);
     fetchNFT(tokenAddress, tokenId);
-    fetchNFTHistory(tokenAddress, tokenId);
   }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -463,9 +413,9 @@ const SelectedOrderPage = (props: any) => {
               <>
                 <Card title="History">
                   <RowContainer>
-                    {history.map((record) => {
+                    {history.map((record, id) => {
                       return (
-                        <Row>
+                        <Row key={id}>
                           <Key>
                             <Label>
                               {

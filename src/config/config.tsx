@@ -36,6 +36,13 @@ export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
   [CHAIN_IDS.DAPPTOOLS]: '0x500fB9CAE50b307Fb82C9282f5eaCBdF14fa8cC2',
 };
 
+// block number of contract deployment
+export const START_BLOCKS: { [chainId: number]: number } = {
+  [CHAIN_IDS.POLYGON_MAINNET]: 24789312,
+  [CHAIN_IDS.POLYGON_TESTNET]: 24789312,
+  [CHAIN_IDS.DAPPTOOLS]: 0,
+};
+
 export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
 
