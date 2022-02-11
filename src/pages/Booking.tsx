@@ -17,6 +17,7 @@ import { TextField } from '../components/TextField';
 import { SYMBOL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useCreator } from '../hooks/useCreator';
+import { useFee } from '../hooks/useFee';
 import { Description, Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
@@ -91,22 +92,7 @@ const BookingPage = () => {
   const navigate = useNavigate();
   const exchangeContract = useExchangeContract(true);
   const { creator, loaded } = useCreator(creatorId);
-  const [feePercent, setFeePercent] = useState('');
-
-  useEffect(() => {
-    if (exchangeContract) {
-      fetchFeePercent();
-    }
-  }, [exchangeContract]);
-
-  const fetchFeePercent = async () => {
-    try {
-      const scale = await exchangeContract.scale();
-      const feeRate = await exchangeContract.feeRate();
-      const percent = feeRate.toNumber() / scale.toNumber();
-      setFeePercent(`${percent}%`);
-    } catch (err) { }
-  }
+  const { FeeDescription } = useFee();
 
   const makeBooking = async (values: BookingFormValues) => {
     try {
@@ -191,7 +177,7 @@ const BookingPage = () => {
                     try {
                       Number.parse(parseFloat(amount));
                       if (parseFloat(amount) < parseFloat(creator.price)) {
-                        errors.amount = `Amount must be greator than ${creator.price}`;
+                        errors.amount = `Amount must be greater than ${creator.price}`;
                       }
                     } catch {
                       errors.amount = `Please enter a number.`;
@@ -202,7 +188,7 @@ const BookingPage = () => {
                       try {
                         Number.parse(parseInt(deadline.toString()));
                         if (parseInt(deadline.toString()) < parseInt(creator.deliveryTime.toString())) {
-                          errors.deadline = `Deadline must be greator than ${creator.deliveryTime}`;
+                          errors.deadline = `Deadline must be greater than ${creator.deliveryTime}`;
                         }
                       } catch {
                         errors.deadline = `Please enter a deadline.`;
@@ -276,11 +262,7 @@ const BookingPage = () => {
                           onChange={handleChange('amount')}
                           errorMessage={errors.amount}
                         />
-                        {feePercent &&
-                          <Description style={{ fontSize: 10, marginTop: '8px' }}>
-                            * Includes a {feePercent} fee to support the platform
-                          </Description>
-                        }
+                        <FeeDescription />
                       </div>
                       <PrimaryButton
                         onPress={async () => {
