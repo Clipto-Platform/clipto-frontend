@@ -12,8 +12,8 @@ import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../component
 import { TextField } from '../../components/TextField';
 import { API_URL, SYMBOL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
+import { useFee } from '../../hooks/useFee';
 import { CreateUserDtoFull, CreateUserDtoSignable, GetUserResponse, useProfile } from '../../hooks/useProfile';
-import { Description } from '../../styles/typography';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
 import { isCreatorOnChain, signMessage } from '../../web3/request';
 
@@ -57,7 +57,7 @@ const OnboardProfilePage = () => {
   const [userProfileDB, setUserProfileDB] = useState<GetUserResponse>();
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState<boolean>(false);
-
+  const {FeeDescription} = useFee();
   const updateUserProfile = async (vals: CreateUserDtoFull) => {
     try {
       const messageToBeSigned = 'I am updating my profile in Clipto';
@@ -386,10 +386,7 @@ const OnboardProfilePage = () => {
                             onBlur={handleBlur}
                             errorMessage={errors.price}
                           />
-                          {/* TODO(jonathanng) - make dynamic */}
-                          <Description style={{ fontSize: 10, marginTop: '8px' }}>
-                            * Includes a 10% fee to support the platform
-                          </Description>
+                          <FeeDescription />
                         </div>
 
                         <div style={{ marginBottom: 12 }}>
