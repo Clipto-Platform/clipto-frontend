@@ -129,21 +129,23 @@ const StyledSpan = styled.span`
 `;
 
 const ConnectWallet = styled.div`
-  margin-bottom: 16,
-  font-weight: 700,
-  font-size: 18,
-  text-align: 'left',
+  margin-bottom: 16;
+  font-weight: 700;
+  font-size: 18;
+  text-align: 'left';
+  
 `;
 
 const Error = styled.div`
-  margin-bottom: 12, 
-  color: #FF6868, 
-  text-align: left
+  margin-bottom: 12;
+  color: #FF6868;
+  text-align: left;
+  padding: 10px;
 `;
 
 const ConnectWalletPopup = styled.div`
-  display: flex,
-  vertical-align: middle,
+  display: flex;
+  vertical-align: middle;
 `;
 interface HeaderStore extends State {
   showProfileDropDown: boolean;
@@ -428,7 +430,10 @@ const Header: React.FC<HeaderProps> = () => {
 
       {showLoginDialog && (
         <OverlayContainer>
-          <ModalDialog containerStyles={{}} isOpen onClose={() => setShowLoginDialog(false)} isDismissable>
+          <ModalDialog containerStyles={{
+              border: '1px solid #b3b3b3',
+              padding: '24px'
+            }} isOpen onClose={() => setShowLoginDialog(false)} isDismissable>
             <>
               <ConnectWallet>
                 Connect a wallet

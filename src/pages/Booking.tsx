@@ -129,7 +129,8 @@ const BookingPage = () => {
       }
 
     } catch (e) {
-      toast.error('The transaction failed.');
+      console.error('tx failed at Booking.tsx');
+      toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
       return;
     }
   }
