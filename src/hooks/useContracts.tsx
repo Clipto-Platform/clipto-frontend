@@ -18,6 +18,10 @@ export const getProviderOrSigner = (
     : new JsonRpcProvider(RPC_URLS[DEFAULT_CHAIN_ID], DEFAULT_CHAIN_ID);
 };
 
+export const getProvider = (): JsonRpcProvider => {
+  return new JsonRpcProvider(RPC_URLS[DEFAULT_CHAIN_ID], DEFAULT_CHAIN_ID);
+};
+
 export const useExchangeContract = (withSignerIfPossible = false) => {
   const { account, library } = useWeb3React<Web3Provider>();
   return useMemo(() => {

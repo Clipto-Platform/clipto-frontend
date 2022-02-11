@@ -1,12 +1,12 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import axios from 'axios';
 import { ethers } from 'ethers';
 import { Formik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import * as api from '../api';
 import { AvatarComponent } from '../components/AvatarOrb';
 import { ImagesSlider } from '../components/Booking/ImagesSlider';
 import { RightPanel } from '../components/Booking/RightPanel';
@@ -14,13 +14,15 @@ import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
-import { API_URL, SYMBOL } from '../config/config';
+import { SYMBOL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useCreator } from '../hooks/useCreator';
+import { useFee } from '../hooks/useFee';
 import { Description, Label } from '../styles/typography';
 import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
 import { Number } from '../utils/validation';
+import { isCreatorOnChain, signMessage } from '../web3/request';
 
 
 const PageGrid = styled.div`
@@ -76,78 +78,63 @@ const HR = styled.div`
   background-color: ${(props) => props.theme.border};
 `;
 
-export interface CreateRequestDto {
-  requester: string;
-  requestId: number;
-  creator: string;
-  amount: string;
+export interface BookingFormValues {
   description: string;
-  deadline: number;
-  txHash: string;
-}
-
-export interface ReadUserDto {
-  address: string;
-  bio: string;
-  deliveryTime: number;
-  demos: string[];
-  id: number;
-  profilePicture: string;
-  price: string;
-  tweetUrl: string;
-  userName: string;
-  twitterHandle: string;
+  amount: string;
+  deadline: string;
 }
 
 const BookingPage = () => {
   const { creatorId } = useParams();
-  const { account } = useWeb3React<Web3Provider>();
+  const { account, library } = useWeb3React<Web3Provider>();
 
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const exchangeContract = useExchangeContract(true);
   const { creator, loaded } = useCreator(creatorId);
-  const makeBooking = async (
-    requester: string,
-    creator: string,
-    amount: string,
-    description: string,
-    deadline: number,
-  ) => {
-    let tx;
+  const { FeeDescription } = useFee();
+
+  const makeBooking = async (values: BookingFormValues) => {
     try {
-      console.log(creator);
-      tx = await exchangeContract.newRequest(creator, { value: ethers.utils.parseEther(amount) });
+      const isCreator = await isCreatorOnChain(exchangeContract, creatorId);
+      if (!isCreator) {
+        toast.error('Booking request for this content creator cannot be created');
+        return;
+      }
+
+      const signMsg = 'I am creating a booking for my creator';
+      const signed = await signMessage(library, account, signMsg);
+      const transaction = await exchangeContract.newRequest(creatorId || '', { value: ethers.utils.parseEther(values.amount) });
+      const receipt = await transaction.wait();
+      const requestId: number = receipt.events?.find((i) => i.event === 'NewRequest')?.args?.index.toNumber();
+
+      const data = {
+        ...values,
+        deadline: parseInt(values.deadline),
+        txHash: transaction.hash,
+        signed,
+        requestId,
+        address: account || '',
+        message: signMsg,
+        creator: creatorId || '',
+        requester: account || '',
+      };
+
+      const response = await api.createBooking(data);
+      if (response && response.status === 201) {
+        navigate('/orders');
+        toast.success('Request created!');
+      } else {
+        toast.error('Request creation failed.');
+      }
+
     } catch (e) {
       console.error('tx failed at Booking.tsx');
       toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
       return;
     }
-    const receipt = await tx.wait();
-    console.log(receipt.events);
-    const requestId: number = receipt.events?.find((i) => i.event === 'NewRequest')?.args?.index.toNumber();
-    const requestDat: CreateRequestDto = {
-      requester,
-      requestId,
-      creator,
-      amount,
-      description,
-      deadline: parseInt(deadline.toString()), //This was actually a string before this line... forms will automatically change it to string but ts doesn't see that
-      txHash: tx.hash,
-    };
-    console.log(requestDat);
-    const requestResult = await axios.post(`${API_URL}/request/create`, { ...requestDat }).catch((e) => {
-      console.error(e);
-      toast.error(e);
-    });
+  }
 
-    if (requestResult && requestResult.status === 201) {
-      navigate('/orders');
-      toast.success('Request created!');
-    } else {
-      toast.error('Something is wrong.');
-    }
-  };
   return (
     <PageWrapper>
       <HeaderSpacer />
@@ -191,7 +178,7 @@ const BookingPage = () => {
                     try {
                       Number.parse(parseFloat(amount));
                       if (parseFloat(amount) < parseFloat(creator.price)) {
-                        errors.amount = `Amount must be greator than ${creator.price}`;
+                        errors.amount = `Amount must be greater than ${creator.price}`;
                       }
                     } catch {
                       errors.amount = `Please enter a number.`;
@@ -202,7 +189,7 @@ const BookingPage = () => {
                       try {
                         Number.parse(parseInt(deadline.toString()));
                         if (parseInt(deadline.toString()) < parseInt(creator.deliveryTime.toString())) {
-                          errors.deadline = `Deadline must be greator than ${creator.deliveryTime}`;
+                          errors.deadline = `Deadline must be greater than ${creator.deliveryTime}`;
                         }
                       } catch {
                         errors.deadline = `Please enter a deadline.`;
@@ -215,9 +202,9 @@ const BookingPage = () => {
                   }}
                   validateOnBlur={false}
                   validateOnChange={false}
-                  onSubmit={async ({ deadline, description, amount }) => {
+                  onSubmit={async (values) => {
                     setLoading(true);
-                    await makeBooking(account, creator.address, amount.toString(), description, parseInt(deadline));
+                    await makeBooking(values);
                     setLoading(false);
                   }}
                 >
@@ -243,7 +230,7 @@ const BookingPage = () => {
                             "If your video isn't delivered by your requested deadline, you will be able to request a refund."
                           }
                           endText="Days"
-                          onChange={handleChange('deadline')} //parseInt
+                          onChange={handleChange('deadline')}
                           placeholder={`${creator.deliveryTime}+`}
                           errorMessage={errors.deadline}
                         />
@@ -260,7 +247,7 @@ const BookingPage = () => {
                       </div>
 
                       <div style={{ marginBottom: 40 }}>
-                        <TextField label="Address to receive video NFT" placeholder="Wallet address" value={account} />
+                        <TextField label="Address to receive video NFT" placeholder="Wallet address" value={account} isDisabled />
                       </div>
 
                       <div style={{ marginBottom: 40 }}>
@@ -276,10 +263,7 @@ const BookingPage = () => {
                           onChange={handleChange('amount')}
                           errorMessage={errors.amount}
                         />
-                        {/* TODO(jonathanng) - make dynamic */}
-                        <Description style={{ fontSize: 10, marginTop: '8px' }}>
-                          * Includes a 10% fee to support the platform
-                        </Description>
+                        <FeeDescription />
                       </div>
                       <PrimaryButton
                         onPress={async () => {

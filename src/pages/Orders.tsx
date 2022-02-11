@@ -13,7 +13,7 @@ import { OrdersTab } from '../components/Orders/OrdersTab';
 import { Item, Tabs } from '../components/Tabs';
 import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
-import { Label } from '../styles/typography';
+import { Label, Text } from '../styles/typography';
 import { checkIfDeadlinePassed } from '../utils/time';
 
 
@@ -28,6 +28,7 @@ export type Request = {
   delivered: boolean;
   txHash: string;
   created: string;
+  refunded: boolean;
 };
 
 export const Status = styled.div`
@@ -43,6 +44,11 @@ export const Status = styled.div`
   font-size: 14px;
   color: rgba(255, 255, 255, 0.4); //TODO(jonathanng) - color don't be lazy
 }
+`;
+
+export const HighlightText = styled(Text)`
+  font-weight: bold;
+  color: ${(props) => props.theme.yellow};
 `;
 
 const TabContent = styled.div`
@@ -66,15 +72,36 @@ const OrdersPage = () => {
     const getRequests = async () => {
       if (account) {
         const userRequests = await axios.get(`${API_URL}/request/receiver/${account}`);
-        setRequestsByUser(userRequests.data.reverse());
+        setRequestsByUser(userRequests.data);
 
         const creatorRequests = await axios.get(`${API_URL}/request/creator/${account}`);
-        setRequestsToUser(creatorRequests.data.reverse());
+        setRequestsToUser(creatorRequests.data);
         setLoaded(true);
       }
     };
     getRequests();
   }, [account]);
+
+  const refund = async (request: Request) => {
+    try {
+      const tx = await exchangeContract.refundRequest(request.creator, request.requestId);
+      await tx.wait();
+
+      await axios.post(`${API_URL}/request/refund`, { id: request.id });
+      toast.success('Successfully refunded!');
+
+      const updated = requestsByUser.map((req) => {
+        if (req.id === request.id) {
+          req.refunded = true;
+        }
+        return req;
+      });
+      setRequestsByUser(updated);
+
+    } catch (err) {
+      toast.error('Error initiating refund!');
+    }
+  }
 
   return (
     <>
@@ -83,14 +110,14 @@ const OrdersPage = () => {
         <HeaderContentGapSpacer />
         <SingleColumnPageContent>
           <Tabs aria-label="View received and purchased orders">
-            <Item key="purchased" title="Purchased">
+            <Item key="ordered" title="Ordered">
               <OrdersTab
                 loaded={loaded}
                 requests={requestsByUser}
                 FallbackWhenNoRequests={() => (
                   <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
                     <div style={{ display: 'block', width: '100%' }}>
-                      <Label style={{ marginBottom: '40px' }}>You haven’t made any booking requests yet.</Label>
+                      <Label style={{ marginBottom: '40px' }}>You haven't made any booking requests yet.</Label>
                       {/* <Description>Set up your creator profile to start receiving bookings.</Description> */}
                       <PrimaryButton
                         onPress={() => {
@@ -108,7 +135,7 @@ const OrdersPage = () => {
               >
                 {(requests) =>
                   requests.map((i, n) => (
-                    <OrderCard key={i.id} request={i}>
+                    <OrderCard key={i.id} request={i} isReceived={false} >
                       {i.delivered && (
                         <PrimaryButton
                           onPress={() => {
@@ -117,38 +144,29 @@ const OrdersPage = () => {
                           size="small"
                           width="small"
                           style={{ marginTop: 20 }}
-                          isDisabled={true}
                         >
                           View clip
                         </PrimaryButton>
                       )}
-                      {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
+                      {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && !i.refunded && (
                         <Status style={{ marginTop: 20 }}>PENDING</Status>
                       )}
-                      {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && (
+                      {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && !i.refunded && (
                         <PrimaryButton
                           size="small"
                           width="small"
                           variant="secondary"
                           style={{ marginTop: 20 }}
-                          onPress={async () => {
-                            //TODO(jonathanng) - when refunded, ui doesn't update. Also reload results in view clip button
-                            const tx = await exchangeContract.refundRequest(i.creator, i.requestId);
-                            await tx.wait();
-                            const verificationResult = await axios
-                              .post(`${API_URL}/request/finish`, { id: i.id })
-                              .then(() => {
-                                toast.success('Successfully on refund!');
-                              })
-                              .catch((e) => {
-                                console.log(e);
-                                toast.error('Error on refund!');
-                              });
-                          }}
+                          onPress={() => refund(i)}
                         >
                           Claim refund
                         </PrimaryButton>
                       )}
+                      {!i.delivered && i.refunded &&
+                        <>
+                          <HighlightText>This order has been refunded.</HighlightText>
+                        </>
+                      }
                     </OrderCard>
                   ))
                 }
@@ -161,7 +179,7 @@ const OrdersPage = () => {
                 FallbackWhenNoRequests={() => (
                   <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
                     <div style={{ display: 'block', width: '100%' }}>
-                      <Label style={{ marginBottom: '24px' }}>You haven’t received any booking requests yet.</Label>
+                      <Label style={{ marginBottom: '24px' }}>You haven't received any booking requests yet.</Label>
                       {/* <Description>Set up your creator profile to start receiving bookings.</Description> */}
                       {/* Note(jonathanng) - currently /orders is not accessible for noncreators */}
                     </div>
@@ -170,7 +188,7 @@ const OrdersPage = () => {
               >
                 {(requests) =>
                   requests.map((i, n, f) => (
-                    <OrderCard key={i.id} request={i}>
+                    <OrderCard key={i.id} request={i} isReceived={true} >
                       {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
                         <PrimaryButton
                           onPress={() => {
@@ -195,7 +213,6 @@ const OrdersPage = () => {
                           size="small"
                           width="small"
                           style={{ marginTop: 20 }}
-                          isDisabled={true}
                         >
                           View clip
                         </PrimaryButton>
