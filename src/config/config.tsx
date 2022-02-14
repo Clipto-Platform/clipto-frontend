@@ -43,6 +43,12 @@ export const START_BLOCKS: { [chainId: number]: number } = {
   [CHAIN_IDS.DAPPTOOLS]: 0,
 };
 
+export const GRAPH_APIS: { [chainId: number]: string } = {
+  [CHAIN_IDS.POLYGON_MAINNET]: "https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph",
+  [CHAIN_IDS.POLYGON_TESTNET]: "https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph",
+  [CHAIN_IDS.DAPPTOOLS]: "https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph",
+}
+
 export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
 
@@ -60,5 +66,5 @@ export const getContractLink = (addr: string) =>
 
 export const getOpensea = (addr: string, index: number) =>
   (ENV === 'TEST')
-    ? `https://testnets.opensea.io/assets/matic/${addr}/${index}`
+    ? `https://testnets.opensea.io/assets/mumbai/${addr}/${index}`
     : `https://opensea.io/assets/matic/${addr}/${index}`;
