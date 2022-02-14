@@ -9,15 +9,15 @@ import { toast } from 'react-toastify';
 import styled, { useTheme } from 'styled-components';
 import * as api from '../api';
 import { PrimaryButton } from '../components/Button';
-import { Card } from '../components/Card';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { PageContentWrapper, PageWrapper, Row } from '../components/layout/Common';
-import { Link } from '../components/Link';
+import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
+import { NFTDetails } from '../components/NFTDetails';
+import { NFTHistory } from '../components/NFTHistory';
 import { OrderCard } from '../components/OrderCard';
 import { TextField } from '../components/TextField';
+import { Video } from '../components/Video';
 import { useExchangeContract } from '../hooks/useContracts';
 import { Description, Label } from '../styles/typography';
-import { getShortenedAddress } from '../utils/address';
 import { getNFTDetails, getNFTHistory, getTokenIdAndAddress } from '../web3/nft';
 import { signMessage } from '../web3/request';
 import { Request } from './Orders';
@@ -47,30 +47,9 @@ const ImageCardImg = styled.img`
   max-height: 450px;
 `;
 
-const VideoCard = styled.video`
-  border-radius: 15px;
-`;
-
 const UploadStatusContainer = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const Value = styled.div`
-  flex-grow: 2;
-  text-align: end;
-  color: gray;
-`;
-
-const RowContainer = styled.div`
- display: flex;
- flex-grow: 2;
- flex-direction: column;
-`;
-
-const Key = styled(Label)`
-  margin-bottom: 15px;
-  font-weight: 500;
 `;
 
 const Divider = styled.div`
@@ -100,13 +79,13 @@ export interface NFTFormError {
   description?: string;
 }
 
-export interface NFTHistory {
+export interface NFTHistories {
   from: string;
   to: string;
   timestamp: string;
 }
 
-const SelectedOrderPage = (props: any) => {
+const SelectedOrderPage = () => {
   const theme = useTheme();
 
   const [uploadMetadata, setUploadMetadata] = useState<ArweaveResponse | undefined>(undefined);
@@ -124,7 +103,7 @@ const SelectedOrderPage = (props: any) => {
   const [nftName, setNftName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [error, setError] = useState<NFTFormError>();
-  const [history, setHistory] = useState<NFTHistory[]>();
+  const [history, setHistory] = useState<NFTHistories[]>();
 
   const validate = (name: string, desc: string) => {
     if (name.length === 0) return { name: 'This field cannot be empty' };
@@ -220,7 +199,7 @@ const SelectedOrderPage = (props: any) => {
       const eventArgs = receipt.events?.find((i) => i.event === 'DeliveredRequest')?.args;
       const tokenAddress = eventArgs?.tokenAddress;
       const tokenId = eventArgs?.tokenId.toNumber();
-      fetchNFT(tokenAddress, tokenId);
+      fetchNFT(tokenAddress, tokenId, tokenUri);
 
       await api.completeBooking({
         id: request.id,
@@ -241,13 +220,10 @@ const SelectedOrderPage = (props: any) => {
     setClipDetails(metadata.data.animation_url);
   }
 
-  const fetchNFT = async (tokenAddress: string, tokenId: number) => {
-    getNFTDetails(tokenAddress, tokenId).then((details) => {
-      if (details) {
-        setNftDetails(details);
-        getNFTVideo(details.arweave);
-      }
-    });
+  const fetchNFT = async (tokenAddress: string, tokenId: number, tokenUri: string) => {
+    const details = getNFTDetails(tokenAddress, tokenId, tokenUri);
+    setNftDetails(details);
+    getNFTVideo(details.arweave);
 
     getNFTHistory(tokenAddress, tokenId).then((histories) => {
       setHistory(histories);
@@ -255,9 +231,8 @@ const SelectedOrderPage = (props: any) => {
   }
 
   const fetchNFTDetails = async (request: Request) => {
-    toast.success('Fetching NFT details');
-    const { tokenId, tokenAddress } = await getTokenIdAndAddress(request);
-    fetchNFT(tokenAddress, tokenId);
+    const { tokenAddress, tokenUri, tokenId } = await getTokenIdAndAddress(request);
+    fetchNFT(tokenAddress, tokenId, tokenUri);
   }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -365,74 +340,11 @@ const SelectedOrderPage = (props: any) => {
               </div>
             )}
 
-            {clipDetails &&
-              <ImageCardContainer style={{ margin: 'auto' }}>
-                <VideoCard src={clipDetails} width={600} controls autoPlay />
-              </ImageCardContainer>
-            }
-
+            {request?.delivered && <Video src={clipDetails} />}
             {request && <OrderCard request={request!} key={1} isReceived={false} />}
             {!request && <Label>Could not find request</Label>}
-
-            {nftDetails && (
-              <>
-                <Card title="NFT Details">
-                  <RowContainer>
-                    <Row>
-                      <Key>Contract Address</Key>
-                      <Value>
-                        <Link url={nftDetails.contractLink}>{nftDetails.contractAddress}</Link>
-                      </Value>
-                    </Row>
-                    <Row>
-                      <Key>Token ID</Key>
-                      <Value>{nftDetails.tokenId}</Value>
-                    </Row>
-                    <Row>
-                      <Key>Chain</Key>
-                      <Value>{nftDetails.chain}</Value>
-                    </Row>
-                    <Row>
-                      <Key>Metadata</Key>
-                      <Value><Link url={nftDetails.metadata} /></Value>
-                    </Row>
-                    <Row>
-                      <Key>View on Polygonscan</Key>
-                      <Value><Link url={nftDetails.etherscan} /></Value>
-                    </Row>
-                    <Row>
-                      <Key>View on Opensea</Key>
-                      <Value><Link url={nftDetails.opensea} /></Value>
-                    </Row>
-                  </RowContainer>
-                </Card>
-              </>
-            )}
-
-            {history && (
-              <>
-                <Card title="History">
-                  <RowContainer>
-                    {history.map((record, id) => {
-                      return (
-                        <Row key={id}>
-                          <Key>
-                            <Label>
-                              {
-                                parseInt(record.from) === 0
-                                  ? `Minted NFT to ${getShortenedAddress(record.to)}`
-                                  : `${getShortenedAddress(record.from)} transfered to ${getShortenedAddress(record.to)}`
-                              }
-                            </Label>
-                          </Key>
-                          <Value>{record.timestamp}</Value>
-                        </Row>
-                      )
-                    })}
-                  </RowContainer>
-                </Card>
-              </>
-            )}
+            {nftDetails && <NFTDetails details={nftDetails} />}
+            {history && (<NFTHistory history={history} />)}
 
           </PageContentWrapper>
         </PageWrapper>

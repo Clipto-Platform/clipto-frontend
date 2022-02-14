@@ -1,11 +1,17 @@
 import axios from 'axios';
-import { API_URL } from '../config/config';
+import { createClient } from 'urql';
+import { API_URL, DEFAULT_CHAIN_ID, GRAPH_APIS } from '../config/config';
+import { queryGetRequest } from './query';
 import { CompleteBooking, CreateRequest, FinalizeFileUpload, UploadFileLinkRequest } from './types';
 
 // Axios config
 const axiosInstance = axios.create({
     baseURL: API_URL,
 });
+
+const graphInstance = createClient({
+    url: GRAPH_APIS[DEFAULT_CHAIN_ID],
+})
 
 export const createBooking = (data: CreateRequest) => {
     return axiosInstance.post('/request/create', data);
@@ -45,3 +51,13 @@ export const extractResumeableUrl = async (url: string): Promise<string | null> 
     });
     return response.headers.get('location');
 };
+
+export const graphGetRequest = async (
+    requestId: string | number,
+    creator: string,
+    requester: string
+) => {
+    return graphInstance.query(queryGetRequest, {
+        requestId, creator, requester
+    }).toPromise();
+}
