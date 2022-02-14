@@ -1,5 +1,5 @@
 export const queryGetRequest = `
-query GetCompletedRequests (
+query GetRequestById (
     $requestId: BigInt!,
     $creator: Bytes!,
     $requester: Bytes!
