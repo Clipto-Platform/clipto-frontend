@@ -16,7 +16,6 @@ import { useExchangeContract } from '../hooks/useContracts';
 import { Label, Text } from '../styles/typography';
 import { checkIfDeadlinePassed } from '../utils/time';
 
-
 export type Request = {
   id: number;
   requestId: number;
@@ -97,11 +96,10 @@ const OrdersPage = () => {
         return req;
       });
       setRequestsByUser(updated);
-
     } catch (err) {
       toast.error('Error initiating refund!');
     }
-  }
+  };
 
   return (
     <>
@@ -135,7 +133,7 @@ const OrdersPage = () => {
               >
                 {(requests) =>
                   requests.map((i, n) => (
-                    <OrderCard key={i.id} request={i} isReceived={false} >
+                    <OrderCard key={i.id} request={i} isReceived={false}>
                       {i.delivered && (
                         <PrimaryButton
                           onPress={() => {
@@ -162,11 +160,11 @@ const OrdersPage = () => {
                           Claim refund
                         </PrimaryButton>
                       )}
-                      {!i.delivered && i.refunded &&
+                      {!i.delivered && i.refunded && (
                         <>
                           <HighlightText>This order has been refunded.</HighlightText>
                         </>
-                      }
+                      )}
                     </OrderCard>
                   ))
                 }
@@ -188,7 +186,7 @@ const OrdersPage = () => {
               >
                 {(requests) =>
                   requests.map((i, n, f) => (
-                    <OrderCard key={i.id} request={i} isReceived={true} >
+                    <OrderCard key={i.id} request={i} isReceived={true}>
                       {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
                         <PrimaryButton
                           onPress={() => {

@@ -7,7 +7,6 @@ import { useImagesLoaded } from '../hooks/useImagesLoaded';
 import { formatETH } from '../utils/format';
 import { UserImage } from './UserImage';
 
-
 export interface User {
   name: string;
   shortDescription: string;

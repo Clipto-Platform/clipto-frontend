@@ -8,7 +8,6 @@ import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { User, UserDisplay } from '../components/UserDisplay';
 
-
 // TODO(johnrjj) - Fetch remotely
 const featuredUsers: Array<User> = [
   {

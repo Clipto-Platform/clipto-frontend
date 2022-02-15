@@ -4,11 +4,7 @@ import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
-import {
-  CenterContainer, ContentWrapper,
-  PageContentWrapper,
-  PageWrapper
-} from '../../components/layout/Common';
+import { CenterContainer, ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
 import { useProfile } from '../../hooks/useProfile';
 import { BountyConfirmation } from './BountyConfirmation';

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Description } from '../styles/typography';
 import { useExchangeContract } from './useContracts';
 
-
 export const useFee = () => {
   const exchangeContract = useExchangeContract(true);
   const [feePercent, setFeePercent] = useState('');
@@ -19,16 +18,18 @@ export const useFee = () => {
       const feeRate = await exchangeContract.feeRate();
       const percent = feeRate.toNumber() / scale.toNumber();
       setFeePercent(`${percent}%`);
-    } catch (err) { }
-  }
-  return { 
-    feePercent, 
-    FeeDescription: () => (<>
-      {feePercent &&
-        <Description style={{ fontSize: 10, marginTop: '8px' }}>
-          * Includes a {feePercent} fee to support the platform
-        </Description>
-      }
-    </>)
-  }
+    } catch (err) {}
+  };
+  return {
+    feePercent,
+    FeeDescription: () => (
+      <>
+        {feePercent && (
+          <Description style={{ fontSize: 10, marginTop: '8px' }}>
+            * Includes a {feePercent} fee to support the platform
+          </Description>
+        )}
+      </>
+    ),
+  };
 };
