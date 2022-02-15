@@ -7,6 +7,7 @@ import { getShortenedAddress } from '../utils/address';
 import { formatETH } from '../utils/format';
 import { checkIfDeadlinePassed, DAY, HOUR } from '../utils/time';
 import { AvatarComponent } from './AvatarOrb';
+import { SYMBOL } from '../config/config';
 
 const OrderCardContainer = styled.div`
   border: 1px solid ${(props) => props.theme.border};
@@ -130,7 +131,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
           </Column>
           <Column style={{ textAlign: 'right' }}>
             <SecondaryLabel style={{ marginBottom: 2 }}> {status} </SecondaryLabel>
-            <BidAmount>{formatETH(parseFloat(props.request?.amount))} ETH</BidAmount>
+            <BidAmount>{formatETH(parseFloat(props.request?.amount))} {SYMBOL}</BidAmount>
           </Column>
         </Row>
       </OrderCardTopRowContainer>
