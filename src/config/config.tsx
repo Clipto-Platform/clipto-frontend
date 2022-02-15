@@ -17,7 +17,7 @@ export const CHAIN_NAMES: { [chainId: number]: string } = {
   '4': 'Rinkeby Testnet',
   '80001': 'Polygon testnet',
   '99': 'Dapp tools localhost',
-}
+};
 
 export const POLLING_INTERVAL = 12000;
 
@@ -44,10 +44,10 @@ export const START_BLOCKS: { [chainId: number]: number } = {
 };
 
 export const GRAPH_APIS: { [chainId: number]: string } = {
-  [CHAIN_IDS.POLYGON_MAINNET]: "https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph",
-  [CHAIN_IDS.POLYGON_TESTNET]: "https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph",
-  [CHAIN_IDS.DAPPTOOLS]: "https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph",
-}
+  [CHAIN_IDS.POLYGON_MAINNET]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph',
+  [CHAIN_IDS.POLYGON_TESTNET]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph',
+  [CHAIN_IDS.DAPPTOOLS]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph',
+};
 
 export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
@@ -55,16 +55,12 @@ export const MIN_DELIVERY_TIME = 3;
 export const API_URL = DEV ? 'http://localhost:8000' : 'https://api.clipto.io';
 
 export const getPolygonScan = (addr: string) =>
-  (ENV === 'TEST')
-    ? `https://mumbai.polygonscan.com/token/${addr}`
-    : `https://polygonscan.com/token/${addr}`;
+  ENV === 'TEST' ? `https://mumbai.polygonscan.com/token/${addr}` : `https://polygonscan.com/token/${addr}`;
 
 export const getContractLink = (addr: string) =>
-  (ENV === 'TEST')
-    ? `https://mumbai.polygonscan.com/address/${addr}`
-    : `https://polygonscan.com/address/${addr}`;
+  ENV === 'TEST' ? `https://mumbai.polygonscan.com/address/${addr}` : `https://polygonscan.com/address/${addr}`;
 
 export const getOpensea = (addr: string, index: number) =>
-  (ENV === 'TEST')
+  ENV === 'TEST'
     ? `https://testnets.opensea.io/assets/mumbai/${addr}/${index}`
     : `https://opensea.io/assets/matic/${addr}/${index}`;

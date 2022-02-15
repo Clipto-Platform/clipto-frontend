@@ -13,7 +13,7 @@ export type Request = {
   delivered: boolean;
   txHash: string;
   created: string;
-  refunded:boolean;
+  refunded: boolean;
 };
 
 export const Status = styled.div`

@@ -24,7 +24,6 @@ import { formatETH } from '../utils/format';
 import { Number } from '../utils/validation';
 import { isCreatorOnChain, signMessage } from '../web3/request';
 
-
 const PageGrid = styled.div`
   display: grid;
   grid-template-columns: 504px 488px;
@@ -104,7 +103,9 @@ const BookingPage = () => {
 
       const signMsg = 'I am creating a booking for my creator';
       const signed = await signMessage(library, account, signMsg);
-      const transaction = await exchangeContract.newRequest(creatorId || '', { value: ethers.utils.parseEther(values.amount) });
+      const transaction = await exchangeContract.newRequest(creatorId || '', {
+        value: ethers.utils.parseEther(values.amount),
+      });
       const receipt = await transaction.wait();
       const requestId: number = receipt.events?.find((i) => i.event === 'NewRequest')?.args?.index.toNumber();
 
@@ -127,13 +128,12 @@ const BookingPage = () => {
       } else {
         toast.error('Request creation failed.');
       }
-
     } catch (e) {
       console.error('tx failed at Booking.tsx');
       toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
       return;
     }
-  }
+  };
 
   return (
     <PageWrapper>
@@ -247,7 +247,12 @@ const BookingPage = () => {
                       </div>
 
                       <div style={{ marginBottom: 40 }}>
-                        <TextField label="Address to receive video NFT" placeholder="Wallet address" value={account} isDisabled />
+                        <TextField
+                          label="Address to receive video NFT"
+                          placeholder="Wallet address"
+                          value={account}
+                          isDisabled
+                        />
                       </div>
 
                       <div style={{ marginBottom: 40 }}>

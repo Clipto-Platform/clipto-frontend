@@ -1,7 +1,6 @@
 import React from 'react';
 import ContentLoader from 'react-content-loader';
 
-
 const ImagesSliderLoading = (props: any) => (
   <ContentLoader
     speed={2}

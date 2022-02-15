@@ -133,12 +133,11 @@ const ConnectWallet = styled.div`
   font-weight: 700;
   font-size: 18;
   text-align: 'left';
-  
 `;
 
 const Error = styled.div`
   margin-bottom: 12;
-  color: #FF6868;
+  color: #ff6868;
   text-align: left;
   padding: 10px;
 `;
@@ -179,7 +178,7 @@ const useHeaderStore = create<HeaderStore>(
   })),
 );
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface HeaderProps { }
+export interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
@@ -267,7 +266,7 @@ const Header: React.FC<HeaderProps> = () => {
 
   const logoutUser = useCallback(async () => {
     deactivate();
-    setShowProfileDropDown(false)
+    setShowProfileDropDown(false);
     dispatch({ type: 'logout', payload: { user: null } });
     setCheckLogin(false);
     navigate('/');
@@ -280,15 +279,13 @@ const Header: React.FC<HeaderProps> = () => {
       if (account) {
         if (user && user === account) {
           setCheckLogin(true);
-        }
-        else if (user && user !== account) {
+        } else if (user && user !== account) {
           dispatch({ type: 'login', payload: { user: account } });
         }
         let userProfile;
         try {
-          userProfile = await axios.get(`${API_URL}/user/${account}`)
+          userProfile = await axios.get(`${API_URL}/user/${account}`);
           setLoggedInProfile(userProfile.data);
-
         } catch (e) {
           console.log('Failed to find creator account for userProfile');
           setLoggedInProfile(null);
@@ -296,15 +293,12 @@ const Header: React.FC<HeaderProps> = () => {
       }
     };
     getCreatorData();
-
   }, [account]);
 
   useEffect(() => {
-
     if (checkLogin && account) {
       dispatch({ type: 'login', payload: { user: account } });
     }
-
   }, [checkLogin]);
 
   useEffect(() => {
@@ -364,15 +358,18 @@ const Header: React.FC<HeaderProps> = () => {
                               onClose={() => setShowProfileDropDown(false)}
                               isDismissable
                             >
-                              <Link to={"onboarding/profile"}>
+                              <Link to={'onboarding/profile'}>
                                 <DropDownItem>Settings</DropDownItem>
                               </Link>
                               <Divider />
-                              <DropDownItem onClick={(e) => {
-                                e.stopPropagation();
-                                logoutUser();
-                              }}
-                              >Log out</DropDownItem>
+                              <DropDownItem
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  logoutUser();
+                                }}
+                              >
+                                Log out
+                              </DropDownItem>
                             </DropDown>
                           </OverlayProvider>
                         )}
@@ -410,11 +407,14 @@ const Header: React.FC<HeaderProps> = () => {
                               onClose={() => setShowProfileDropDown(false)}
                               isDismissable
                             >
-                              <DropDownItem onClick={(e) => {
-                                e.stopPropagation();
-                                logoutUser();
-                              }}
-                              >Logout</DropDownItem>
+                              <DropDownItem
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  logoutUser();
+                                }}
+                              >
+                                Logout
+                              </DropDownItem>
                             </DropDown>
                           </OverlayProvider>
                         )}
@@ -430,17 +430,18 @@ const Header: React.FC<HeaderProps> = () => {
 
       {showLoginDialog && (
         <OverlayContainer>
-          <ModalDialog containerStyles={{
+          <ModalDialog
+            containerStyles={{
               border: '1px solid #b3b3b3',
-              padding: '24px'
-            }} isOpen onClose={() => setShowLoginDialog(false)} isDismissable>
+              padding: '24px',
+            }}
+            isOpen
+            onClose={() => setShowLoginDialog(false)}
+            isDismissable
+          >
             <>
-              <ConnectWallet>
-                Connect a wallet
-              </ConnectWallet>
-              {errorMessage && (
-                <Error >{errorMessage}</Error>
-              )}
+              <ConnectWallet>Connect a wallet</ConnectWallet>
+              {errorMessage && <Error>{errorMessage}</Error>}
 
               <PrimaryButton
                 variant={'secondary'}
@@ -475,7 +476,6 @@ const Header: React.FC<HeaderProps> = () => {
           </ChainContainer>
         </>
       )}
-
     </>
   );
 };

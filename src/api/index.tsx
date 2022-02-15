@@ -6,58 +6,58 @@ import { CompleteBooking, CreateRequest, FinalizeFileUpload, UploadFileLinkReque
 
 // Axios config
 const axiosInstance = axios.create({
-    baseURL: API_URL,
+  baseURL: API_URL,
 });
 
 const graphInstance = createClient({
-    url: GRAPH_APIS[DEFAULT_CHAIN_ID],
-})
+  url: GRAPH_APIS[DEFAULT_CHAIN_ID],
+});
 
 export const createBooking = (data: CreateRequest) => {
-    return axiosInstance.post('/request/create', data);
-}
-
-export const completeBooking = (data: CompleteBooking) => {
-    return axiosInstance.post('/request/finish', data);
-}
-
-export const getRequestById = (creator: string, requestId: string) => {
-    return axiosInstance.get(`/request/creator/${creator}/${requestId}`);
-}
-
-export const getUploadFileLink = (data: UploadFileLinkRequest) => {
-    return axiosInstance.post('/upload', data);
-}
-
-export const getUploadFileStatus = (uploadUuid: string) => {
-    return axiosInstance.get(`/upload/status/${uploadUuid}`);
-}
-
-export const finalizeFileUpload = (data: FinalizeFileUpload) => {
-    return axiosInstance.post('/upload/finalize', data);
-}
-
-export const getArweaveMetadata = (arweaveToken: string) => {
-    return axios.get(`https://arweave.net/${arweaveToken}`);
-}
-
-export const extractResumeableUrl = async (url: string): Promise<string | null> => {
-    const response = await fetch(url, {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors',
-        headers: {
-            'x-goog-resumable': 'start',
-        },
-    });
-    return response.headers.get('location');
+  return axiosInstance.post('/request/create', data);
 };
 
-export const graphGetRequest = async (
-    requestId: string | number,
-    creator: string,
-    requester: string
-) => {
-    return graphInstance.query(queryGetRequest, {
-        requestId, creator, requester
-    }).toPromise();
-}
+export const completeBooking = (data: CompleteBooking) => {
+  return axiosInstance.post('/request/finish', data);
+};
+
+export const getRequestById = (creator: string, requestId: string) => {
+  return axiosInstance.get(`/request/creator/${creator}/${requestId}`);
+};
+
+export const getUploadFileLink = (data: UploadFileLinkRequest) => {
+  return axiosInstance.post('/upload', data);
+};
+
+export const getUploadFileStatus = (uploadUuid: string) => {
+  return axiosInstance.get(`/upload/status/${uploadUuid}`);
+};
+
+export const finalizeFileUpload = (data: FinalizeFileUpload) => {
+  return axiosInstance.post('/upload/finalize', data);
+};
+
+export const getArweaveMetadata = (arweaveToken: string) => {
+  return axios.get(`https://arweave.net/${arweaveToken}`);
+};
+
+export const extractResumeableUrl = async (url: string): Promise<string | null> => {
+  const response = await fetch(url, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors',
+    headers: {
+      'x-goog-resumable': 'start',
+    },
+  });
+  return response.headers.get('location');
+};
+
+export const graphGetRequest = async (requestId: string | number, creator: string, requester: string) => {
+  return graphInstance
+    .query(queryGetRequest, {
+      requestId,
+      creator,
+      requester,
+    })
+    .toPromise();
+};
