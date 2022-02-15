@@ -2,6 +2,8 @@ import styled from 'styled-components';
 
 import { Label } from '../../styles/typography';
 
+import { OrdersLoading } from './OrdersLoading';
+
 export type Request = {
   id: number;
   requestId: number;
@@ -46,7 +48,11 @@ export const OrdersTab: React.FC<OrdersTabProps> = (props) => {
   const { FallbackWhenNoRequests, requests, loaded } = props;
   return (
     <TabContent>
-      {!loaded && <Label></Label>}
+      {!loaded && (
+        <>
+          <OrdersLoading /> <OrdersLoading />
+        </>
+      )}
       {loaded && requests.length === 0 && <FallbackWhenNoRequests />}
       {loaded && requests.length !== 0 && props.children(requests)}
     </TabContent>
