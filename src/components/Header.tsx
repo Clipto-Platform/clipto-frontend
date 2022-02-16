@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
-import { API_URL, CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV } from '../config/config';
+import { API_URL, CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV, DISCORD_LINK } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useEagerConnect } from '../hooks/useEagerConnect';
 import { useEns } from '../hooks/useEns';
@@ -24,7 +24,7 @@ import { Logo } from './Logo';
 import { useSelector, useDispatch } from 'react-redux';
 // import { MetamaskIcon } from './icons/MetamaskIcon';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
-
+import {HiOutlineArrowRight} from 'react-icons/hi'
 const MAX_HEADER_WIDTH_IN_PX = MAX_CONTENT_WIDTH_PX;
 
 const HEADER_HEIGHT_IN_PX = '64px';
@@ -335,93 +335,90 @@ const Header: React.FC<HeaderProps> = () => {
                 </RightWrapper>
               )}
               {checkLogin && account && (
-                <>
-                  {loggedInProfile && (
-                    <RightWrapper>
-                      <Link to={'/explore'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
-                      </Link>
-                      <Link to={'/orders'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
-                      </Link>
-                      <RightWrapper
-                        ref={dropDropRef}
-                        onClick={() => {
-                          setShowProfileDropDown(true);
-                        }}
-                        style={{ position: 'relative' }}
-                      >
-                        <StyledSpan style={{ marginRight: 16 }}>
-                          {userEnsName ?? getShortenedAddress(account, 6, 4)}
-                        </StyledSpan>
-                        <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
-                        {showProfileDropDown && (
-                          <OverlayProvider>
-                            <DropDown
-                              triggerRef={dropDropRef}
-                              containerStyles={{}}
-                              isOpen={showProfileDropDown}
-                              onClose={() => setShowProfileDropDown(false)}
-                              isDismissable
-                            >
-                              <Link to={"onboarding/profile"}>
-                                <DropDownItem>Settings</DropDownItem>
-                              </Link>
-                              <Divider />
-                              <DropDownItem onClick={(e) => {
-                                e.stopPropagation();
-                                logoutUser();
-                              }}
-                              >Log out</DropDownItem>
-                            </DropDown>
-                          </OverlayProvider>
-                        )}
-                      </RightWrapper>
-                    </RightWrapper>
-                  )}
+                <RightWrapper>
+                  <Link to={'/explore'}>
+                    <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
+                  </Link>
+                  <Link to={'/orders'}>
+                    <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
+                  </Link>
                   {!loggedInProfile && (
-                    <RightWrapper>
-                      <Link to={'/explore'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
-                      </Link>
-                      <Link to={'/orders'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
-                      </Link>
-                      <Link to={'/onboarding'}>
-                        <StyledSpan style={{ marginRight: 40 }}>Become a creator</StyledSpan>
-                      </Link>
-                      <RightWrapper
-                        ref={dropDropRef}
-                        onClick={() => {
-                          setShowProfileDropDown(true);
-                        }}
-                        style={{ position: 'relative' }}
-                      >
-                        <StyledSpan style={{ marginRight: 16 }}>
-                          {userEnsName ?? getShortenedAddress(account, 6, 4)}
-                        </StyledSpan>
-                        <AvatarComponent address={account} />
-                        {showProfileDropDown && (
-                          <OverlayProvider>
-                            <DropDown
-                              triggerRef={dropDropRef}
-                              containerStyles={{}}
-                              isOpen={showProfileDropDown}
-                              onClose={() => setShowProfileDropDown(false)}
-                              isDismissable
-                            >
-                              <DropDownItem onClick={(e) => {
-                                e.stopPropagation();
-                                logoutUser();
-                              }}
-                              >Logout</DropDownItem>
-                            </DropDown>
-                          </OverlayProvider>
-                        )}
-                      </RightWrapper>
+                    <Link to={'/onboarding'}>
+                      <StyledSpan style={{ marginRight: 40, width: 140 }}>Become a creator</StyledSpan>
+                    </Link>
+                  )}
+                  <PrimaryButton size="small" width="small" style={{ marginRight: 40, maxWidth:150,background:'#5865F2', color:'white' }} 
+                    onPress={() => {
+                      window.open(DISCORD_LINK)
+                    }}
+                  >
+                    Join Discord <HiOutlineArrowRight style={{marginLeft: 5}}/>
+                  </PrimaryButton>
+                  {!loggedInProfile && (
+                    <RightWrapper
+                      ref={dropDropRef}
+                      onClick={() => {
+                        setShowProfileDropDown(true);
+                      }}
+                      style={{ position: 'relative' }}
+                    >
+                      <StyledSpan style={{ marginRight: 16 }}>
+                        {userEnsName ?? getShortenedAddress(account, 6, 4)}
+                      </StyledSpan>
+                      <AvatarComponent address={account} />
+                      {showProfileDropDown && (
+                        <OverlayProvider>
+                          <DropDown
+                            triggerRef={dropDropRef}
+                            containerStyles={{}}
+                            isOpen={showProfileDropDown}
+                            onClose={() => setShowProfileDropDown(false)}
+                            isDismissable
+                          >
+                            <DropDownItem onClick={(e) => {
+                              e.stopPropagation();
+                              logoutUser();
+                            }}
+                            >Logout</DropDownItem>
+                          </DropDown>
+                        </OverlayProvider>
+                      )}
                     </RightWrapper>
                   )}
-                </>
+                  {loggedInProfile && (<RightWrapper
+                    ref={dropDropRef}
+                    onClick={() => {
+                      setShowProfileDropDown(true);
+                    }}
+                    style={{ position: 'relative' }}
+                  >
+                    <StyledSpan style={{ marginRight: 16 }}>
+                      {userEnsName ?? getShortenedAddress(account, 6, 4)}
+                    </StyledSpan>
+                    <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
+                    {showProfileDropDown && (
+                      <OverlayProvider>
+                        <DropDown
+                          triggerRef={dropDropRef}
+                          containerStyles={{}}
+                          isOpen={showProfileDropDown}
+                          onClose={() => setShowProfileDropDown(false)}
+                          isDismissable
+                        >
+                          <Link to={"onboarding/profile"}>
+                            <DropDownItem>Settings</DropDownItem>
+                          </Link>
+                          <Divider />
+                          <DropDownItem onClick={(e) => {
+                            e.stopPropagation();
+                            logoutUser();
+                          }}
+                          >Log out</DropDownItem>
+                        </DropDown>
+                      </OverlayProvider>
+                    )}
+                  </RightWrapper>)}
+                </RightWrapper>
               )}
             </>
           )}
