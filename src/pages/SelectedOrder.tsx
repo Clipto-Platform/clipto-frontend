@@ -239,7 +239,7 @@ const SelectedOrderPage = () => {
     fetchNFT(tokenAddress, tokenId, tokenUri);
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'video/*,.mkv,.flv' });
 
   useEffect(() => {
     if (creator && requestId) {
