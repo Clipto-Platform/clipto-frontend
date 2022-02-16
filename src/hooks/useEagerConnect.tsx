@@ -10,23 +10,23 @@ export function useEagerConnect() {
 
   const WC = localStorage.getItem('walletconnect');
   const WcObject = WC ? JSON.parse(WC) : null;
-  const isWcConnected = WcObject && WcObject.connected; 
+  const isWcConnected = WcObject && WcObject.connected;
 
   useEffect(() => {
-    if(isWcConnected){
+    if (isWcConnected) {
       activate(walletconnect, undefined, true);
-    }
-    else{
-    injected.isAuthorized().then((isAuthorized: boolean) => {
-      if (isAuthorized) {
-        activate(injected, undefined, true).catch(() => {
+    } else {
+      injected.isAuthorized().then((isAuthorized: boolean) => {
+        if (isAuthorized) {
+          activate(injected, undefined, true).catch(() => {
+            setTried(true);
+          });
+        } else {
           setTried(true);
-        });
-      } else {
-        setTried(true);
-      }
-    });
-  }}, []); // intentionally only running on mount (make sure it's only mounted once :))
+        }
+      });
+    }
+  }, []); // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {

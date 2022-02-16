@@ -47,7 +47,7 @@ const Column = styled.div`
 
 const AvatarContainer = styled.div`
   margin-right: 16px;
-`
+`;
 
 type CreatorCardStates = 'rejected' | 'past-deadline' | 'upload-clip' | 'accept-booking' | 'done';
 type UserOrderCardStates = 'pending' | 'accepted' | 'cancelled' | 'done' | 'rejected';
@@ -84,7 +84,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
   const { isReceived, request } = props;
   const { creator, loaded } = useCreator(props.request.creator);
   const userAddress = props.isReceived ? props.request.requester : props.request.creator;
-  const status = request.delivered ? isReceived ? 'Received' : 'Paid' : 'Bid';
+  const status = request.delivered ? (isReceived ? 'Received' : 'Paid') : 'Bid';
 
   const getDeadline = () => {
     //TODO(jonathanng) - move to time.ts
@@ -131,7 +131,9 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
           </Column>
           <Column style={{ textAlign: 'right' }}>
             <SecondaryLabel style={{ marginBottom: 2 }}> {status} </SecondaryLabel>
-            <BidAmount>{formatETH(parseFloat(props.request?.amount))} {SYMBOL}</BidAmount>
+            <BidAmount>
+              {formatETH(parseFloat(props.request?.amount))} {SYMBOL}
+            </BidAmount>
           </Column>
         </Row>
       </OrderCardTopRowContainer>

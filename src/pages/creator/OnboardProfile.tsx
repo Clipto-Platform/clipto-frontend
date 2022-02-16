@@ -57,7 +57,7 @@ const OnboardProfilePage = () => {
   const [userProfileDB, setUserProfileDB] = useState<GetUserResponse>();
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState<boolean>(false);
-  const {FeeDescription} = useFee();
+  const { FeeDescription } = useFee();
   const updateUserProfile = async (vals: CreateUserDtoFull) => {
     try {
       const messageToBeSigned = 'I am updating my profile in Clipto';
@@ -313,10 +313,12 @@ const OnboardProfilePage = () => {
                   {({ handleChange, handleBlur, handleSubmit, values, errors, touched, validateForm }) => {
                     return (
                       <>
-                        {hasAccount &&
+                        {hasAccount && (
                           <div style={{ marginBottom: 48 }}>
                             <TextField
-                              onInput={(e: React.ChangeEvent<HTMLInputElement>) => userProfile.setProfilePicture(e.target.value)}
+                              onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                userProfile.setProfilePicture(e.target.value)
+                              }
                               onChange={handleChange('profilePicture')}
                               label="Profile Picture"
                               placeholder={values.profilePicture}
@@ -325,7 +327,7 @@ const OnboardProfilePage = () => {
                               errorMessage={errors.profilePicture}
                             />
                           </div>
-                        }
+                        )}
                         <div style={{ marginBottom: 48 }}>
                           <TextField
                             onChange={handleChange('userName')}
