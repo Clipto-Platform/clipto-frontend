@@ -239,7 +239,7 @@ const SelectedOrderPage = () => {
     fetchNFT(tokenAddress, tokenId, tokenUri);
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'video/*,.mkv,.flv' });
 
   useEffect(() => {
     if (creator && requestId) {
@@ -302,7 +302,7 @@ const SelectedOrderPage = () => {
                       </ImageCardContainer>
                     )}
                   </BookingCard>
-                  {uploadStatus && <Description>* this may take few minutes</Description>}
+                  {uploadStatus && <Description style={{ fontSize: 16 }}>* this may take a few minutes</Description>}
                 </div>
 
                 <Divider>
