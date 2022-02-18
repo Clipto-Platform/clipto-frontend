@@ -6,7 +6,7 @@ import { SYMBOL } from '../config/config';
 import { useImagesLoaded } from '../hooks/useImagesLoaded';
 import { formatETH } from '../utils/format';
 import { UserImage } from './UserImage';
-import InfiniteScroll from "react-infinite-scroll-component";
+import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from 'react-spinners/ClipLoader';
 export interface User {
   name: string;
@@ -43,18 +43,17 @@ const Title = styled.h2`
 `;
 
 const Grid = styled.div`
-  
   & .infinite-scroll-component {
-    position:relative;
+    position: relative;
     display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-grid-template-columns: repeat(3, 1fr);
-grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
   `}
-  grid-template-rows: 1fr;
-  grid-column-gap: 32px;
-  grid-row-gap: 32px;
+    grid-template-rows: 1fr;
+    grid-column-gap: 32px;
+    grid-row-gap: 32px;
   }
 `;
 
@@ -79,7 +78,6 @@ const UserDescription = styled.div`
 
 const UserStartingPrice = styled.div``;
 
-
 interface UserDisplayProps {
   title: string;
   users: Array<User>;
@@ -100,37 +98,40 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
           <div style={{ width: '100%', height: '100%', position: 'relative' }}>
             <Grid>
               <InfiniteScroll
-              dataLength={users.length}
-              next={() => {props.handleScroll()}}
-              hasMore={props.hasMore}
-              loader={<div style={{width:'100%',position: 'absolute',textAlign:'center', bottom:'0px'}}>
-                <Loader color="#fff"/>
-              </div>}
-            >
-              {users.map((user) => {
-                return (
-                  <Link key={user.address} to={`/creator/${user.address}`}>
-                    <UserCardContainer key={user.uid}>
-                      <UserImage src={user.src} onLoad={handleLoad} style={{ marginBottom: 24 }} />
-                      {imagesDone && (
-                        <>
-                          <UserTitle style={{ marginBottom: 4 }}>{user.name}</UserTitle>
-                          <UserDescription style={{ marginBottom: 16 }}>{user.shortDescription}</UserDescription>
-                          <UserStartingPrice>
-                            From{' '}
-                            <span style={{ fontWeight: 700 }}>
-                              {formatETH(parseFloat(user.price))} {SYMBOL}
-                            </span>
-                          </UserStartingPrice>
-                        </>
-                      )}
-                    </UserCardContainer>
-                  </Link>
-                );
-              })}
+                dataLength={users.length}
+                next={() => {
+                  props.handleScroll();
+                }}
+                hasMore={props.hasMore}
+                loader={
+                  <div style={{ width: '100%', position: 'absolute', textAlign: 'center', bottom: '0px' }}>
+                    <Loader color="#fff" />
+                  </div>
+                }
+              >
+                {users.map((user) => {
+                  return (
+                    <Link key={user.address} to={`/creator/${user.address}`}>
+                      <UserCardContainer key={user.uid}>
+                        <UserImage src={user.src} onLoad={handleLoad} style={{ marginBottom: 24 }} />
+                        {imagesDone && (
+                          <>
+                            <UserTitle style={{ marginBottom: 4 }}>{user.name}</UserTitle>
+                            <UserDescription style={{ marginBottom: 16 }}>{user.shortDescription}</UserDescription>
+                            <UserStartingPrice>
+                              From{' '}
+                              <span style={{ fontWeight: 700 }}>
+                                {formatETH(parseFloat(user.price))} {SYMBOL}
+                              </span>
+                            </UserStartingPrice>
+                          </>
+                        )}
+                      </UserCardContainer>
+                    </Link>
+                  );
+                })}
               </InfiniteScroll>
             </Grid>
-            
           </div>
         </ContentWrapper>
       </ContainerWrapper>
