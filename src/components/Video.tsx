@@ -14,6 +14,7 @@ interface VideoProps {
 const Video = (props: VideoProps) => {
   const src = props.src;
   const [loading, setLoading] = useState(true);
+  const [key, setKey] = useState(Math.random());
 
   useEffect(() => {
     if (src) {
@@ -28,7 +29,18 @@ const Video = (props: VideoProps) => {
           <rect x="0" y="60" rx="10" ry="10" width="400" height="200" />
         </ContentLoader>
       )}
-      {!loading && <VideoCard src={src} width={600} controls autoPlay />}
+      {!loading && (
+        <VideoCard
+          key={key}
+          src={src}
+          width={600}
+          controls
+          autoPlay
+          onError={() => {
+            setKey(Math.random());
+          }}
+        />
+      )}
     </>
   );
 };
