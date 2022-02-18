@@ -2,7 +2,8 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { Formik } from 'formik';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -14,7 +15,7 @@ import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
-import { SYMBOL } from '../config/config';
+import { REACT_APP_RECAPTCHA_KEY, SYMBOL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useCreator } from '../hooks/useCreator';
 import { useFee } from '../hooks/useFee';
@@ -88,12 +89,29 @@ const BookingPage = () => {
   const { account, library } = useWeb3React<Web3Provider>();
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [bookingValues, setBooking] = useState<any>();
   const navigate = useNavigate();
   const exchangeContract = useExchangeContract(true);
   const { creator, loaded } = useCreator(creatorId);
   const { FeeDescription } = useFee();
+  const reCaptchaRef = React.createRef<ReCAPTCHA>();
 
-  const makeBooking = async (values: BookingFormValues) => {
+  const checkCaptcha = (captchaToken: any) => {
+    if (captchaToken && bookingValues) {
+      makeBooking(bookingValues, captchaToken);
+    }
+  };
+
+  const handleSubmit = (values: BookingFormValues) => {
+    const captcha = reCaptchaRef.current;
+    setBooking(values);
+    setLoading(true);
+    if (captcha) {
+      captcha.execute();
+    }
+  };
+
+  const makeBooking = async (values: BookingFormValues, captchaToken: string) => {
     try {
       const isCreator = await isCreatorOnChain(exchangeContract, creatorId);
       if (!isCreator) {
@@ -121,7 +139,7 @@ const BookingPage = () => {
         requester: account || '',
       };
 
-      const response = await api.createBooking(data);
+      const response = await api.createBooking(data, captchaToken);
       if (response && response.status === 201) {
         navigate('/orders');
         toast.success('Request created!');
@@ -138,6 +156,7 @@ const BookingPage = () => {
   return (
     <PageWrapper>
       <HeaderSpacer />
+      <ReCAPTCHA ref={reCaptchaRef} size="invisible" sitekey={REACT_APP_RECAPTCHA_KEY} onChange={checkCaptcha} />
       <HeaderContentGapSpacer />
       <PageContentWrapper>
         <PageGrid>
@@ -203,8 +222,7 @@ const BookingPage = () => {
                   validateOnBlur={false}
                   validateOnChange={false}
                   onSubmit={async (values) => {
-                    setLoading(true);
-                    await makeBooking(values);
+                    handleSubmit(values);
                     setLoading(false);
                   }}
                 >

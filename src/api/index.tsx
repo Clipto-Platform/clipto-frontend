@@ -13,8 +13,12 @@ const graphInstance = createClient({
   url: GRAPH_APIS[DEFAULT_CHAIN_ID],
 });
 
-export const createBooking = (data: CreateRequest) => {
-  return axiosInstance.post('/request/create', data);
+export const createBooking = (data: CreateRequest, token: string) => {
+  return axiosInstance.post('/request/create', data, {
+    headers: {
+      recaptcha: token,
+    },
+  });
 };
 
 export const completeBooking = (data: CompleteBooking) => {
@@ -63,10 +67,10 @@ export const graphGetRequest = async (requestId: string | number, creator: strin
 };
 
 export const creators = async (page: number, limit: number) => {
-  return axiosInstance.get('/users',{
+  return axiosInstance.get('/users', {
     params: {
-      limit ,
-      page
-    }
-  })
-} 
+      limit,
+      page,
+    },
+  });
+};
