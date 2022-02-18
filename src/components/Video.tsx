@@ -4,6 +4,7 @@ import ContentLoader from 'react-content-loader';
 
 const VideoCard = styled.video`
   border-radius: 15px;
+  margin-bottom: 20px;
 `;
 
 interface VideoProps {
