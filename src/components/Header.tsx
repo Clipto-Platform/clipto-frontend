@@ -25,6 +25,7 @@ import { useSelector, useDispatch } from 'react-redux';
 // import { MetamaskIcon } from './icons/MetamaskIcon';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
 import { HiOutlineArrowRight } from 'react-icons/hi';
+import { DiscordButton } from './DiscordButton';
 const MAX_HEADER_WIDTH_IN_PX = MAX_CONTENT_WIDTH_PX;
 
 const HEADER_HEIGHT_IN_PX = '64px';
@@ -323,6 +324,7 @@ const Header: React.FC<HeaderProps> = () => {
             <>
               {!checkLogin && (
                 <RightWrapper>
+                  <DiscordButton />
                   <PrimaryButton size={'small'} variant={'secondary'} onPress={() => setShowLoginDialog(true)}>
                     Connect Wallet
                   </PrimaryButton>
@@ -341,16 +343,7 @@ const Header: React.FC<HeaderProps> = () => {
                       <StyledSpan style={{ marginRight: 40, width: 140 }}>Become a creator</StyledSpan>
                     </Link>
                   )}
-                  <PrimaryButton
-                    size="small"
-                    width="small"
-                    style={{ marginRight: 40, maxWidth: 150, background: '#5865F2', color: 'white' }}
-                    onPress={() => {
-                      window.open(DISCORD_LINK);
-                    }}
-                  >
-                    Join Discord <HiOutlineArrowRight style={{ marginLeft: 5 }} />
-                  </PrimaryButton>
+                  <DiscordButton />
                   {!loggedInProfile && (
                     <RightWrapper
                       ref={dropDropRef}
