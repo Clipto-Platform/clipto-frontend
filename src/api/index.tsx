@@ -61,3 +61,12 @@ export const graphGetRequest = async (requestId: string | number, creator: strin
     })
     .toPromise();
 };
+
+export const creators = async (page: number, limit: number) => {
+  return axiosInstance.get('/users',{
+    params: {
+      limit ,
+      page
+    }
+  })
+} 

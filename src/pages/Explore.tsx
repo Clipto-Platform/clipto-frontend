@@ -7,6 +7,7 @@ import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { User, UserDisplay } from '../components/UserDisplay';
 import { API_URL, SYMBOL } from '../config/config';
+import * as api from '../api';
 
 const FeaturedContainerWrapper = styled(PageContentWrapper)`
   display: flex;
@@ -14,15 +15,19 @@ const FeaturedContainerWrapper = styled(PageContentWrapper)`
   width: 100%;
   // background-color: #0e0e0e;
 `;
+
 const ExplorePage = () => {
   const theme = useTheme();
+  const limit: number = 6;
   const [users, setUsers] = useState<Array<User>>([]);
+  const [page, setPage] = useState<number>(1);
+  const [hasMore,setHasMore] = useState<boolean>(true);
+
   useEffect(() => {
-    axios
-      .get(`${API_URL}/users`)
+    api.creators(page, limit)
       .then((res: { data: Array<any> }) => {
-        const array = res.data.reverse();
-        const users: Array<User> = array.map((u) => {
+        const array = res.data;
+        const usersArray: Array<User> = array.map((u) => {
           return {
             name: u.userName,
             shortDescription: u.twitterHandle,
@@ -32,20 +37,29 @@ const ExplorePage = () => {
             address: u.address,
           };
         });
-        setUsers(users);
-        console.log('Fetched users!');
+        setHasMore( usersArray.length % limit == 0 ? true : false );
+        setUsers( [ ...users, ...usersArray ] );
       })
       .catch((e) => {
         console.error(e);
-        console.error('Error fetching users!');
       });
-  }, []);
+  }, [page])
+
+  const handleScroll = () =>{
+    setPage(page + 1);
+  }
+
   return (
     <>
       <PageWrapper>
         <HeaderSpacer />
         <HeaderContentGapSpacer />
-        <UserDisplay title="Explore the community" users={users} />
+           <UserDisplay 
+              title="Explore the community" 
+              users={users} 
+              handleScroll={handleScroll} 
+              hasMore={hasMore}
+            />
       </PageWrapper>
     </>
   );
