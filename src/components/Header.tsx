@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
-import { API_URL, CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV, DISCORD_LINK } from '../config/config';
+import { API_URL, CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV, DISCORD_LINK, DOCS_LINK } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useEagerConnect } from '../hooks/useEagerConnect';
 import { useEns } from '../hooks/useEns';
@@ -25,7 +25,7 @@ import { useSelector, useDispatch } from 'react-redux';
 // import { MetamaskIcon } from './icons/MetamaskIcon';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
 import { HiOutlineArrowRight } from 'react-icons/hi';
-import { DiscordButton } from './DiscordButton';
+import { DiscordButton } from './CustomButtons';
 const MAX_HEADER_WIDTH_IN_PX = MAX_CONTENT_WIDTH_PX;
 
 const HEADER_HEIGHT_IN_PX = '64px';
@@ -147,6 +147,14 @@ const ConnectWalletPopup = styled.div`
   display: flex;
   vertical-align: middle;
 `;
+
+const DocsLink = () => (
+  <Link to={{}} onClick={() => {
+    window.open(DOCS_LINK);
+  }}>
+    <StyledSpan style={{ marginRight: 40 }}>Docs</StyledSpan>
+  </Link>
+)
 interface HeaderStore extends State {
   showProfileDropDown: boolean;
   showDialog: boolean;
@@ -324,6 +332,7 @@ const Header: React.FC<HeaderProps> = () => {
             <>
               {!checkLogin && (
                 <RightWrapper>
+                  <DocsLink />
                   <DiscordButton />
                   <PrimaryButton size={'small'} variant={'secondary'} onPress={() => setShowLoginDialog(true)}>
                     Connect Wallet
@@ -343,6 +352,7 @@ const Header: React.FC<HeaderProps> = () => {
                       <StyledSpan style={{ marginRight: 40, width: 140 }}>Become a creator</StyledSpan>
                     </Link>
                   )}
+                  <DocsLink />
                   <DiscordButton />
                   {!loggedInProfile && (
                     <RightWrapper

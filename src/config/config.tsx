@@ -52,6 +52,7 @@ export const GRAPH_APIS: { [chainId: number]: string } = {
 export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
 export const DISCORD_LINK = 'https://discord.com/invite/fpVMmerNZm';
+export const DOCS_LINK="https://cliptodao.gitbook.io/clipto/"
 
 export const API_URL = DEV ? 'http://localhost:8000' : 'https://api.clipto.io';
 
