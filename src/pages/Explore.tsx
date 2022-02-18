@@ -15,12 +15,14 @@ const FeaturedContainerWrapper = styled(PageContentWrapper)`
   width: 100%;
   // background-color: #0e0e0e;
 `;
+
 const ExplorePage = () => {
   const theme = useTheme();
   const limit: number = 6;
   const [users, setUsers] = useState<Array<User>>([]);
   const [page, setPage] = useState<number>(1);
   const [hasMore,setHasMore] = useState<boolean>(true);
+
   useEffect(() => {
     api.creators(page, limit)
       .then((res: { data: Array<any> }) => {
@@ -37,17 +39,16 @@ const ExplorePage = () => {
         });
         setHasMore( usersArray.length % limit == 0 ? true : false );
         setUsers( [ ...users, ...usersArray ] );
-        console.log('Fetched users!');
       })
       .catch((e) => {
         console.error(e);
-        console.error('Error fetching users!');
       });
-  }, [page]);
+  }, [page])
+
   const handleScroll = () =>{
     setPage(page + 1);
-    console.log('2 users');
   }
+
   return (
     <>
       <PageWrapper>
