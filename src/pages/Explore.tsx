@@ -6,7 +6,7 @@ import { User, UserDisplay } from '../components/UserDisplay';
 import { SYMBOL } from '../config/config';
 
 const ExplorePage = () => {
-  const limit: number = 10;
+  const limit: number = 20;
   const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
