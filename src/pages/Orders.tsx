@@ -2,6 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -15,6 +16,8 @@ import { API_URL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { Label, Text } from '../styles/typography';
 import { checkIfDeadlinePassed } from '../utils/time';
+import * as api from '../api';
+import { signMessage } from '../web3/request';
 
 export type Request = {
   id: number;
@@ -63,10 +66,12 @@ const SingleColumnPageContent = styled(PageContentWrapper)`
 const OrdersPage = () => {
   const [requestsByUser, setRequestsByUser] = useState<Request[]>([]);
   const [requestsToUser, setRequestsToUser] = useState<Request[]>([]);
-  const { account } = useWeb3React<Web3Provider>();
+  const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
   const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate();
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
   useEffect(() => {
     const getRequests = async () => {
       if (account) {
@@ -82,11 +87,27 @@ const OrdersPage = () => {
   }, [account]);
 
   const refund = async (request: Request) => {
+    if (!executeRecaptcha) {
+      toast.warn('Something has occured, Please refresh the page.');
+      return;
+    }
+
     try {
+      const captchaToken = await executeRecaptcha('Refund');
+      const messageToSign = 'I am initiating refund';
+      const signed = await signMessage(library, account, messageToSign);
       const tx = await exchangeContract.refundRequest(request.creator, request.requestId);
       await tx.wait();
 
-      await axios.post(`${API_URL}/request/refund`, { id: request.id });
+      await api.refund(
+        {
+          id: request.id,
+          address: account || '',
+          signed: signed,
+          message: messageToSign,
+        },
+        captchaToken,
+      );
       toast.success('Successfully refunded!');
 
       const updated = requestsByUser.map((req) => {
@@ -162,7 +183,7 @@ const OrdersPage = () => {
                       )}
                       {!i.delivered && i.refunded && (
                         <>
-                          <HighlightText>This order has been refunded.</HighlightText>
+                          <HighlightText style={{ marginTop: 10 }}>This order has been refunded.</HighlightText>
                         </>
                       )}
                     </OrderCard>

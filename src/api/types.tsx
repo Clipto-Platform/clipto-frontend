@@ -11,6 +11,13 @@ export interface CreateRequest {
   message: string;
 }
 
+export interface RefundRequest {
+  id: string | number;
+  signed: string;
+  address: string;
+  message: string;
+}
+
 export interface UploadFileLinkRequest {
   extension: string;
   signed: string;

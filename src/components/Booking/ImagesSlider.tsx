@@ -52,7 +52,7 @@ const ImagesSliderContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: none;
-  overflow-y: hidden;
+  overflow-y: auto;
 `;
 
 const SliderControlsContainer = styled.div`

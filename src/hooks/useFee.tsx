@@ -16,7 +16,7 @@ export const useFee = () => {
     try {
       const scale = await exchangeContract.scale();
       const feeRate = await exchangeContract.feeRate();
-      const percent = feeRate.toNumber() / scale.toNumber();
+      const percent = ((feeRate.toNumber() / scale.toNumber()) * 100).toFixed(1);
       setFeePercent(`${percent}%`);
     } catch (err) {}
   };

@@ -3,6 +3,7 @@ import * as UpChunk from '@mux/upchunk';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useParams } from 'react-router-dom';
 import BounceLoader from 'react-spinners/BounceLoader';
 import { toast } from 'react-toastify';
@@ -104,6 +105,7 @@ const SelectedOrderPage = () => {
   const [description, setDescription] = useState<string>('');
   const [error, setError] = useState<NFTFormError>();
   const [history, setHistory] = useState<NFTHistories[]>();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const validate = (name: string, desc: string) => {
     if (name.length === 0) return { name: 'This field cannot be empty' };
@@ -115,6 +117,7 @@ const SelectedOrderPage = () => {
     async <T extends File>(acceptedFiles: T[]) => {
       const error = validate(nftName, description);
       if (error) {
+        toast.error("Please add title and description");
         setError(error);
         return;
       } else {
@@ -194,8 +197,14 @@ const SelectedOrderPage = () => {
       return;
     }
 
+    if(!executeRecaptcha) {
+      toast.warn('Something has occured, Please refresh the page.');
+      return;
+    }
+
     try {
       setMinting(true);
+      const token = await executeRecaptcha('CompleteRequest');
       const messageToSign = 'I am completing an order';
       const signed = await signMessage(library, account, messageToSign);
       const tx = await exchangeContract.deliverRequest(request.requestId, 'https://arweave.net/' + tokenUri);
@@ -210,7 +219,7 @@ const SelectedOrderPage = () => {
         address: account || '',
         message: messageToSign,
         signed: signed,
-      });
+      }, token);
       toast.success('Successfully completed order!');
       setDone(true);
     } catch (e) {
