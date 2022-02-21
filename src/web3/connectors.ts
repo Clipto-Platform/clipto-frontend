@@ -9,7 +9,7 @@ export const walletconnect = new WalletConnectConnector({
   supportedChainIds: [80001],
   chainId: 80001,
   rpc: {
-    80001: "https://polygon-mumbai.g.alchemy.com/v2/VMBpFqjMYv2w-MWnc9df92w3R2TpMvSG",
+    80001: 'https://polygon-mumbai.g.alchemy.com/v2/VMBpFqjMYv2w-MWnc9df92w3R2TpMvSG',
   },
   qrcode: true,
   clientMeta: {

@@ -85,7 +85,7 @@ const HomePage = () => {
             </HeroTitle>
           </ContentWrapper>
         </PageContentWrapper>
-        <UserDisplay users={featuredUsers} handleScroll={() =>{}} hasMore={false} title="Featured" />
+        <UserDisplay users={featuredUsers} handleScroll={() => {}} hasMore={false} title="Featured" />
       </PageWrapper>
     </>
   );

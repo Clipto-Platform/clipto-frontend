@@ -25,6 +25,7 @@ import { useSelector, useDispatch } from 'react-redux';
 // import { MetamaskIcon } from './icons/MetamaskIcon';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
 import { HiOutlineArrowRight } from 'react-icons/hi';
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 const MAX_HEADER_WIDTH_IN_PX = MAX_CONTENT_WIDTH_PX;
 
 const HEADER_HEIGHT_IN_PX = '64px';
@@ -249,6 +250,10 @@ const Header: React.FC<HeaderProps> = () => {
 
     setCurrentlyActivating('wc');
     try {
+
+      if (walletconnect instanceof WalletConnectConnector) { 
+        walletconnect.walletConnectProvider = undefined 
+      }
       await activate(walletconnect, undefined, true);
       setCheckLogin(true);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -448,7 +453,7 @@ const Header: React.FC<HeaderProps> = () => {
               <PrimaryButton
                 variant={'secondary'}
                 style={{ marginBottom: 16, minWidth: 310 }}
-                isDisabled={currentlyActivating === 'metamask'}
+                isDisabled={currentlyActivating === 'metamask' && user}
                 onPress={() => activeWithMetamask()}
               >
                 <ConnectWalletPopup>
@@ -459,7 +464,7 @@ const Header: React.FC<HeaderProps> = () => {
               <PrimaryButton
                 variant={'secondary'}
                 style={{ marginBottom: 16, minWidth: 310 }}
-                isDisabled={currentlyActivating === 'wc'}
+                isDisabled={currentlyActivating === 'wc' && user}
                 onPress={() => activeWithWalletConnect()}
               >
                 <ConnectWalletPopup>
