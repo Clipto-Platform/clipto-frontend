@@ -26,6 +26,7 @@ import { useSelector, useDispatch } from 'react-redux';
 // import { WalletConnectIcon } from './icons/WalletConnectIcon';
 import { HiOutlineArrowRight } from 'react-icons/hi';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import menu from '../assets/svgs/hamburger.svg';
 const MAX_HEADER_WIDTH_IN_PX = MAX_CONTENT_WIDTH_PX;
 
 const HEADER_HEIGHT_IN_PX = '64px';
@@ -147,6 +148,60 @@ const ConnectWalletPopup = styled.div`
   display: flex;
   vertical-align: middle;
 `;
+
+const DesktopHeaderWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  cursor: pointer;
+  @media screen and (max-width: 600px){
+    display:none;
+  }
+`;
+
+const MobileHeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-around;
+  flex-direction:column;
+  align-items: initial;
+  position: absolute;
+  right: 0px;
+  top: 50px;
+  z-index: 100;
+  background-color: rgba(0,0,0);
+  border: 1px solid #504d4d;
+  border-radius: 10px;
+  width: auto;
+  padding:40px 20px;
+  box-sizing:border-box;
+  &  ${StyledSpan}{
+    margin-bottom:20px;
+    border
+   }
+
+  @media screen and (min-width: 600px){
+    display:none;
+  }
+`;
+
+const MenuContainer = styled.span`
+  padding:5px 0px 0px 5px;
+  @media screen and (min-width: 600px){
+    display:none;
+  }
+`;
+const MenuButton = styled.button`
+  background: none;
+  border: none;
+`;
+const Wrapper = styled.div`
+  position: absolute;
+  z-index:99;
+  top:0;
+  width:100vw;
+  height:100vh;
+`;
+
 interface HeaderStore extends State {
   showProfileDropDown: boolean;
   showDialog: boolean;
@@ -181,6 +236,78 @@ const useHeaderStore = create<HeaderStore>(
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HeaderProps {}
 
+const DesktopHeader = (props:any) => {
+  const {loggedInProfile} = props;
+  return(
+    <DesktopHeaderWrapper>
+      <Link to={'/explore'} >
+      <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
+      </Link>
+      <Link to={'/orders'}>
+        <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
+      </Link>
+      {!loggedInProfile && (
+        <Link to={'/onboarding'}>
+          <StyledSpan style={{ marginRight: 40, width: 140 }}>Become a creator</StyledSpan>
+        </Link>
+      )}
+      <PrimaryButton
+        size="small"
+        width="small"
+        style={{ marginRight: 40, maxWidth: 150, background: '#5865F2', color: 'white' }}
+        onPress={() => {
+          window.open(DISCORD_LINK);
+        }}
+      >
+        Join Discord <HiOutlineArrowRight style={{ marginLeft: 5 }} />
+      </PrimaryButton>
+    </DesktopHeaderWrapper>
+  )
+}
+const MobileHeader = (props:any) => {
+  const {loggedInProfile} = props;
+  const [visible,setVisible]  = useState<boolean>(false);
+  const handleClick = () =>{
+    setVisible(!visible);
+  }
+  return(
+    <>
+    
+    <MenuContainer>
+     <MenuButton onClick={handleClick}><img src={menu} alt='menu'/></MenuButton>
+    </MenuContainer>
+    
+    {visible?(
+    <Wrapper onClick={handleClick}>
+    <MobileHeaderWrapper>
+      <Link to={'/explore'} onClick={handleClick}>
+      <StyledSpan>Explore</StyledSpan>
+      </Link>
+      <Link to={'/orders'} onClick={handleClick}>
+        <StyledSpan>Orders</StyledSpan>
+      </Link>
+      {!loggedInProfile && (
+        <Link to={'/onboarding'} onClick={handleClick}>
+          <StyledSpan>Become a creator</StyledSpan>
+        </Link>
+      )}
+      <PrimaryButton
+        size="small"
+        width="small"
+        style={{ maxWidth: 150, background: '#5865F2', color: 'white' }}
+        onPress={() => {
+          window.open(DISCORD_LINK);
+         handleClick();
+        }}
+      >
+        Join Discord <HiOutlineArrowRight style={{ marginLeft: 5 }} />
+      </PrimaryButton>
+    </MobileHeaderWrapper>
+    </Wrapper>):null}
+   
+    </>
+  )
+};
 const Header: React.FC<HeaderProps> = () => {
   const exchangeContract = useExchangeContract(true);
   const [checkLogin, setCheckLogin] = useState<boolean | null>(false);
@@ -335,27 +462,7 @@ const Header: React.FC<HeaderProps> = () => {
               )}
               {checkLogin && account && (
                 <RightWrapper>
-                  <Link to={'/explore'}>
-                    <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
-                  </Link>
-                  <Link to={'/orders'}>
-                    <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
-                  </Link>
-                  {!loggedInProfile && (
-                    <Link to={'/onboarding'}>
-                      <StyledSpan style={{ marginRight: 40, width: 140 }}>Become a creator</StyledSpan>
-                    </Link>
-                  )}
-                  <PrimaryButton
-                    size="small"
-                    width="small"
-                    style={{ marginRight: 40, maxWidth: 150, background: '#5865F2', color: 'white' }}
-                    onPress={() => {
-                      window.open(DISCORD_LINK);
-                    }}
-                  >
-                    Join Discord <HiOutlineArrowRight style={{ marginLeft: 5 }} />
-                  </PrimaryButton>
+                  <DesktopHeader loggedInProfile={loggedInProfile}/>
                   {!loggedInProfile && (
                     <RightWrapper
                       ref={dropDropRef}
@@ -428,6 +535,7 @@ const Header: React.FC<HeaderProps> = () => {
                       )}
                     </RightWrapper>
                   )}
+                  <MobileHeader loggedInProfile={loggedInProfile}/>
                 </RightWrapper>
               )}
             </>
