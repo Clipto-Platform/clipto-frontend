@@ -105,7 +105,7 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
                   }}
                   hasMore={props.hasMore}
                   loader={
-                    <div style={{ width: '100%', position: 'absolute', textAlign: 'center', bottom: '0px' }}>
+                    <div style={{ width: '100%', position: 'absolute', textAlign: 'center', bottom: '-50px' }}>
                       <Loader color="#fff" />
                     </div>
                   }
