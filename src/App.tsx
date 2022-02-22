@@ -5,20 +5,20 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { ThemeProvider } from 'styled-components';
 
-import { Header } from './components/Header';
+import { Header } from './components/Header/Header';
 import { REACT_APP_RECAPTCHA_KEY } from './config/config';
-import { BookingPage } from './pages/Booking';
+import { BookingPage } from './pages/Booking/Booking';
 import { BountyPage } from './pages/bounty/Bounty';
 import { BountyDone } from './pages/bounty/BountyDone';
 import { InvitationPage } from './pages/bounty/Invitation';
 import { MintPage } from './pages/bounty/Mint';
-import { OnboardingPage } from './pages/creator/Onboard';
-import { OnboardProfilePage } from './pages/creator/OnboardProfile';
-import { ExplorePage } from './pages/Explore';
-import { HomePage } from './pages/Home';
-import { NotFoundPage } from './pages/NotFound';
-import { OrdersPage } from './pages/Orders';
-import { SelectedOrderPage } from './pages/SelectedOrder';
+import { OnboardingPage } from './pages/Onboard/Onboard';
+import { OnboardProfilePage } from './pages/OnboardProfile/OnboardProfile';
+import { ExplorePage } from './pages/Explore/Explore';
+import { HomePage } from './pages/Home/Home';
+import { NotFoundPage } from './pages/NotFound/NotFound';
+import { OrdersPage } from './pages/Orders/Orders';
+import { SelectedOrderPage } from './pages/SelectedOrder/SelectedOrder';
 import { theme } from './styles/theme';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import * as api from '../api';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { PageWrapper } from '../components/layout/Common';
-import { User, UserDisplay } from '../components/UserDisplay';
-import { SYMBOL } from '../config/config';
+import * as api from '../../api';
+import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { PageWrapper } from '../../components/layout/Common';
+import { User } from '../../components/UserDisplay/types';
+import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
+import { SYMBOL } from '../../config/config';
 
 const ExplorePage = () => {
   const limit: number = 20;

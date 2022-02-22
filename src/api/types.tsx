@@ -37,3 +37,8 @@ export interface CompleteBooking {
   signed: string;
   message: string;
 }
+
+export interface TweetData {
+  tweetUrl: string;
+  address: string;
+}

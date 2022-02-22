@@ -11,15 +11,7 @@ export const OrderCardLoadingContainer = styled.div`
 
 const OrdersLoading = (props: any) => (
   <OrderCardLoadingContainer>
-    <ContentLoader
-      speed={2}
-      width={540}
-      height={240}
-      viewBox="0 0 540 240"
-      backgroundColor="#2b2b2b"
-      foregroundColor="#1c1c1c"
-      {...props}
-    >
+    <ContentLoader speed={2} viewBox="0 0 540 240" backgroundColor="#2b2b2b" foregroundColor="#1c1c1c" {...props}>
       <rect x="97" y="51" rx="0" ry="0" width="5" height="0" />
       <rect x="137" y="24" rx="0" ry="0" width="3" height="0" />
       <circle cx="44" cy="19" r="19" />

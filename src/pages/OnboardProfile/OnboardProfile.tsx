@@ -6,9 +6,9 @@ import { useEffect, useState } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
+import * as api from '../../api';
 import { PrimaryButton } from '../../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
+import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
 import { API_URL, SYMBOL } from '../../config/config';
@@ -17,38 +17,7 @@ import { useFee } from '../../hooks/useFee';
 import { CreateUserDtoFull, CreateUserDtoSignable, GetUserResponse, useProfile } from '../../hooks/useProfile';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
 import { isCreatorOnChain, signMessage } from '../../web3/request';
-import * as api from '../../api';
-
-// TODO(johnrjj) - Consolidate final typography into stylesheet
-const OnboardTitle = styled.h1`
-  font-family: 'Scto Grotesk A';
-  font-weight: normal;
-  text-align: center;
-  font-size: 32px;
-  line-height: 140%;
-  font-style: normal;
-  font-weight: bold;
-  max-width: 500px;
-  display: block;
-  margin: auto;
-  margin-bottom: 30px;
-`;
-
-const ProfileDetailsContainer = styled.div`
-  display: block;
-  margin: auto;
-  margin-top: 45px;
-  max-width: 512px;
-  padding: 20px;
-`;
-
-const OnboardProfile = styled.img`
-  border-radius: 50%;
-  display: block;
-  margin: auto;
-  width: 124px;
-  height: 124px;
-`;
+import { OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
 
 const OnboardProfilePage = () => {
   const userProfile = useProfile();
@@ -95,7 +64,6 @@ const OnboardProfilePage = () => {
     try {
       userOnChain = await isCreatorOnChain(exchangeContract, account);
     } catch (err) {
-      console.error(err);
       toast.error('Error connecting to wallet. Toggle your networks and reload.');
       return;
     }
@@ -103,7 +71,7 @@ const OnboardProfilePage = () => {
     //registers creator on chain if user is not already on chain
     if (!userOnChain) {
       try {
-        const txResult = await exchangeContract.registerCreator(userProfile.userName!);
+        const txResult = await exchangeContract.registerCreator(vals.userName);
         toast.loading('Profile created, waiting for confirmation!');
         await txResult.wait();
       } catch (err: any) {
@@ -146,22 +114,9 @@ const OnboardProfilePage = () => {
       axios
         .get<GetUserResponse>(`${API_URL}/user/${account}`)
         .then((res) => {
-          // if creator is found then set up userProfile
           if (res.status === 200) {
-            //creator found
             setHasAccount(true);
             setUserProfileDB({ ...res.data });
-
-            // userProfile.setAddress(res.data.address);
-            // userProfile.setBio(res.data.bio);
-            // userProfile.setDeliveryTime(res.data.deliveryTime);
-            // userProfile.setDemos(res.data.demos);
-            // userProfile.setPrice(parseFloat(res.data.price));
-            // userProfile.setProfilePicture(res.data.profilePicture);
-            // userProfile.setTweetUrl(res.data.twitterHandle);
-            // userProfile.setUsername(res.data.userName);
-
-            //navigate('/onboarding/profile')
           } else {
             throw 'Something is wrong';
           }
@@ -169,7 +124,6 @@ const OnboardProfilePage = () => {
         })
         .catch(() => {
           if (!userProfile.tweetUrl) {
-            //if creator is not found and userProfile has not verified twitter then...
             navigate('/onboarding');
           } else {
             setLoaded(true);
@@ -177,10 +131,7 @@ const OnboardProfilePage = () => {
         });
     }
   }, [account]);
-  useEffect(() => {
-    console.log(userProfile);
-    console.log(userProfileDB);
-  }, [userProfile.address, userProfileDB?.id]);
+
   return (
     <>
       {loaded && (
@@ -210,22 +161,15 @@ const OnboardProfilePage = () => {
                     demo1: userProfile.demos[0] || userProfileDB?.demos[0] || '',
                     demo2: userProfile.demos[1] || userProfileDB?.demos[1] || '',
                     demo3: userProfile.demos[2] || userProfileDB?.demos[2] || '',
-                  }} //TODO(jonathanng) - change to fetched values
+                  }}
                   onSubmit={async (values) => {
                     setLoading(true);
-                    // userProfile.setAddress(values.address);
-                    // userProfile.setBio(values.bio);
-                    // userProfile.setDeliveryTime(parseInt(values.deliveryTime));
+
                     const demos = [];
                     values.demo1 && demos.push(values.demo1);
                     values.demo2 && demos.push(values.demo2);
                     values.demo3 && demos.push(values.demo3);
-                    // userProfile.setDemos(demos);
-                    // userProfile.setPrice(parseFloat(values.price));
-                    // userProfile.setProfilePicture(values.profilePicture);
-                    // userProfile.setTweetUrl(values.tweetUrl);
-                    // userProfile.setUsername(values.userName);
-                    //for some reason, the above set values do not work immediately, if you submit the form twice this will work else null
+
                     const vals = {
                       ...values,
                       demos,
@@ -272,21 +216,18 @@ const OnboardProfilePage = () => {
 
                     //TODO(jonathanng) - bad code
                     try {
-                      console.log(demo1);
                       demo1 != '' && TweetUrl.parse(demo1);
                     } catch {
                       errors.demo1 = 'This link is invalid.';
                     }
 
                     try {
-                      console.log(demo2);
                       demo2 != '' && TweetUrl.parse(demo2);
                     } catch {
                       errors.demo2 = 'This link is invalid.';
                     }
 
                     try {
-                      console.log(demo3);
                       demo3 != '' && TweetUrl.parse(demo3);
                     } catch {
                       errors.demo3 = 'This link is invalid.';
@@ -435,13 +376,11 @@ const OnboardProfilePage = () => {
                         </div>
 
                         <PrimaryButton
-                          /*isDisabled={Object.keys(erros).length != 0}*/
                           style={{ marginBottom: '16px' }}
                           onPress={async () => {
                             setLoading(true);
                             const errors = await validateForm();
                             if (Object.keys(errors).length != 0) {
-                              console.log(errors);
                               toast.error('Please fix the errors.');
                             } else {
                               handleSubmit();
@@ -461,17 +400,6 @@ const OnboardProfilePage = () => {
           </PageContentWrapper>
         </PageWrapper>
       )}
-      {/* {!creator && (
-        <PageWrapper>
-          <HeaderSpacer />
-          <HeaderContentGapSpacer />
-          <PageContentWrapper>
-            <ContentWrapper>
-              <OnboardTitle>It looks like you already have an account. Please contact {`${HELP_EMAIL}`}</OnboardTitle>
-            </ContentWrapper>
-          </PageContentWrapper>
-        </PageWrapper>
-      )} */}
     </>
   );
 };

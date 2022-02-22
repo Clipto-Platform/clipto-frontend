@@ -6,83 +6,25 @@ import React, { useState } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
-import * as api from '../api';
-import { AvatarComponent } from '../components/AvatarOrb';
-import { ImagesSlider } from '../components/Booking/ImagesSlider';
-import { RightPanel } from '../components/Booking/RightPanel';
-import { PrimaryButton } from '../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
-import { TextField } from '../components/TextField';
-import { SYMBOL } from '../config/config';
-import { useExchangeContract } from '../hooks/useContracts';
-import { useCreator } from '../hooks/useCreator';
-import { useFee } from '../hooks/useFee';
-import { Description, Label } from '../styles/typography';
-import { getShortenedAddress } from '../utils/address';
-import { formatETH } from '../utils/format';
-import { Number } from '../utils/validation';
-import { isCreatorOnChain, signMessage } from '../web3/request';
-
-const PageGrid = styled.div`
-  display: grid;
-  grid-template-columns: 504px 488px;
-  grid-template-rows: 1fr;
-  grid-column-gap: 40px;
-  grid-row-gap: 0px;
-  margin-bottom: 64px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: 1fr;
-    width: 100%;
-    grid-column-gap: 40px;
-    grid-row-gap: 30px;
-    max-width: 100%;
-  `}
-`;
-
-const ImagesColumnContainer = styled.div`
-  position: relative;
-  height: 460px;
-  max-width: 100%;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    overflow: hidden;
-  `}
-`;
-
-const BookingCard = styled.div`
-  background: ${(props) => props.theme.black};
-  border: 1px solid ${(props) => props.theme.border};
-  border-radius: 16px;
-  padding: 32px 24px;
-`;
-
-// TODO(johnrjj) - Make into Radio/RadioGroup
-const PurchaseOption = styled.div`
-  border: 1px solid ${(props) => props.theme.yellow};
-  border-radius: 16px;
-  padding: 24px;
-  cursor: pointer;
-`;
-
-const FlexRow = styled.div`
-  display: flex;
-  flex: 1;
-  justify-content: space-between;
-`;
-
-const HR = styled.div`
-  height: 1px;
-  margin-left: -24px;
-  width: calc(100% + 48px);
-  background-color: ${(props) => props.theme.border};
-`;
-
-export interface BookingFormValues {
-  description: string;
-  amount: string;
-  deadline: string;
-}
+import * as api from '../../api';
+import { AvatarComponent } from '../../components/AvatarOrb';
+import { ImagesSlider } from '../../components/Booking/ImagesSlider';
+import { BookingCard, RightPanel } from '../../components/Booking/RightPanel';
+import { PrimaryButton } from '../../components/Button';
+import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { PageContentWrapper, PageWrapper } from '../../components/layout/Common';
+import { TextField } from '../../components/TextField';
+import { SYMBOL } from '../../config/config';
+import { useExchangeContract } from '../../hooks/useContracts';
+import { useCreator } from '../../hooks/useCreator';
+import { useFee } from '../../hooks/useFee';
+import { Description, Label } from '../../styles/typography';
+import { getShortenedAddress } from '../../utils/address';
+import { formatETH } from '../../utils/format';
+import { Number } from '../../utils/validation';
+import { isCreatorOnChain, signMessage } from '../../web3/request';
+import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
+import { BookingFormValues } from './types';
 
 const BookingPage = () => {
   const { creatorId } = useParams();
@@ -140,7 +82,6 @@ const BookingPage = () => {
         toast.error('Request creation failed.');
       }
     } catch (e) {
-      console.error('tx failed at Booking.tsx');
       toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
       return;
     }

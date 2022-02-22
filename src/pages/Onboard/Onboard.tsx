@@ -1,68 +1,18 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import styled, { useTheme } from 'styled-components';
-
+import { useTheme } from 'styled-components';
+import * as api from '../../api';
 import { PrimaryButton } from '../../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
+import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import TwitterIcon from '../../components/icons/TwitterIcon';
-import { ContentWrapper, OutlinedContainer, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
+import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { API_URL } from '../../config/config';
 import { useProfile } from '../../hooks/useProfile';
-import { Text } from '../../styles/typography';
 import { errorHandle, Url } from '../../utils/validation';
-
-// TODO(johnrjj) - Consolidate final typography into stylesheet
-const OnboardTitle = styled.h1`
-  font-family: 'Scto Grotesk A';
-  font-weight: normal;
-  text-align: center;
-  font-size: 32px;
-  line-height: 140%;
-  font-style: normal;
-  font-weight: bold;
-  max-width: 500px;
-  display: block;
-  margin: auto;
-  margin-bottom: 30px;
-`;
-
-const Subtitle = styled(Text)`
-  text-align: center;
-  font-size: 18px;
-`;
-
-const StepsContainer = styled(OutlinedContainer)`
-  display: block;
-  margin: auto;
-  margin-top: 45px;
-`;
-
-const StepLabel = styled(Text)`
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  margin-bottom: 4px;
-`;
-
-const OnboardingHr = styled.hr`
-  margin-left: -20px;
-  width: calc(100% + 40px);
-  height: 1px;
-  border: none;
-  background-color: ${({ theme }) => theme.border};
-  margin-top: 10px;
-  margin-bottom: 10px;
-`;
-
-const StepDescription = styled(Text)`
-  font-size: 18px;
-  line-height: 140%;
-`;
+import { OnboardingHr, OnboardTitle, StepDescription, StepLabel, StepsContainer, Subtitle } from './Style';
 
 const OnboardingPage = () => {
   const theme = useTheme();
@@ -73,9 +23,14 @@ const OnboardingPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const verifyTwitterUser = async () => {
-    const verificationResult = await axios.post(`${API_URL}/user/verify`, { tweetUrl, address: account }).catch((e) => {
-      console.log(e);
-    });
+    const verificationResult = await api
+      .tweetVerify({
+        tweetUrl,
+        address: account || '',
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     if (verificationResult && verificationResult.data && verificationResult.data.includes) {
       userProfile.setUsername(verificationResult.data.includes.users[0].name);
       userProfile.setProfilePicture(
@@ -90,6 +45,7 @@ const OnboardingPage = () => {
       toast.error('Failed to verify your Twitter!');
     }
   };
+
   return (
     <>
       <PageWrapper>

@@ -1,22 +1,7 @@
 import styled from 'styled-components';
 
-import { Label } from '../../styles/typography';
-
 import { OrdersLoading } from './OrdersLoading';
-
-export type Request = {
-  id: number;
-  requestId: number;
-  requester: string;
-  creator: string;
-  amount: string;
-  description: string;
-  deadline: number;
-  delivered: boolean;
-  txHash: string;
-  created: string;
-  refunded: boolean;
-};
+import { Request } from '../../pages/Orders/types';
 
 export const Status = styled.div`
   width: 90px;
@@ -30,7 +15,6 @@ export const Status = styled.div`
   font-weight: bold;
   font-size: 14px;
   color: rgba(255, 255, 255, 0.4); //TODO(jonathanng) - color don't be lazy
-}
 `;
 
 const TabContent = styled.div`
