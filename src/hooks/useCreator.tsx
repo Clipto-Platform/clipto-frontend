@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { useEffect, useMemo, useState } from 'react';
-
+import { useEffect, useState } from 'react';
 import { API_URL } from '../config/config';
 
 export interface Creator {
@@ -30,9 +29,7 @@ export const useCreator = (creatorId: string | undefined | null) => {
         throw 'creatorId not found';
       }
       getCreatorData();
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   }, [creatorId]);
   return {
     creator,

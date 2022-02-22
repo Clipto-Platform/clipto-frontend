@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { Formik } from 'formik';
 import React, { useState } from 'react';
-import ReCAPTCHA from 'react-google-recaptcha';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -15,7 +15,7 @@ import { PrimaryButton } from '../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
 import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
 import { TextField } from '../components/TextField';
-import { REACT_APP_RECAPTCHA_KEY, SYMBOL } from '../config/config';
+import { SYMBOL } from '../config/config';
 import { useExchangeContract } from '../hooks/useContracts';
 import { useCreator } from '../hooks/useCreator';
 import { useFee } from '../hooks/useFee';
@@ -89,25 +89,18 @@ const BookingPage = () => {
   const { account, library } = useWeb3React<Web3Provider>();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [bookingValues, setBooking] = useState<any>();
   const navigate = useNavigate();
   const exchangeContract = useExchangeContract(true);
   const { creator, loaded } = useCreator(creatorId);
   const { FeeDescription } = useFee();
-  const reCaptchaRef = React.createRef<ReCAPTCHA>();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
-  const checkCaptcha = (captchaToken: any) => {
-    if (captchaToken && bookingValues) {
-      makeBooking(bookingValues, captchaToken);
-    }
-  };
-
-  const handleSubmit = (values: BookingFormValues) => {
-    const captcha = reCaptchaRef.current;
-    setBooking(values);
-    setLoading(true);
-    if (captcha) {
-      captcha.execute();
+  const handleSubmit = async (values: BookingFormValues) => {
+    if (executeRecaptcha) {
+      const token = await executeRecaptcha('Booking');
+      await makeBooking(values, token);
+    } else {
+      toast.warn('Something has occured, Please refresh the page.');
     }
   };
 
@@ -156,7 +149,6 @@ const BookingPage = () => {
   return (
     <PageWrapper>
       <HeaderSpacer />
-      <ReCAPTCHA ref={reCaptchaRef} size="invisible" sitekey={REACT_APP_RECAPTCHA_KEY} onChange={checkCaptcha} />
       <HeaderContentGapSpacer />
       <PageContentWrapper>
         <PageGrid>
@@ -222,7 +214,8 @@ const BookingPage = () => {
                   validateOnBlur={false}
                   validateOnChange={false}
                   onSubmit={async (values) => {
-                    handleSubmit(values);
+                    setLoading(true);
+                    await handleSubmit(values);
                     setLoading(false);
                   }}
                 >

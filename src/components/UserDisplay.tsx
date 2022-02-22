@@ -96,42 +96,48 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
         <ContentWrapper>
           <Title style={{ marginTop: 64, marginBottom: 36 }}>{title}</Title>
           <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-            <Grid>
-              <InfiniteScroll
-                dataLength={users.length}
-                next={() => {
-                  props.handleScroll();
-                }}
-                hasMore={props.hasMore}
-                loader={
-                  <div style={{ width: '100%', position: 'absolute', textAlign: 'center', bottom: '0px' }}>
-                    <Loader color="#fff" />
-                  </div>
-                }
-              >
-                {users.map((user) => {
-                  return (
-                    <Link key={user.address} to={`/creator/${user.address}`}>
-                      <UserCardContainer key={user.uid}>
-                        <UserImage src={user.src} onLoad={handleLoad} style={{ marginBottom: 24 }} />
-                        {imagesDone && (
-                          <>
-                            <UserTitle style={{ marginBottom: 4 }}>{user.name}</UserTitle>
-                            <UserDescription style={{ marginBottom: 16 }}>{user.shortDescription}</UserDescription>
-                            <UserStartingPrice>
-                              From{' '}
-                              <span style={{ fontWeight: 700 }}>
-                                {formatETH(parseFloat(user.price))} {SYMBOL}
-                              </span>
-                            </UserStartingPrice>
-                          </>
-                        )}
-                      </UserCardContainer>
-                    </Link>
-                  );
-                })}
-              </InfiniteScroll>
-            </Grid>
+            {users && users.length > 0 ? (
+              <Grid>
+                <InfiniteScroll
+                  dataLength={users.length}
+                  next={() => {
+                    props.handleScroll();
+                  }}
+                  hasMore={props.hasMore}
+                  loader={
+                    <div style={{ width: '100%', position: 'absolute', textAlign: 'center', bottom: '-50px' }}>
+                      <Loader color="#fff" />
+                    </div>
+                  }
+                >
+                  {users.map((user) => {
+                    return (
+                      <Link key={user.address} to={`/creator/${user.address}`}>
+                        <UserCardContainer key={user.uid}>
+                          <UserImage src={user.src} onLoad={handleLoad} style={{ marginBottom: 24 }} />
+                          {imagesDone && (
+                            <>
+                              <UserTitle style={{ marginBottom: 4 }}>{user.name}</UserTitle>
+                              <UserDescription style={{ marginBottom: 16 }}>{user.shortDescription}</UserDescription>
+                              <UserStartingPrice>
+                                From{' '}
+                                <span style={{ fontWeight: 700 }}>
+                                  {formatETH(parseFloat(user.price))} {SYMBOL}
+                                </span>
+                              </UserStartingPrice>
+                            </>
+                          )}
+                        </UserCardContainer>
+                      </Link>
+                    );
+                  })}
+                </InfiniteScroll>
+              </Grid>
+            ) : (
+              <div style={{ width: '100%', textAlign: 'center' }}>
+                <Loader color="#fff" />
+              </div>
+            )}
           </div>
         </ContentWrapper>
       </ContainerWrapper>

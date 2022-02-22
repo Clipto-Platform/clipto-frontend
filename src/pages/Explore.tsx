@@ -26,7 +26,8 @@ const ExplorePage = () => {
             address: u.address,
           };
         });
-        setHasMore(usersArray.length % limit == 0 ? true : false);
+        const has = usersArray.length !== 0 && usersArray.length % limit === 0;
+        setHasMore(has);
         setUsers([...users, ...usersArray]);
       })
       .catch((e) => {

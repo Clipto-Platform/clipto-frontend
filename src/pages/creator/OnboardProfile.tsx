@@ -3,6 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { Formik } from 'formik';
 import { useEffect, useState } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -16,6 +17,7 @@ import { useFee } from '../../hooks/useFee';
 import { CreateUserDtoFull, CreateUserDtoSignable, GetUserResponse, useProfile } from '../../hooks/useProfile';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
 import { isCreatorOnChain, signMessage } from '../../web3/request';
+import * as api from '../../api';
 
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
@@ -58,12 +60,23 @@ const OnboardProfilePage = () => {
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState<boolean>(false);
   const { FeeDescription } = useFee();
-  const updateUserProfile = async (vals: CreateUserDtoFull) => {
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
+  const handleSubmit = async (hasAccount: boolean, values: CreateUserDtoFull) => {
+    if (executeRecaptcha) {
+      const token = await executeRecaptcha(hasAccount ? 'UpdateProfile' : 'Onboard');
+      hasAccount ? await updateUserProfile(values, token) : await createUserProfile(values, token);
+    } else {
+      toast.warn('Something has occured, Please refresh the page.');
+    }
+  };
+
+  const updateUserProfile = async (vals: CreateUserDtoFull, captchaToken: string) => {
     try {
       const messageToBeSigned = 'I am updating my profile in Clipto';
       const signed = await signMessage(library, account, messageToBeSigned);
       const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed };
-      await axios.put(`${API_URL}/user/${vals.address}`, createUserSignable);
+      await api.updateProfile(createUserSignable, captchaToken);
       toast.success('Success!');
       navigate(`/creator/${account}`);
     } catch (err: any) {
@@ -71,7 +84,8 @@ const OnboardProfilePage = () => {
       return;
     }
   };
-  const createUserProfile = async (vals: CreateUserDtoFull) => {
+
+  const createUserProfile = async (vals: CreateUserDtoFull, captchaToken: string) => {
     if (!account) {
       toast.error('Connect your wallet and reload the page!');
       return;
@@ -111,7 +125,7 @@ const OnboardProfilePage = () => {
       const signed = await signMessage(library, account, messageToBeSigned);
       const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed };
       if (!hasAccount) {
-        await axios.post(`${API_URL}/user/create`, createUserSignable);
+        await api.creatorOnboard(createUserSignable, captchaToken);
         toast.dismiss(); // used to remove the loading toast
         toast.success('Success!');
         navigate(`/creator/${account}`);
@@ -218,8 +232,7 @@ const OnboardProfilePage = () => {
                       deliveryTime: parseInt(values.deliveryTime),
                       price: parseFloat(values.price),
                     };
-                    hasAccount ? await updateUserProfile(vals) : await createUserProfile(vals);
-                    console.log('I got here');
+                    await handleSubmit(hasAccount, vals);
                     setLoading(false);
                   }}
                   validate={(values) => {

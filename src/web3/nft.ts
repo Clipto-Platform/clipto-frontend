@@ -9,6 +9,7 @@ const getNftToken = (nftAddress: string) => {
   const provider = getProvider();
   return CliptoToken__factory.connect(nftAddress, provider);
 };
+
 const getDate = (timestamp: number) => {
   const date = new Date(0);
   date.setUTCSeconds(timestamp);
