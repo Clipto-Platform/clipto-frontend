@@ -19,7 +19,6 @@ export const PageGrid = styled.div`
 export const ImagesColumnContainer = styled.div`
   position: relative;
   height: auto;
-  max-height: 600px;
   max-width: 100%;
   ${({ theme }) => theme.mediaWidth.upToMedium`
   overflow: hidden;

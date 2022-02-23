@@ -26,7 +26,6 @@ const ChevronContainer = styled.div`
 const ImageCardContainer = styled.div`
   width: 300px;
   min-width: 300px;
-  max-height: 600px;
   height: auto;
   object-fit: cover;
   border-radius: 16px;
@@ -53,7 +52,6 @@ const ImagesSliderContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: none;
-  overflow-y: auto;
 `;
 
 const SliderControlsContainer = styled.div`
@@ -73,6 +71,7 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
   const imageSliderContainerRef = useRef<HTMLDivElement>(null);
 
   const handleScrollRight = () => {
+    console.log('right scroll');
     const curScroll = imageSliderContainerRef.current?.scrollLeft ?? 0;
     imageSliderContainerRef.current?.scrollTo({
       left: curScroll + 150,
@@ -123,9 +122,12 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
         })}
       </ImagesSliderContainer>
 
-      {singleLoaded && imagesDone && props.images.length !== 0 && (
+      {singleLoaded && props.images.length !== 0 && (
         <SliderControlsContainer>
-          <ChevronContainer style={{ marginRight: 16 }} onClick={handleScrollLeft}>
+          <ChevronContainer style={{ marginRight: 16 }} onClick={(e) => {
+            console.log('right scroll activated');
+            handleScrollLeft()
+          }}>
             <LeftChevronIcon />
           </ChevronContainer>
           <ChevronContainer onClick={handleScrollRight}>
