@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import styled, { useTheme } from 'styled-components';
 import { XAvatarOrb } from '../../components/AvatarOrb';
 import { PrimaryButton } from '../../components/Button';
-import { HeaderSpacer } from '../../components/Header';
+import { HeaderSpacer } from '../../components/Header/Header';
 import SuccessIcon from '../../components/icons/SuccessIcon';
 import TwitterIcon from '../../components/icons/TwitterIcon';
 import { CenterContainer, PageContentWrapper, PageWrapper } from '../../components/layout/Common';

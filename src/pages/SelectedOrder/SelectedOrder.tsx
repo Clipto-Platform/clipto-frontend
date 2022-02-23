@@ -7,88 +7,33 @@ import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useParams } from 'react-router-dom';
 import BounceLoader from 'react-spinners/BounceLoader';
 import { toast } from 'react-toastify';
-import styled, { useTheme } from 'styled-components';
-import * as api from '../api';
-import { PrimaryButton } from '../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
-import { NFTDetails } from '../components/NFTDetails';
-import { NFTHistory } from '../components/NFTHistory';
-import { OrderCard } from '../components/OrderCard';
-import { TextField } from '../components/TextField';
-import { Video } from '../components/Video';
-import { useExchangeContract } from '../hooks/useContracts';
-import { Description, Label } from '../styles/typography';
-import { getNFTDetails, getNFTHistory, getTokenIdAndAddress } from '../web3/nft';
-import { signMessage } from '../web3/request';
-import { Request } from './Orders';
-
-const BookingCard = styled.div`
-  background: ${(props) => props.theme.lessDarkGray};
-  border: 1px solid ${(props) => props.theme.border};
-  border-radius: 16px;
-  padding: 32px 24px;
-  height: 512px;
-  border: 2.5px dashed #2a2a2a;
-  box-sizing: border-box;
-  border-radius: 16px;
-`;
-
-const ImageCardContainer = styled.div`
-  object-fit: fill;
-  border-radius: 16px;
-  :not(:last-child) {
-    margin-right: 24px;
-  }
-`;
-
-const ImageCardImg = styled.img`
-  object-fit: fill;
-  user-select: none;
-  max-height: 450px;
-`;
-
-const UploadStatusContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const Divider = styled.div`
-  margin-top: 20px;
-  margin-bottom: 20px;
-`;
-
-export interface ArweaveResponse {
-  name: string;
-  description: string;
-  image: string;
-  animation_url: string;
-}
-
-export interface NFTDetails {
-  contractAddress: string;
-  contractLink: string;
-  etherscan: string;
-  opensea: string;
-  metadata: string;
-  tokenId: number;
-  chain: string;
-}
-
-export interface NFTFormError {
-  name?: string;
-  description?: string;
-}
-
-export interface NFTHistories {
-  from: string;
-  to: string;
-  timestamp: string;
-}
+import { useTheme } from 'styled-components';
+import * as api from '../../api';
+import { PrimaryButton } from '../../components/Button';
+import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { PageContentWrapper, PageWrapper } from '../../components/layout/Common';
+import { NFTDetails } from '../../components/NFTDetails';
+import { NFTHistory } from '../../components/NFTHistory';
+import { OrderCard } from '../../components/OrderCard/OrderCard';
+import { TextField } from '../../components/TextField';
+import { Video } from '../../components/Video';
+import { useExchangeContract } from '../../hooks/useContracts';
+import { Description, Label } from '../../styles/typography';
+import { getNFTDetails, getNFTHistory, getTokenIdAndAddress } from '../../web3/nft';
+import { signMessage } from '../../web3/request';
+import { Request } from '../Orders/types';
+import {
+  BookingCard,
+  ComboButtonContainer,
+  Divider,
+  ImageCardContainer,
+  ImageCardImg,
+  UploadStatusContainer,
+} from './Style';
+import { ArweaveResponse, NFTDetailsType, NFTFormError, NFTHistories } from './types';
 
 const SelectedOrderPage = () => {
   const theme = useTheme();
-
   const [uploadMetadata, setUploadMetadata] = useState<ArweaveResponse | undefined>(undefined);
   const [tokenUri, setTokenUri] = useState('');
   const [uploadStatus, setUploadStatus] = useState('');
@@ -99,7 +44,7 @@ const SelectedOrderPage = () => {
   const [request, setRequest] = useState<Request>();
   const [loaded, setLoaded] = useState<boolean>(false);
   const [minting, setMinting] = useState<boolean>(false);
-  const [nftDetails, setNftDetails] = useState<NFTDetails>();
+  const [nftDetails, setNftDetails] = useState<NFTDetailsType>();
   const [clipDetails, setClipDetails] = useState('');
   const [nftName, setNftName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -117,7 +62,7 @@ const SelectedOrderPage = () => {
     async <T extends File>(acceptedFiles: T[]) => {
       const error = validate(nftName, description);
       if (error) {
-        toast.error("Please add title and description");
+        toast.error('Please add title and description');
         setError(error);
         return;
       } else {
@@ -197,7 +142,7 @@ const SelectedOrderPage = () => {
       return;
     }
 
-    if(!executeRecaptcha) {
+    if (!executeRecaptcha) {
       toast.warn('Something has occured, Please refresh the page.');
       return;
     }
@@ -214,12 +159,15 @@ const SelectedOrderPage = () => {
       const tokenId = eventArgs?.tokenId.toNumber();
       fetchNFT(tokenAddress, tokenId, tokenUri);
 
-      await api.completeBooking({
-        id: request.id,
-        address: account || '',
-        message: messageToSign,
-        signed: signed,
-      }, token);
+      await api.completeBooking(
+        {
+          id: request.id,
+          address: account || '',
+          message: messageToSign,
+          signed: signed,
+        },
+        token,
+      );
       toast.success('Successfully completed order!');
       setDone(true);
     } catch (e) {
@@ -339,7 +287,7 @@ const SelectedOrderPage = () => {
             )}
 
             {uploadMetadata && !done && tokenUri && (
-              <div style={{ display: 'flex', marginBottom: 20 }}>
+              <ComboButtonContainer>
                 <PrimaryButton onPress={completeBooking} size="small" style={{ marginRight: 20 }} isDisabled={minting}>
                   Mint and send NFT
                 </PrimaryButton>
@@ -351,7 +299,7 @@ const SelectedOrderPage = () => {
                 >
                   New upload
                 </PrimaryButton>
-              </div>
+              </ComboButtonContainer>
             )}
 
             {(request?.delivered || clipDetails) && <Video src={clipDetails} />}

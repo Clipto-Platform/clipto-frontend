@@ -1,12 +1,12 @@
-import styled, { useTheme } from 'styled-components';
-import pfp5 from '../assets/images/pfps/cc.png';
-// Sample image assets
-import pfp1 from '../assets/images/pfps/g1.jpeg';
-import pfp4 from '../assets/images/pfps/g2.jpeg';
-// Components
-import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { ContentWrapper, PageContentWrapper, PageWrapper } from '../components/layout/Common';
-import { User, UserDisplay } from '../components/UserDisplay';
+import { useTheme } from 'styled-components';
+import pfp5 from '../../assets/images/pfps/cc.png';
+import pfp1 from '../../assets/images/pfps/g1.jpeg';
+import pfp4 from '../../assets/images/pfps/g2.jpeg';
+import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
+import { User } from '../../components/UserDisplay/types';
+import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
+import { HeroTitle } from './Style';
 
 // TODO(johnrjj) - Fetch remotely
 const featuredUsers: Array<User> = [
@@ -60,16 +60,6 @@ const featuredUsers: Array<User> = [
   },
 ];
 
-const HeroTitle = styled.h1`
-  font-family: 'Scto Grotesk A';
-  font-weight: normal;
-  font-size: 40px;
-  line-height: 125%;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-  font-size: 36px;
-  `}
-`;
-
 const HomePage = () => {
   const theme = useTheme();
   return (
@@ -79,7 +69,7 @@ const HomePage = () => {
         <HeaderContentGapSpacer />
         <PageContentWrapper>
           <ContentWrapper>
-            <HeroTitle style={{ marginBottom: 100, maxWidth: 600 }}>
+            <HeroTitle>
               Personalized videos from your favorite{' '}
               <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
             </HeroTitle>

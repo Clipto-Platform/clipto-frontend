@@ -2,7 +2,7 @@ import * as api from '../api';
 import { CHAIN_NAMES, DEFAULT_CHAIN_ID, getContractLink, getOpensea, getPolygonScan } from '../config/config';
 import { CliptoToken__factory } from '../contracts';
 import { getProvider } from '../hooks/useContracts';
-import { Request } from '../pages/Orders';
+import { Request } from '../pages/Orders/types';
 import { getShortenedAddress } from '../utils/address';
 
 const getNftToken = (nftAddress: string) => {

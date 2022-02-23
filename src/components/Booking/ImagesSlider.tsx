@@ -26,7 +26,7 @@ const ChevronContainer = styled.div`
 const ImageCardContainer = styled.div`
   width: 300px;
   min-width: 300px;
-  height: 480px;
+  height: auto;
   object-fit: cover;
   border-radius: 16px;
   :not(:last-child) {
@@ -52,7 +52,6 @@ const ImagesSliderContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: none;
-  overflow-y: auto;
 `;
 
 const SliderControlsContainer = styled.div`
@@ -72,6 +71,7 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
   const imageSliderContainerRef = useRef<HTMLDivElement>(null);
 
   const handleScrollRight = () => {
+    console.log('right scroll');
     const curScroll = imageSliderContainerRef.current?.scrollLeft ?? 0;
     imageSliderContainerRef.current?.scrollTo({
       left: curScroll + 150,
@@ -90,7 +90,7 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
   return (
     <>
       <ImageSliderContainerScrolllShadowContainer />
-      {!singleLoaded && <ImagesSliderLoading style={{ width: '100%', height: 460 }} />}
+      {!singleLoaded && <ImagesSliderLoading style={{ width: '100%' }} />}
       <ImagesSliderContainer ref={imageSliderContainerRef} style={{ marginBottom: 8 }}>
         {imagesDone && props.images.length === 0 && (
           <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
@@ -122,9 +122,12 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
         })}
       </ImagesSliderContainer>
 
-      {singleLoaded && imagesDone && props.images.length !== 0 && (
+      {singleLoaded && props.images.length !== 0 && (
         <SliderControlsContainer>
-          <ChevronContainer style={{ marginRight: 16 }} onClick={handleScrollLeft}>
+          <ChevronContainer style={{ marginRight: 16 }} onClick={(e) => {
+            console.log('right scroll activated');
+            handleScrollLeft()
+          }}>
             <LeftChevronIcon />
           </ChevronContainer>
           <ChevronContainer onClick={handleScrollRight}>

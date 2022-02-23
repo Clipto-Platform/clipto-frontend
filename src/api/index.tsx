@@ -3,7 +3,14 @@ import { createClient } from 'urql';
 import { API_URL, DEFAULT_CHAIN_ID, GRAPH_APIS } from '../config/config';
 import { CreateUserDtoSignable } from '../hooks/useProfile';
 import { queryGetRequest } from './query';
-import { CompleteBooking, CreateRequest, FinalizeFileUpload, RefundRequest, UploadFileLinkRequest } from './types';
+import {
+  CompleteBooking,
+  CreateRequest,
+  FinalizeFileUpload,
+  RefundRequest,
+  TweetData,
+  UploadFileLinkRequest,
+} from './types';
 
 // Axios config
 const axiosInstance = axios.create({
@@ -52,6 +59,18 @@ export const refund = (data: RefundRequest, token: string) => {
       recaptcha: token,
     },
   });
+};
+
+export const tweetVerify = (data: TweetData) => {
+  return axiosInstance.post('/user/verify', data);
+};
+
+export const userRequests = (account: string) => {
+  return axiosInstance.get(`/request/receiver/${account}`);
+};
+
+export const creatorRequests = (account: string) => {
+  return axiosInstance.get(`/request/creator/${account}`);
 };
 
 export const getRequestById = (creator: string, requestId: string) => {

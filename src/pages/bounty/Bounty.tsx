@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { PrimaryButton } from '../../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header';
+import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import { CenterContainer, ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
 import { useProfile } from '../../hooks/useProfile';

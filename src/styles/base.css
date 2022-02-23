@@ -80,6 +80,10 @@ select {
   text-overflow: '';
 }
 
+.grecaptcha-badge {
+  visibility: hidden;
+}
+
 @font-face {
   font-family: 'Scto Grotesk A';
   src: url('../assets/fonts/SctoGroteskA-Bold.woff2') format('woff2'),

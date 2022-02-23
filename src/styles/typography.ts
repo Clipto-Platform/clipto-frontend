@@ -36,15 +36,14 @@ const Value = styled.div`
 `;
 
 const RowContainer = styled.div`
- display: flex;
- flex-grow: 2;
- flex-direction: column;
+  display: flex;
+  flex-grow: 2;
+  flex-direction: column;
 `;
 
 const Key = styled(Label)`
   margin-bottom: 15px;
   font-weight: 500;
 `;
-
 
 export { Description, Label, Text, Value, Key, RowContainer };

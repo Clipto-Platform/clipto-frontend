@@ -1,206 +1,47 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { OverlayContainer, OverlayProvider } from '@react-aria/overlays';
 import { useWeb3React } from '@web3-react/core';
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
+import { HiOutlineArrowRight } from 'react-icons/hi';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
-import { API_URL, CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV, DISCORD_LINK } from '../config/config';
-import { useExchangeContract } from '../hooks/useContracts';
-import { useEagerConnect } from '../hooks/useEagerConnect';
-import { useEns } from '../hooks/useEns';
-import { useInactiveListener } from '../hooks/useInactiveListener';
-import { UserProfile } from '../hooks/useProfile';
-import { MAX_CONTENT_WIDTH_PX } from '../styles/theme';
-import { Label } from '../styles/typography';
-import { getShortenedAddress } from '../utils/address';
-import { immer } from '../utils/zustand';
-import { injected, walletconnect } from '../web3/connectors';
-import { AvatarComponent } from './AvatarOrb';
-import { PrimaryButton } from './Button';
-import { DropDown, ModalDialog } from './Dialog';
-import { Logo } from './Logo';
-import { useSelector, useDispatch } from 'react-redux';
-// import { MetamaskIcon } from './icons/MetamaskIcon';
-// import { WalletConnectIcon } from './icons/WalletConnectIcon';
-import { HiOutlineArrowRight } from 'react-icons/hi';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import menu from '../assets/svgs/hamburger.svg';
-const MAX_HEADER_WIDTH_IN_PX = MAX_CONTENT_WIDTH_PX;
-
-const HEADER_HEIGHT_IN_PX = '64px';
-
-const HeaderWrapperOuter = styled.div`
-  display: flex;
-  flex: 1;
-  position: relative;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: ${HEADER_HEIGHT_IN_PX};
-  max-height: ${HEADER_HEIGHT_IN_PX};
-  min-height: ${HEADER_HEIGHT_IN_PX};
-  background: ${(props) => props.theme.black};
-  z-index: 100;
-
-  padding: 0 32px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 0 16px;
-  `}
-
-  position: absolute;
-  left: 0;
-  right: 0;
-`;
-
-const ChainContainer = styled.div`
-  position: relative;
-  z-index: 0;
-  align-items: center;
-  text-align: center;
-  width: 100%;
-  padding: 10px;
-  margin-top: ${HEADER_HEIGHT_IN_PX};
-  background: ${(props) => props.theme.yellow};
-  color: black;
-  font-weight: bold;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 0 16px;
-  `}
-
-  position: absolute;
-  left: 0;
-  right: 0;
-`;
-
-const HeaderWrapperInner = styled.div`
-  display: flex;
-  flex: 1;
-  position: relative;
-  align-items: center;
-  justify-content: space-between;
-  max-width: ${MAX_HEADER_WIDTH_IN_PX};
-
-  color: #ffffff;
-  margin: 0 auto 0 auto;
-`;
-
-const LeftWrapper = styled.div`
-  display: flex;
-  text-decoration: inherit;
-  justify-content: flex-start;
-  align-items: center;
-`;
-
-const RightWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  cursor: pointer;
-`;
-
-const DropDownItem = styled.div`
-  display: block;
-  width: 100%;
-  padding: 10px 60px 10px 30px;
-  color: #888f96;
-  font-weight: bold;
-  :hover {
-    color: #ffffff;
-  }
-`;
-
-const Divider = styled.hr`
-  border: 1px solid #121212;
-`;
-
-const StyledSpan = styled.span`
-  display: block;
-  text-decoration: none;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 20px;
-  color: #cccccc;
-  transition: color 0.15s ease;
-  :hover {
-    color: #ffffff;
-  }
-`;
-
-const ConnectWallet = styled.div`
-  margin-bottom: 16;
-  font-weight: 700;
-  font-size: 18;
-  text-align: 'left';
-`;
-
-const Error = styled.div`
-  margin-bottom: 12;
-  color: #ff6868;
-  text-align: left;
-  padding: 10px;
-`;
-
-const ConnectWalletPopup = styled.div`
-  display: flex;
-  vertical-align: middle;
-`;
-
-const DesktopHeaderWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  cursor: pointer;
-  @media screen and (max-width: 600px){
-    display:none;
-  }
-`;
-
-const MobileHeaderWrapper = styled.div`
-  display: flex;
-  justify-content: space-around;
-  flex-direction:column;
-  align-items: initial;
-  position: absolute;
-  right: 0px;
-  top: 50px;
-  z-index: 100;
-  background-color: rgba(0,0,0);
-  border: 1px solid #504d4d;
-  border-radius: 10px;
-  width: auto;
-  padding:40px 20px;
-  box-sizing:border-box;
-  &  ${StyledSpan}{
-    margin-bottom:20px;
-    border
-   }
-
-  @media screen and (min-width: 600px){
-    display:none;
-  }
-`;
-
-const MenuContainer = styled.span`
-  padding:5px 0px 0px 5px;
-  @media screen and (min-width: 600px){
-    display:none;
-  }
-`;
-const MenuButton = styled.button`
-  background: none;
-  border: none;
-`;
-const Wrapper = styled.div`
-  position: absolute;
-  z-index:99;
-  top:0;
-  width:100vw;
-  height:100vh;
-`;
+import menu from '../../assets/svgs/hamburger.svg';
+import { API_URL, CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV, DISCORD_LINK } from '../../config/config';
+import { useEagerConnect } from '../../hooks/useEagerConnect';
+import { useEns } from '../../hooks/useEns';
+import { useInactiveListener } from '../../hooks/useInactiveListener';
+import { UserProfile } from '../../hooks/useProfile';
+import { Label } from '../../styles/typography';
+import { getShortenedAddress } from '../../utils/address';
+import { immer } from '../../utils/zustand';
+import { injected, walletconnect } from '../../web3/connectors';
+import { AvatarComponent } from '../AvatarOrb';
+import { PrimaryButton } from '../Button';
+import { DropDown, ModalDialog } from '../Dialog';
+import {
+  ChainContainer,
+  ConnectWallet,
+  ConnectWalletPopup,
+  DesktopHeaderWrapper,
+  Divider,
+  DropDownItem,
+  HeaderWrapperInner,
+  HeaderWrapperOuter,
+  HEADER_HEIGHT_IN_PX,
+  LeftWrapper,
+  MenuButton,
+  MenuContainer,
+  MobileHeaderWrapper,
+  RightWrapper,
+  StyledSpan,
+  Wrapper,
+  Error,
+} from './Style';
+import { Logo } from '../Logo';
 
 interface HeaderStore extends State {
   showProfileDropDown: boolean;
@@ -236,12 +77,12 @@ const useHeaderStore = create<HeaderStore>(
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HeaderProps {}
 
-const DesktopHeader = (props:any) => {
-  const {loggedInProfile} = props;
-  return(
+const DesktopHeader = (props: any) => {
+  const { loggedInProfile } = props;
+  return (
     <DesktopHeaderWrapper>
-      <Link to={'/explore'} >
-      <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
+      <Link to={'/explore'}>
+        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
       </Link>
       <Link to={'/orders'}>
         <StyledSpan style={{ marginRight: 40 }}>Orders</StyledSpan>
@@ -262,54 +103,54 @@ const DesktopHeader = (props:any) => {
         Join Discord <HiOutlineArrowRight style={{ marginLeft: 5 }} />
       </PrimaryButton>
     </DesktopHeaderWrapper>
-  )
-}
-const MobileHeader = (props:any) => {
-  const {loggedInProfile} = props;
-  const [visible,setVisible]  = useState<boolean>(false);
-  const handleClick = () =>{
+  );
+};
+const MobileHeader = (props: any) => {
+  const { loggedInProfile } = props;
+  const [visible, setVisible] = useState<boolean>(false);
+  const handleClick = () => {
     setVisible(!visible);
-  }
-  return(
+  };
+  return (
     <>
-    
-    <MenuContainer>
-     <MenuButton onClick={handleClick}><img src={menu} alt='menu'/></MenuButton>
-    </MenuContainer>
-    
-    {visible?(
-    <Wrapper onClick={handleClick}>
-    <MobileHeaderWrapper>
-      <Link to={'/explore'} onClick={handleClick}>
-      <StyledSpan>Explore</StyledSpan>
-      </Link>
-      <Link to={'/orders'} onClick={handleClick}>
-        <StyledSpan>Orders</StyledSpan>
-      </Link>
-      {!loggedInProfile && (
-        <Link to={'/onboarding'} onClick={handleClick}>
-          <StyledSpan>Become a creator</StyledSpan>
-        </Link>
-      )}
-      <PrimaryButton
-        size="small"
-        width="small"
-        style={{ maxWidth: 150, background: '#5865F2', color: 'white' }}
-        onPress={() => {
-          window.open(DISCORD_LINK);
-         handleClick();
-        }}
-      >
-        Join Discord <HiOutlineArrowRight style={{ marginLeft: 5 }} />
-      </PrimaryButton>
-    </MobileHeaderWrapper>
-    </Wrapper>):null}
-   
+      <MenuContainer>
+        <MenuButton onClick={handleClick}>
+          <img src={menu} alt="menu" />
+        </MenuButton>
+      </MenuContainer>
+
+      {visible ? (
+        <Wrapper onClick={handleClick}>
+          <MobileHeaderWrapper>
+            <Link to={'/explore'} onClick={handleClick}>
+              <StyledSpan>Explore</StyledSpan>
+            </Link>
+            <Link to={'/orders'} onClick={handleClick}>
+              <StyledSpan>Orders</StyledSpan>
+            </Link>
+            {!loggedInProfile && (
+              <Link to={'/onboarding'} onClick={handleClick}>
+                <StyledSpan>Become a creator</StyledSpan>
+              </Link>
+            )}
+            <PrimaryButton
+              size="small"
+              width="small"
+              style={{ maxWidth: 150, background: '#5865F2', color: 'white' }}
+              onPress={() => {
+                window.open(DISCORD_LINK);
+                handleClick();
+              }}
+            >
+              Join Discord <HiOutlineArrowRight style={{ marginLeft: 5 }} />
+            </PrimaryButton>
+          </MobileHeaderWrapper>
+        </Wrapper>
+      ) : null}
     </>
-  )
+  );
 };
 const Header: React.FC<HeaderProps> = () => {
-  const exchangeContract = useExchangeContract(true);
   const [checkLogin, setCheckLogin] = useState<boolean | null>(false);
   const { activate, account, deactivate, chainId } = useWeb3React<Web3Provider>();
   const [chainDialog, setChainDialog] = useState<boolean | null>(false);
@@ -377,9 +218,8 @@ const Header: React.FC<HeaderProps> = () => {
 
     setCurrentlyActivating('wc');
     try {
-
-      if (walletconnect instanceof WalletConnectConnector) { 
-        walletconnect.walletConnectProvider = undefined 
+      if (walletconnect instanceof WalletConnectConnector) {
+        walletconnect.walletConnectProvider = undefined;
       }
       await activate(walletconnect, undefined, true);
       setCheckLogin(true);
@@ -462,7 +302,7 @@ const Header: React.FC<HeaderProps> = () => {
               )}
               {checkLogin && account && (
                 <RightWrapper>
-                  <DesktopHeader loggedInProfile={loggedInProfile}/>
+                  <DesktopHeader loggedInProfile={loggedInProfile} />
                   {!loggedInProfile && (
                     <RightWrapper
                       ref={dropDropRef}
@@ -535,7 +375,7 @@ const Header: React.FC<HeaderProps> = () => {
                       )}
                     </RightWrapper>
                   )}
-                  <MobileHeader loggedInProfile={loggedInProfile}/>
+                  <MobileHeader loggedInProfile={loggedInProfile} />
                 </RightWrapper>
               )}
             </>

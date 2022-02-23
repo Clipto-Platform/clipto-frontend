@@ -1,67 +1,22 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
-import { PrimaryButton } from '../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../components/Header';
-import { PageContentWrapper, PageWrapper } from '../components/layout/Common';
-import { OrderCard } from '../components/OrderCard';
-import { OrdersTab } from '../components/Orders/OrdersTab';
-import { Item, Tabs } from '../components/Tabs';
-import { API_URL } from '../config/config';
-import { useExchangeContract } from '../hooks/useContracts';
-import { Label, Text } from '../styles/typography';
-import { checkIfDeadlinePassed } from '../utils/time';
-import * as api from '../api';
-import { signMessage } from '../web3/request';
-
-export type Request = {
-  id: number;
-  requestId: number;
-  requester: string;
-  creator: string;
-  amount: string;
-  description: string;
-  deadline: number;
-  delivered: boolean;
-  txHash: string;
-  created: string;
-  refunded: boolean;
-};
-
-export const Status = styled.div`
-  width: 90px;
-  height: 30px;
-  line-height: 30px;
-  background: rgba(255, 255, 255, 0.1); //TODO(jonathanng) - color don't be lazy
-  font-family: 'Scto Grotesk A';
-  border-radius: 40px;
-  text-align: center;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.4); //TODO(jonathanng) - color don't be lazy
-}
-`;
-
-export const HighlightText = styled(Text)`
-  font-weight: bold;
-  color: ${(props) => props.theme.yellow};
-`;
-
-const TabContent = styled.div`
-  margin-top: 48px;
-`;
-
-const SingleColumnPageContent = styled(PageContentWrapper)`
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-`;
+import * as api from '../../api';
+import { PrimaryButton } from '../../components/Button';
+import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { PageWrapper } from '../../components/layout/Common';
+import { OrderCard } from '../../components/OrderCard/OrderCard';
+import { OrdersTab, Status } from '../../components/Orders/OrdersTab';
+import { Item, Tabs } from '../../components/Tabs';
+import { useExchangeContract } from '../../hooks/useContracts';
+import { Label } from '../../styles/typography';
+import { checkIfDeadlinePassed } from '../../utils/time';
+import { signMessage } from '../../web3/request';
+import { HighlightText, SingleColumnPageContent } from './Style';
+import { Request } from './types';
 
 const OrdersPage = () => {
   const [requestsByUser, setRequestsByUser] = useState<Request[]>([]);
@@ -75,10 +30,10 @@ const OrdersPage = () => {
   useEffect(() => {
     const getRequests = async () => {
       if (account) {
-        const userRequests = await axios.get(`${API_URL}/request/receiver/${account}`);
+        const userRequests = await api.userRequests(account);
         setRequestsByUser(userRequests.data);
 
-        const creatorRequests = await axios.get(`${API_URL}/request/creator/${account}`);
+        const creatorRequests = await api.creatorRequests(account);
         setRequestsToUser(creatorRequests.data);
         setLoaded(true);
       }
