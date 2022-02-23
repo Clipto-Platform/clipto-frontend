@@ -135,11 +135,11 @@ const DropDown: React.FC<DropDownProps> = (props) => {
 
   // Get props for the dialog and its title
   const { dialogProps, titleProps } = useDialog(props, ref);
-
   return (
     <div
       style={{
         position: 'absolute',
+        right:0,
         background: 'rgba(0, 0, 0, 0.5)',
         display: 'flex',
         alignItems: 'center',

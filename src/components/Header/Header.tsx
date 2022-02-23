@@ -358,7 +358,12 @@ const Header: React.FC<HeaderProps> = () => {
                             onClose={() => setShowProfileDropDown(false)}
                             isDismissable
                           >
-                            <Link to={'onboarding/profile'}>
+                            <Link to={'onboarding/profile'}  
+                                onClick={(e) => {
+                                e.stopPropagation();
+                                setShowProfileDropDown(false);
+                              }}
+                              >
                               <DropDownItem>Settings</DropDownItem>
                             </Link>
                             <Divider />
