@@ -353,7 +353,7 @@ const Header: React.FC<HeaderProps> = () => {
                         <OverlayProvider>
                           <DropDown
                             triggerRef={dropDropRef}
-                            containerStyles={{right:'0'}}
+                            containerStyles={{}}
                             isOpen={showProfileDropDown}
                             onClose={() => setShowProfileDropDown(false)}
                             isDismissable
