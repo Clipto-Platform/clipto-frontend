@@ -1,5 +1,5 @@
 import styled, { CSSProperties } from 'styled-components';
-
+import clipto from '../assets/images/pfps/CliptoLogo.png';
 const LogoText = styled.div`
   font-family: 'Scto Grotesk A';
   font-style: bold;
@@ -11,7 +11,7 @@ const LogoText = styled.div`
   align-items: center;
   padding: 4px;
   margin-left: -4px;
-
+  padding-top:5px;
   color: #ffffff;
 `;
 
@@ -21,7 +21,7 @@ export interface LogoProps {
 }
 
 const Logo: React.FC<LogoProps> = (props) => {
-  return <LogoText {...props}>CLIPTO</LogoText>;
+  return <LogoText {...props}><img src={clipto} alt='logo' width='60' height='auto'/></LogoText>;
 };
 
 export { Logo };
