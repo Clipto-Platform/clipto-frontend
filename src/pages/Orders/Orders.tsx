@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useNavigate } from 'react-router-dom';
+import Loader from 'react-spinners/ClipLoader';
 import { toast } from 'react-toastify';
 import * as api from '../../api';
 import { PrimaryButton } from '../../components/Button';
@@ -14,11 +15,10 @@ import { OrdersTab, Status } from '../../components/Orders/OrdersTab';
 import { Item, Tabs } from '../../components/Tabs';
 import { useExchangeContract } from '../../hooks/useContracts';
 import { Label } from '../../styles/typography';
-import { checkIfDeadlinePassed } from '../../utils/time';
+import { isRequestExpired } from '../../utils/time';
 import { signMessage } from '../../web3/request';
 import { HighlightText, SingleColumnPageContent } from './Style';
 import { Request } from './types';
-import Loader from 'react-spinners/ClipLoader';
 
 const OrdersPage = () => {
   const [requestsByUser, setRequestsByUser] = useState<Request[]>([]);
@@ -38,34 +38,32 @@ const OrdersPage = () => {
   useEffect(() => {
     const getRequests = async () => {
       if (account) {
-        await api.userRequests(account, userRequestsPage, limit)
-        .then((userRequests) =>{
+        await api.userRequests(account, userRequestsPage, limit).then((userRequests) => {
           const has = userRequests.data.length !== 0 && userRequests.data.length % limit === 0;
           setHasMoreUserRequests(has);
-          setRequestsByUser([...requestsByUser,...userRequests.data]);
+          setRequestsByUser([...requestsByUser, ...userRequests.data]);
         });
-        
+
         setLoaded(true);
       }
     };
     getRequests();
-  }, [account,userRequestsPage]);
+  }, [account, userRequestsPage]);
 
   useEffect(() => {
     const getRequests = async () => {
       if (account) {
-        await api.creatorRequests(account, creatorRequestsPage, limit)
-        .then((userRequests) =>{
+        await api.creatorRequests(account, creatorRequestsPage, limit).then((userRequests) => {
           const has = userRequests.data.length !== 0 && userRequests.data.length % limit === 0;
           setHasMoreCreatorRequests(has);
-          setRequestsToUser([...requestsToUser,...userRequests.data]);
+          setRequestsToUser([...requestsToUser, ...userRequests.data]);
         });
-        
+
         setLoaded(true);
       }
     };
     getRequests();
-  }, [account,creatorRequestsPage]);
+  }, [account, creatorRequestsPage]);
 
   const handleScrollUserRequests = () => {
     setUserRequestsPage(userRequestsPage + 1);
@@ -74,7 +72,6 @@ const OrdersPage = () => {
   const handleScrollCreatorRequests = () => {
     setCreatorRequestsPage(creatorRequestsPage + 1);
   };
-
 
   const refund = async (request: Request) => {
     if (!executeRecaptcha) {
@@ -142,59 +139,67 @@ const OrdersPage = () => {
                   </div>
                 )}
               >
-                {(requests) =>{
-                  return(
+                {(requests) => {
+                  return (
                     <InfiniteScroll
-                  dataLength={requests.length}
-                  next={() => {
-                    handleScrollUserRequests();
-                  }}
-                  hasMore={hasMoreUserRequests}
-                  style={{position:'relative'}}
-                  loader={
-                    <div style={{ width: '100%', position: 'absolute', textAlign: 'center', bottom: '-48px',marginBottom:'40px'}}>
-                      <Loader color="#fff" />
-                    </div>
-                  }
-                >
-                  {requests.map((i, n) => (
-                    <OrderCard key={i.id} request={i} isReceived={false}>
-                      {i.delivered && (
-                        <PrimaryButton
-                          onPress={() => {
-                            navigate(`/orders/${i.creator}/${i.requestId}`);
+                      dataLength={requests.length}
+                      next={() => {
+                        handleScrollUserRequests();
+                      }}
+                      hasMore={hasMoreUserRequests}
+                      style={{ position: 'relative' }}
+                      loader={
+                        <div
+                          style={{
+                            width: '100%',
+                            position: 'absolute',
+                            textAlign: 'center',
+                            bottom: '-48px',
+                            marginBottom: '40px',
                           }}
-                          size="small"
-                          width="small"
-                          style={{ marginTop: 20 }}
                         >
-                          View clip
-                        </PrimaryButton>
-                      )}
-                      {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && !i.refunded && (
-                        <Status style={{ marginTop: 20 }}>PENDING</Status>
-                      )}
-                      {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && !i.refunded && (
-                        <PrimaryButton
-                          size="small"
-                          width="small"
-                          variant="secondary"
-                          style={{ marginTop: 20 }}
-                          onPress={() => refund(i)}
-                        >
-                          Claim refund
-                        </PrimaryButton>
-                      )}
-                      {!i.delivered && i.refunded && (
-                        <>
-                          <HighlightText style={{ marginTop: 10 }}>This order has been refunded.</HighlightText>
-                        </>
-                      )}
-                    </OrderCard>
-                  ))}
-                  </InfiniteScroll>
-                  )}
-                }
+                          <Loader color="#fff" />
+                        </div>
+                      }
+                    >
+                      {requests.map((i, n) => (
+                        <OrderCard key={i.id} request={i} isReceived={false}>
+                          {i.delivered && (
+                            <PrimaryButton
+                              onPress={() => {
+                                navigate(`/orders/${i.creator}/${i.requestId}`);
+                              }}
+                              size="small"
+                              width="small"
+                              style={{ marginTop: 20 }}
+                            >
+                              View clip
+                            </PrimaryButton>
+                          )}
+                          {!i.delivered && !isRequestExpired(i.created, i.deadline) && !i.refunded && (
+                            <Status style={{ marginTop: 20 }}>PENDING</Status>
+                          )}
+                          {!i.delivered && isRequestExpired(i.created, i.deadline) && !i.refunded && (
+                            <PrimaryButton
+                              size="small"
+                              width="small"
+                              variant="secondary"
+                              style={{ marginTop: 20 }}
+                              onPress={() => refund(i)}
+                            >
+                              Claim refund
+                            </PrimaryButton>
+                          )}
+                          {!i.delivered && i.refunded && (
+                            <>
+                              <HighlightText style={{ marginTop: 10 }}>This order has been refunded.</HighlightText>
+                            </>
+                          )}
+                        </OrderCard>
+                      ))}
+                    </InfiniteScroll>
+                  );
+                }}
               </OrdersTab>
             </Item>
             <Item key="received" title="Received">
@@ -211,56 +216,64 @@ const OrdersPage = () => {
                   </div>
                 )}
               >
-                {(requests) =>{
-                  return(
-                  <InfiniteScroll
-                    dataLength={requests.length}
-                    next={() => {
-                      handleScrollCreatorRequests();
-                    }}
-                    hasMore={hasMoreCreatorRequests}
-                    style={{position:'relative'}}
-                    loader={
-                      <div style={{ width: '100%', position: 'absolute', textAlign: 'center', bottom: '-48px',marginBottom:'40px' }}>
-                        <Loader color="#fff" />
-                      </div>
-                    }
-                >
-                  {requests.map((i, n, f) => (
-                    <OrderCard key={i.id} request={i} isReceived={true}>
-                      {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
-                        <PrimaryButton
-                          onPress={() => {
-                            navigate(`/orders/${i.creator}/${i.requestId}`);
+                {(requests) => {
+                  return (
+                    <InfiniteScroll
+                      dataLength={requests.length}
+                      next={() => {
+                        handleScrollCreatorRequests();
+                      }}
+                      hasMore={hasMoreCreatorRequests}
+                      style={{ position: 'relative' }}
+                      loader={
+                        <div
+                          style={{
+                            width: '100%',
+                            position: 'absolute',
+                            textAlign: 'center',
+                            bottom: '-48px',
+                            marginBottom: '40px',
                           }}
-                          size="small"
-                          width="small"
-                          style={{ marginTop: 20 }}
                         >
-                          Upload clip
-                        </PrimaryButton>
-                      )}
-                      {!i.delivered && checkIfDeadlinePassed(i.created, i.deadline) && (
-                        <Status style={{ marginTop: 20, minWidth: 160 }}>PAST DEADLINE</Status>
-                      )}
-                      {i.delivered && (
-                        <PrimaryButton
-                          onPress={() => {
-                            navigate(`/orders/${i.creator}/${i.requestId}`);
-                          }}
-                          variant="secondary"
-                          size="small"
-                          width="small"
-                          style={{ marginTop: 20 }}
-                        >
-                          View clip
-                        </PrimaryButton>
-                      )}
-                    </OrderCard>
-                  ))}
-                  </InfiniteScroll>
-                  )}
-                }
+                          <Loader color="#fff" />
+                        </div>
+                      }
+                    >
+                      {requests.map((i, n, f) => (
+                        <OrderCard key={i.id} request={i} isReceived={true}>
+                          {!i.delivered && !isRequestExpired(i.created, i.deadline) && (
+                            <PrimaryButton
+                              onPress={() => {
+                                navigate(`/orders/${i.creator}/${i.requestId}`);
+                              }}
+                              size="small"
+                              width="small"
+                              style={{ marginTop: 20 }}
+                            >
+                              Upload clip
+                            </PrimaryButton>
+                          )}
+                          {!i.delivered && isRequestExpired(i.created, i.deadline) && (
+                            <Status style={{ marginTop: 20, minWidth: 160 }}>PAST DEADLINE</Status>
+                          )}
+                          {i.delivered && (
+                            <PrimaryButton
+                              onPress={() => {
+                                navigate(`/orders/${i.creator}/${i.requestId}`);
+                              }}
+                              variant="secondary"
+                              size="small"
+                              width="small"
+                              style={{ marginTop: 20 }}
+                            >
+                              View clip
+                            </PrimaryButton>
+                          )}
+                        </OrderCard>
+                      ))}
+                    </InfiniteScroll>
+                  );
+                }}
               </OrdersTab>
             </Item>
           </Tabs>
