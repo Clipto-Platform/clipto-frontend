@@ -2,6 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as api from '../../api';
@@ -17,6 +18,7 @@ import { checkIfDeadlinePassed } from '../../utils/time';
 import { signMessage } from '../../web3/request';
 import { HighlightText, SingleColumnPageContent } from './Style';
 import { Request } from './types';
+import Loader from 'react-spinners/ClipLoader';
 
 const OrdersPage = () => {
   const [requestsByUser, setRequestsByUser] = useState<Request[]>([]);
@@ -25,21 +27,54 @@ const OrdersPage = () => {
   const exchangeContract = useExchangeContract(true);
   const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate();
+  const [userRequestsPage, setUserRequestsPage] = useState<number>(1);
+  const [creatorRequestsPage, setCreatorRequestsPage] = useState<number>(1);
+  const [hasMoreCreatorRequests, setHasMoreCreatorRequests] = useState<boolean>(true);
+  const [hasMoreUserRequests, setHasMoreUserRequests] = useState<boolean>(true);
+  const limit: number = 10;
+
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   useEffect(() => {
     const getRequests = async () => {
       if (account) {
-        const userRequests = await api.userRequests(account);
-        setRequestsByUser(userRequests.data);
-
-        const creatorRequests = await api.creatorRequests(account);
-        setRequestsToUser(creatorRequests.data);
+        await api.userRequests(account, userRequestsPage, limit)
+        .then((userRequests) =>{
+          const has = userRequests.data.length !== 0 && userRequests.data.length % limit === 0;
+          setHasMoreUserRequests(has);
+          setRequestsByUser([...requestsByUser,...userRequests.data]);
+        });
+        
         setLoaded(true);
       }
     };
     getRequests();
-  }, [account]);
+  }, [account,userRequestsPage]);
+
+  useEffect(() => {
+    const getRequests = async () => {
+      if (account) {
+        await api.creatorRequests(account, creatorRequestsPage, limit)
+        .then((userRequests) =>{
+          const has = userRequests.data.length !== 0 && userRequests.data.length % limit === 0;
+          setHasMoreCreatorRequests(has);
+          setRequestsToUser([...requestsToUser,...userRequests.data]);
+        });
+        
+        setLoaded(true);
+      }
+    };
+    getRequests();
+  }, [account,creatorRequestsPage]);
+
+  const handleScrollUserRequests = () => {
+    setUserRequestsPage(userRequestsPage + 1);
+  };
+
+  const handleScrollCreatorRequests = () => {
+    setCreatorRequestsPage(creatorRequestsPage + 1);
+  };
+
 
   const refund = async (request: Request) => {
     if (!executeRecaptcha) {
@@ -107,8 +142,22 @@ const OrdersPage = () => {
                   </div>
                 )}
               >
-                {(requests) =>
-                  requests.map((i, n) => (
+                {(requests) =>{
+                  return(
+                    <InfiniteScroll
+                  dataLength={requests.length}
+                  next={() => {
+                    handleScrollUserRequests();
+                  }}
+                  hasMore={hasMoreUserRequests}
+                  style={{position:'relative'}}
+                  loader={
+                    <div style={{ width: '100%', position: 'absolute', textAlign: 'center', bottom: '-48px',marginBottom:'40px'}}>
+                      <Loader color="#fff" />
+                    </div>
+                  }
+                >
+                  {requests.map((i, n) => (
                     <OrderCard key={i.id} request={i} isReceived={false}>
                       {i.delivered && (
                         <PrimaryButton
@@ -142,7 +191,9 @@ const OrdersPage = () => {
                         </>
                       )}
                     </OrderCard>
-                  ))
+                  ))}
+                  </InfiniteScroll>
+                  )}
                 }
               </OrdersTab>
             </Item>
@@ -160,8 +211,22 @@ const OrdersPage = () => {
                   </div>
                 )}
               >
-                {(requests) =>
-                  requests.map((i, n, f) => (
+                {(requests) =>{
+                  return(
+                  <InfiniteScroll
+                    dataLength={requests.length}
+                    next={() => {
+                      handleScrollCreatorRequests();
+                    }}
+                    hasMore={hasMoreCreatorRequests}
+                    style={{position:'relative'}}
+                    loader={
+                      <div style={{ width: '100%', position: 'absolute', textAlign: 'center', bottom: '-48px',marginBottom:'40px' }}>
+                        <Loader color="#fff" />
+                      </div>
+                    }
+                >
+                  {requests.map((i, n, f) => (
                     <OrderCard key={i.id} request={i} isReceived={true}>
                       {!i.delivered && !checkIfDeadlinePassed(i.created, i.deadline) && (
                         <PrimaryButton
@@ -192,7 +257,9 @@ const OrdersPage = () => {
                         </PrimaryButton>
                       )}
                     </OrderCard>
-                  ))
+                  ))}
+                  </InfiniteScroll>
+                  )}
                 }
               </OrdersTab>
             </Item>

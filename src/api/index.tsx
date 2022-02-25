@@ -65,12 +65,22 @@ export const tweetVerify = (data: TweetData) => {
   return axiosInstance.post('/user/verify', data);
 };
 
-export const userRequests = (account: string) => {
-  return axiosInstance.get(`/request/receiver/${account}`);
+export const userRequests = (account: string,  page:number, limit:number) => {
+  return axiosInstance.get(`/request/receiver/${account}`, {
+    params: {
+      limit,
+      page,
+    },
+  });
 };
 
-export const creatorRequests = (account: string) => {
-  return axiosInstance.get(`/request/creator/${account}`);
+export const creatorRequests = (account: string,  page:number, limit:number) => {
+  return axiosInstance.get(`/request/creator/${account}`, {
+    params: {
+      limit,
+      page,
+    },
+  });
 };
 
 export const getRequestById = (creator: string, requestId: string) => {
