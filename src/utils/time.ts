@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 
 export const isRequestExpired = (created: string, deadline: number): boolean => {
   const currentDate = moment().utc();
