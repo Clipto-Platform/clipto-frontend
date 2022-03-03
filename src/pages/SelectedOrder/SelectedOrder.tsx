@@ -84,6 +84,7 @@ const SelectedOrderPage = () => {
           endpoint: resumableUrl!,
           file: acceptedFiles[0],
           chunkSize: 5120, // Uploads the file in ~5mb chunks
+          maxFileSize: 51200, // max file size ~50mb
         });
 
         setUploadStatus('Uploading...');
@@ -128,8 +129,8 @@ const SelectedOrderPage = () => {
             }
           }, 5000);
         });
-      } catch (err) {
-        toast.error(`Error uploading file`);
+      } catch (err: any) {
+        toast.error(`Error uploading file. File size should be less than 50mb`);
         return;
       }
     },
@@ -246,7 +247,11 @@ const SelectedOrderPage = () => {
                             {isDragActive ? (
                               <p>Drop the files here ...</p>
                             ) : (
-                              <Description>Drag and drop an mp4 or click to select a file to upload</Description>
+                              <Description>
+                                Drag and drop a video or click to select a file to upload
+                                <br />
+                                (max video size 50mb)
+                              </Description>
                             )}
                           </>
                         )}
