@@ -185,7 +185,11 @@ const OrdersPage = () => {
                               width="small"
                               variant="secondary"
                               style={{ marginTop: 20 }}
-                              onPress={() => refund(i)}
+                              onPress={async () => {
+                                toast.loading('Refund may take few minutes', { toastId: 1 });
+                                await refund(i);
+                                toast.dismiss(1);
+                              }}
                             >
                               Claim refund
                             </PrimaryButton>

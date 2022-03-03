@@ -65,7 +65,7 @@ export const tweetVerify = (data: TweetData) => {
   return axiosInstance.post('/user/verify', data);
 };
 
-export const userRequests = (account: string,  page:number, limit:number) => {
+export const userRequests = (account: string, page: number, limit: number) => {
   return axiosInstance.get(`/request/receiver/${account}`, {
     params: {
       limit,
@@ -74,7 +74,7 @@ export const userRequests = (account: string,  page:number, limit:number) => {
   });
 };
 
-export const creatorRequests = (account: string,  page:number, limit:number) => {
+export const creatorRequests = (account: string, page: number, limit: number) => {
   return axiosInstance.get(`/request/creator/${account}`, {
     params: {
       limit,

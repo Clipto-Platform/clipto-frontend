@@ -124,10 +124,13 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
 
       {singleLoaded && props.images.length !== 0 && (
         <SliderControlsContainer>
-          <ChevronContainer style={{ marginRight: 16 }} onClick={(e) => {
-            console.log('right scroll activated');
-            handleScrollLeft()
-          }}>
+          <ChevronContainer
+            style={{ marginRight: 16 }}
+            onClick={(e) => {
+              console.log('right scroll activated');
+              handleScrollLeft();
+            }}
+          >
             <LeftChevronIcon />
           </ChevronContainer>
           <ChevronContainer onClick={handleScrollRight}>
