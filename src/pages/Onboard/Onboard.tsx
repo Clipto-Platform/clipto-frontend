@@ -64,7 +64,7 @@ const OnboardingPage = () => {
               <a
                 href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
                   'Verifying my self as a creator on https://clipto.io/ the web3 platform for personalized videos with wallet address: ',
-                )} ${account}`}
+                )} ${account} @cliptodao`}
                 target="_blank"
                 rel="noreferrer"
               >
