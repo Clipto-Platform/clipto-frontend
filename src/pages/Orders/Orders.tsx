@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Loader from 'react-spinners/ClipLoader';
 import { toast } from 'react-toastify';
 import * as api from '../../api';
+import { EntityRequest } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import { PageWrapper } from '../../components/layout/Common';
@@ -18,11 +19,10 @@ import { Label } from '../../styles/typography';
 import { isRequestExpired } from '../../utils/time';
 import { signMessage } from '../../web3/request';
 import { HighlightText, SingleColumnPageContent } from './Style';
-import { Request } from './types';
 
 const OrdersPage = () => {
-  const [requestsByUser, setRequestsByUser] = useState<Request[]>([]);
-  const [requestsToUser, setRequestsToUser] = useState<Request[]>([]);
+  const [requestsByUser, setRequestsByUser] = useState<EntityRequest[]>([]);
+  const [requestsToUser, setRequestsToUser] = useState<EntityRequest[]>([]);
   const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
   const [loaded, setLoaded] = useState(false);
@@ -38,10 +38,13 @@ const OrdersPage = () => {
   useEffect(() => {
     const getRequests = async () => {
       if (account) {
-        await api.userRequests(account, userRequestsPage, limit).then((userRequests) => {
-          const has = userRequests.data.length !== 0 && userRequests.data.length % limit === 0;
-          setHasMoreUserRequests(has);
-          setRequestsByUser([...requestsByUser, ...userRequests.data]);
+        await api.userRequests(account, userRequestsPage, limit).then((res) => {
+          if (res.data) {
+            const requests = res.data.requests;
+            const has = requests.length !== 0 && requests.length % limit === 0;
+            setHasMoreUserRequests(has);
+            setRequestsByUser([...requestsByUser, ...requests]);
+          }
         });
 
         setLoaded(true);
@@ -53,10 +56,13 @@ const OrdersPage = () => {
   useEffect(() => {
     const getRequests = async () => {
       if (account) {
-        await api.creatorRequests(account, creatorRequestsPage, limit).then((userRequests) => {
-          const has = userRequests.data.length !== 0 && userRequests.data.length % limit === 0;
-          setHasMoreCreatorRequests(has);
-          setRequestsToUser([...requestsToUser, ...userRequests.data]);
+        await api.creatorRequests(account, creatorRequestsPage, limit).then((res) => {
+          if (res.data) {
+            const requests = res.data.requests;
+            const has = requests.length !== 0 && requests.length % limit === 0;
+            setHasMoreCreatorRequests(has);
+            setRequestsToUser([...requestsToUser, ...requests]);
+          }
         });
 
         setLoaded(true);
@@ -73,7 +79,7 @@ const OrdersPage = () => {
     setCreatorRequestsPage(creatorRequestsPage + 1);
   };
 
-  const refund = async (request: Request) => {
+  const refund = async (request: EntityRequest) => {
     if (!executeRecaptcha) {
       toast.warn('Something has occured, Please refresh the page.');
       return;
@@ -83,7 +89,7 @@ const OrdersPage = () => {
       const captchaToken = await executeRecaptcha('Refund');
       const messageToSign = 'I am initiating refund';
       const signed = await signMessage(library, account, messageToSign);
-      const tx = await exchangeContract.refundRequest(request.creator, request.requestId);
+      const tx = await exchangeContract.refundRequest(request.creator.address, request.requestId);
       await tx.wait();
 
       await api.refund(
@@ -176,10 +182,10 @@ const OrdersPage = () => {
                               View clip
                             </PrimaryButton>
                           )}
-                          {!i.delivered && !isRequestExpired(i.created, i.deadline) && !i.refunded && (
+                          {!i.delivered && !isRequestExpired(i.timestamp, i.deadline) && !i.refunded && (
                             <Status style={{ marginTop: 20 }}>PENDING</Status>
                           )}
-                          {!i.delivered && isRequestExpired(i.created, i.deadline) && !i.refunded && (
+                          {!i.delivered && isRequestExpired(i.timestamp, i.deadline) && !i.refunded && (
                             <PrimaryButton
                               size="small"
                               width="small"
@@ -245,7 +251,7 @@ const OrdersPage = () => {
                     >
                       {requests.map((i, n, f) => (
                         <OrderCard key={i.id} request={i} isReceived={true}>
-                          {!i.delivered && !isRequestExpired(i.created, i.deadline) && (
+                          {!i.delivered && !isRequestExpired(i.timestamp, i.deadline) && (
                             <PrimaryButton
                               onPress={() => {
                                 navigate(`/orders/${i.creator}/${i.requestId}`);
@@ -257,7 +263,7 @@ const OrdersPage = () => {
                               Upload clip
                             </PrimaryButton>
                           )}
-                          {!i.delivered && isRequestExpired(i.created, i.deadline) && (
+                          {!i.delivered && isRequestExpired(i.timestamp, i.deadline) && (
                             <Status style={{ marginTop: 20, minWidth: 160 }}>PAST DEADLINE</Status>
                           )}
                           {i.delivered && (

@@ -22,8 +22,8 @@ import { OrderCardProps } from './types';
 
 const OrderCard: React.FC<OrderCardProps> = (props) => {
   const { isReceived, request } = props;
-  const { creator, loaded } = useCreator(props.request.creator);
-  const userAddress = props.isReceived ? props.request.requester : props.request.creator;
+  const { creator, loaded } = useCreator(props.request.creator.address);
+  const userAddress = props.isReceived ? props.request.requester : props.request.creator.address;
   const status = request.delivered ? (isReceived ? 'Received' : 'Paid') : 'Bid';
 
   return (
@@ -48,7 +48,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
                 <Text
                   style={{
                     color: `${(() => {
-                      if (isRequestExpired(request.created, request.deadline)) {
+                      if (isRequestExpired(request.timestamp, request.deadline)) {
                         return theme.red;
                       } else {
                         return '#ffffff';
@@ -56,14 +56,14 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
                     })()}`,
                   }}
                 >
-                  {deadlineMessage(request.created, request.deadline)}
+                  {deadlineMessage(request.timestamp, request.deadline)}
                 </Text>
               </Column>
             )}
             <Column style={{ textAlign: 'right' }}>
               <SecondaryLabel style={{ marginBottom: 2 }}> {status} </SecondaryLabel>
               <BidAmount>
-                {formatETH(parseFloat(request.amount))} {SYMBOL}
+                {formatETH(request.amount)} {SYMBOL}
               </BidAmount>
             </Column>
           </WideContainer>

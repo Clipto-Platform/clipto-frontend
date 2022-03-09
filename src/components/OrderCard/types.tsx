@@ -1,8 +1,8 @@
-import { Request } from '../../pages/Orders/types';
+import { EntityRequest } from '../../api/types';
 
 export interface OrderCardProps {
-  request: Request;
+  request: EntityRequest;
   txHash?: string;
-  key: number;
+  key: string;
   isReceived: boolean;
 }

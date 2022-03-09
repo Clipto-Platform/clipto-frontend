@@ -1,11 +1,14 @@
 import axios from 'axios';
-import { createClient } from 'urql';
+import { createClient, OperationResult } from 'urql';
 import { API_URL, DEFAULT_CHAIN_ID, GRAPH_APIS } from '../config/config';
 import { CreateUserDtoSignable } from '../hooks/useProfile';
-import { queryGetRequest } from './query';
+import { convertToInt } from '../utils/format';
+import { queryCreatorRequests, queryGetCreatorById, queryGetCreators, queryGetRequest, queryUserRequests } from './query';
 import {
   CompleteBooking,
   CreateRequest,
+  EntityCreator,
+  EntityRequest,
   FinalizeFileUpload,
   RefundRequest,
   TweetData,
@@ -65,22 +68,32 @@ export const tweetVerify = (data: TweetData) => {
   return axiosInstance.post('/user/verify', data);
 };
 
-export const userRequests = (account: string, page: number, limit: number) => {
-  return axiosInstance.get(`/request/receiver/${account}`, {
-    params: {
-      limit,
-      page,
-    },
-  });
+export const userRequests = (
+  account: string,
+  page: number,
+  limit: number,
+): Promise<OperationResult<{ requests: EntityRequest[] }>> => {
+  return graphInstance
+    .query(queryUserRequests, {
+      requester: "0x8b2a6a22ec055225c4c4b5815e7d9f566b8be68f",
+      first: limit,
+      skip: (convertToInt(page) - 1) * convertToInt(limit),
+    })
+    .toPromise();
 };
 
-export const creatorRequests = (account: string, page: number, limit: number) => {
-  return axiosInstance.get(`/request/creator/${account}`, {
-    params: {
-      limit,
-      page,
-    },
-  });
+export const creatorRequests = (
+  account: string,
+  page: number,
+  limit: number,
+): Promise<OperationResult<{ requests: EntityRequest[] }>> => {
+  return graphInstance
+    .query(queryCreatorRequests, {
+      creator: "0x8b2a6a22ec055225c4c4b5815e7d9f566b8be68f",
+      first: limit,
+      skip: (convertToInt(page) - 1) * convertToInt(limit),
+    })
+    .toPromise();
 };
 
 export const getRequestById = (creator: string, requestId: string) => {
@@ -124,11 +137,22 @@ export const graphGetRequest = async (requestId: string | number, creator: strin
     .toPromise();
 };
 
-export const creators = async (page: number, limit: number) => {
-  return axiosInstance.get('/users', {
-    params: {
-      limit,
-      page,
-    },
-  });
+export const creators = async (
+  page: number,
+  limit: number,
+): Promise<OperationResult<{ creators: EntityCreator[] }>> => {
+  return graphInstance
+    .query(queryGetCreators, {
+      first: limit,
+      skip: (convertToInt(page) - 1) * convertToInt(limit),
+    })
+    .toPromise();
+};
+
+export const creatorById = async (id: string): Promise<OperationResult<{ creator: EntityCreator }>> => {
+  return graphInstance
+    .query(queryGetCreatorById, {
+      id: id,
+    })
+    .toPromise();
 };

@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-
+import { EntityRequest } from '../../api/types';
 import { OrdersLoading } from './OrdersLoading';
-import { Request } from '../../pages/Orders/types';
 
 export const Status = styled.div`
   width: 90px;
@@ -23,9 +22,9 @@ const TabContent = styled.div`
 
 export interface OrdersTabProps {
   FallbackWhenNoRequests: () => JSX.Element;
-  requests: Request[];
+  requests: EntityRequest[];
   loaded: boolean;
-  children: (requests: Request[]) => React.ReactNode;
+  children: (requests: EntityRequest[]) => React.ReactNode;
 }
 
 export const OrdersTab: React.FC<OrdersTabProps> = (props) => {

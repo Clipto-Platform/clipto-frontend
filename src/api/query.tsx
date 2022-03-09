@@ -25,3 +25,147 @@ query GetRequestById (
     }
 }
 `;
+
+export const queryGetCreators = `
+query GetAllCreators (
+  $first: Int!,
+  $skip: Int!
+) {
+    creators(
+      first: $first,
+      skip: $skip,
+      orderBy: timestamp,
+      orderDirection: desc
+    ){
+      id
+      address
+      tokenAddress
+      twitterHandle
+      bio
+      deliveryTime
+      demos
+      profilePicture
+      userName
+      price
+      txHash
+      block
+      timestamp
+    }
+}
+`;
+
+export const queryGetCreatorById = `
+query GetCreatorById (
+  $id: String!,
+) {
+  creator(id: $id)
+  {
+    id
+    address
+    tokenAddress
+    twitterHandle
+    bio
+    deliveryTime
+    demos
+    profilePicture
+    userName
+    price
+    txHash
+    block
+    timestamp
+  }
+}
+`;
+
+export const queryCreatorRequests = `
+query GetCreatorRequests (
+  $creator: String!,
+  $first: Int!,
+  $skip: Int!
+) {
+  requests(
+    where: {
+      creator: $creator,
+    }, 
+    first: $first,
+    skip: $skip,
+    orderBy: timestamp
+    orderDirection: desc
+  ) {
+    id
+    requestId
+    requester
+    creator {
+      id
+      address
+      tokenAddress
+      twitterHandle
+      bio
+      deliveryTime
+      demos
+      profilePicture
+      userName
+      price
+      txHash
+      block
+      timestamp
+    }
+    amount
+    delivered
+    refunded
+    tokenAddress
+    tokenId
+    tokenUri
+    txHash
+    block
+    timestamp
+  }
+}
+`;
+
+
+export const queryUserRequests = `
+query GetUserRequests (
+  $requester: String!,
+  $first: Int!,
+  $skip: Int!
+) {
+  requests(
+    where: {
+      requester: $requester,
+    }, 
+    first: $first,
+    skip: $skip,
+    orderBy: timestamp
+    orderDirection: desc
+  ) {
+    id
+    requestId
+    requester
+    creator {
+      id
+      address
+      tokenAddress
+      twitterHandle
+      bio
+      deliveryTime
+      demos
+      profilePicture
+      userName
+      price
+      txHash
+      block
+      timestamp
+    }
+    amount
+    delivered
+    refunded
+    tokenAddress
+    tokenId
+    tokenUri
+    txHash
+    block
+    timestamp
+  }
+}
+`;

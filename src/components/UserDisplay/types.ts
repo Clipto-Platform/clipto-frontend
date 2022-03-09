@@ -1,4 +1,5 @@
 import { CSSProperties } from 'react';
+import { EntityCreator } from '../../api/types';
 
 export interface User {
   name: string;
@@ -12,7 +13,7 @@ export interface User {
 
 export interface UserDisplayProps {
   title: string;
-  users: Array<User>;
+  users: Array<EntityCreator>;
   style?: CSSProperties;
   handleScroll: Function;
   hasMore: boolean;
