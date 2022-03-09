@@ -132,6 +132,9 @@ const BookingPage = () => {
                       if (parseFloat(amount) < parseFloat(creator.price)) {
                         errors.amount = `Amount must be greater than ${creator.price}`;
                       }
+                      if (parseFloat(amount) > 700) {
+                        errors.amount = `Amount must be less than 700 Matic`;
+                      }
                     } catch {
                       errors.amount = `Please enter a number.`;
                     }

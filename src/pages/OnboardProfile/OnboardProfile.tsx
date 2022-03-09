@@ -238,6 +238,9 @@ const OnboardProfilePage = () => {
                       if (p <= 0) {
                         errors.price = 'Price must be greater than 0.';
                       }
+                      if (p > 700) {
+                        errors.price = `Amount must be less than 700 Matic`;
+                      }
                     } catch (error) {
                       errors.price = 'Price is not a number.';
                     }
