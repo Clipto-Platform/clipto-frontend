@@ -72,7 +72,6 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
   const imageSliderContainerRef = useRef<HTMLDivElement>(null);
 
   const handleScrollRight = () => {
-    console.log('right scroll');
     const curScroll = imageSliderContainerRef.current?.scrollLeft ?? 0;
     imageSliderContainerRef.current?.scrollTo({
       left: curScroll + 150,
@@ -107,7 +106,6 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
                 <Tweet
                   onLoad={handleLoad}
                   renderError={() => {
-                    console.error(`Error loading this tweet: ${imgSrc}`);
                     return (
                       <Description style={{ margin: 'auto', marginTop: 100, maxWidth: 200 }}>
                         Error loading this tweet. If you are the creator, go to settings and check your tweets
@@ -128,7 +126,6 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
           <ChevronContainer
             style={{ marginRight: 16 }}
             onClick={(e) => {
-              console.log('right scroll activated');
               handleScrollLeft();
             }}
           >

@@ -1,7 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useNavigate } from 'react-router-dom';
 import Loader from 'react-spinners/ClipLoader';
@@ -17,7 +16,6 @@ import { Item, Tabs } from '../../components/Tabs';
 import { useExchangeContract } from '../../hooks/useContracts';
 import { Label } from '../../styles/typography';
 import { isRequestExpired } from '../../utils/time';
-import { signMessage } from '../../web3/request';
 import { HighlightText, SingleColumnPageContent } from './Style';
 
 const OrdersPage = () => {
@@ -33,8 +31,6 @@ const OrdersPage = () => {
   const [hasMoreUserRequests, setHasMoreUserRequests] = useState<boolean>(true);
   const limit: number = 10;
 
-  const { executeRecaptcha } = useGoogleReCaptcha();
-
   useEffect(() => {
     const getRequests = async () => {
       if (account) {
@@ -42,12 +38,12 @@ const OrdersPage = () => {
           if (res.data) {
             const requests = res.data.requests;
             const has = requests.length !== 0 && requests.length % limit === 0;
+
             setHasMoreUserRequests(has);
             setRequestsByUser([...requestsByUser, ...requests]);
           }
-        });
-
-        setLoaded(true);
+        })
+        .finally(() => setLoaded(true));
       }
     };
     getRequests();
@@ -56,16 +52,18 @@ const OrdersPage = () => {
   useEffect(() => {
     const getRequests = async () => {
       if (account) {
-        await api.creatorRequests(account, creatorRequestsPage, limit).then((res) => {
-          if (res.data) {
-            const requests = res.data.requests;
-            const has = requests.length !== 0 && requests.length % limit === 0;
-            setHasMoreCreatorRequests(has);
-            setRequestsToUser([...requestsToUser, ...requests]);
-          }
-        });
+        await api
+          .creatorRequests(account, creatorRequestsPage, limit)
+          .then((res) => {
+            if (res.data) {
+              const requests = res.data.requests;
+              const has = requests.length !== 0 && requests.length % limit === 0;
 
-        setLoaded(true);
+              setHasMoreCreatorRequests(has);
+              setRequestsToUser([...requestsToUser, ...requests]);
+            }
+          })
+          .finally(() => setLoaded(true));
       }
     };
     getRequests();
@@ -80,27 +78,9 @@ const OrdersPage = () => {
   };
 
   const refund = async (request: EntityRequest) => {
-    if (!executeRecaptcha) {
-      toast.warn('Something has occured, Please refresh the page.');
-      return;
-    }
-
     try {
-      const captchaToken = await executeRecaptcha('Refund');
-      const messageToSign = 'I am initiating refund';
-      const signed = await signMessage(library, account, messageToSign);
       const tx = await exchangeContract.refundRequest(request.creator.address, request.requestId);
       await tx.wait();
-
-      await api.refund(
-        {
-          id: request.id,
-          address: account || '',
-          signed: signed,
-          message: messageToSign,
-        },
-        captchaToken,
-      );
       toast.success('Successfully refunded!');
 
       const updated = requestsByUser.map((req) => {
@@ -173,7 +153,7 @@ const OrdersPage = () => {
                           {i.delivered && (
                             <PrimaryButton
                               onPress={() => {
-                                navigate(`/orders/${i.creator}/${i.requestId}`);
+                                navigate(`/orders/${i.creator.address}/${i.requestId}`);
                               }}
                               size="small"
                               width="small"
@@ -254,7 +234,7 @@ const OrdersPage = () => {
                           {!i.delivered && !isRequestExpired(i.timestamp, i.deadline) && (
                             <PrimaryButton
                               onPress={() => {
-                                navigate(`/orders/${i.creator}/${i.requestId}`);
+                                navigate(`/orders/${i.creator.address}/${i.requestId}`);
                               }}
                               size="small"
                               width="small"
@@ -269,7 +249,7 @@ const OrdersPage = () => {
                           {i.delivered && (
                             <PrimaryButton
                               onPress={() => {
-                                navigate(`/orders/${i.creator}/${i.requestId}`);
+                                navigate(`/orders/${i.creator.address}/${i.requestId}`);
                               }}
                               variant="secondary"
                               size="small"

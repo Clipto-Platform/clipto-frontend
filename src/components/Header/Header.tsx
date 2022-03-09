@@ -186,7 +186,6 @@ const Header: React.FC<HeaderProps> = () => {
       setCheckLogin(true);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
-      console.log(e.name);
       if (e.name === 'NoEthereumProviderError' || e.message?.includes('No Ethereum provider was found')) {
         setErrorMessage('No MetaMask detected.');
       } else if (
@@ -198,7 +197,6 @@ const Header: React.FC<HeaderProps> = () => {
         setErrorMessage('The MetaMask login was closed, try connecting again');
       } else {
         setErrorMessage(e.message ?? 'Something went wrong logging in');
-        console.log(e, Object.keys(e));
       }
       setCurrentlyActivating(undefined);
       return;
@@ -223,7 +221,6 @@ const Header: React.FC<HeaderProps> = () => {
     } catch (e: any) {
       setCurrentlyActivating(undefined);
       setErrorMessage(e.message ?? 'Something went wrong logging in with WalletConnect');
-      console.log(e);
       return;
     }
     setShowLoginDialog(false);
@@ -255,7 +252,6 @@ const Header: React.FC<HeaderProps> = () => {
           userProfile = await axios.get(`${API_URL}/user/${account}`);
           setLoggedInProfile(userProfile.data);
         } catch (e) {
-          console.log('Failed to find creator account for userProfile');
           setLoggedInProfile(null);
         }
       }

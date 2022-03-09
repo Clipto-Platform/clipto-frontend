@@ -3,12 +3,12 @@ import * as UpChunk from '@mux/upchunk';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useParams } from 'react-router-dom';
 import BounceLoader from 'react-spinners/BounceLoader';
 import { toast } from 'react-toastify';
 import { useTheme } from 'styled-components';
 import * as api from '../../api';
+import { EntityRequest } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import { PageContentWrapper, PageWrapper } from '../../components/layout/Common';
@@ -21,7 +21,6 @@ import { useExchangeContract } from '../../hooks/useContracts';
 import { Description, Label } from '../../styles/typography';
 import { getNFTDetails, getNFTHistory, getTokenIdAndAddress } from '../../web3/nft';
 import { signMessage } from '../../web3/request';
-import { Request } from '../Orders/types';
 import {
   BookingCard,
   ComboButtonContainer,
@@ -41,7 +40,7 @@ const SelectedOrderPage = () => {
   const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
   const { creator, requestId } = useParams();
-  const [request, setRequest] = useState<Request>();
+  const [request, setRequest] = useState<EntityRequest>();
   const [loaded, setLoaded] = useState<boolean>(false);
   const [minting, setMinting] = useState<boolean>(false);
   const [nftDetails, setNftDetails] = useState<NFTDetailsType>();
@@ -50,7 +49,6 @@ const SelectedOrderPage = () => {
   const [description, setDescription] = useState<string>('');
   const [error, setError] = useState<NFTFormError>();
   const [history, setHistory] = useState<NFTHistories[]>();
-  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const validate = (name: string, desc: string) => {
     if (name.length === 0) return { name: 'This field cannot be empty' };
@@ -143,16 +141,8 @@ const SelectedOrderPage = () => {
       return;
     }
 
-    if (!executeRecaptcha) {
-      toast.warn('Something has occured, Please refresh the page.');
-      return;
-    }
-
     try {
       setMinting(true);
-      const token = await executeRecaptcha('CompleteRequest');
-      const messageToSign = 'I am completing an order';
-      const signed = await signMessage(library, account, messageToSign);
       const tx = await exchangeContract.deliverRequest(request.requestId, 'https://arweave.net/' + tokenUri);
       const receipt = await tx.wait();
       const eventArgs = receipt.events?.find((i) => i.event === 'DeliveredRequest')?.args;
@@ -160,15 +150,6 @@ const SelectedOrderPage = () => {
       const tokenId = eventArgs?.tokenId.toNumber();
       fetchNFT(tokenAddress, tokenId, tokenUri);
 
-      await api.completeBooking(
-        {
-          id: request.id,
-          address: account || '',
-          message: messageToSign,
-          signed: signed,
-        },
-        token,
-      );
       toast.success('Successfully completed order!');
       setDone(true);
     } catch (e) {
@@ -192,9 +173,14 @@ const SelectedOrderPage = () => {
     });
   };
 
-  const fetchNFTDetails = async (request: Request) => {
-    const { tokenAddress, tokenUri, tokenId } = await getTokenIdAndAddress(request);
-    fetchNFT(tokenAddress, tokenId, tokenUri);
+  const fetchNFTDetails = async (request: EntityRequest) => {
+    const data = await getTokenIdAndAddress(request);
+    if (data) {
+      const { tokenAddress, tokenUri, tokenId } = data;
+      fetchNFT(tokenAddress, tokenId, tokenUri);
+    } else {
+      toast.error('Error loading NFT, please check back later');
+    }
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'video/*,.mkv,.flv' });
@@ -202,12 +188,15 @@ const SelectedOrderPage = () => {
   useEffect(() => {
     if (creator && requestId) {
       api
-        .getRequestById(creator, requestId)
+        .requestById(requestId, creator)
         .then((res) => {
-          setRequest(res.data);
+          if (res.data) {
+            const request = res.data.requests[0];
+            setRequest(request);
 
-          if (res.data.delivered && exchangeContract) {
-            fetchNFTDetails(res.data);
+            if (request.delivered && exchangeContract) {
+              fetchNFTDetails(request);
+            }
           }
         })
         .finally(() => setLoaded(true));
@@ -308,7 +297,7 @@ const SelectedOrderPage = () => {
             )}
 
             {(request?.delivered || clipDetails) && <Video src={clipDetails} />}
-            {request && <OrderCard request={request!} key={1} isReceived={false} />}
+            {request && <OrderCard request={request!} key={request.id} isReceived={false} />}
             {!request && <Label>Could not find request</Label>}
             {nftDetails && <NFTDetails details={nftDetails} />}
             {history && <NFTHistory history={history} />}

@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import { Creator } from '../../hooks/useCreator';
 import { Label } from '../../styles/typography';
 import { RightPanelLoading } from './RightPanelLoading';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { EntityCreator } from '../../api/types';
 
 export const BookingCard = styled.div`
   background: ${(props) => props.theme.black};
@@ -34,10 +34,10 @@ const HR = styled.div`
 `;
 
 export interface RightPanelProps {
-  creator?: Creator;
+  creator?: EntityCreator;
   account?: string | null;
   loaded: boolean;
-  children: (creator: Creator, account: string) => React.ReactNode;
+  children: (creator: EntityCreator, account: string) => React.ReactNode;
 }
 
 export const RightPanel: React.FC<RightPanelProps> = (props) => {

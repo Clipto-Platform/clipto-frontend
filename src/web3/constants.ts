@@ -30,7 +30,6 @@ function getErrorMessage(error: Error) {
   ) {
     return 'Please authorize this website to access your Ethereum account.';
   } else {
-    console.error(error);
     return 'An unknown error occurred. Check the console for more details.';
   }
 }

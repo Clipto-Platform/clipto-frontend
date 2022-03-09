@@ -1,19 +1,33 @@
 export const queryGetRequest = `
 query GetRequestById (
     $requestId: BigInt!,
-    $creator: Bytes!,
-    $requester: Bytes!
+    $creator: Bytes!
 ) {
     requests(where: {
         requestId: $requestId,
-        creator: $creator,
-        requester: $requester
-    }) {
+        creator: $creator
+    }){
       id
       requestId
       requester
-      creator
+      creator {
+        id
+        address
+        tokenAddress
+        twitterHandle
+        bio
+        deliveryTime
+        demos
+        profilePicture
+        userName
+        price
+        txHash
+        block
+        timestamp
+      }
       amount
+      description
+      deadline
       delivered
       refunded
       tokenAddress
@@ -23,7 +37,7 @@ query GetRequestById (
       block
       timestamp
     }
-}
+  }
 `;
 
 export const queryGetCreators = `
@@ -111,6 +125,8 @@ query GetCreatorRequests (
       timestamp
     }
     amount
+    description
+    deadline
     delivered
     refunded
     tokenAddress
@@ -122,7 +138,6 @@ query GetCreatorRequests (
   }
 }
 `;
-
 
 export const queryUserRequests = `
 query GetUserRequests (
@@ -158,6 +173,8 @@ query GetUserRequests (
       timestamp
     }
     amount
+    description
+    deadline
     delivered
     refunded
     tokenAddress

@@ -3,10 +3,8 @@ import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { Formik } from 'formik';
 import React, { useState } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import * as api from '../../api';
 import { RequestData } from '../../api/types';
 import { AvatarComponent } from '../../components/AvatarOrb';
 import { ImagesSlider } from '../../components/Booking/ImagesSlider';
@@ -21,9 +19,9 @@ import { useCreator } from '../../hooks/useCreator';
 import { useFee } from '../../hooks/useFee';
 import { Description, Label } from '../../styles/typography';
 import { getShortenedAddress } from '../../utils/address';
-import { convertToInt, formatETH } from '../../utils/format';
+import { convertToFloat, convertToInt, formatETH } from '../../utils/format';
 import { Number } from '../../utils/validation';
-import { isCreatorOnChain, signMessage } from '../../web3/request';
+import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
 import { BookingFormValues } from './types';
 
@@ -36,18 +34,8 @@ const BookingPage = () => {
   const exchangeContract = useExchangeContract(true);
   const { creator, loaded } = useCreator(creatorId);
   const { FeeDescription } = useFee();
-  const { executeRecaptcha } = useGoogleReCaptcha();
 
-  const handleSubmit = async (values: BookingFormValues) => {
-    if (executeRecaptcha) {
-      const token = await executeRecaptcha('Booking');
-      await makeBooking(values, token);
-    } else {
-      toast.warn('Something has occured, Please refresh the page.');
-    }
-  };
-
-  const makeBooking = async (values: BookingFormValues, captchaToken: string) => {
+  const makeBooking = async (values: BookingFormValues) => {
     try {
       if (!creatorId) {
         toast.error('Booking request for this content creator cannot be created');
@@ -68,10 +56,9 @@ const BookingPage = () => {
         value: ethers.utils.parseEther(values.amount),
       });
       const receipt = await transaction.wait();
-      console.log(receipt);
 
       navigate('/orders');
-      toast.success('Request created!');
+      toast.success('Booking completed, your Order will be visible here in few minutes.');
     } catch (e) {
       toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
       return;
@@ -120,7 +107,7 @@ const BookingPage = () => {
                     const errors: any = {};
                     try {
                       Number.parse(parseFloat(amount));
-                      if (parseFloat(amount) < parseFloat(creator.price)) {
+                      if (parseFloat(amount) < convertToFloat(creator.price)) {
                         errors.amount = `Amount must be greater than ${creator.price}`;
                       }
                       if (parseFloat(amount) > 700) {
@@ -150,7 +137,7 @@ const BookingPage = () => {
                   validateOnChange={false}
                   onSubmit={async (values) => {
                     setLoading(true);
-                    await handleSubmit(values);
+                    await makeBooking(values);
                     setLoading(false);
                   }}
                 >
@@ -160,7 +147,7 @@ const BookingPage = () => {
                         <FlexRow style={{ marginBottom: 7 }}>
                           <Label>Personal use</Label>
                           <Label style={{ fontSize: 14 }}>
-                            {formatETH(parseFloat(creator.price))} {SYMBOL}+
+                            {formatETH(convertToFloat(creator.price))} {SYMBOL}+
                           </Label>
                         </FlexRow>
                         <Description>Personalized video for you or someone else</Description>
@@ -210,7 +197,7 @@ const BookingPage = () => {
                           description={'Increase your bid to get your video earlier'}
                           endText={SYMBOL}
                           type="number"
-                          placeholder={formatETH(parseFloat(creator.price)) + '+'}
+                          placeholder={formatETH(convertToFloat(creator.price)) + '+'}
                           onChange={handleChange('amount')}
                           errorMessage={errors.amount}
                         />
