@@ -3,9 +3,7 @@ import * as api from '../../api';
 import { EntityCreator } from '../../api/types';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import { PageWrapper } from '../../components/layout/Common';
-import { User } from '../../components/UserDisplay/types';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
-import { SYMBOL } from '../../config/config';
 
 const ExplorePage = () => {
   const limit: number = 20;
@@ -14,20 +12,15 @@ const ExplorePage = () => {
   const [hasMore, setHasMore] = useState<boolean>(true);
 
   useEffect(() => {
-    api
-      .creators(page, limit)
-      .then((res) => {
-        if (res.data) {
-          const list = res.data.creators;
-          const has = list.length !== 0 && list.length % limit === 0;
+    api.creators(page, limit).then((res) => {
+      if (res.data) {
+        const list = res.data.creators;
+        const has = list.length !== 0 && list.length % limit === 0;
 
-          setHasMore(has);
-          setUsers([...users, ...list]);
-        }
-      })
-      .catch((e) => {
-        console.error(e);
-      });
+        setHasMore(has);
+        setUsers([...users, ...list]);
+      }
+    });
   }, [page]);
 
   const handleScroll = () => {

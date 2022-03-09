@@ -1,22 +1,29 @@
 import { useTheme } from 'styled-components';
+import { EntityCreator } from '../../api/types';
 import pfp5 from '../../assets/images/pfps/cc.png';
 import pfp1 from '../../assets/images/pfps/g1.jpeg';
 import pfp4 from '../../assets/images/pfps/g2.jpeg';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
-import { User } from '../../components/UserDisplay/types';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
 import { HeroTitle } from './Style';
 
 // TODO(johnrjj) - Fetch remotely
-const featuredUsers = [
+const featuredUsers: EntityCreator[] = [
   {
-    name: 'Gabriel Haines.eth',
+    userName: 'Gabriel Haines.eth',
     twitterHandle: 'Protocol Designer',
-    price: '10 MATIC',
+    price: 10,
     profilePicture: pfp1,
-    uid: '1111',
     address: '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8',
+    id: '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8',
+    bio: '',
+    demos: [],
+    timestamp: 0,
+    tokenAddress: '',
+    txHash: '',
+    deliveryTime: 12,
+    block: 0
   },
   // {
   //   name: 'Dave White',
@@ -27,36 +34,64 @@ const featuredUsers = [
   //   address: '1',
   // },
   {
-    name: 'Ape dev',
+    userName: 'Ape dev',
     twitterHandle: 'Lead engineer',
-    price: '1 MATIC',
+    price: 1,
     profilePicture: pfp4,
-    uid: '4444',
     address: '0x293d9eAb4a6b6DCD263d71e74C1bD7d83Fef5063',
+    id: '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8',
+    bio: '',
+    demos: [],
+    timestamp: 0,
+    tokenAddress: '',
+    txHash: '',
+    deliveryTime: 12,
+    block: 0,
   },
   {
-    name: 'Artemilse',
+    userName: 'Artemilse',
     twitterHandle: 'Product designer',
-    price: '5 MATIC',
+    price: 5,
     profilePicture: 'https://pbs.twimg.com/profile_images/1478236456594276355/ZZSznv7o_400x400.jpg',
-    uid: '4444',
     address: '0x811AA4E4A28A80fda4F87DA8350D98E14b4959c3',
+    id: '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8',
+    bio: '',
+    demos: [],
+    timestamp: 0,
+    tokenAddress: '',
+    txHash: '',
+    deliveryTime: 12,
+    block: 0
   },
   {
-    name: 'jseam',
+    userName: 'jseam',
     twitterHandle: 'Handy-dandy builder',
-    price: '10 MATIC',
+    price: 10,
     profilePicture: 'https://pbs.twimg.com/profile_images/1478433965723643908/YY4hbFep_400x400.jpg',
-    uid: '3333',
     address: '0x2632Dd0fE665F6068bf92f3524Fc61A8C49EC811',
+    id: '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8',
+    bio: '',
+    demos: [],
+    timestamp: 0,
+    tokenAddress: '',
+    txHash: '',
+    deliveryTime: 12,
+    block: 0
   },
   {
-    name: 'CC0maxi',
+    userName: 'CC0maxi',
     twitterHandle: 'Web3 designer',
-    price: '3 MATIC',
+    price: 3,
     profilePicture: pfp5,
-    uid: '5555',
     address: '0xD795A0743A105C40b4D174e7F9DbF8A60cB0Cf15',
+    id: '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8',
+    bio: '',
+    demos: [],
+    timestamp: 0,
+    tokenAddress: '',
+    txHash: '',
+    deliveryTime: 12,
+    block: 0
   },
 ];
 

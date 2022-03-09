@@ -44,15 +44,9 @@ export const isCreatorOnChain = async (
   try {
     cliptoTokenAddress = await exchangeContract.creators(account);
   } catch (err) {
-    console.log(err);
-    console.log(
-      'This should never happen unless you put an invalid address or if you redeployed your testnet,I think metamask is still point to the old deployment so thats why there are missing headers',
-    );
-    console.log('If you get the missing headers metamask error, try switching the network and back');
     throw 'Error : If you get the missing headers metamask error, try switching the network and back';
   }
   if (parseInt(cliptoTokenAddress) === 0) {
-    console.log('User is not a registered creator.');
     return false;
   } else {
     return true;

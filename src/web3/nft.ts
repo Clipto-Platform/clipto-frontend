@@ -1,9 +1,10 @@
 import * as api from '../api';
+import { EntityRequest } from '../api/types';
 import { CHAIN_NAMES, DEFAULT_CHAIN_ID, getContractLink, getOpensea, getPolygonScan } from '../config/config';
 import { CliptoToken__factory } from '../contracts';
 import { getProvider } from '../hooks/useContracts';
-import { Request } from '../pages/Orders/types';
 import { getShortenedAddress } from '../utils/address';
+import { convertToInt } from '../utils/format';
 
 const getNftToken = (nftAddress: string) => {
   const provider = getProvider();
@@ -16,14 +17,17 @@ const getDate = (timestamp: number) => {
   return date.toLocaleDateString();
 };
 
-export const getTokenIdAndAddress = async (request: Request) => {
-  const response = await api.graphGetRequest(request.requestId, request.creator, request.requester);
-  const output = response.data.requests[0];
-  return {
-    tokenId: parseInt(output.tokenId),
-    tokenAddress: output.tokenAddress.toString(),
-    tokenUri: output.tokenUri,
-  };
+export const getTokenIdAndAddress = async (request: EntityRequest) => {
+  const response = await api.requestById(request.requestId, request.creator.address);
+  if (response.data) {
+    const output = response.data?.requests[0];
+    return {
+      tokenId: convertToInt(output.tokenId),
+      tokenAddress: output.tokenAddress.toString(),
+      tokenUri: output.tokenUri,
+    };
+  }
+  return undefined;
 };
 
 const filterTransferEvents = async (tokenAddress: string, tokenId: number) => {

@@ -1,22 +1,21 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import axios from 'axios';
 import { Formik } from 'formik';
 import { useEffect, useState } from 'react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as api from '../../api';
+import { CreatorData, EntityCreator } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { API_URL, SYMBOL } from '../../config/config';
+import { SYMBOL } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
 import { useFee } from '../../hooks/useFee';
-import { CreateUserDtoFull, CreateUserDtoSignable, GetUserResponse, useProfile } from '../../hooks/useProfile';
+import { useProfile } from '../../hooks/useProfile';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
-import { isCreatorOnChain, signMessage } from '../../web3/request';
+import { isCreatorOnChain } from '../../web3/request';
 import { OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
 
 const OnboardProfilePage = () => {
@@ -25,41 +24,26 @@ const OnboardProfilePage = () => {
   const exchangeContract = useExchangeContract(true);
   const [loading, setLoading] = useState(false); //state of form button
   const [hasAccount, setHasAccount] = useState<boolean>(false); //state of if the user is a creator or not
-  const [userProfileDB, setUserProfileDB] = useState<GetUserResponse>();
+  const [userProfileDB, setUserProfileDB] = useState<EntityCreator>();
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState<boolean>(false);
   const { FeeDescription } = useFee();
-  const { executeRecaptcha } = useGoogleReCaptcha();
 
-  const handleSubmit = async (hasAccount: boolean, values: CreateUserDtoFull) => {
-    if (executeRecaptcha) {
-      const token = await executeRecaptcha(hasAccount ? 'UpdateProfile' : 'Onboard');
-      hasAccount ? await updateUserProfile(values, token) : await createUserProfile(values, token);
-    } else {
-      toast.warn('Something has occured, Please refresh the page.');
-    }
-  };
-
-  const updateUserProfile = async (vals: CreateUserDtoFull, captchaToken: string) => {
+  const updateUserProfile = async (creatorData: CreatorData) => {
     try {
-      const messageToBeSigned = 'I am updating my profile in Clipto';
-      const signed = await signMessage(library, account, messageToBeSigned);
-      const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed };
-      await api.updateProfile(createUserSignable, captchaToken);
+      const txResult = await exchangeContract.updateCreator(JSON.stringify(creatorData));
+      toast.loading('Profile updating, waiting for confirmation!');
+      await txResult.wait();
       toast.success('Success!');
       navigate(`/creator/${account}`);
     } catch (err: any) {
       toast.error(err.message);
-      return;
+    } finally {
+      toast.dismiss();
     }
   };
 
-  const createUserProfile = async (vals: CreateUserDtoFull, captchaToken: string) => {
-    if (!account) {
-      toast.error('Connect your wallet and reload the page!');
-      return;
-    }
-
+  const createUserProfile = async (creatorData: CreatorData) => {
     let userOnChain;
     try {
       userOnChain = await isCreatorOnChain(exchangeContract, account);
@@ -68,14 +52,12 @@ const OnboardProfilePage = () => {
       return;
     }
 
-    //registers creator on chain if user is not already on chain
     if (!userOnChain) {
       try {
-        const txResult = await exchangeContract.registerCreator(vals.userName);
+        const txResult = await exchangeContract.registerCreator(creatorData.userName, JSON.stringify(creatorData));
         toast.loading('Profile created, waiting for confirmation!');
         await txResult.wait();
       } catch (err: any) {
-        //if txResult fails then print transaction error message
         if (err.message) {
           toast.dismiss();
           toast.error(err.message);
@@ -83,43 +65,22 @@ const OnboardProfilePage = () => {
           toast.dismiss();
           toast.error(err.data.message);
         }
-        //if creator is not on chain and the transaction to create an creator fails (user declines transaction, not enough balance, already has an account), then exit profile creation. A row in the db will not be created.
-        return;
       }
-    }
-
-    try {
-      const messageToBeSigned = 'I am onboarding to Clipto';
-      const signed = await signMessage(library, account, messageToBeSigned);
-      const createUserSignable: CreateUserDtoSignable = { ...vals, message: messageToBeSigned, signed };
-      if (!hasAccount) {
-        await api.creatorOnboard(createUserSignable, captchaToken);
-        toast.dismiss(); // used to remove the loading toast
-        toast.success('Success!');
-        navigate(`/creator/${account}`);
-      } else {
-        toast.dismiss();
-        toast.error('User already has account. Please reload the page');
-      }
-    } catch (err: any) {
-      toast.dismiss();
-      toast.error(err.message);
-      return;
     }
   };
 
   useEffect(() => {
     if (account) {
-      //if userProfile does not have tweetUrl
-      axios
-        .get<GetUserResponse>(`${API_URL}/user/${account}`)
+      api
+        .creatorById(account)
         .then((res) => {
-          if (res.status === 200) {
+          if (res.data) {
+            const creator = res.data.creator;
+
             setHasAccount(true);
-            setUserProfileDB({ ...res.data });
-          } else {
-            throw 'Something is wrong';
+            setUserProfileDB(creator);
           }
+
           setLoaded(true);
         })
         .catch(() => {
@@ -170,13 +131,16 @@ const OnboardProfilePage = () => {
                     values.demo2 && demos.push(values.demo2);
                     values.demo3 && demos.push(values.demo3);
 
-                    const vals = {
-                      ...values,
-                      demos,
+                    const creatorData: CreatorData = {
+                      userName: values.userName,
+                      bio: values.bio,
+                      twitterHandle: userProfile.userName || values.userName,
                       deliveryTime: parseInt(values.deliveryTime),
+                      demos: demos,
                       price: parseFloat(values.price),
+                      profilePicture: values.profilePicture,
                     };
-                    await handleSubmit(hasAccount, vals);
+                    hasAccount ? await updateUserProfile(creatorData) : await createUserProfile(creatorData);
                     setLoading(false);
                   }}
                   validate={(values) => {

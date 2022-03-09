@@ -1,9 +1,8 @@
 import { SYMBOL } from '../../config/config';
-import { useCreator } from '../../hooks/useCreator';
 import { theme } from '../../styles/theme';
 import { Label, Text } from '../../styles/typography';
 import { getShortenedAddress } from '../../utils/address';
-import { formatETH } from '../../utils/format';
+import { bigIntToReadable } from '../../utils/format';
 import { deadlineMessage, isRequestExpired } from '../../utils/time';
 import { AvatarComponent } from '../AvatarOrb';
 import {
@@ -16,13 +15,12 @@ import {
   OrderCardTopRowContainer,
   Row,
   SecondaryLabel,
-  WideContainer,
+  WideContainer
 } from './Style';
 import { OrderCardProps } from './types';
 
 const OrderCard: React.FC<OrderCardProps> = (props) => {
   const { isReceived, request } = props;
-  const { creator, loaded } = useCreator(props.request.creator.address);
   const userAddress = props.isReceived ? props.request.requester : props.request.creator.address;
   const status = request.delivered ? (isReceived ? 'Received' : 'Paid') : 'Bid';
 
@@ -32,11 +30,11 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
         <Row>
           <AvatarContainer>
             {isReceived && <AvatarComponent address={userAddress} />}
-            {!isReceived && creator && <AvatarComponent url={creator.profilePicture} />}
+            {!isReceived && request.creator && <AvatarComponent url={request.creator.profilePicture} />}
           </AvatarContainer>
           <Column>
             {/* TODO(jonathanng) - make dynamic */}
-            {!isReceived && <Label style={{ marginBottom: 2 }}>{creator?.userName}</Label>}
+            {!isReceived && <Label style={{ marginBottom: 2 }}>{request.creator.userName}</Label>}
             <Text>{getShortenedAddress(userAddress)}</Text>
           </Column>
         </Row>
@@ -63,7 +61,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
             <Column style={{ textAlign: 'right' }}>
               <SecondaryLabel style={{ marginBottom: 2 }}> {status} </SecondaryLabel>
               <BidAmount>
-                {formatETH(request.amount)} {SYMBOL}
+                {bigIntToReadable(request.amount)} {SYMBOL}
               </BidAmount>
             </Column>
           </WideContainer>

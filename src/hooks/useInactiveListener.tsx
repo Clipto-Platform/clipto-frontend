@@ -12,7 +12,6 @@ export function useInactiveListener(suppress = false) {
     const { ethereum } = window as any;
     if (ethereum && ethereum.on && !active && !error && !suppress) {
       const handleConnect = () => {
-        console.log("Handling 'connect' event");
         if (isWcConnected) {
           activate(walletconnect);
         } else {
@@ -20,7 +19,6 @@ export function useInactiveListener(suppress = false) {
         }
       };
       const handleChainChanged = (chainId: string | number) => {
-        console.log("Handling 'chainChanged' event with payload", chainId);
         if (isWcConnected) {
           activate(walletconnect);
         } else {
@@ -28,7 +26,6 @@ export function useInactiveListener(suppress = false) {
         }
       };
       const handleAccountsChanged = (accounts: string[]) => {
-        console.log("Handling 'accountsChanged' event with payload", accounts);
         if (accounts.length > 0) {
           if (isWcConnected) {
             activate(walletconnect);
@@ -38,7 +35,6 @@ export function useInactiveListener(suppress = false) {
         }
       };
       const handleNetworkChanged = (networkId: string | number) => {
-        console.log("Handling 'networkChanged' event with payload", networkId);
         if (isWcConnected) {
           activate(walletconnect);
         } else {

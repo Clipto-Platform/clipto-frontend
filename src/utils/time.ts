@@ -8,5 +8,5 @@ export const isRequestExpired = (created: number, deadline: number): boolean => 
 
 export const deadlineMessage = (created: number, deadline: number): string => {
   if (isRequestExpired(created, deadline)) return 'Expired';
-  return moment(created).add(deadline, 'days').fromNow();
+  return moment.unix(created).add(deadline, 'days').fromNow();
 };

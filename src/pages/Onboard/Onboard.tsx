@@ -23,14 +23,11 @@ const OnboardingPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const verifyTwitterUser = async () => {
-    const verificationResult = await api
-      .tweetVerify({
-        tweetUrl,
-        address: account || '',
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    const verificationResult = await api.tweetVerify({
+      tweetUrl,
+      address: account || '',
+    });
+
     if (verificationResult && verificationResult.data && verificationResult.data.includes) {
       userProfile.setUsername(verificationResult.data.includes.users[0].name);
       userProfile.setProfilePicture(
@@ -38,7 +35,6 @@ const OnboardingPage = () => {
       );
       userProfile.setAddress(account!);
       userProfile.setTweetUrl(tweetUrl);
-      console.log(userProfile);
       toast.success('Verified Twitter successfully!');
       navigate('/onboarding/profile');
     } else {
