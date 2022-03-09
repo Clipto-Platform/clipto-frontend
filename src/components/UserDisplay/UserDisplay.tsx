@@ -44,16 +44,16 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
                   {users.map((user) => {
                     return (
                       <Link key={user.address} to={`/creator/${user.address}`}>
-                        <UserCardContainer key={user.uid}>
-                          <UserImage src={user.src} onLoad={handleLoad} style={{ marginBottom: 24 }} />
+                        <UserCardContainer key={user.id}>
+                          <UserImage src={user.profilePicture} onLoad={handleLoad} style={{ marginBottom: 24 }} />
                           {imagesDone && (
                             <>
-                              <UserTitle style={{ marginBottom: 4 }}>{user.name}</UserTitle>
-                              <UserDescription style={{ marginBottom: 16 }}>{user.shortDescription}</UserDescription>
+                              <UserTitle style={{ marginBottom: 4 }}>{user.userName}</UserTitle>
+                              <UserDescription style={{ marginBottom: 16 }}>{user.twitterHandle}</UserDescription>
                               <UserStartingPrice>
                                 From{' '}
                                 <span style={{ fontWeight: 700 }}>
-                                  {formatETH(parseFloat(user.price))} {SYMBOL}
+                                  {formatETH(user.price)} {SYMBOL}
                                 </span>
                               </UserStartingPrice>
                             </>

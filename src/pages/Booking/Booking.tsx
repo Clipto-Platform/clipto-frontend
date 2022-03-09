@@ -7,6 +7,7 @@ import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as api from '../../api';
+import { RequestData } from '../../api/types';
 import { AvatarComponent } from '../../components/AvatarOrb';
 import { ImagesSlider } from '../../components/Booking/ImagesSlider';
 import { BookingCard, RightPanel } from '../../components/Booking/RightPanel';
@@ -20,7 +21,7 @@ import { useCreator } from '../../hooks/useCreator';
 import { useFee } from '../../hooks/useFee';
 import { Description, Label } from '../../styles/typography';
 import { getShortenedAddress } from '../../utils/address';
-import { formatETH } from '../../utils/format';
+import { convertToInt, formatETH } from '../../utils/format';
 import { Number } from '../../utils/validation';
 import { isCreatorOnChain, signMessage } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
@@ -48,39 +49,29 @@ const BookingPage = () => {
 
   const makeBooking = async (values: BookingFormValues, captchaToken: string) => {
     try {
+      if (!creatorId) {
+        toast.error('Booking request for this content creator cannot be created');
+        return;
+      }
+
       const isCreator = await isCreatorOnChain(exchangeContract, creatorId);
       if (!isCreator) {
         toast.error('Booking request for this content creator cannot be created');
         return;
       }
 
-      const signMsg = 'I am creating a booking for my creator';
-      const signed = await signMessage(library, account, signMsg);
-      const transaction = await exchangeContract.newRequest(creatorId || '', {
+      const requestData: RequestData = {
+        deadline: convertToInt(values.deadline),
+        description: values.description,
+      };
+      const transaction = await exchangeContract.newRequest(creatorId, JSON.stringify(requestData), {
         value: ethers.utils.parseEther(values.amount),
       });
       const receipt = await transaction.wait();
-      const requestId: number = receipt.events?.find((i) => i.event === 'NewRequest')?.args?.index.toNumber();
+      console.log(receipt);
 
-      const data = {
-        ...values,
-        deadline: parseInt(values.deadline),
-        txHash: transaction.hash,
-        signed,
-        requestId,
-        address: account || '',
-        message: signMsg,
-        creator: creatorId || '',
-        requester: account || '',
-      };
-
-      const response = await api.createBooking(data, captchaToken);
-      if (response && response.status === 201) {
-        navigate('/orders');
-        toast.success('Request created!');
-      } else {
-        toast.error('Request creation failed.');
-      }
+      navigate('/orders');
+      toast.success('Request created!');
     } catch (e) {
       toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
       return;
