@@ -20,6 +20,7 @@ import { NotFoundPage } from './pages/NotFound/NotFound';
 import { OrdersPage } from './pages/Orders/Orders';
 import { SelectedOrderPage } from './pages/SelectedOrder/SelectedOrder';
 import { theme } from './styles/theme';
+import { BottomBar } from './components/BottomBar/BottomBar';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLibrary(provider: any): Web3Provider {
@@ -51,6 +52,7 @@ function App() {
               <Route path="creator/:creatorId" element={<BookingPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
+            <BottomBar />
           </BrowserRouter>
         </GoogleReCaptchaProvider>
       </ThemeProvider>
