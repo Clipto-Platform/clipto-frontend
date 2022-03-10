@@ -32,7 +32,7 @@ export const SYMBOL = SYMBOLS[DEFAULT_CHAIN_ID];
 
 export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_MAINNET]: '0x3C78bF376815C322d216899d041ff90Ed86bbFa7',
-  [CHAIN_IDS.POLYGON_TESTNET]: '0x1e4Cad2a4b0f7FA8ACfe3540851d3563C27ceE20',
+  [CHAIN_IDS.POLYGON_TESTNET]: '0x307736eCecF51104a841CfF44A2508775878fe3f',
   [CHAIN_IDS.DAPPTOOLS]: '0x500fB9CAE50b307Fb82C9282f5eaCBdF14fa8cC2',
 };
 
@@ -45,7 +45,7 @@ export const START_BLOCKS: { [chainId: number]: number } = {
 
 export const GRAPH_APIS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_MAINNET]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph',
-  [CHAIN_IDS.POLYGON_TESTNET]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph-v2',
+  [CHAIN_IDS.POLYGON_TESTNET]: 'https://api.thegraph.com/subgraphs/id/QmTaESrTZvHVgmSP8yZUhj33MR3jKxEScavcHbmmbUd7wJ',
   [CHAIN_IDS.DAPPTOOLS]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph',
 };
 

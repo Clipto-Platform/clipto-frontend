@@ -46,8 +46,6 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
                       <Link key={user.address} to={`/creator/${user.address}`}>
                         <UserCardContainer key={user.id}>
                           <UserImage src={user.profilePicture} onLoad={handleLoad} style={{ marginBottom: 24 }} />
-                          {imagesDone && (
-                            <>
                               <UserTitle style={{ marginBottom: 4 }}>{user.userName}</UserTitle>
                               <UserDescription style={{ marginBottom: 16 }}>{user.twitterHandle}</UserDescription>
                               <UserStartingPrice>
@@ -56,8 +54,6 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
                                   {formatETH(user.price)} {SYMBOL}
                                 </span>
                               </UserStartingPrice>
-                            </>
-                          )}
                         </UserCardContainer>
                       </Link>
                     );
