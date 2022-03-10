@@ -49,7 +49,7 @@ query GetAllCreators (
       first: $first,
       skip: $skip,
       orderBy: timestamp,
-      orderDirection: desc
+      orderDirection: asc
     ){
       id
       address

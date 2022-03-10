@@ -30,6 +30,7 @@ const OnboardingPage = () => {
 
     if (verificationResult && verificationResult.data && verificationResult.data.includes) {
       userProfile.setUsername(verificationResult.data.includes.users[0].name);
+      userProfile.setTwitterHandle(verificationResult.data.includes.users[0].username);
       userProfile.setProfilePicture(
         verificationResult.data.includes.users[0].profile_image_url.replace('_normal', '_400x400'),
       );
