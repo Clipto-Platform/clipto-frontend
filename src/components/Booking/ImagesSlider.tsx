@@ -90,7 +90,6 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
     <>
       {!singleLoaded && <ImagesSliderLoading style={{ width: '100%' }} />}
       <ImagesSliderContainer ref={imageSliderContainerRef} style={{ marginBottom: 8 }}>
-      <ImageSliderContainerScrolllShadowContainer />
         {imagesDone && props.images.length === 0 && (
           <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
             <div style={{ display: 'block', width: '100%' }}>
