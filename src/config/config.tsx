@@ -45,7 +45,7 @@ export const START_BLOCKS: { [chainId: number]: number } = {
 
 export const GRAPH_APIS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_MAINNET]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph',
-  [CHAIN_IDS.POLYGON_TESTNET]: 'https://api.thegraph.com/subgraphs/id/QmTaESrTZvHVgmSP8yZUhj33MR3jKxEScavcHbmmbUd7wJ',
+  [CHAIN_IDS.POLYGON_TESTNET]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph-v2',
   [CHAIN_IDS.DAPPTOOLS]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph',
 };
 
