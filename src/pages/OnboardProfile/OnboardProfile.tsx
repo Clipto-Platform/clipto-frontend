@@ -66,6 +66,7 @@ const OnboardProfilePage = () => {
         }
       } finally {
         toast.dismiss();
+        toast.success('Your account will be reflected here soon!');
       }
     }
   };
@@ -135,7 +136,7 @@ const OnboardProfilePage = () => {
                     const creatorData: CreatorData = {
                       userName: values.userName,
                       bio: values.bio,
-                      twitterHandle: userProfile.userName || values.userName,
+                      twitterHandle: userProfileDB?.twitterHandle || userProfile.twitterHandle ||  values.userName,
                       deliveryTime: parseInt(values.deliveryTime),
                       demos: demos,
                       price: parseFloat(values.price),

@@ -5,6 +5,7 @@ import { immer } from '../utils/zustand';
 export type CreateUserDto = {
   bio: string | undefined;
   userName: string | undefined;
+  twitterHandle: string | undefined;
   profilePicture: string | undefined;
   deliveryTime: number | undefined;
   demos: string[];
@@ -57,6 +58,7 @@ export interface GetUserResponse {
 export type UserProfileSet = {
   setBio: (bio: string) => void;
   setUsername: (username: string) => void;
+  setTwitterHandle: (twitterHandle: string) => void;
   setProfilePicture: (profilePicture: string) => void;
   setDeliveryTime: (deliveryTime: number) => void;
   setDemos: (demos: string[]) => void;
@@ -71,6 +73,7 @@ export const useProfile = create<UserProfile>(
   immer((set) => ({
     bio: undefined,
     userName: undefined,
+    twitterHandle: undefined,
     profilePicture: undefined,
     deliveryTime: undefined,
     demos: [],
@@ -86,6 +89,11 @@ export const useProfile = create<UserProfile>(
       set((draft) => {
         draft.userName = userName;
       });
+    },
+    setTwitterHandle: (twitterHandle: string) => {
+      set((draft) => {
+        draft.twitterHandle = twitterHandle;
+      }); 
     },
     setProfilePicture: (profilePicture: string) => {
       set((draft) => {

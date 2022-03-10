@@ -150,7 +150,7 @@ const SelectedOrderPage = () => {
       const tokenId = eventArgs?.tokenId.toNumber();
       fetchNFT(tokenAddress, tokenId, tokenUri);
 
-      toast.success('Successfully completed order!');
+      toast.success('Successfully completed order! Order status will be reflected shortly.');
       setDone(true);
     } catch (e) {
       setMinting(false);
