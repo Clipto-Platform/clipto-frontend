@@ -49,6 +49,7 @@ function App() {
             <Route path="creator/:creatorId" element={<BookingPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
+          <BottomBar />
         </BrowserRouter>
       </ThemeProvider>
     </Web3ReactProvider>
