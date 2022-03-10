@@ -38,6 +38,7 @@ const ImageSliderContainerScrolllShadowContainer = styled.div`
   position: absolute;
   right: 0;
   width: 180px;
+  max-height: 400px;
   opacity: 0.7;
   top: 0;
   bottom: 0;
