@@ -34,16 +34,18 @@ const OrdersPage = () => {
   useEffect(() => {
     const getRequests = async () => {
       if (account) {
-        await api.userRequests(account, userRequestsPage, limit).then((res) => {
-          if (res.data) {
-            const requests = res.data.requests;
-            const has = requests.length !== 0 && requests.length % limit === 0;
+        await api
+          .userRequests(account, userRequestsPage, limit)
+          .then((res) => {
+            if (res.data) {
+              const requests = res.data.requests;
+              const has = requests.length !== 0 && requests.length % limit === 0;
 
-            setHasMoreUserRequests(has);
-            setRequestsByUser([...requestsByUser, ...requests]);
-          }
-        })
-        .finally(() => setLoaded(true));
+              setHasMoreUserRequests(has);
+              setRequestsByUser([...requestsByUser, ...requests]);
+            }
+          })
+          .finally(() => setLoaded(true));
       }
     };
     getRequests();

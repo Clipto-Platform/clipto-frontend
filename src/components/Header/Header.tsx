@@ -77,16 +77,18 @@ const useHeaderStore = create<HeaderStore>(
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HeaderProps {}
 
-const DiscordButton = (props: {onPress: (e: any) => void}) => {
-  return <PrimaryButton
-    size="small"
-    width="small"
-    style={{ marginRight: 40, maxWidth: 150, background: '#5865F2', color: 'white' }}
-    onPress={props.onPress}
-  >
-    Join Discord <HiOutlineArrowRight style={{ marginLeft: 5 }} />
-  </PrimaryButton>
-}
+const DiscordButton = (props: { onPress: (e: any) => void }) => {
+  return (
+    <PrimaryButton
+      size="small"
+      width="small"
+      style={{ marginRight: 40, maxWidth: 150, background: '#5865F2', color: 'white' }}
+      onPress={props.onPress}
+    >
+      Join Discord <HiOutlineArrowRight style={{ marginLeft: 5 }} />
+    </PrimaryButton>
+  );
+};
 const DesktopHeader = (props: any) => {
   const { loggedInProfile } = props;
   return (
@@ -102,9 +104,11 @@ const DesktopHeader = (props: any) => {
           <StyledSpan style={{ marginRight: 40, width: 140 }}>Become a creator</StyledSpan>
         </Link>
       )}
-      <DiscordButton onPress={() => {
-        window.open(DISCORD_LINK);
-      }}/>
+      <DiscordButton
+        onPress={() => {
+          window.open(DISCORD_LINK);
+        }}
+      />
     </DesktopHeaderWrapper>
   );
 };
@@ -136,10 +140,12 @@ const MobileHeader = (props: any) => {
                 <StyledSpan>Become a creator</StyledSpan>
               </Link>
             )}
-            <DiscordButton onPress={() => {
-              window.open(DISCORD_LINK);
-              handleClick();
-            }}/>
+            <DiscordButton
+              onPress={() => {
+                window.open(DISCORD_LINK);
+                handleClick();
+              }}
+            />
           </MobileHeaderWrapper>
         </Wrapper>
       ) : null}
@@ -287,15 +293,22 @@ const Header: React.FC<HeaderProps> = () => {
           {hasTriedEagerConnect && (
             <>
               {!checkLogin && (
-                <> 
+                <>
                   <RightWrapper>
                     <Link to={'/explore'}>
                       <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
                     </Link>
-                    <DiscordButton onPress={() => {
-                      window.open(DISCORD_LINK);
-                    }}/>
-                    <PrimaryButton size={'small'} style={{width:160}} variant={'secondary'} onPress={() => setShowLoginDialog(true)}>
+                    <DiscordButton
+                      onPress={() => {
+                        window.open(DISCORD_LINK);
+                      }}
+                    />
+                    <PrimaryButton
+                      size={'small'}
+                      style={{ width: 160 }}
+                      variant={'secondary'}
+                      onPress={() => setShowLoginDialog(true)}
+                    >
                       Connect Wallet
                     </PrimaryButton>
                   </RightWrapper>

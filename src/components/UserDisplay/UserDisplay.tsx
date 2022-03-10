@@ -46,14 +46,14 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
                       <Link key={user.address} to={`/creator/${user.address}`}>
                         <UserCardContainer key={user.id}>
                           <UserImage src={user.profilePicture} onLoad={handleLoad} style={{ marginBottom: 24 }} />
-                              <UserTitle style={{ marginBottom: 4 }}>{user.userName}</UserTitle>
-                              <UserDescription style={{ marginBottom: 16 }}>{user.twitterHandle}</UserDescription>
-                              <UserStartingPrice>
-                                From{' '}
-                                <span style={{ fontWeight: 700 }}>
-                                  {formatETH(user.price)} {SYMBOL}
-                                </span>
-                              </UserStartingPrice>
+                          <UserTitle style={{ marginBottom: 4 }}>{user.userName}</UserTitle>
+                          <UserDescription style={{ marginBottom: 16 }}>{user.twitterHandle}</UserDescription>
+                          <UserStartingPrice>
+                            From{' '}
+                            <span style={{ fontWeight: 700 }}>
+                              {formatETH(user.price)} {SYMBOL}
+                            </span>
+                          </UserStartingPrice>
                         </UserCardContainer>
                       </Link>
                     );

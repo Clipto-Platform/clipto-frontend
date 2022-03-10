@@ -15,7 +15,7 @@ import {
   OrderCardTopRowContainer,
   Row,
   SecondaryLabel,
-  WideContainer
+  WideContainer,
 } from './Style';
 import { OrderCardProps } from './types';
 
