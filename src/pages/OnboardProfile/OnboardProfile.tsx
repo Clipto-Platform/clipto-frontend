@@ -34,12 +34,12 @@ const OnboardProfilePage = () => {
       const txResult = await exchangeContract.updateCreator(JSON.stringify(creatorData));
       toast.loading('Profile updating, waiting for confirmation!');
       await txResult.wait();
-      toast.success('Success!');
       navigate(`/creator/${account}`);
     } catch (err: any) {
       toast.error(err.message);
     } finally {
       toast.dismiss();
+      toast.success('Changes will be reflected soon!');
     }
   };
 
@@ -57,14 +57,15 @@ const OnboardProfilePage = () => {
         const txResult = await exchangeContract.registerCreator(creatorData.userName, JSON.stringify(creatorData));
         toast.loading('Profile created, waiting for confirmation!');
         await txResult.wait();
+        navigate(`/creator/${account}`);
       } catch (err: any) {
         if (err.message) {
-          toast.dismiss();
           toast.error(err.message);
         } else if (err.data && err.data.message) {
-          toast.dismiss();
           toast.error(err.data.message);
         }
+      } finally {
+        toast.dismiss();
       }
     }
   };
@@ -74,7 +75,7 @@ const OnboardProfilePage = () => {
       api
         .creatorById(account)
         .then((res) => {
-          if (res.data) {
+          if (res.data && res.data.creator) {
             const creator = res.data.creator;
 
             setHasAccount(true);
