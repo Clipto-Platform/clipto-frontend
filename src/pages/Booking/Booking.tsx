@@ -55,13 +55,15 @@ const BookingPage = () => {
       const transaction = await exchangeContract.newRequest(creatorId, JSON.stringify(requestData), {
         value: ethers.utils.parseEther(values.amount),
       });
+      toast.loading('Creating a new booking, waiting for confirmation');
       const receipt = await transaction.wait();
 
       navigate('/orders');
-      toast.success('Booking completed, your Order will be visible here in few minutes.');
     } catch (e) {
       toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
-      return;
+    } finally {
+      toast.dismiss();
+      toast.success('Booking completed, your Order will reflect in few moments.');
     }
   };
 

@@ -43,7 +43,6 @@ const ImageSliderContainerScrolllShadowContainer = styled.div`
   top: 0;
   bottom: 0;
   background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, #040404 100%);
-  z-index: 1;
 `;
 
 const ImagesSliderContainer = styled.div`
@@ -89,9 +88,9 @@ const ImagesSlider: React.FC<ImagesSliderProps> = (props) => {
 
   return (
     <>
-      <ImageSliderContainerScrolllShadowContainer />
       {!singleLoaded && <ImagesSliderLoading style={{ width: '100%' }} />}
       <ImagesSliderContainer ref={imageSliderContainerRef} style={{ marginBottom: 8 }}>
+      <ImageSliderContainerScrolllShadowContainer />
         {imagesDone && props.images.length === 0 && (
           <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
             <div style={{ display: 'block', width: '100%' }}>

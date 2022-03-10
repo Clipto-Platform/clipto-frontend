@@ -2,15 +2,15 @@ import { Web3Provider } from '@ethersproject/providers';
 import { OverlayContainer, OverlayProvider } from '@react-aria/overlays';
 import { useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import { HiOutlineArrowRight } from 'react-icons/hi';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
+import * as api from '../../api';
 import menu from '../../assets/svgs/hamburger.svg';
-import { API_URL, CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV, DISCORD_LINK } from '../../config/config';
+import { CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV, DISCORD_LINK } from '../../config/config';
 import { useEagerConnect } from '../../hooks/useEagerConnect';
 import { useEns } from '../../hooks/useEns';
 import { useInactiveListener } from '../../hooks/useInactiveListener';
@@ -22,6 +22,7 @@ import { injected, walletconnect } from '../../web3/connectors';
 import { AvatarComponent } from '../AvatarOrb';
 import { PrimaryButton } from '../Button';
 import { DropDown, ModalDialog } from '../Dialog';
+import { Logo } from '../Logo';
 import {
   ChainContainer,
   ConnectWallet,
@@ -29,6 +30,7 @@ import {
   DesktopHeaderWrapper,
   Divider,
   DropDownItem,
+  Error,
   HeaderWrapperInner,
   HeaderWrapperOuter,
   HEADER_HEIGHT_IN_PX,
@@ -39,9 +41,7 @@ import {
   RightWrapper,
   StyledSpan,
   Wrapper,
-  Error,
 } from './Style';
-import { Logo } from '../Logo';
 
 interface HeaderStore extends State {
   showProfileDropDown: boolean;
@@ -247,10 +247,11 @@ const Header: React.FC<HeaderProps> = () => {
         } else if (user && user !== account) {
           dispatch({ type: 'login', payload: { user: account } });
         }
-        let userProfile;
         try {
-          userProfile = await axios.get(`${API_URL}/user/${account}`);
-          setLoggedInProfile(userProfile.data);
+          const response = await api.creatorById(account || '');
+          if (response.data && response.data.creator) {
+            setLoggedInProfile(response.data.creator);
+          }
         } catch (e) {
           setLoggedInProfile(null);
         }
