@@ -137,7 +137,7 @@ const MobileHeader = (props: any) => {
             {userLoggedIn && (<Link to={'/orders'} onClick={handleClick}>
               <StyledSpan>Orders</StyledSpan>
             </Link>)}
-            {!loggedInProfile && (
+            {userLoggedIn && !loggedInProfile && (
               <Link to={'/onboarding'} onClick={handleClick}>
                 <StyledSpan>Become a creator</StyledSpan>
               </Link>
