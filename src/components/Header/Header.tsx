@@ -39,7 +39,9 @@ import {
   RightWrapper,
   StyledSpan,
   Wrapper,
-  Error,
+  LinkWrapper,
+  DiscordWrapper,
+  Error
 } from './Style';
 import { Logo } from '../Logo';
 
@@ -109,7 +111,7 @@ const DesktopHeader = (props: any) => {
   );
 };
 const MobileHeader = (props: any) => {
-  const { loggedInProfile } = props;
+  const { loggedInProfile, userLoggedIn } = props;
   const [visible, setVisible] = useState<boolean>(false);
   const handleClick = () => {
     setVisible(!visible);
@@ -128,10 +130,10 @@ const MobileHeader = (props: any) => {
             <Link to={'/explore'} onClick={handleClick}>
               <StyledSpan>Explore</StyledSpan>
             </Link>
-            <Link to={'/orders'} onClick={handleClick}>
+            {userLoggedIn && (<Link to={'/orders'} onClick={handleClick}>
               <StyledSpan>Orders</StyledSpan>
-            </Link>
-            {!loggedInProfile && (
+            </Link>)}
+            {userLoggedIn && !loggedInProfile && (
               <Link to={'/onboarding'} onClick={handleClick}>
                 <StyledSpan>Become a creator</StyledSpan>
               </Link>
@@ -292,15 +294,27 @@ const Header: React.FC<HeaderProps> = () => {
               {!checkLogin && (
                 <> 
                   <RightWrapper>
-                    <Link to={'/explore'}>
-                      <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
-                    </Link>
-                    <DiscordButton onPress={() => {
-                      window.open(DISCORD_LINK);
-                    }}/>
-                    <PrimaryButton size={'small'} style={{width:160}} variant={'secondary'} onPress={() => setShowLoginDialog(true)}>
+                    <LinkWrapper>
+                      <Link to={'/explore'}>
+                        <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
+                      </Link>
+                      </LinkWrapper>
+                      <DiscordWrapper>
+                        <DiscordButton
+                          onPress={() => {
+                            window.open(DISCORD_LINK);
+                          }}
+                        />
+                      </DiscordWrapper>
+                    <PrimaryButton
+                      size={'small'}
+                      style={{ width: 160 }}
+                      variant={'secondary'}
+                      onPress={() => setShowLoginDialog(true)}
+                    >
                       Connect Wallet
                     </PrimaryButton>
+                    <MobileHeader loggedInProfile={loggedInProfile} userLoggedIn={checkLogin}/>
                   </RightWrapper>
                 </>
               )}
@@ -385,7 +399,7 @@ const Header: React.FC<HeaderProps> = () => {
                       )}
                     </RightWrapper>
                   )}
-                  <MobileHeader loggedInProfile={loggedInProfile} />
+                  <MobileHeader loggedInProfile={loggedInProfile} userLoggedIn={checkLogin}/>
                 </RightWrapper>
               )}
             </>
