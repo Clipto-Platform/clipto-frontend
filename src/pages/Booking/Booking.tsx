@@ -222,7 +222,7 @@ const BookingPage = () => {
                       </PrimaryButton>
                       <Description style={{ fontSize: 12, margin: '15px 0px' }}>*These are unaudited contracts. 
                         Clipto.io assumes no responsibility or liability for any transaction errors,
-                        faults or losses while making a booking or in the course of a booking being fulfilled or there after.
+                        faults or losses while making a booking or in the course of a booking being fulfilled or thereafter.
                       </Description>
                     </>
                   )}
