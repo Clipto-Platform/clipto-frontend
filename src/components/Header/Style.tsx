@@ -175,3 +175,13 @@ export const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
 `;
+export const LinkWrapper = styled.span`
+  @media screen and (max-width: 600px){
+    display: none;
+  }
+`;
+export const DiscordWrapper = styled.span`
+  @media screen and (max-width: 600px){
+    display: none;
+  }
+`;
