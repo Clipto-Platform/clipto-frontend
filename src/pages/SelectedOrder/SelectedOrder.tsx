@@ -263,6 +263,7 @@ const SelectedOrderPage = () => {
                     placeholder={`Give an awesome title`}
                     value={nftName}
                     onChange={setNftName}
+                    maxLength={50}
                     errorMessage={error?.name}
                   />
                 </Divider>
@@ -273,6 +274,7 @@ const SelectedOrderPage = () => {
                     label={'Description for the NFT'}
                     placeholder="Some good description"
                     value={description}
+                    maxLength={1000}
                     onChange={setDescription}
                     errorMessage={error?.description}
                   />

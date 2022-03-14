@@ -255,6 +255,7 @@ const OnboardProfilePage = () => {
                           <TextField
                             onChange={handleChange('userName')}
                             label="Name"
+                            maxLength={50}
                             placeholder={values.userName}
                             value={values.userName}
                             onBlur={handleBlur}
@@ -279,6 +280,7 @@ const OnboardProfilePage = () => {
                             inputElementType="textarea"
                             onChange={handleChange('bio')}
                             label="Bio"
+                            maxLength={500}
                             placeholder={'Say something nice'}
                             value={values.bio}
                             onBlur={handleBlur}

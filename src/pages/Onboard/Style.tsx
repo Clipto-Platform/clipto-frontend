@@ -47,4 +47,5 @@ export const OnboardingHr = styled.hr`
 export const StepDescription = styled(Text)`
   font-size: 18px;
   line-height: 140%;
+  overflow-wrap: break-word;
 `;

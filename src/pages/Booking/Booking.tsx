@@ -174,6 +174,7 @@ const BookingPage = () => {
                       <div style={{ marginBottom: 40 }}>
                         <TextField
                           inputElementType="textarea"
+                          maxLength={1000}
                           label={`Instructions for ${creator.userName}`}
                           placeholder="Say something nice..."
                           onChange={handleChange('description')}

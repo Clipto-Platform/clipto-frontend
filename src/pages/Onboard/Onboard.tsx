@@ -99,7 +99,7 @@ const OnboardingPage = () => {
                     Url.parse(tweetUrl);
                     await verifyTwitterUser();
                   } catch (e) {
-                    errorHandle(e, toast.error);
+                    toast.error('Error verifying twitter!');
                   }
                   setLoading(false);
                 }}
