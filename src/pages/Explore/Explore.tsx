@@ -30,8 +30,6 @@ const ExplorePage = () => {
   return (
     <>
       <PageWrapper>
-        <HeaderSpacer />
-        <HeaderContentGapSpacer />
         <UserDisplay title="Explore the community" users={users} handleScroll={handleScroll} hasMore={hasMore} />
       </PageWrapper>
     </>
