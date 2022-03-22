@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { XAvatarOrb } from '../../components/AvatarOrb';
 import { PrimaryButton } from '../../components/Button';
 import { ConfirmationText } from '../../components/ConfirmationText';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { HeaderSpacer } from '../../components/Header/Header';
 import { FieldWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { colors } from '../../styles/theme';
 import { Description, Label } from '../../styles/typography';
@@ -70,7 +70,6 @@ const MintPage = () => {
   return (
     <PageWrapper>
       <HeaderSpacer />
-      <HeaderContentGapSpacer />
       <PageContentWrapper style={{ flexWrap: 'wrap' }}>
         <OnboardTitle>Create a Video NFT</OnboardTitle>
         <PageGrid>

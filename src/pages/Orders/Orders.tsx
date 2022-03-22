@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import * as api from '../../api';
 import { EntityRequest } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { HeaderSpacer } from '../../components/Header/Header';
 import { PageWrapper } from '../../components/layout/Common';
 import { OrderCard } from '../../components/OrderCard/OrderCard';
 import { OrdersTab, Status } from '../../components/Orders/OrdersTab';

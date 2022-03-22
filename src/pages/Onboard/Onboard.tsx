@@ -47,7 +47,6 @@ const OnboardingPage = () => {
     <>
       <PageWrapper>
         <HeaderSpacer />
-        <HeaderContentGapSpacer />
         <PageContentWrapper>
           <ContentWrapper>
             <OnboardTitle>Claim your creator profile by verifying on Twitter</OnboardTitle>

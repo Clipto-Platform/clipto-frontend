@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import * as api from '../../api';
 import { EntityCreator } from '../../api/types';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { HeaderSpacer } from '../../components/Header/Header';
 import { PageWrapper } from '../../components/layout/Common';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
 

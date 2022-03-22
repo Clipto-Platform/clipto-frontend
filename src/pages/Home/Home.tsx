@@ -3,7 +3,7 @@ import { EntityCreator } from '../../api/types';
 import pfp5 from '../../assets/images/pfps/cc.png';
 import pfp1 from '../../assets/images/pfps/g1.jpeg';
 import pfp4 from '../../assets/images/pfps/g2.jpeg';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { HeaderSpacer } from '../../components/Header/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
 import { HeroTitle } from './Style';
@@ -48,7 +48,6 @@ const HomePage = () => {
     <>
       <PageWrapper>
         <HeaderSpacer />
-        <HeaderContentGapSpacer />
         <PageContentWrapper>
           <ContentWrapper>
             <HeroTitle>
