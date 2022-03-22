@@ -23,30 +23,20 @@ export const HeaderWrapperOuter = styled.div`
     padding: 0 16px;
   `}
 
-  position: absolute;
-  left: 0;
-  right: 0;
+  // position: absolute;
+  // left: 0;
+  // right: 0;
 `;
 
 export const ChainContainer = styled.div`
-  position: relative;
-  z-index: 0;
   align-items: center;
   text-align: center;
   width: 100%;
   padding: 10px;
-  margin-top: ${HEADER_HEIGHT_IN_PX};
+  // margin-top: ${HEADER_HEIGHT_IN_PX};
   background: ${(props) => props.theme.yellow};
   color: black;
   font-weight: bold;
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 0 16px;
-  `}
-
-  position: absolute;
-  left: 0;
-  right: 0;
 `;
 
 export const HeaderWrapperInner = styled.div`
@@ -105,17 +95,16 @@ export const StyledSpan = styled.span`
 `;
 
 export const ConnectWallet = styled.div`
-  margin-bottom: 16;
+  margin-bottom: 12px;
   font-weight: 700;
   font-size: 18;
   text-align: 'left';
 `;
 
 export const Error = styled.div`
-  margin-bottom: 12;
+  margin-bottom: 12px;
   color: #ff6868;
   text-align: left;
-  padding: 10px;
 `;
 
 export const ConnectWalletPopup = styled.div`

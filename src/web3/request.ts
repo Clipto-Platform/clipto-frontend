@@ -1,4 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
+import { ethers } from 'ethers';
 
 import { CliptoExchange } from '../contracts';
 
@@ -52,3 +53,43 @@ export const isCreatorOnChain = async (
     return true;
   }
 };
+
+export const switchNetwork = async () => {
+  // @ts-ignore - need to find right type
+  const ethereum = window.ethereum
+  if (!ethereum) {
+    console.error('Metamask is not detected.')
+    return new Promise(() => false);
+  }
+  
+  try {
+    await ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: ethers.utils.hexlify(137) }],
+    });
+  } catch (switchError: any) {
+    // This error code indicates that the chain has not been added to MetaMask.
+    if (switchError.code === 4902) {
+      try {
+        await ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: ethers.utils.hexlify(137),
+              chainName: 'Polygon',
+              rpcUrls: ['https://polygon-rpc.com'] /* ... */,
+              nativeCurrency: {
+                name: 'Matic Token',
+                symbol: 'MATIC',
+                decimals: 18
+              }
+            },
+          ],
+        });
+      } catch (addError) {
+        // handle "add" error
+      }
+    }
+    // handle other "switch" errors
+  }
+}

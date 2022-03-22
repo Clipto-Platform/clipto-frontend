@@ -19,6 +19,7 @@ import { Label } from '../../styles/typography';
 import { getShortenedAddress } from '../../utils/address';
 import { immer } from '../../utils/zustand';
 import { injected, walletconnect } from '../../web3/connectors';
+import { switchNetwork } from '../../web3/request';
 import { AvatarComponent } from '../AvatarOrb';
 import { PrimaryButton } from '../Button';
 import { DropDown, ModalDialog } from '../Dialog';
@@ -450,11 +451,19 @@ const Header: React.FC<HeaderProps> = () => {
           </ModalDialog>
         </OverlayContainer>
       )}
-
       {checkLogin && chainDialog && (
         <>
           <ChainContainer>
-            {`Please change your network chain to ${currentChainName}(${DEFAULT_CHAIN_ID}) in your metamask`}
+              {`Please switch to ${currentChainName}`}
+              <button onClick={switchNetwork} style={{
+                marginLeft: 20,
+                fontFamily:'Scto Grotesk A',
+                fontSize:12,
+                borderRadius: 6,
+                padding: 4,
+                background: 'black',
+                color: 'white'
+                }}>Switch Network</button>  
           </ChainContainer>
         </>
       )}

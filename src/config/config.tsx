@@ -15,8 +15,8 @@ const SYMBOLS = {
 };
 
 export const CHAIN_NAMES: { [chainId: number]: string } = {
-  '137': 'Polygon mainnet',
-  '80001': 'Polygon testnet',
+  '137': 'Polygon',
+  '80001': 'Polygon Testnet Mumbai',
   '99': 'Dapp tools localhost',
 };
 
