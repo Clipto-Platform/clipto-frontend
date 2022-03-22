@@ -2,7 +2,8 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { Formik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { RequestData } from '../../api/types';
@@ -34,7 +35,13 @@ const BookingPage = () => {
   const exchangeContract = useExchangeContract(true);
   const { creator, loaded } = useCreator(creatorId);
   const { FeeDescription } = useFee();
+  const [user, setUser] = useState();
+  const getUser = useSelector((state: any) => state.user);
 
+  useEffect(() => {
+    setUser(getUser);
+  }, [getUser]);
+  
   const makeBooking = async (values: BookingFormValues) => {
     try {
       if (!creatorId) {
@@ -74,9 +81,9 @@ const BookingPage = () => {
       <PageContentWrapper>
         <PageGrid>
           <ImagesColumnContainer>
-            {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
+            {loaded && user && creator && creator.demos && <ImagesSlider images={creator.demos} />}
           </ImagesColumnContainer>
-          <RightPanel creator={creator} account={account} loaded={loaded}>
+          <RightPanel creator={creator} account={account} loaded={loaded} user={user}>
             {(creator, account) => (
               <BookingCard>
                 <FlexRow style={{ marginBottom: 12 }}>
