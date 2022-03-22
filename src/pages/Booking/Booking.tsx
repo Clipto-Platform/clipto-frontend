@@ -76,7 +76,6 @@ const BookingPage = () => {
 
   return (
     <PageWrapper>
-      <HeaderSpacer />
       <HeaderContentGapSpacer />
       <PageContentWrapper>
         <PageGrid>

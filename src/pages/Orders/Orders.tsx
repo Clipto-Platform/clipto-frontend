@@ -101,7 +101,6 @@ const OrdersPage = () => {
     <>
       <PageWrapper>
         <HeaderSpacer />
-        <HeaderContentGapSpacer />
         <SingleColumnPageContent>
           <Tabs aria-label="View received and purchased orders">
             <Item key="ordered" title="Ordered">

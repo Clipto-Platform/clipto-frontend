@@ -99,8 +99,6 @@ const OnboardProfilePage = () => {
     <>
       {loaded && (
         <PageWrapper>
-          <HeaderSpacer />
-          <HeaderContentGapSpacer />
           <PageContentWrapper>
             <ContentWrapper>
               <ProfileDetailsContainer>
