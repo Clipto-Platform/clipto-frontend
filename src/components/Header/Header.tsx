@@ -455,21 +455,23 @@ const Header: React.FC<HeaderProps> = () => {
         <>
           <ChainContainer>
               {`Please switch to ${currentChainName}`}
-              <button onClick={switchNetwork} style={{
-                marginLeft: 20,
-                fontFamily:'Scto Grotesk A',
-                fontSize:12,
-                borderRadius: 6,
-                padding: 4,
-                background: 'black',
-                color: 'white'
-                }}>Switch Network</button>  
+              <NetworkButton onClick={switchNetwork}>Switch Network</NetworkButton>  
           </ChainContainer>
         </>
       )}
     </>
   );
 };
+
+const NetworkButton = styled.button`
+  margin-left: 20px;
+  font-family: 'Scto Grotesk A';
+  font-size: 12px;
+  border-radius: 6px;
+  padding: 4px;
+  background: ${props => props.theme.black};
+  color: ${props => props.theme.white};
+`
 
 const HeaderSpacer = styled.div`
   height: ${HEADER_HEIGHT_IN_PX};
