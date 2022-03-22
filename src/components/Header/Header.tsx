@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import create, { State } from 'zustand';
 import * as api from '../../api';
 import menu from '../../assets/svgs/hamburger.svg';
-import { CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV, DISCORD_LINK } from '../../config/config';
+import { CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV, DISCORD_LINK, ENV } from '../../config/config';
 import { useEagerConnect } from '../../hooks/useEagerConnect';
 import { useEns } from '../../hooks/useEns';
 import { useInactiveListener } from '../../hooks/useInactiveListener';
@@ -455,7 +455,7 @@ const Header: React.FC<HeaderProps> = () => {
         <>
           <ChainContainer>
               {`Please switch to ${currentChainName}`}
-              <NetworkButton onClick={switchNetwork}>Switch Network</NetworkButton>  
+              {ENV === 'PROD' && <NetworkButton onClick={switchNetwork}>Switch Network</NetworkButton> } 
           </ChainContainer>
         </>
       )}
