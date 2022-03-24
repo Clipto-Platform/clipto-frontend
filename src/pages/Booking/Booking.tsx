@@ -15,7 +15,7 @@ import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/He
 import { PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
 import { SYMBOL } from '../../config/config';
-import { useExchangeContract } from '../../hooks/useContracts';
+import { useERC20Contract, useExchangeContract } from '../../hooks/useContracts';
 import { useCreator } from '../../hooks/useCreator';
 import { useFee } from '../../hooks/useFee';
 import { Description, Label } from '../../styles/typography';
@@ -25,14 +25,17 @@ import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
 import { BookingFormValues } from './types';
+import { parseUnits } from 'ethers/lib/utils';
+import { EXCHANGE_ADDRESS, DEFAULT_CHAIN_ID } from '../../config/config';
 
 const BookingPage = () => {
   const { creatorId } = useParams();
   const { account, library } = useWeb3React<Web3Provider>();
-
+  
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const exchangeContract = useExchangeContract(true);
+  const ERC20 = useERC20Contract('0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',true);
   const { creator, loaded } = useCreator(creatorId);
   const { FeeDescription } = useFee();
   const [user, setUser] = useState();
@@ -59,12 +62,12 @@ const BookingPage = () => {
         deadline: convertToInt(values.deadline),
         description: values.description,
       };
-      const transaction = await exchangeContract.newRequest(creatorId, JSON.stringify(requestData), {
-        value: ethers.utils.parseEther(values.amount),
-      });
+      const tx = await ERC20.approve(EXCHANGE_ADDRESS[DEFAULT_CHAIN_ID],parseUnits(values.amount));
+      console.log("approve request",await tx.wait());
+      const transaction = await exchangeContract.newRequest(creatorId, JSON.stringify(requestData),'0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',parseUnits(values.amount) );
       toast.loading('Creating a new booking, waiting for confirmation');
       const receipt = await transaction.wait();
-
+      console.log("newRequest",receipt);
       navigate('/orders');
     } catch (e) {
       toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
