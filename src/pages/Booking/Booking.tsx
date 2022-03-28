@@ -80,7 +80,7 @@ const BookingPage = () => {
       <PageContentWrapper>
         <PageGrid>
           <ImagesColumnContainer>
-            {loaded && user && creator && creator.demos && <ImagesSlider images={creator.demos} />}
+            {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
           </ImagesColumnContainer>
           <RightPanel creator={creator} account={account} loaded={loaded} user={user}>
             {(creator, account) => (
@@ -192,7 +192,7 @@ const BookingPage = () => {
                         <TextField
                           label="Address to receive video NFT"
                           placeholder="Wallet address"
-                          value={account}
+                          value={user}
                           isDisabled
                         />
                       </div>
@@ -223,9 +223,9 @@ const BookingPage = () => {
                           }
                           setLoading(false);
                         }}
-                        isDisabled={loading}
+                        isDisabled={user?loading:true}
                       >
-                        Book now
+                        {user? 'Book now' : 'Please Connect your wallet'}
                       </PrimaryButton>
                       <Description style={{ fontSize: 12, margin: '15px 0px' }}>*These are unaudited contracts. 
                         Clipto.io assumes no responsibility or liability for any transaction errors,
