@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import create, { State } from 'zustand';
 import * as api from '../../api';
 import menu from '../../assets/svgs/hamburger.svg';
-import { CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV, DISCORD_LINK } from '../../config/config';
+import { CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV, DISCORD_LINK, ENV } from '../../config/config';
 import { useEagerConnect } from '../../hooks/useEagerConnect';
 import { useEns } from '../../hooks/useEns';
 import { useInactiveListener } from '../../hooks/useInactiveListener';
@@ -19,6 +19,7 @@ import { Label } from '../../styles/typography';
 import { getShortenedAddress } from '../../utils/address';
 import { immer } from '../../utils/zustand';
 import { injected, walletconnect } from '../../web3/connectors';
+import { switchNetwork } from '../../web3/request';
 import { AvatarComponent } from '../AvatarOrb';
 import { PrimaryButton } from '../Button';
 import { DropDown, ModalDialog } from '../Dialog';
@@ -450,17 +451,27 @@ const Header: React.FC<HeaderProps> = () => {
           </ModalDialog>
         </OverlayContainer>
       )}
-
       {checkLogin && chainDialog && (
         <>
           <ChainContainer>
-            {`Please change your network chain to ${currentChainName}(${DEFAULT_CHAIN_ID}) in your metamask`}
+              {`Please switch to ${currentChainName}`}
+              {ENV === 'PROD' && <NetworkButton onClick={switchNetwork}>Switch Network</NetworkButton> } 
           </ChainContainer>
         </>
       )}
     </>
   );
 };
+
+const NetworkButton = styled.button`
+  margin-left: 20px;
+  font-family: 'Scto Grotesk A';
+  font-size: 12px;
+  border-radius: 6px;
+  padding: 4px;
+  background: ${props => props.theme.black};
+  color: ${props => props.theme.white};
+`
 
 const HeaderSpacer = styled.div`
   height: ${HEADER_HEIGHT_IN_PX};

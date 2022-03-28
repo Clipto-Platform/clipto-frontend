@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import * as api from '../../api';
 import { CreatorData, EntityCreator } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { HeaderSpacer } from '../../components/Header/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
 import { SYMBOL } from '../../config/config';
@@ -99,8 +99,6 @@ const OnboardProfilePage = () => {
     <>
       {loaded && (
         <PageWrapper>
-          <HeaderSpacer />
-          <HeaderContentGapSpacer />
           <PageContentWrapper>
             <ContentWrapper>
               <ProfileDetailsContainer>

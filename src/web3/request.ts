@@ -1,4 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
+import { ethers } from 'ethers';
+import { CHAIN_NAMES, DEFAULT_CHAIN_ID } from '../config/config';
 
 import { CliptoExchange } from '../contracts';
 
@@ -52,3 +54,43 @@ export const isCreatorOnChain = async (
     return true;
   }
 };
+
+//TODO - this only works in PROD environment
+export const switchNetwork = async () => {
+  // @ts-ignore - need to find right type
+  const ethereum = window.ethereum
+  if (!ethereum) {
+    console.error('Metamask is not detected.')
+  }
+  
+  try {
+    await ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: ethers.utils.hexlify(DEFAULT_CHAIN_ID) }],
+    });
+  } catch (switchError: any) {
+    // This error code indicates that the chain has not been added to MetaMask.
+    if (switchError.code === 4902) {
+      try {
+        await ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: ethers.utils.hexlify(DEFAULT_CHAIN_ID),
+              chainName: CHAIN_NAMES[DEFAULT_CHAIN_ID],
+              rpcUrls: ['https://polygon-rpc.com'] /* ... */, 
+              nativeCurrency: {
+                name: 'Matic Token',
+                symbol: 'MATIC',
+                decimals: 18
+              }
+            },
+          ],
+        });
+      } catch (addError) {
+        // handle "add" error
+      }
+    }
+    // handle other "switch" errors
+  }
+}

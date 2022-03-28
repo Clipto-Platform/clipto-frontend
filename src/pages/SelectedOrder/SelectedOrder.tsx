@@ -10,7 +10,7 @@ import { useTheme } from 'styled-components';
 import * as api from '../../api';
 import { EntityRequest } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { HeaderSpacer } from '../../components/Header/Header';
 import { PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { NFTDetails } from '../../components/NFTDetails';
 import { NFTHistory } from '../../components/NFTHistory';
@@ -208,7 +208,6 @@ const SelectedOrderPage = () => {
       {loaded && (
         <PageWrapper>
           <HeaderSpacer />
-          <HeaderContentGapSpacer />
           <PageContentWrapper style={{ display: 'block', maxWidth: '600px', margin: 'auto' }}>
             {!((request && request.delivered) || done) && (
               <>

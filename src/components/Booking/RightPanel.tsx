@@ -38,16 +38,11 @@ export interface RightPanelProps {
   account?: string | null;
   loaded: boolean;
   children: (creator: EntityCreator, account: string) => React.ReactNode;
+  user: any;
 }
 
 export const RightPanel: React.FC<RightPanelProps> = (props) => {
-  const { creator, account, loaded } = props;
-  const [user, setUser] = useState();
-  const getUser = useSelector((state: any) => state.user);
-
-  useEffect(() => {
-    setUser(getUser);
-  }, [getUser]);
+  const { creator, account, loaded, user } = props;
 
   return (
     <>
