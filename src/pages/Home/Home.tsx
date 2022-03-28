@@ -74,6 +74,25 @@ const featuredUsers: EntityCreator[] = [
     txHash: "0x654ac4bc4d30e2b4d08429453d99bc413eaa5055a15452922c65503822129d61",
     deliveryTime: 3,
     block: 26248799
+  },
+  {
+    id: "0x1c6f1a832e73949c97fe335a98b6a5fc3c9c29e9",
+    userName: "Ⓜ️🅰️☪️",
+    twitterHandle: "mackrypt0",
+    price: 700,
+    profilePicture: "https://pbs.twimg.com/profile_images/1503162595070541825/zlDpMHE4_400x400.jpg",
+    address: "0x1c6f1a832e73949c97fe335a98b6a5fc3c9c29e9",
+    bio: "ct's claymatoooooor (claymation/stop motion animation)",
+    demos: [
+      "https://twitter.com/mackrypt0/status/1464919279279640583?s=20&t=6N8KSIKaG-Qku9d5_ATZog",
+      "https://twitter.com/mackrypt0/status/1464826582065827851?s=20&t=6N8KSIKaG-Qku9d5_ATZog",
+      "https://twitter.com/mackrypt0/status/1482414215000322048?s=20&t=6N8KSIKaG-Qku9d5_ATZog"
+    ],
+    timestamp: 1647475636,
+    tokenAddress: "0x3eddbbe6f6274a5612dc3aa4310ffb90bc3e6d12",
+    txHash: "0x7401e06e3fe52a2d80e7fcb966d492241ee39496490be650af634fa44dbc6729",
+    deliveryTime: 5,
+    block: 26021000
   }
 ];
 
