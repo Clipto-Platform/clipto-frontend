@@ -192,7 +192,7 @@ const BookingPage = () => {
                         <TextField
                           label="Address to receive video NFT"
                           placeholder="Wallet address"
-                          value={account}
+                          value={user}
                           isDisabled
                         />
                       </div>
