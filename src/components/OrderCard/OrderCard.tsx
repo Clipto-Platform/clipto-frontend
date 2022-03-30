@@ -1,4 +1,4 @@
-import { SYMBOL } from '../../config/config';
+import { getTokenSymbol, SYMBOL } from '../../config/config';
 import { theme } from '../../styles/theme';
 import { Label, Text } from '../../styles/typography';
 import { getShortenedAddress } from '../../utils/address';
@@ -23,6 +23,9 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
   const { isReceived, request } = props;
   const userAddress = props.isReceived ? props.request.requester : props.request.creator.address;
   const status = request.delivered ? (isReceived ? 'Received' : 'Paid') : 'Bid';
+  
+  const symbol = getTokenSymbol(request.token);
+
 
   return (
     <OrderCardContainer>
@@ -61,7 +64,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
             <Column style={{ textAlign: 'right' }}>
               <SecondaryLabel style={{ marginBottom: 2 }}> {status} </SecondaryLabel>
               <BidAmount>
-                {bigIntToReadable(request.amount)} {SYMBOL}
+                {bigIntToReadable(request.amount)} {symbol}
               </BidAmount>
             </Column>
           </WideContainer>
