@@ -33,7 +33,7 @@ export const SYMBOL = SYMBOLS[DEFAULT_CHAIN_ID];
 
 export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_MAINNET]: '0x36A9F25B8AA6b941B0c8177684E8ecff59376D9a',
-  [CHAIN_IDS.POLYGON_TESTNET]: '0xd75146aeaE25dA0c4FEC73302A64cC6DEa429805',
+  [CHAIN_IDS.POLYGON_TESTNET]: '0xAF66D63d37d9D8A2F5fae3e13EE8830F4f66fF09',
   [CHAIN_IDS.DAPPTOOLS]: '0x500fB9CAE50b307Fb82C9282f5eaCBdF14fa8cC2',
 };
 
@@ -49,7 +49,17 @@ export const GRAPH_APIS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_TESTNET]: 'https://api.thegraph.com/subgraphs/name/rushidhanwant/subgraph_multitoken',
   [CHAIN_IDS.DAPPTOOLS]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph',
 };
+export const ERC20_CONTRACTS: { [token: string]: string } = {
+  'MATIC'  : '0x0000000000000000000000000000000000000000',
+  'WMATIC' : '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
+  'WETH'   : '0x714550C2C1Ea08688607D86ed8EeF4f5E4F22323'
+}
 
+export const TOKENS = [
+  'MATIC',
+  'WMATIC',
+  'WETH' 
+];
 export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
 export const DISCORD_LINK = 'https://discord.com/invite/fpVMmerNZm';
@@ -70,3 +80,12 @@ export const getOpensea = (addr: string, index: number) =>
   ENV === 'TEST'
     ? `https://testnets.opensea.io/assets/mumbai/${addr}/${index}`
     : `https://opensea.io/assets/matic/${addr}/${index}`;
+
+export const getTokenSymbol = (token: string) => {
+
+  return Object.keys(ERC20_CONTRACTS).find((key) => {
+    
+    
+    return ERC20_CONTRACTS[key].toLowerCase() === token.toLowerCase()});
+
+}
