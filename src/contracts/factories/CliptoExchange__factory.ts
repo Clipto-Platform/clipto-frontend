@@ -329,6 +329,24 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "creator",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "data",
+        type: "string",
+      },
+    ],
+    name: "newRequestPayable",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "owner",
     outputs: [

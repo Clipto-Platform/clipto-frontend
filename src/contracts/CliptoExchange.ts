@@ -25,6 +25,7 @@ export interface CliptoExchangeInterface extends utils.Interface {
     "deliverRequest(uint256,string)": FunctionFragment;
     "feeRate()": FunctionFragment;
     "newRequest(address,string,address,uint256)": FunctionFragment;
+    "newRequestPayable(address,string)": FunctionFragment;
     "owner()": FunctionFragment;
     "refundRequest(address,uint256)": FunctionFragment;
     "registerCreator(string,string)": FunctionFragment;
@@ -49,6 +50,10 @@ export interface CliptoExchangeInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "newRequest",
     values: [string, string, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "newRequestPayable",
+    values: [string, string]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -92,6 +97,10 @@ export interface CliptoExchangeInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "feeRate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "newRequest", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "newRequestPayable",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "refundRequest",
@@ -254,6 +263,12 @@ export interface CliptoExchange extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    newRequestPayable(
+      creator: string,
+      data: string,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     refundRequest(
@@ -326,6 +341,12 @@ export interface CliptoExchange extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  newRequestPayable(
+    creator: string,
+    data: string,
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   refundRequest(
@@ -395,6 +416,12 @@ export interface CliptoExchange extends BaseContract {
       data: string,
       token: string,
       amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    newRequestPayable(
+      creator: string,
+      data: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -559,6 +586,12 @@ export interface CliptoExchange extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    newRequestPayable(
+      creator: string,
+      data: string,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     refundRequest(
@@ -628,6 +661,12 @@ export interface CliptoExchange extends BaseContract {
       token: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    newRequestPayable(
+      creator: string,
+      data: string,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
