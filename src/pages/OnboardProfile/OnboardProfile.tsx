@@ -40,7 +40,7 @@ const OnboardProfilePage = () => {
     } catch (err: any) {
       toast.dismiss();
       toast.error(err.message);
-    } 
+    }
   };
 
   const createUserProfile = async (creatorData: CreatorData) => {
@@ -59,7 +59,7 @@ const OnboardProfilePage = () => {
         await txResult.wait();
         toast.dismiss();
         toast.success('Your account will be reflected here soon!');
-        navigate(`/creator/${account}`);
+        navigate(`/explore`);
       } catch (err: any) {
         toast.dismiss();
         if (err.message) {
@@ -67,7 +67,7 @@ const OnboardProfilePage = () => {
         } else if (err.data && err.data.message) {
           toast.error(err.data.message);
         }
-      } 
+      }
     }
   };
 
@@ -134,7 +134,7 @@ const OnboardProfilePage = () => {
                     const creatorData: CreatorData = {
                       userName: values.userName,
                       bio: values.bio,
-                      twitterHandle: userProfileDB?.twitterHandle || userProfile.twitterHandle ||  values.userName,
+                      twitterHandle: userProfileDB?.twitterHandle || userProfile.twitterHandle || values.userName,
                       deliveryTime: parseInt(values.deliveryTime),
                       demos: demos,
                       price: parseFloat(values.price),
