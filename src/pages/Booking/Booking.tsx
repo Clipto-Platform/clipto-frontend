@@ -64,14 +64,13 @@ const BookingPage = () => {
       });
       toast.loading('Creating a new booking, waiting for confirmation');
       const receipt = await transaction.wait();
-
-      navigate('/orders');
-    } catch (e) {
-      toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
-    } finally {
       toast.dismiss();
       toast.success('Booking completed, your Order will reflect in few moments.');
-    }
+      navigate('/orders');
+    } catch (e) {
+      toast.dismiss();
+      toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
+    } 
   };
 
   return (

@@ -34,13 +34,13 @@ const OnboardProfilePage = () => {
       const txResult = await exchangeContract.updateCreator(JSON.stringify(creatorData));
       toast.loading('Profile updating, waiting for confirmation!');
       await txResult.wait();
-      navigate(`/creator/${account}`);
-    } catch (err: any) {
-      toast.error(err.message);
-    } finally {
       toast.dismiss();
       toast.success('Changes will be reflected soon!');
-    }
+      navigate(`/creator/${account}`);
+    } catch (err: any) {
+      toast.dismiss();
+      toast.error(err.message);
+    } 
   };
 
   const createUserProfile = async (creatorData: CreatorData) => {
@@ -57,17 +57,17 @@ const OnboardProfilePage = () => {
         const txResult = await exchangeContract.registerCreator(creatorData.userName, JSON.stringify(creatorData));
         toast.loading('Profile created, waiting for confirmation!');
         await txResult.wait();
+        toast.dismiss();
+        toast.success('Your account will be reflected here soon!');
         navigate(`/creator/${account}`);
       } catch (err: any) {
+        toast.dismiss();
         if (err.message) {
           toast.error(err.message);
         } else if (err.data && err.data.message) {
           toast.error(err.data.message);
         }
-      } finally {
-        toast.dismiss();
-        toast.success('Your account will be reflected here soon!');
-      }
+      } 
     }
   };
 

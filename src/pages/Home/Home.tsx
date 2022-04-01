@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useTheme } from 'styled-components';
 import { EntityCreator } from '../../api/types';
 import pfp5 from '../../assets/images/pfps/cc.png';
@@ -7,6 +8,7 @@ import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/He
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
 import { HeroTitle } from './Style';
+import {featuredCreators} from "../../api/index"
 
 // TODO(johnrjj) - Fetch remotely
 const featuredUsers: EntityCreator[] = [
@@ -96,7 +98,25 @@ const featuredUsers: EntityCreator[] = [
   }
 ];
 
+const Creators : string[] = [
+ "0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8",
+  "0x0f32c8fBD8FE29D5EF451Ed9F8a13062C00ED583",
+  "0x8d86932d23d3766fe317b0e385fcac24806ba9a3",
+  "0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f",
+  "0x1c6f1a832e73949c97fe335a98b6a5fc3c9c29e9"
+];
+
 const HomePage = () => {
+
+  let [creators , setCreators] = useState<EntityCreator[]>([]);
+  useEffect(()=>{
+    featuredCreators(Creators).then((response)=>{
+      if(response.data ){
+        response.data.creators.sort((a, b) => Creators.indexOf(a.address) - Creators.indexOf(b.address));
+        setCreators(response.data.creators)
+      }
+    })
+  })
   const theme = useTheme();
   return (
     <>
@@ -111,7 +131,7 @@ const HomePage = () => {
             </HeroTitle>
           </ContentWrapper>
         </PageContentWrapper>
-        <UserDisplay users={featuredUsers} handleScroll={() => {}} hasMore={false} title="Featured" />
+        <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />
       </PageWrapper>
     </>
   );
