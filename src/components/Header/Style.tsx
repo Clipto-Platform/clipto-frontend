@@ -29,6 +29,9 @@ export const ChainContainer = styled.div`
   align-items: center;
   text-align: center;
   width: 100%;
+  position: fixed;
+  top: 66px;
+  z-index: 100;
   padding: 10px;
   // margin-top: ${HEADER_HEIGHT_IN_PX};
   background: ${(props) => props.theme.yellow};
