@@ -53,7 +53,7 @@ const SOCIAL_SIZE = 30;
 
 const BottomBarWrapper = styled.div`
   width: 100%;
-  background: #2a2a2b;
+  background: #121212;
   text-align: center;
 `;
 
