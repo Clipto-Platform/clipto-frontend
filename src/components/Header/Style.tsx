@@ -8,7 +8,8 @@ export const HEADER_HEIGHT_IN_PX = '64px';
 export const HeaderWrapperOuter = styled.div`
   display: flex;
   flex: 1;
-  position: relative;
+  position: fixed;
+  top: 0;
   align-items: center;
   justify-content: space-between;
   width: 100%;
@@ -22,16 +23,15 @@ export const HeaderWrapperOuter = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 0 16px;
   `}
-
-  // position: absolute;
-  // left: 0;
-  // right: 0;
 `;
 
 export const ChainContainer = styled.div`
   align-items: center;
   text-align: center;
   width: 100%;
+  position: fixed;
+  top: 66px;
+  z-index: 100;
   padding: 10px;
   // margin-top: ${HEADER_HEIGHT_IN_PX};
   background: ${(props) => props.theme.yellow};
@@ -165,12 +165,12 @@ export const Wrapper = styled.div`
   height: 100vh;
 `;
 export const LinkWrapper = styled.span`
-  @media screen and (max-width: 600px){
+  @media screen and (max-width: 600px) {
     display: none;
   }
 `;
 export const DiscordWrapper = styled.span`
-  @media screen and (max-width: 600px){
+  @media screen and (max-width: 600px) {
     display: none;
   }
 `;

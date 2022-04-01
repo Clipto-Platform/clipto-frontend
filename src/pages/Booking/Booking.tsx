@@ -14,7 +14,7 @@ import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import { PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { SYMBOL } from '../../config/config';
+import { SYMBOL, DEFAULT_CHAIN_ID, CHAIN_NAMES } from '../../config/config';
 import { useExchangeContract } from '../../hooks/useContracts';
 import { useCreator } from '../../hooks/useCreator';
 import { useFee } from '../../hooks/useFee';
@@ -28,7 +28,7 @@ import { BookingFormValues } from './types';
 
 const BookingPage = () => {
   const { creatorId } = useParams();
-  const { account, library } = useWeb3React<Web3Provider>();
+  const { account, library, chainId } = useWeb3React<Web3Provider>();
 
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const BookingPage = () => {
   useEffect(() => {
     setUser(getUser);
   }, [getUser]);
-  
+
   const makeBooking = async (values: BookingFormValues) => {
     try {
       if (!creatorId) {
@@ -64,13 +64,12 @@ const BookingPage = () => {
       });
       toast.loading('Creating a new booking, waiting for confirmation');
       const receipt = await transaction.wait();
-
-      navigate('/orders');
-    } catch (e) {
-      toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
-    } finally {
       toast.dismiss();
       toast.success('Booking completed, your Order will reflect in few moments.');
+      navigate('/orders');
+    } catch (e) {
+      toast.dismiss();
+      toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
     }
   };
 
@@ -223,13 +222,18 @@ const BookingPage = () => {
                           }
                           setLoading(false);
                         }}
-                        isDisabled={user?loading:true}
+                        isDisabled={user && chainId === DEFAULT_CHAIN_ID ? loading : true}
                       >
-                        {user? 'Book now' : 'Please Connect your wallet'}
+                        {user
+                          ? chainId === DEFAULT_CHAIN_ID
+                            ? 'Book now'
+                            : `Change Network to ${CHAIN_NAMES[DEFAULT_CHAIN_ID]}`
+                          : 'Please Connect your wallet'}
                       </PrimaryButton>
-                      <Description style={{ fontSize: 12, margin: '15px 0px' }}>*These are unaudited contracts. 
-                        Clipto.io assumes no responsibility or liability for any transaction errors,
-                        faults or losses while making a booking or in the course of a booking being fulfilled or thereafter.
+                      <Description style={{ fontSize: 12, margin: '15px 0px' }}>
+                        *These are unaudited contracts. Clipto.io assumes no responsibility or liability for any
+                        transaction errors, faults or losses while making a booking or in the course of a booking being
+                        fulfilled or thereafter.
                       </Description>
                     </>
                   )}

@@ -186,3 +186,27 @@ query GetUserRequests (
   }
 }
 `;
+export const queryGetFeaturedCreators = `
+query GetFeaturedCreators (
+  $address: [String]!,
+) {
+  creators(where: {
+    address_in: $address
+  })
+  {
+    id
+    address
+    tokenAddress
+    twitterHandle
+    bio
+    deliveryTime
+    demos
+    profilePicture
+    userName
+    price
+    txHash
+    block
+    timestamp
+  }
+}
+`;

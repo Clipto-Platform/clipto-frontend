@@ -1,5 +1,5 @@
 export const DEV = false;
-export const TEST =false;
+export const TEST = false;
 export const ENV = DEV ? 'DEV' : TEST ? 'TEST' : 'PROD';
 
 export const CHAIN_IDS = {
@@ -28,7 +28,11 @@ export const RPC_URLS: { [chainId: number]: string } = {
   [CHAIN_IDS.DAPPTOOLS]: 'http://localhost:8545',
 };
 
-export const DEFAULT_CHAIN_ID = DEV ? CHAIN_IDS.DAPPTOOLS : TEST ? CHAIN_IDS.POLYGON_TESTNET : CHAIN_IDS.POLYGON_MAINNET;
+export const DEFAULT_CHAIN_ID = DEV
+  ? CHAIN_IDS.DAPPTOOLS
+  : TEST
+  ? CHAIN_IDS.POLYGON_TESTNET
+  : CHAIN_IDS.POLYGON_MAINNET;
 export const SYMBOL = SYMBOLS[DEFAULT_CHAIN_ID];
 
 export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {

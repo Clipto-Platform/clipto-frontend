@@ -34,12 +34,12 @@ const OnboardProfilePage = () => {
       const txResult = await exchangeContract.updateCreator(JSON.stringify(creatorData));
       toast.loading('Profile updating, waiting for confirmation!');
       await txResult.wait();
-      navigate(`/creator/${account}`);
-    } catch (err: any) {
-      toast.error(err.message);
-    } finally {
       toast.dismiss();
       toast.success('Changes will be reflected soon!');
+      navigate(`/creator/${account}`);
+    } catch (err: any) {
+      toast.dismiss();
+      toast.error(err.message);
     }
   };
 
@@ -57,16 +57,16 @@ const OnboardProfilePage = () => {
         const txResult = await exchangeContract.registerCreator(creatorData.userName, JSON.stringify(creatorData));
         toast.loading('Profile created, waiting for confirmation!');
         await txResult.wait();
-        navigate(`/creator/${account}`);
+        toast.dismiss();
+        toast.success('Your account will be reflected here soon!');
+        navigate(`/explore`);
       } catch (err: any) {
+        toast.dismiss();
         if (err.message) {
           toast.error(err.message);
         } else if (err.data && err.data.message) {
           toast.error(err.data.message);
         }
-      } finally {
-        toast.dismiss();
-        toast.success('Your account will be reflected here soon!');
       }
     }
   };
@@ -134,7 +134,7 @@ const OnboardProfilePage = () => {
                     const creatorData: CreatorData = {
                       userName: values.userName,
                       bio: values.bio,
-                      twitterHandle: userProfileDB?.twitterHandle || userProfile.twitterHandle ||  values.userName,
+                      twitterHandle: userProfileDB?.twitterHandle || userProfile.twitterHandle || values.userName,
                       deliveryTime: parseInt(values.deliveryTime),
                       demos: demos,
                       price: parseFloat(values.price),
