@@ -8,6 +8,7 @@ import {
   queryGetCreators,
   queryGetRequest,
   queryUserRequests,
+  queryGetFeaturedCreators
 } from './query';
 import { EntityCreator, EntityRequest, FinalizeFileUpload, TweetData, UploadFileLinkRequest } from './types';
 
@@ -109,4 +110,13 @@ export const finalizeFileUpload = (data: FinalizeFileUpload) => {
 
 export const getArweaveMetadata = (arweaveToken: string) => {
   return axios.get(`https://arweave.net/${arweaveToken}`);
+};
+export const featuredCreators = async (
+  address: string[]
+): Promise<OperationResult<{ creators: EntityCreator[] }>> => {
+  return graphInstance
+    .query(queryGetFeaturedCreators, {
+      address
+    })
+    .toPromise();
 };
