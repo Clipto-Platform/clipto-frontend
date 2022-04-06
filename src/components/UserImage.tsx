@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { responsePathAsArray } from 'graphql';
 import { CSSProperties, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { getTwitterData } from '../api';
 
 import notfoundImage from '../assets/images/pfps/no.png';
 
@@ -13,6 +15,7 @@ const Image = styled.img`
 export interface UserImageProps {
   src: string;
   style: CSSProperties;
+  twitterHandle: string;
   onLoad: () => void;
 }
 
@@ -27,8 +30,16 @@ export const UserImage: React.FC<UserImageProps> = (props) => {
         setImage(props.src);
       })
       .catch(() => {
-        setImageStatus('error');
-        setImage(notfoundImage);
+        getTwitterData([props.twitterHandle])
+          .then((response) => {
+            const image = response.data.data[0].profile_image_url.replace('normal', '400x400');
+            setImageStatus('active');
+            setImage(image);
+          })
+          .catch(() => {
+            setImageStatus('error');
+            setImage(notfoundImage);
+          });
       });
   }, []);
   return (
