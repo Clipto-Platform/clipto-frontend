@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { Formik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -37,11 +37,19 @@ const BookingPage = () => {
   const { FeeDescription } = useFee();
   const [user, setUser] = useState();
   const getUser = useSelector((state: any) => state.user);
+  const ref = useRef(null as any);
 
   useEffect(() => {
     setUser(getUser);
   }, [getUser]);
-
+  useEffect(() => {
+    if (ref && ref.current) {
+      window.scrollTo({
+        behavior: 'smooth',
+        top: ref.current.offsetTop,
+      });
+    }
+  }, [ref]);
   const makeBooking = async (values: BookingFormValues) => {
     try {
       if (!creatorId) {
@@ -78,7 +86,7 @@ const BookingPage = () => {
       <HeaderContentGapSpacer />
       <PageContentWrapper>
         <PageGrid>
-          <ImagesColumnContainer>
+          <ImagesColumnContainer ref={ref}>
             {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
           </ImagesColumnContainer>
           <RightPanel creator={creator} account={account} loaded={loaded} user={user}>
