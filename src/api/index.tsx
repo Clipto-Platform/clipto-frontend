@@ -8,7 +8,8 @@ import {
   queryGetCreators,
   queryGetRequest,
   queryUserRequests,
-  queryGetFeaturedCreators
+  queryGetFeaturedCreators,
+  queryGetCreatorUserName,
 } from './query';
 import { EntityCreator, EntityRequest, FinalizeFileUpload, TweetData, UploadFileLinkRequest } from './types';
 
@@ -23,6 +24,10 @@ const graphInstance = createClient({
 
 export const tweetVerify = (data: TweetData) => {
   return axiosInstance.post('/user/verify', data);
+};
+
+export const getTwitterData = (data: string[]) => {
+  return axiosInstance.post('/usersData', data);
 };
 
 export const userRequests = (
@@ -87,7 +92,9 @@ export const creators = async (
     })
     .toPromise();
 };
-
+export const getAllCreatorsUserName = async (): Promise<OperationResult<{ creators: [{ twitterHandle: string }] }>> => {
+  return graphInstance.query(queryGetCreatorUserName).toPromise();
+};
 export const creatorById = async (id: string): Promise<OperationResult<{ creator: EntityCreator }>> => {
   return graphInstance
     .query(queryGetCreatorById, {
@@ -111,12 +118,10 @@ export const finalizeFileUpload = (data: FinalizeFileUpload) => {
 export const getArweaveMetadata = (arweaveToken: string) => {
   return axios.get(`https://arweave.net/${arweaveToken}`);
 };
-export const featuredCreators = async (
-  address: string[]
-): Promise<OperationResult<{ creators: EntityCreator[] }>> => {
+export const featuredCreators = async (address: string[]): Promise<OperationResult<{ creators: EntityCreator[] }>> => {
   return graphInstance
     .query(queryGetFeaturedCreators, {
-      address
+      address,
     })
     .toPromise();
 };
