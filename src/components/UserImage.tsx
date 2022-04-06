@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { responsePathAsArray } from 'graphql';
 import { CSSProperties, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getTwitterData } from '../api';
