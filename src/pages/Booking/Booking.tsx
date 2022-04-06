@@ -96,7 +96,7 @@ const BookingPage = () => {
                     <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
                   </div>
                   <div>
-                    <AvatarComponent url={creator.profilePicture} size="medium" />
+                    <AvatarComponent url={creator.profilePicture} size="medium" twitterHandle={creator.twitterHandle} />
                   </div>
                 </FlexRow>
                 <FlexRow style={{ marginBottom: 24 }}>

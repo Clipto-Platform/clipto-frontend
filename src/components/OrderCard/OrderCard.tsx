@@ -30,7 +30,9 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
         <Row>
           <AvatarContainer>
             {isReceived && <AvatarComponent address={userAddress} />}
-            {!isReceived && request.creator && <AvatarComponent url={request.creator.profilePicture} />}
+            {!isReceived && request.creator && (
+              <AvatarComponent url={request.creator.profilePicture} twitterHandle={request.creator.twitterHandle} />
+            )}
           </AvatarContainer>
           <Column>
             {/* TODO(jonathanng) - make dynamic */}
