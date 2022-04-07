@@ -3,9 +3,24 @@ import { useTheme } from 'styled-components';
 import { featuredCreators } from '../../api/index';
 import { EntityCreator } from '../../api/types';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
-import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
+import { ContentWrapper, PageContentWrapper, PageWrapper, BackgroundWrapper } from '../../components/layout/Common';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
-import { HeroTitle } from './Style';
+import {
+  LeftContentWrapper,
+  HeroTitle,
+  BookNow,
+  ImageCards1,
+  ImageCards2,
+  ImageCards3,
+  Card1,
+  Card2,
+  Card3,
+  Left,
+  Right,
+  Phone1,
+  Phone2,
+} from './Style';
+import play from '../../assets/svgs/play.svg';
 import { TEST } from '../../config/config';
 
 const featuredList: string[] = [
@@ -23,7 +38,7 @@ const featuredListTest: string[] = [
 ];
 const HomePage = () => {
   let [creators, setCreators] = useState<EntityCreator[]>([]);
-
+  const [page, setPage] = useState<number>(0);
   useEffect(() => {
     const creatorAddresses = TEST
       ? featuredListTest.map((c) => c.toLowerCase())
@@ -38,21 +53,62 @@ const HomePage = () => {
       }
     });
   });
-
+  const leftClick = () => {
+    if (page == 0) {
+      setPage(2);
+    } else {
+      setPage(page - 1);
+    }
+  };
+  const rightClick = () => {
+    if (page == 2) {
+      setPage(0);
+    } else {
+      setPage(page + 1);
+    }
+  };
   const theme = useTheme();
   return (
     <>
       <PageWrapper>
-        <HeaderSpacer />
-        <HeaderContentGapSpacer />
-        <PageContentWrapper>
-          <ContentWrapper>
-            <HeroTitle>
-              Personalized videos from your favorite{' '}
-              <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-            </HeroTitle>
-          </ContentWrapper>
-        </PageContentWrapper>
+        <BackgroundWrapper page={page}>
+          <HeaderSpacer />
+          {/* <HeaderContentGapSpacer /> */}
+          <PageContentWrapper>
+            {/* <ContentWrapper> */}
+            {/*Arrows */}
+            <Left onClick={leftClick} />
+            <Right onClick={rightClick} />
+            <LeftContentWrapper>
+              <HeroTitle>
+                Personalized videos from your favorite{' '}
+                <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
+              </HeroTitle>
+              <BookNow>Book Now</BookNow>
+            </LeftContentWrapper>
+            {page == 0 && (
+              <ImageCards1>
+                <Card1>
+                  <img src={play} />
+                </Card1>
+                <Card2>
+                  <img src={play} />
+                </Card2>
+                <Card3>
+                  <img src={play} />
+                </Card3>
+              </ImageCards1>
+            )}
+            {page == 1 && (
+              <ImageCards2>
+                <Phone1 />
+                <Phone2 />
+              </ImageCards2>
+            )}
+            {page == 2 && <ImageCards3 />}
+            {/* </ContentWrapper> */}
+          </PageContentWrapper>
+        </BackgroundWrapper>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />
       </PageWrapper>
     </>
