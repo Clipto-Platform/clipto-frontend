@@ -62,7 +62,7 @@ export const DOCS_LINK = 'https://cliptodao.gitbook.io/clipto/';
 export const TERMS_LINK = 'https://cliptodao.gitbook.io/clipto/';
 export const PRIVACY_LINK = 'https://cliptodao.gitbook.io/clipto/';
 
-export const API_URL = TEST ? 'http://localhost:8000' : 'https://api.clipto.io';
+export const API_URL = DEV ? 'http://localhost:8000' : TEST ? 'https://testapi.clipto.io' : 'https://api.clipto.io';
 
 export const getPolygonScan = (addr: string) =>
   ENV === 'TEST' ? `https://mumbai.polygonscan.com/token/${addr}` : `https://polygonscan.com/token/${addr}`;
