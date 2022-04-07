@@ -43,7 +43,11 @@ export const UserImage: React.FC<UserImageProps> = (props) => {
   }, []);
   return (
     <>
-      <Image {...props} src={image} onLoad={props.onLoad} />
+      {imageStatus === 'loading' ? (
+        <Image {...props} src={notfoundImage} onLoad={props.onLoad} />
+      ) : (
+        <Image {...props} src={image} onLoad={props.onLoad} />
+      )}
       {/* <LoadingUserImage {...props} /> */}
     </>
   );
