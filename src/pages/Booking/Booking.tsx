@@ -45,7 +45,6 @@ const BookingPage = () => {
   useEffect(() => {
     if (ref && ref.current) {
       window.scrollTo({
-        behavior: 'smooth',
         top: ref.current.offsetTop,
       });
     }
@@ -85,8 +84,8 @@ const BookingPage = () => {
     <PageWrapper>
       <HeaderContentGapSpacer />
       <PageContentWrapper>
-        <PageGrid>
-          <ImagesColumnContainer ref={ref}>
+        <PageGrid ref={ref}>
+          <ImagesColumnContainer>
             {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
           </ImagesColumnContainer>
           <RightPanel creator={creator} account={account} loaded={loaded} user={user}>
