@@ -3,7 +3,8 @@ import { useTheme } from 'styled-components';
 import { featuredCreators } from '../../api/index';
 import { EntityCreator } from '../../api/types';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
-import { ContentWrapper, PageContentWrapper, PageWrapper, BackgroundWrapper } from '../../components/layout/Common';
+import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
+import { BackgroundWrapper } from '../../components/New/FrontPage';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
 import {
   LeftContentWrapper,
@@ -19,6 +20,9 @@ import {
   Right,
   Phone1,
   Phone2,
+  CryptoStar,
+  Name,
+  Title,
 } from './Style';
 import play from '../../assets/svgs/play.svg';
 import { TEST } from '../../config/config';
@@ -78,7 +82,6 @@ const HomePage = () => {
             {/* <ContentWrapper> */}
             {/*Arrows */}
             <Left onClick={leftClick} />
-            <Right onClick={rightClick} />
             <LeftContentWrapper>
               <HeroTitle>
                 Personalized videos from your favorite{' '}
@@ -105,7 +108,16 @@ const HomePage = () => {
                 <Phone2 />
               </ImageCards2>
             )}
-            {page == 2 && <ImageCards3 />}
+            {page == 2 && (
+              <ImageCards3>
+                <div style={{ zIndex: 10, maxWidth: 500 }}>
+                  <Name>Bob Burnquist</Name>
+                  <Title>Skateboarder</Title>
+                </div>
+                <CryptoStar />
+              </ImageCards3>
+            )}
+            <Right onClick={rightClick} />
             {/* </ContentWrapper> */}
           </PageContentWrapper>
         </BackgroundWrapper>

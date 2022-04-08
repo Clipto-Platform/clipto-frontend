@@ -6,10 +6,12 @@ import phone1 from '../../assets/images/homepage/page2/phone1.png';
 import phone2 from '../../assets/images/homepage/page2/phone2.png';
 import LeftArrow from '../../assets/images/homepage/LeftArrow.png';
 import RightArrow from '../../assets/images/homepage/RightArrow.png';
+import Bob from '../../assets/images/homepage/page3/bob.png';
 
 export const LeftContentWrapper = styled.div`
   display: inline-block;
   float: left;
+  z-index: 10;
 `;
 
 export const HeroTitle = styled.h1`
@@ -17,8 +19,7 @@ export const HeroTitle = styled.h1`
   font-weight: normal;
   font-size: 36px;
   line-height: 125%;
-  margin: 150px 0px 50px 0px;
-  min-width: 200px;
+  margin: 150px 10px 50px 10px;
   max-width: 520px;
   width: min-content
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -88,7 +89,7 @@ export const Phone1 = styled.div`
   background-size: cover;
   height: 540px;
   width: 360px;
-  margin: 0px 100px;
+  margin-right: 230px;
 `;
 export const Phone2 = styled.div`
   position: absolute;
@@ -96,7 +97,7 @@ export const Phone2 = styled.div`
   background-size: cover;
   height: 690px;
   width: 450px;
-  transform: translate(160px, 30px);
+  transform: translate(50px, 30px);
 `;
 export const ImageCards3 = styled.div`
   display: flex;
@@ -105,21 +106,37 @@ export const ImageCards3 = styled.div`
   justify-content: space-around;
   align-items: center;
 `;
-export const Left = styled.button`
+export const CryptoStar = styled.div`
+  background-image: url(${Bob});
+  height: 600px;
+  width: 860px;
+  background-size: cover;
   position: absolute;
-  left: 50px;
+  top: 95px;
+  right: 15%;
+`;
+export const Name = styled.div`
+  z-index: 10;
+  font-size: 24px;
+  font-family: 'Eina01';
+  font-weight: 700;
+`;
+export const Title = styled.div``;
+export const Left = styled.button`
   background-image: url(${LeftArrow});
   background-size: cover;
   background-color: transparent;
   border: none;
   height: 23px;
+  margin-right: 10px;
+  z-index: 10;
 `;
 export const Right = styled.button`
-  position: absolute;
-  right: 50px;
   background-image: url(${RightArrow});
   background-size: cover;
   background-color: transparent;
   border: none;
   height: 23px;
+  margin-left: 10px;
+  z-index: 10;
 `;
