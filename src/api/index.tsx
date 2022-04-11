@@ -23,22 +23,20 @@ const graphInstance = createClient({
   url: GRAPH_APIS[DEFAULT_CHAIN_ID],
 });
 
-export const  exchnageRates = async (token: string, price: number) => {
-  if(token == 'WMATIC'){
-    token = 'MATIC'
-  }
-  else if(token == 'WETH'){
-    token = 'ETH'
+export const exchnageRates = async (token: string, price: number) => {
+  if (token == 'WMATIC') {
+    token = 'MATIC';
+  } else if (token == 'WETH') {
+    token = 'ETH';
   }
   const rates = await axios.get('https://api.coinbase.com/v2/exchange-rates', {
     params: {
-      currency : token
-    }
+      currency: token,
+    },
   });
-  const convertedPrice = (price/parseFloat(rates.data.data.rates['MATIC'])).toFixed(7);
+  const convertedPrice = (price / parseFloat(rates.data.data.rates['MATIC'])).toFixed(7);
   return convertedPrice;
-}
-
+};
 
 export const tweetVerify = (data: TweetData) => {
   return axiosInstance.post('/user/verify', data);

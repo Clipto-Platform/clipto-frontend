@@ -123,8 +123,8 @@ const BookingPage = () => {
   return (
     <PageWrapper>
       <HeaderContentGapSpacer />
-      <PageContentWrapper>
-        <PageGrid ref={ref}>
+      <PageContentWrapper ref={ref}>
+        <PageGrid>
           <ImagesColumnContainer>
             {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
           </ImagesColumnContainer>
@@ -264,7 +264,9 @@ const BookingPage = () => {
                           endText={token}
                           type="number"
                           placeholder={
-                            price && price != 0 ? price + '+' : formatETH(convertToFloat(creator.price)) + '+'
+                            price && price != 0
+                              ? price.toFixed(7) + '+'
+                              : formatETH(convertToFloat(creator.price)) + '+'
                           }
                           onChange={handleChange('amount')}
                           errorMessage={errors.amount}
