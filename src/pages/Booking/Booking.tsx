@@ -20,7 +20,7 @@ import { useCreator } from '../../hooks/useCreator';
 import { useFee } from '../../hooks/useFee';
 import { Description, Label } from '../../styles/typography';
 import { getShortenedAddress } from '../../utils/address';
-import { convertToFloat, convertToInt, formatETH } from '../../utils/format';
+import { convertToFloat, convertToInt, formatETH, removeTrailingZero } from '../../utils/format';
 import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
@@ -244,7 +244,7 @@ const BookingPage = () => {
                       </div>
 
                       <div style={{ marginBottom: 40 }}>
-                        <Dropdown formLabel="Select Crypto" onChange={handleSelect}>
+                        <Dropdown formLabel="Select payment type" onChange={handleSelect}>
                           {TOKENS.map((tok, i) => {
                             if (i == 0) {
                               <Option key={i} selected value={tok} />;
@@ -265,7 +265,7 @@ const BookingPage = () => {
                           type="number"
                           placeholder={
                             price && price != 0
-                              ? price.toFixed(7) + '+'
+                              ? removeTrailingZero(price.toFixed(7)) + '+'
                               : formatETH(convertToFloat(creator.price)) + '+'
                           }
                           onChange={handleChange('amount')}
