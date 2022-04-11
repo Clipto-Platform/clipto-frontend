@@ -14,8 +14,8 @@ import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import { PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { SYMBOL, DEFAULT_CHAIN_ID, CHAIN_NAMES } from '../../config/config';
-import { useExchangeContract } from '../../hooks/useContracts';
+import { CHAIN_NAMES, SYMBOL, TOKENS } from '../../config/config';
+import { getProviderOrSigner, useERC20Contract, useExchangeContract } from '../../hooks/useContracts';
 import { useCreator } from '../../hooks/useCreator';
 import { useFee } from '../../hooks/useFee';
 import { Description, Label } from '../../styles/typography';
@@ -25,11 +25,16 @@ import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
 import { BookingFormValues } from './types';
+import { parseUnits } from 'ethers/lib/utils';
+import { EXCHANGE_ADDRESS, DEFAULT_CHAIN_ID, ERC20_CONTRACTS } from '../../config/config';
+import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
+import { ERC20__factory } from '../../contracts';
+import axios from 'axios';
+import { exchnageRates } from '../../api';
 
 const BookingPage = () => {
   const { creatorId } = useParams();
   const { account, library, chainId } = useWeb3React<Web3Provider>();
-
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const exchangeContract = useExchangeContract(true);
@@ -38,6 +43,8 @@ const BookingPage = () => {
   const [user, setUser] = useState();
   const getUser = useSelector((state: any) => state.user);
   const ref = useRef(null as any);
+  const [token, setToken] = useState<string>('MATIC');
+  const [price, setPrice] = useState<number>(0);
 
   useEffect(() => {
     setUser(getUser);
@@ -49,6 +56,23 @@ const BookingPage = () => {
       });
     }
   }, [ref]);
+
+  useEffect(() => {
+    if (loaded && creator) {
+      exchnageRates(token, creator.price).then((convertedPrice) => {
+        setPrice(parseFloat(convertedPrice));
+      });
+    }
+  }, [loaded, token]);
+
+  const getErc20Contract = () => {
+    const provider = getProviderOrSigner(library, account ? account : undefined);
+    return ERC20__factory.connect(ERC20_CONTRACTS[token], provider);
+  };
+
+  const handleSelect = (e: any) => {
+    setToken(e.target.value);
+  };
   const makeBooking = async (values: BookingFormValues) => {
     try {
       if (!creatorId) {
@@ -66,11 +90,27 @@ const BookingPage = () => {
         deadline: convertToInt(values.deadline),
         description: values.description,
       };
-      const transaction = await exchangeContract.newRequest(creatorId, JSON.stringify(requestData), {
-        value: ethers.utils.parseEther(values.amount),
-      });
+      let transaction;
+      if (token && token == 'MATIC') {
+        transaction = await exchangeContract.newRequestPayable(creatorId, JSON.stringify(requestData), {
+          value: ethers.utils.parseEther(values.amount),
+        });
+      } else if (token) {
+        const ERC20 = getErc20Contract();
+
+        const tx = await ERC20.approve(EXCHANGE_ADDRESS[DEFAULT_CHAIN_ID], parseUnits(values.amount));
+        toast.loading('waiting for approval');
+        console.log('approve request', await tx.wait());
+        transaction = await exchangeContract.newRequest(
+          creatorId,
+          JSON.stringify(requestData),
+          ERC20_CONTRACTS[token],
+          parseUnits(values.amount),
+        );
+      }
+      toast.dismiss();
       toast.loading('Creating a new booking, waiting for confirmation');
-      const receipt = await transaction.wait();
+      const receipt = transaction && (await transaction.wait());
       toast.dismiss();
       toast.success('Booking completed, your Order will reflect in few moments.');
       navigate('/orders');
@@ -204,15 +244,28 @@ const BookingPage = () => {
                       </div>
 
                       <div style={{ marginBottom: 40 }}>
+                        <Dropdown formLabel="Select Crypto" onChange={handleSelect}>
+                          {TOKENS.map((tok, i) => {
+                            if (i == 0) {
+                              <Option key={i} selected value={tok} />;
+                            }
+                            return <Option key={i} value={tok} />;
+                          })}
+                        </Dropdown>
+                      </div>
+
+                      <div style={{ marginBottom: 40 }}>
                         <TextField
                           inputStyles={{
-                            width: 172,
+                            width: 220,
                           }}
                           label="Amount to pay"
                           description={'Increase your bid to get your video earlier'}
-                          endText={SYMBOL}
+                          endText={token}
                           type="number"
-                          placeholder={formatETH(convertToFloat(creator.price)) + '+'}
+                          placeholder={
+                            price && price != 0 ? price + '+' : formatETH(convertToFloat(creator.price)) + '+'
+                          }
                           onChange={handleChange('amount')}
                           errorMessage={errors.amount}
                         />
