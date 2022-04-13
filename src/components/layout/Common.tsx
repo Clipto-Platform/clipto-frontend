@@ -6,6 +6,7 @@ import { MAX_CONTENT_WIDTH_PX } from '../../styles/theme';
 export const PageWrapper = styled.div<{ blur?: boolean }>`
   display: flex;
   flex: 1;
+  top: 64px;
   flex-direction: column;
   min-height: 100vh;
   position: relative;

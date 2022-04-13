@@ -42,7 +42,9 @@ const featuredListTest: string[] = [
 ];
 const HomePage = () => {
   let [creators, setCreators] = useState<EntityCreator[]>([]);
+
   const [page, setPage] = useState<number>(0);
+
   useEffect(() => {
     const creatorAddresses = TEST
       ? featuredListTest.map((c) => c.toLowerCase())
@@ -57,6 +59,7 @@ const HomePage = () => {
       }
     });
   });
+
   const leftClick = () => {
     if (page == 0) {
       setPage(2);
@@ -71,6 +74,7 @@ const HomePage = () => {
       setPage(page + 1);
     }
   };
+
   const theme = useTheme();
   return (
     <>
