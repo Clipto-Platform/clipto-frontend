@@ -1,3 +1,4 @@
+import { url } from 'inspector';
 import styled from 'styled-components';
 
 import { MAX_CONTENT_WIDTH_PX } from '../../styles/theme';
@@ -12,7 +13,6 @@ export const PageWrapper = styled.div<{ blur?: boolean }>`
   overflow: hidden;
   padding-bottom: 120px;
 `;
-
 export const PageContentWrapper = styled.div`
   padding: 0 32px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -20,7 +20,9 @@ export const PageContentWrapper = styled.div`
   `}
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  // flex-wrap: wrap;
 `;
 
 export const ContentWrapper = styled.div`

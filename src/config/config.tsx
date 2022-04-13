@@ -1,5 +1,6 @@
 export const DEV = false;
 export const TEST = false;
+
 export const ENV = DEV ? 'DEV' : TEST ? 'TEST' : 'PROD';
 
 export const CHAIN_IDS = {

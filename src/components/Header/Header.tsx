@@ -135,9 +135,11 @@ const MobileHeader = (props: any) => {
             <Link to={'/explore'} onClick={handleClick}>
               <StyledSpan>Explore</StyledSpan>
             </Link>
-            {userLoggedIn && (<Link to={'/orders'} onClick={handleClick}>
-              <StyledSpan>Orders</StyledSpan>
-            </Link>)}
+            {userLoggedIn && (
+              <Link to={'/orders'} onClick={handleClick}>
+                <StyledSpan>Orders</StyledSpan>
+              </Link>
+            )}
             {userLoggedIn && !loggedInProfile && (
               <Link to={'/onboarding'} onClick={handleClick}>
                 <StyledSpan>Become a creator</StyledSpan>
@@ -302,14 +304,14 @@ const Header: React.FC<HeaderProps> = () => {
                       <Link to={'/explore'}>
                         <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
                       </Link>
-                      </LinkWrapper>
-                      <DiscordWrapper>
-                        <DiscordButton
-                          onPress={() => {
-                            window.open(DISCORD_LINK);
-                          }}
-                        />
-                      </DiscordWrapper>
+                    </LinkWrapper>
+                    <DiscordWrapper>
+                      <DiscordButton
+                        onPress={() => {
+                          window.open(DISCORD_LINK);
+                        }}
+                      />
+                    </DiscordWrapper>
                     <PrimaryButton
                       size={'small'}
                       style={{ width: 160 }}
@@ -318,7 +320,7 @@ const Header: React.FC<HeaderProps> = () => {
                     >
                       Connect Wallet
                     </PrimaryButton>
-                    <MobileHeader loggedInProfile={loggedInProfile} userLoggedIn={checkLogin}/>
+                    <MobileHeader loggedInProfile={loggedInProfile} userLoggedIn={checkLogin} />
                   </RightWrapper>
                 </>
               )}
@@ -403,7 +405,7 @@ const Header: React.FC<HeaderProps> = () => {
                       )}
                     </RightWrapper>
                   )}
-                  <MobileHeader loggedInProfile={loggedInProfile} userLoggedIn={checkLogin}/>
+                  <MobileHeader loggedInProfile={loggedInProfile} userLoggedIn={checkLogin} />
                 </RightWrapper>
               )}
             </>
@@ -454,8 +456,8 @@ const Header: React.FC<HeaderProps> = () => {
       {checkLogin && chainDialog && (
         <>
           <ChainContainer>
-              {`Please switch to ${currentChainName}`}
-              {ENV === 'PROD' && <NetworkButton onClick={switchNetwork}>Switch Network</NetworkButton> } 
+            {`Please switch to ${currentChainName}`}
+            {ENV === 'PROD' && <NetworkButton onClick={switchNetwork}>Switch Network</NetworkButton>}
           </ChainContainer>
         </>
       )}
@@ -469,9 +471,9 @@ const NetworkButton = styled.button`
   font-size: 12px;
   border-radius: 6px;
   padding: 4px;
-  background: ${props => props.theme.black};
-  color: ${props => props.theme.white};
-`
+  background: ${(props) => props.theme.black};
+  color: ${(props) => props.theme.white};
+`;
 
 const HeaderSpacer = styled.div`
   height: ${HEADER_HEIGHT_IN_PX};
