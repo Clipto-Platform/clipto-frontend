@@ -2,47 +2,49 @@ import styled from 'styled-components';
 import card1 from '../../assets/images/homepage/page1/card1.png';
 import card2 from '../../assets/images/homepage/page1/card2.png';
 import card3 from '../../assets/images/homepage/page1/card3.png';
-import phone1 from '../../assets/images/homepage/page2/phone1.png';
-import phone2 from '../../assets/images/homepage/page2/phone2.png';
 import LeftArrow from '../../assets/images/homepage/LeftArrow.png';
 import RightArrow from '../../assets/images/homepage/RightArrow.png';
-import Bob from '../../assets/images/homepage/page3/bob.png';
+import Bob from '../../assets/images/homepage/page2/bob.png';
 
 export const LeftContentWrapper = styled.div`
-  display: inline-block;
-  float: left;
   z-index: 10;
+  padding: 200px 20px 400px 20px;
+  width: 85%;
 `;
 
 export const HeroTitle = styled.h1`
   font-family: 'Scto Grotesk A';
   font-weight: normal;
-  font-size: 36px;
+  font-size: 40px;
   line-height: 125%;
-  margin: 150px 10px 50px 10px;
-  max-width: 520px;
+  min-width: 231px;
+  max-width: 550px;
   width: min-content
     ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 36px;
   `};
+  margin-bottom: 50px;
 `;
 
 export const BookNow = styled.h3`
   font-size: 16px;
   font-family: 'Eina01';
   font-weight: 700;
-  background-color: #5f21e2;
+  background-color: ${(props) => props.color};
   border-radius: 40px;
   padding: 10px 40px 14px 40px;
-  margin: 0px 0px 270px 0px;
   width: fit-content;
 `;
 export const ImageCards1 = styled.div`
+  position: absolute;
   display: flex;
-  margin: 0;
-  height: 100%;
   justify-content: space-around;
   align-items: center;
+  width: fit-content;
+  right: 90px;
+  @media (max-width: 820px) {
+    right: revert;
+  }
 `;
 export const Card1 = styled.div`
   display: flex;
@@ -50,10 +52,10 @@ export const Card1 = styled.div`
   align-items: center;
   background-image: url(${card1});
   background-size: cover;
-  min-width: 170px;
-  height: 380px;
-  border-radius: 20px;
-  margin-right: 5px;
+  width: 250px;
+  height: 550px;
+  border-radius: 50px;
+  margin-right: 10px;
 `;
 export const Card2 = styled.div`
   display: flex;
@@ -61,10 +63,10 @@ export const Card2 = styled.div`
   align-items: center;
   background-image: url(${card2});
   background-size: cover;
-  min-width: 200px;
-  height: 467px;
-  border-radius: 20px;
-  margin: 0px 5px;
+  width: 300px;
+  height: 680px;
+  border-radius: 50px;
+  margin: 0px 10px;
 `;
 export const Card3 = styled.div`
   display: flex;
@@ -72,48 +74,22 @@ export const Card3 = styled.div`
   align-items: center;
   background-image: url(${card3});
   background-size: cover;
-  min-width: 180px;
-  height: 380px;
-  border-radius: 20px;
-  margin-left: 5px;
+  width: 250px;
+  height: 550px;
+  border-radius: 50px;
+  margin-left: 10px;
 `;
+
 export const ImageCards2 = styled.div`
-  display: flex;
-  margin: 0;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-`;
-export const Phone1 = styled.div`
-  background-image: url(${phone1});
-  background-size: cover;
-  height: 540px;
-  width: 360px;
-  margin-right: 230px;
-`;
-export const Phone2 = styled.div`
   position: absolute;
-  background-image: url(${phone2});
-  background-size: cover;
-  height: 690px;
-  width: 450px;
-  transform: translate(50px, 30px);
-`;
-export const ImageCards3 = styled.div`
-  display: flex;
-  margin: 0;
-  height: 100%;
-  justify-content: space-around;
-  align-items: center;
+  top: 15px;
+  right: 10%;
 `;
 export const CryptoStar = styled.div`
   background-image: url(${Bob});
-  height: 600px;
-  width: 860px;
+  height: 880px;
+  width: 1270px;
   background-size: cover;
-  position: absolute;
-  top: 95px;
-  right: 15%;
 `;
 export const Name = styled.div`
   z-index: 10;
@@ -121,22 +97,31 @@ export const Name = styled.div`
   font-family: 'Eina01';
   font-weight: 700;
 `;
-export const Title = styled.div``;
+export const Title = styled.div`
+  font-family: 'Eina01-Light';
+  font-size: 24px;
+`;
 export const Left = styled.button`
+  position: absolute;
+  left: 30px;
+  top: 400px;
   background-image: url(${LeftArrow});
   background-size: cover;
   background-color: transparent;
   border: none;
-  height: 23px;
-  margin-right: 10px;
+  height: 30px;
+  width: 17px;
   z-index: 10;
 `;
 export const Right = styled.button`
+  position: absolute;
+  right: 30px;
+  top: 400px;
   background-image: url(${RightArrow});
   background-size: cover;
   background-color: transparent;
   border: none;
-  height: 23px;
-  margin-left: 10px;
+  height: 30px;
+  width: 17px;
   z-index: 10;
 `;

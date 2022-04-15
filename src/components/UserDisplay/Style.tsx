@@ -5,6 +5,8 @@ export const ContainerWrapper = styled(PageContentWrapper)`
   display: flex;
   flex: 1;
   width: 100%;
+  background-color: rgba(255, 255, 255, 0.04);
+  padding: 80px 0px;
 `;
 
 export const HeroTitle = styled.h1`
