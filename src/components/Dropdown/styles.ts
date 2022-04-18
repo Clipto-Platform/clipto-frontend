@@ -21,7 +21,8 @@ export const StyledSelectDiv = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  position: realtive;
+  position: relative;
+  justify-content: flex-end;
 `;
 export const StyledSelect = styled.select`
   background: transparent;
@@ -35,6 +36,9 @@ export const StyledSelect = styled.select`
   font-size: 16px;
   line-height: 20px;
   color: #ffffff;
+  position: absolute;
+  left: 0;
+  padding: 10px;
 `;
 
 export const StyledOption = styled.option`
