@@ -51,7 +51,9 @@ const SelectedOrderPage = () => {
   const [history, setHistory] = useState<NFTHistories[]>();
 
   const validate = (name: string, desc: string) => {
-    if (name.length === 0) return { name: 'This field cannot be empty' };
+    if (name.length === 0 && desc.length === 0) {
+      return { name: 'This field cannot be empty', description: 'This field cannot be empty' };
+    } else if (name.length === 0) return { name: 'This field cannot be empty' };
     else if (desc.length === 0) return { description: 'This field cannot be empty' };
     return;
   };
