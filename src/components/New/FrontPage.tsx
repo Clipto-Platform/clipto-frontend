@@ -30,4 +30,5 @@ export const BackgroundWrapper = styled.div`
   height: 100%;
   opacity: 100%;
   transform: ${(props) => `translateX(${props.translate}vw)`};
+  overflow: hidden;
 `;

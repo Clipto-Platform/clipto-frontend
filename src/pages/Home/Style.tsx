@@ -8,7 +8,11 @@ import Bob from '../../assets/images/homepage/page2/bob.png';
 
 export const LeftContentWrapper = styled.div`
   z-index: 10;
-  padding: 200px 20px 400px 20px;
+  padding: 200px 20px 350px 20px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 300px 20px 250px 20px;
+    width: 100%;
+  `}
   width: 85%;
 `;
 
@@ -17,13 +21,9 @@ export const HeroTitle = styled.h1`
   font-weight: normal;
   font-size: 40px;
   line-height: 125%;
-  min-width: 231px;
-  max-width: 550px;
-  width: min-content
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-    font-size: 36px;
-  `};
+  width: 550px;
   margin-bottom: 50px;
+  margin-right: 0px;
 `;
 
 export const BookNow = styled.h3`
@@ -37,12 +37,13 @@ export const BookNow = styled.h3`
 `;
 export const ImageCards1 = styled.div`
   position: absolute;
+  z-index: -50;
   display: flex;
   justify-content: space-around;
   align-items: center;
   width: fit-content;
   right: 90px;
-  @media (max-width: 820px) {
+  @media (max-width: 1000px) {
     right: revert;
   }
 `;
@@ -82,12 +83,12 @@ export const Card3 = styled.div`
 
 export const ImageCards2 = styled.div`
   position: absolute;
-  top: 15px;
+  top: 0px;
   right: 10%;
 `;
 export const CryptoStar = styled.div`
   background-image: url(${Bob});
-  height: 880px;
+  height: 840px;
   width: 1270px;
   background-size: cover;
 `;
@@ -103,7 +104,7 @@ export const Title = styled.div`
 `;
 export const Left = styled.button`
   position: absolute;
-  left: 30px;
+  left: 4%;
   top: 400px;
   background-image: url(${LeftArrow});
   background-size: cover;
@@ -115,7 +116,7 @@ export const Left = styled.button`
 `;
 export const Right = styled.button`
   position: absolute;
-  right: 30px;
+  right: 4%;
   top: 400px;
   background-image: url(${RightArrow});
   background-size: cover;

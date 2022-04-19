@@ -65,20 +65,20 @@ const HomePage = () => {
   });
 
   const leftClick = () => {
-    let temp = slidePosition;
-    if (slidesPosition % 300 == 0) temp[1] = slidePosition[1] - 300;
-    else if (slidesPosition % 300 == 100 || slidesPosition % 300 == -200) temp[0] = slidePosition[0] - 300;
-    else if (slidesPosition % 300 == 200 || slidesPosition % 300 == -100) temp[2] = slidePosition[2] - 300;
-    console.log(temp);
-    setSlidePosition(temp);
+    // let temp = slidePosition;
+    // if (slidesPosition % 300 == 0) temp[1] = slidePosition[1] - 300;
+    // else if (slidesPosition % 300 == 100 || slidesPosition % 300 == -200) temp[0] = slidePosition[0] - 300;
+    // else if (slidesPosition % 300 == 200 || slidesPosition % 300 == -100) temp[2] = slidePosition[2] - 300;
+    // console.log(temp);
+    // setSlidePosition(temp);
     setSlidesPosition(slidesPosition + 100);
   };
   const rightClick = () => {
-    let temp = slidePosition;
-    if (slidesPosition % 300 == 0) temp[2] = slidePosition[2] + 300;
-    else if (slidesPosition % 300 == 100 || slidesPosition % 300 == -200) temp[1] = slidePosition[1] + 300;
-    else if (slidesPosition % 300 == 200 || slidesPosition % 300 == -100) temp[0] = slidePosition[0] + 300;
-    setSlidePosition(temp);
+    // let temp = slidePosition;
+    // if (slidesPosition % 300 == 0) temp[2] = slidePosition[2] + 300;
+    // else if (slidesPosition % 300 == 100 || slidesPosition % 300 == -200) temp[1] = slidePosition[1] + 300;
+    // else if (slidesPosition % 300 == 200 || slidesPosition % 300 == -100) temp[0] = slidePosition[0] + 300;
+    // setSlidePosition(temp);
     setSlidesPosition(slidesPosition - 100);
   };
 
@@ -88,39 +88,39 @@ const HomePage = () => {
       <PageWrapper>
         <Left onClick={leftClick} />
         <Right onClick={rightClick} />
-        <Slides translate={slidesPosition}>
-          <BackgroundWrapper background={background1} translate={slidePosition[0]}>
+        {/* <Slides translate={slidesPosition}> */}
+        <BackgroundWrapper background={background1} translate={slidePosition[0]}>
+          <HeaderSpacer />
+          {/* <HeaderContentGapSpacer /> */}
+          <PageContentWrapper>
+            {/* <ContentWrapper> */}
+            <LeftContentWrapper>
+              <HeroTitle>
+                Personalized videos from your favorite{' '}
+                <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
+              </HeroTitle>
+              <Link to={'/explore'}>
+                <BookNow color={'#5F21E2'}>Book Now</BookNow>
+              </Link>
+            </LeftContentWrapper>
+            <ImageCards1>
+              <Card1>
+                <img src={play} style={{ height: '80px' }} />
+              </Card1>
+              <Card2>
+                <img src={play} style={{ height: '100px' }} />
+              </Card2>
+              <Card3>
+                <img src={play} style={{ height: '80px' }} />
+              </Card3>
+            </ImageCards1>
+          </PageContentWrapper>
+        </BackgroundWrapper>
+        {/* <BackgroundWrapper background={background2} translate={slidePosition[1]}>
             <HeaderSpacer />
-            {/* <HeaderContentGapSpacer /> */}
+            <HeaderContentGapSpacer />
             <PageContentWrapper>
-              {/* <ContentWrapper> */}
-              <LeftContentWrapper>
-                <HeroTitle>
-                  Personalized videos from your favorite{' '}
-                  <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-                </HeroTitle>
-                <Link to={'/explore'}>
-                  <BookNow color={'#5F21E2'}>Book Now</BookNow>
-                </Link>
-              </LeftContentWrapper>
-              <ImageCards1>
-                <Card1>
-                  <img src={play} style={{ height: '80px' }} />
-                </Card1>
-                <Card2>
-                  <img src={play} style={{ height: '100px' }} />
-                </Card2>
-                <Card3>
-                  <img src={play} style={{ height: '80px' }} />
-                </Card3>
-              </ImageCards1>
-            </PageContentWrapper>
-          </BackgroundWrapper>
-          <BackgroundWrapper background={background2} translate={slidePosition[1]}>
-            <HeaderSpacer />
-            {/* <HeaderContentGapSpacer /> */}
-            <PageContentWrapper>
-              {/* <ContentWrapper> */}
+              <ContentWrapper>
               <LeftContentWrapper>
                 <HeroTitle>
                   Personalized videos from your favorite{' '}
@@ -137,14 +137,14 @@ const HomePage = () => {
                 </div>
                 <CryptoStar />
               </ImageCards2>
-              {/* </ContentWrapper> */}
+              </ContentWrapper>
             </PageContentWrapper>
-          </BackgroundWrapper>
-          <BackgroundWrapper background={background3} translate={slidePosition[2]}>
+          </BackgroundWrapper> */}
+        {/* <BackgroundWrapper background={background3} translate={slidePosition[2]}>
             <HeaderSpacer />
-            {/* <HeaderContentGapSpacer /> */}
+            <HeaderContentGapSpacer />
             <PageContentWrapper>
-              {/* <ContentWrapper> */}
+              <ContentWrapper>
               <LeftContentWrapper>
                 <HeroTitle>
                   Personalized videos from your favorite{' '}
@@ -155,10 +155,10 @@ const HomePage = () => {
                 </Link>
               </LeftContentWrapper>
               <div />
-              {/* </ContentWrapper> */}
+              </ContentWrapper>
             </PageContentWrapper>
-          </BackgroundWrapper>
-        </Slides>
+          </BackgroundWrapper> */}
+        {/* </Slides> */}
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />
         <CreatorCards />
       </PageWrapper>

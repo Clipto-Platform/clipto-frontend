@@ -6,7 +6,7 @@ import { MAX_CONTENT_WIDTH_PX } from '../../styles/theme';
 export const PageWrapper = styled.div<{ blur?: boolean }>`
   display: flex;
   flex: 1;
-  top: 0px;
+  top: 64px;
   flex-direction: column;
   min-height: 100vh;
   position: relative;
@@ -14,15 +14,14 @@ export const PageWrapper = styled.div<{ blur?: boolean }>`
   padding-bottom: 120px;
 `;
 export const PageContentWrapper = styled.div`
-  padding: 0 80px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 0 48px;
-  `}
+  padding: 0 32px;
   width: 100%;
-  height: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0 16px;
+  `}
 `;
 
 export const ContentWrapper = styled.div`
