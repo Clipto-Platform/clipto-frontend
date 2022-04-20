@@ -36,6 +36,7 @@ query GetRequestById (
       txHash
       block
       timestamp
+      token
     }
   }
 `;
@@ -135,6 +136,7 @@ query GetCreatorRequests (
     txHash
     block
     timestamp
+    token
   }
 }
 `;
@@ -183,6 +185,7 @@ query GetUserRequests (
     txHash
     block
     timestamp
+    token
   }
 }
 `;
@@ -208,5 +211,15 @@ query GetFeaturedCreators (
     block
     timestamp
   }
+}
+`;
+export const queryGetCreatorUserName = `
+query GetAllCreators {
+    creators(
+      orderBy: timestamp,
+      orderDirection: asc
+    ){
+      twitterHandle
+    }
 }
 `;

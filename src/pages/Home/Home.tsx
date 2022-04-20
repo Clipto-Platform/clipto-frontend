@@ -41,7 +41,7 @@ const featuredList: string[] = [
 ];
 const featuredListTest: string[] = [
   '0x7c98c2dec5038f00a2cbe8b7a64089f9c0b51991', // atul
-  '0x8528f9805a82158c22814bda63015537a5e670c3', // rushi
+  '0x8b2a6a22ec055225C4c4b5815e7d9F566b8be68F', // rushi
   '0x7cacbc75d74740b50dc68fbf0a573af80243ca56', // jon
   '0x6e4cd1a58e0d1309da36f1ce1e456e5b93483175', // lee
 ];

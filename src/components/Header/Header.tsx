@@ -372,7 +372,11 @@ const Header: React.FC<HeaderProps> = () => {
                       <StyledSpan style={{ marginRight: 16 }}>
                         {userEnsName ?? getShortenedAddress(account, 6, 4)}
                       </StyledSpan>
-                      <AvatarComponent address={account} url={loggedInProfile?.profilePicture} />
+                      <AvatarComponent
+                        address={account}
+                        url={loggedInProfile?.profilePicture}
+                        twitterHandle={loggedInProfile.twitterHandle}
+                      />
                       {showProfileDropDown && (
                         <OverlayProvider>
                           <DropDown
