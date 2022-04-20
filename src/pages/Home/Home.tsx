@@ -22,6 +22,9 @@ import {
   CryptoStar,
   Name,
   Title,
+  OpacityGradient,
+  Ovals,
+  Oval,
 } from './Style';
 import play from '../../assets/svgs/play.svg';
 import { TEST } from '../../config/config';
@@ -44,11 +47,12 @@ const featuredListTest: string[] = [
 ];
 const HomePage = () => {
   let [creators, setCreators] = useState<EntityCreator[]>([]);
-
+  // console.log(window.innerWidth);
   const [page, setPage] = useState<number>(0);
   const [slidesPosition, setSlidesPosition] = useState<number>(-100);
   const [slidePosition, setSlidePosition] = useState<Array<number>>([0, 0, 0]);
-  console.log(slidesPosition, slidePosition);
+  let timer: any = null;
+  console.log(slidesPosition);
   useEffect(() => {
     const creatorAddresses = TEST
       ? featuredListTest.map((c) => c.toLowerCase())
@@ -65,100 +69,119 @@ const HomePage = () => {
   });
 
   const leftClick = () => {
-    // let temp = slidePosition;
-    // if (slidesPosition % 300 == 0) temp[1] = slidePosition[1] - 300;
-    // else if (slidesPosition % 300 == 100 || slidesPosition % 300 == -200) temp[0] = slidePosition[0] - 300;
-    // else if (slidesPosition % 300 == 200 || slidesPosition % 300 == -100) temp[2] = slidePosition[2] - 300;
-    // console.log(temp);
-    // setSlidePosition(temp);
+    let temp = slidePosition;
+    if (slidesPosition % 300 == 0) temp[1] = slidePosition[1] - 300;
+    else if (slidesPosition % 300 == 100 || slidesPosition % 300 == -200) temp[0] = slidePosition[0] - 300;
+    else if (slidesPosition % 300 == 200 || slidesPosition % 300 == -100) temp[2] = slidePosition[2] - 300;
+    console.log(temp);
+    setSlidePosition(temp);
     setSlidesPosition(slidesPosition + 100);
   };
   const rightClick = () => {
-    // let temp = slidePosition;
-    // if (slidesPosition % 300 == 0) temp[2] = slidePosition[2] + 300;
-    // else if (slidesPosition % 300 == 100 || slidesPosition % 300 == -200) temp[1] = slidePosition[1] + 300;
-    // else if (slidesPosition % 300 == 200 || slidesPosition % 300 == -100) temp[0] = slidePosition[0] + 300;
-    // setSlidePosition(temp);
+    let temp = slidePosition;
+    if (slidesPosition % 300 == 0) temp[2] = slidePosition[2] + 300;
+    else if (slidesPosition % 300 == 100 || slidesPosition % 300 == -200) temp[1] = slidePosition[1] + 300;
+    else if (slidesPosition % 300 == 200 || slidesPosition % 300 == -100) temp[0] = slidePosition[0] + 300;
+    setSlidePosition(temp);
     setSlidesPosition(slidesPosition - 100);
+  };
+
+  const slides = () => {
+    let background = [background1, background2, background3];
+    let slideArray: Array<any> = [];
+    let ovals = [];
+    for (let i = 0; i < 3; i++) {
+      ovals.push(<Oval />);
+    }
+    let slideContent = [
+      <>
+        <LeftContentWrapper>
+          <HeroTitle>
+            Personalized videos from your favorite{' '}
+            <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
+          </HeroTitle>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Link to={'/explore'}>
+              <BookNow color={'#5F21E2'}>Book Now</BookNow>
+            </Link>
+            <Ovals>{ovals}</Ovals>
+          </div>
+        </LeftContentWrapper>
+        <div style={{ maxWidth: '600px' }} />
+        <ImageCards1>
+          <Card1>
+            <img src={play} style={{ height: '80px' }} />
+          </Card1>
+          <Card2>
+            <img src={play} style={{ height: '100px' }} />
+          </Card2>
+          <Card3>
+            <img src={play} style={{ height: '80px' }} />
+          </Card3>
+        </ImageCards1>
+      </>,
+      <>
+        <LeftContentWrapper>
+          <HeroTitle>
+            Personalized videos from your favorite{' '}
+            <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
+          </HeroTitle>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Link to={'/creator/0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f'}>
+              <BookNow color={'#1DA1F2'}>Book with Bob</BookNow>
+            </Link>
+            <Ovals>{ovals}</Ovals>
+          </div>
+        </LeftContentWrapper>
+        <div style={{ maxWidth: '600px' }} />
+        <ImageCards2>
+          <div style={{ zIndex: 10, maxWidth: 500, right: 100, position: 'absolute', top: 300 }}>
+            <Name>Bob Burnquist</Name>
+            <Title>Skateboarder</Title>
+          </div>
+          <CryptoStar />
+        </ImageCards2>
+      </>,
+      <>
+        <LeftContentWrapper>
+          <HeroTitle>
+            Personalized videos from your favorite{' '}
+            <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
+          </HeroTitle>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Link to={'/explore'}>
+              <BookNow color={'#5F21E2'}>Become a Creator</BookNow>
+            </Link>
+            <Ovals>{ovals}</Ovals>
+          </div>
+        </LeftContentWrapper>
+        <div style={{ maxWidth: '600px' }} />
+      </>,
+    ];
+    background.map((element, index) => {
+      slideArray.push(
+        <BackgroundWrapper background={element} translate={slidePosition[index]}>
+          <OpacityGradient />
+          <HeaderSpacer />
+          {/* <HeaderContentGapSpacer /> */}
+          <PageContentWrapper style={{ justifyContent: 'space-around' }}>
+            {/* <ContentWrapper> */}
+            {slideContent[index]}
+            {/* </ContentWrapper> */}
+          </PageContentWrapper>
+        </BackgroundWrapper>,
+      );
+    });
+    return slideArray;
   };
 
   const theme = useTheme();
   return (
     <>
-      <PageWrapper>
+      <PageWrapper style={{ top: 0 }}>
         <Left onClick={leftClick} />
         <Right onClick={rightClick} />
-        {/* <Slides translate={slidesPosition}> */}
-        <BackgroundWrapper background={background1} translate={slidePosition[0]}>
-          <HeaderSpacer />
-          {/* <HeaderContentGapSpacer /> */}
-          <PageContentWrapper>
-            {/* <ContentWrapper> */}
-            <LeftContentWrapper>
-              <HeroTitle>
-                Personalized videos from your favorite{' '}
-                <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-              </HeroTitle>
-              <Link to={'/explore'}>
-                <BookNow color={'#5F21E2'}>Book Now</BookNow>
-              </Link>
-            </LeftContentWrapper>
-            <ImageCards1>
-              <Card1>
-                <img src={play} style={{ height: '80px' }} />
-              </Card1>
-              <Card2>
-                <img src={play} style={{ height: '100px' }} />
-              </Card2>
-              <Card3>
-                <img src={play} style={{ height: '80px' }} />
-              </Card3>
-            </ImageCards1>
-          </PageContentWrapper>
-        </BackgroundWrapper>
-        {/* <BackgroundWrapper background={background2} translate={slidePosition[1]}>
-            <HeaderSpacer />
-            <HeaderContentGapSpacer />
-            <PageContentWrapper>
-              <ContentWrapper>
-              <LeftContentWrapper>
-                <HeroTitle>
-                  Personalized videos from your favorite{' '}
-                  <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-                </HeroTitle>
-                <Link to={'/creator/0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f'}>
-                  <BookNow color={'#1DA1F2'}>Book with Bob</BookNow>
-                </Link>
-              </LeftContentWrapper>
-              <ImageCards2>
-                <div style={{ zIndex: 10, maxWidth: 500, right: 100, position: 'absolute', top: 300 }}>
-                  <Name>Bob Burnquist</Name>
-                  <Title>Skateboarder</Title>
-                </div>
-                <CryptoStar />
-              </ImageCards2>
-              </ContentWrapper>
-            </PageContentWrapper>
-          </BackgroundWrapper> */}
-        {/* <BackgroundWrapper background={background3} translate={slidePosition[2]}>
-            <HeaderSpacer />
-            <HeaderContentGapSpacer />
-            <PageContentWrapper>
-              <ContentWrapper>
-              <LeftContentWrapper>
-                <HeroTitle>
-                  Personalized videos from your favorite{' '}
-                  <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-                </HeroTitle>
-                <Link to={'/explore'}>
-                  <BookNow color={'#5F21E2'}>Become a Creator</BookNow>
-                </Link>
-              </LeftContentWrapper>
-              <div />
-              </ContentWrapper>
-            </PageContentWrapper>
-          </BackgroundWrapper> */}
-        {/* </Slides> */}
+        <Slides translate={slidesPosition}>{slides()}</Slides>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />
         <CreatorCards />
       </PageWrapper>

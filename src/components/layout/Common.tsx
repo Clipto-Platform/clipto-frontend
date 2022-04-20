@@ -21,6 +21,7 @@ export const PageContentWrapper = styled.div`
   align-items: center;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 0 16px;
+    justify-content: center;
   `}
 `;
 

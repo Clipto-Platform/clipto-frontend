@@ -6,24 +6,35 @@ import LeftArrow from '../../assets/images/homepage/LeftArrow.png';
 import RightArrow from '../../assets/images/homepage/RightArrow.png';
 import Bob from '../../assets/images/homepage/page2/bob.png';
 
+export const OpacityGradient = styled.div`
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0), rgba(10, 10, 10, 1));
+  opacity: 0;
+  transition: opacity 1s;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    opacity: 1
+  `};
+`;
+
 export const LeftContentWrapper = styled.div`
   z-index: 10;
-  padding: 200px 20px 350px 20px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding: 300px 20px 250px 20px;
-    width: 100%;
+  padding: 200px 10px clamp(200px, 20vw, 350px) 10px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    transform: translateY(150px)
   `}
-  width: 85%;
+  transition: transform 1s, width 1s;
 `;
 
 export const HeroTitle = styled.h1`
   font-family: 'Scto Grotesk A';
   font-weight: normal;
-  font-size: 40px;
+  font-size: clamp(30px, 6.5vw, 40px);
   line-height: 125%;
-  width: 550px;
+  min-width: 420px;
+  max-width: 550px;
   margin-bottom: 50px;
-  margin-right: 0px;
 `;
 
 export const BookNow = styled.h3`
@@ -37,59 +48,63 @@ export const BookNow = styled.h3`
 `;
 export const ImageCards1 = styled.div`
   position: absolute;
-  z-index: -50;
   display: flex;
+  z-index: -50;
   justify-content: space-around;
   align-items: center;
-  width: fit-content;
+  width: clamp(630px, 89vw, 840px);
+  height: clamp(510px, 73vw, 680px);
   right: 90px;
-  @media (max-width: 1000px) {
+  transition: transform: 1s;
+  @media (max-width: 1023px) {
     right: revert;
   }
 `;
 export const Card1 = styled.div`
   display: flex;
+  flex-grow: 1;
+  height: 80%;
   justify-content: center;
   align-items: center;
   background-image: url(${card1});
   background-size: cover;
-  width: 250px;
-  height: 550px;
   border-radius: 50px;
-  margin-right: 10px;
 `;
 export const Card2 = styled.div`
   display: flex;
+  flex-grow: 1;
+  height: 100%;
   justify-content: center;
   align-items: center;
   background-image: url(${card2});
   background-size: cover;
-  width: 300px;
-  height: 680px;
   border-radius: 50px;
-  margin: 0px 10px;
+  margin: 0px 3%;
 `;
 export const Card3 = styled.div`
   display: flex;
+  flex-grow: 1;
+  height: 80%;
   justify-content: center;
   align-items: center;
   background-image: url(${card3});
   background-size: cover;
-  width: 250px;
-  height: 550px;
   border-radius: 50px;
-  margin-left: 10px;
 `;
 
 export const ImageCards2 = styled.div`
   position: absolute;
   top: 0px;
-  right: 10%;
+  right: 5%;
+  z-index: -50;
+  @media (max-width: 1400px) {
+    right: revert;
+  }
 `;
 export const CryptoStar = styled.div`
   background-image: url(${Bob});
-  height: 840px;
-  width: 1270px;
+  height: clamp(630px, 89vw, 840px);
+  width: clamp(953px, 136vw, 1270px);
   background-size: cover;
 `;
 export const Name = styled.div`
@@ -104,7 +119,7 @@ export const Title = styled.div`
 `;
 export const Left = styled.button`
   position: absolute;
-  left: 4%;
+  left: clamp(0px, 4% - 8px, 50px);
   top: 400px;
   background-image: url(${LeftArrow});
   background-size: cover;
@@ -113,10 +128,16 @@ export const Left = styled.button`
   height: 30px;
   width: 17px;
   z-index: 10;
+  opacity: 1;
+  transition: opacity 1s;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    opacity: 0;
+    pointer-events: none;
+  `}
 `;
 export const Right = styled.button`
   position: absolute;
-  right: 4%;
+  right: clamp(0px, 4% - 8px, 50px);
   top: 400px;
   background-image: url(${RightArrow});
   background-size: cover;
@@ -125,4 +146,29 @@ export const Right = styled.button`
   height: 30px;
   width: 17px;
   z-index: 10;
+  opacity: 1;
+  transition: opacity 1s;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    opacity: 0;
+    pointer-events: none;
+  `}
+`;
+
+export const Ovals = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+export const Oval = styled.div`
+  background-color: #6f6f6f;
+  width: 20px;
+  height: 4px;
+  border-radius: 10px;
+  margin: 0 5px 0 5px;
+  opacity: 0;
+  transition: opacity 1s;
+  pointer-events: none;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    opacity: 1;
+    pointer-events: revert;
+  `}
 `;
