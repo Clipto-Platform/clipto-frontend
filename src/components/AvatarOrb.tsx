@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import styled, { CSSProperties } from 'styled-components';
-
+import axios from 'axios';
+import { getTwitterData } from '../api';
 const AvatarOrb = styled.div<{
   size?: 'large' | 'medium' | 'small';
 }>`
@@ -40,6 +42,7 @@ export interface AvatarProps {
   url?: string;
   style?: CSSProperties;
   size?: 'large' | 'medium' | 'small';
+  twitterHandle?: string;
 }
 
 const AvatarComponent: React.FC<AvatarProps> = (props) => {
@@ -50,12 +53,30 @@ const AvatarComponent: React.FC<AvatarProps> = (props) => {
     const b = parseInt(hash.substring(4, 6), 16);
     return `rgb(${r}, ${g}, ${b})`;
   };
-  if (props.url) {
+  const [url, setUrl] = useState(props.url || '');
+
+  useEffect(() => {
+    axios
+      .get(url)
+      .then(() => {
+        setUrl(url);
+      })
+      .catch(() => {
+        if (props.twitterHandle) {
+          getTwitterData([props.twitterHandle]).then((response) => {
+            const image = response.data.data[0].profile_image_url.replace('normal', '400x400');
+            setUrl(image);
+          });
+        }
+      });
+  }, [props.twitterHandle]);
+
+  if (url) {
     return (
       <div style={{ ...props.style }}>
         <AvatarOrb
           style={{
-            background: `url(${props.url})`,
+            backgroundImage: `url(${url})`,
             backgroundPosition: 'center',
             backgroundSize: `${props.size === 'medium' ? '60px' : '40px'}`,
           }}
