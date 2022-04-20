@@ -25,6 +25,7 @@ import {
   OpacityGradient,
   Ovals,
   Oval,
+  CreatorText,
 } from './Style';
 import play from '../../assets/svgs/play.svg';
 import { TEST } from '../../config/config';
@@ -49,10 +50,12 @@ const HomePage = () => {
   let [creators, setCreators] = useState<EntityCreator[]>([]);
   // console.log(window.innerWidth);
   const [page, setPage] = useState<number>(0);
-  const [slidesPosition, setSlidesPosition] = useState<number>(-100);
+  const [slidesPosition, setSlidesPosition] = useState<number>(-33.33);
   const [slidePosition, setSlidePosition] = useState<Array<number>>([0, 0, 0]);
-  let timer: any = null;
+  const [clickEnabled, setClickEnabled] = useState(true);
+
   console.log(slidesPosition);
+
   useEffect(() => {
     const creatorAddresses = TEST
       ? featuredListTest.map((c) => c.toLowerCase())
@@ -69,21 +72,42 @@ const HomePage = () => {
   });
 
   const leftClick = () => {
-    let temp = slidePosition;
-    if (slidesPosition % 300 == 0) temp[1] = slidePosition[1] - 300;
-    else if (slidesPosition % 300 == 100 || slidesPosition % 300 == -200) temp[0] = slidePosition[0] - 300;
-    else if (slidesPosition % 300 == 200 || slidesPosition % 300 == -100) temp[2] = slidePosition[2] - 300;
-    console.log(temp);
-    setSlidePosition(temp);
-    setSlidesPosition(slidesPosition + 100);
+    //allows user to click left arrow every .6 seconds
+    if (clickEnabled) {
+      let temp = slidePosition;
+      const round = Math.round(slidesPosition) % 100;
+
+      if (round == 0) temp[1] = slidePosition[1] - 300;
+      else if (round == 33 || round == -67) temp[0] = slidePosition[0] - 300;
+      else if (round == 67 || round == -33) temp[2] = slidePosition[2] - 300;
+
+      setSlidePosition(temp);
+      setSlidesPosition(slidesPosition + 33.33);
+      setClickEnabled(false);
+      setTimeout(() => {
+        setClickEnabled(true);
+        console.log('click enabled');
+      }, 600);
+    }
   };
   const rightClick = () => {
-    let temp = slidePosition;
-    if (slidesPosition % 300 == 0) temp[2] = slidePosition[2] + 300;
-    else if (slidesPosition % 300 == 100 || slidesPosition % 300 == -200) temp[1] = slidePosition[1] + 300;
-    else if (slidesPosition % 300 == 200 || slidesPosition % 300 == -100) temp[0] = slidePosition[0] + 300;
-    setSlidePosition(temp);
-    setSlidesPosition(slidesPosition - 100);
+    //allows user to click right arrow every .6 seconds
+    if (clickEnabled) {
+      let temp = slidePosition;
+      const round = Math.round(slidesPosition) % 100;
+
+      if (round == 0) temp[2] = slidePosition[2] + 300;
+      else if (round == 33 || round == -67) temp[1] = slidePosition[1] + 300;
+      else if (round == 67 || round == -33) temp[0] = slidePosition[0] + 300;
+
+      setSlidePosition(temp);
+      setSlidesPosition(slidesPosition - 33.33);
+      setClickEnabled(false);
+      setTimeout(() => {
+        setClickEnabled(true);
+        console.log('click enabled');
+      }, 700);
+    }
   };
 
   const slides = () => {
@@ -135,10 +159,10 @@ const HomePage = () => {
         </LeftContentWrapper>
         <div style={{ maxWidth: '600px' }} />
         <ImageCards2>
-          <div style={{ zIndex: 10, maxWidth: 500, right: 100, position: 'absolute', top: 300 }}>
+          <CreatorText>
             <Name>Bob Burnquist</Name>
             <Title>Skateboarder</Title>
-          </div>
+          </CreatorText>
           <CryptoStar />
         </ImageCards2>
       </>,

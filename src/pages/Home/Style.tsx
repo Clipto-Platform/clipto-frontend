@@ -8,6 +8,7 @@ import Bob from '../../assets/images/homepage/page2/bob.png';
 
 export const OpacityGradient = styled.div`
   position: absolute;
+  z-index: 50;
   height: 100%;
   width: 100%;
   background: linear-gradient(rgba(0, 0, 0, 0), rgba(10, 10, 10, 1));
@@ -19,7 +20,7 @@ export const OpacityGradient = styled.div`
 `;
 
 export const LeftContentWrapper = styled.div`
-  z-index: 10;
+  z-index: 100;
   padding: 200px 10px clamp(200px, 20vw, 350px) 10px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     transform: translateY(150px)
@@ -32,29 +33,29 @@ export const HeroTitle = styled.h1`
   font-weight: normal;
   font-size: clamp(30px, 6.5vw, 40px);
   line-height: 125%;
-  min-width: 420px;
+  min-width: 360px;
   max-width: 550px;
   margin-bottom: 50px;
 `;
 
 export const BookNow = styled.h3`
   font-size: 16px;
-  font-family: 'Eina01';
+  font-family: 'Eina01-Light';
   font-weight: 700;
   background-color: ${(props) => props.color};
   border-radius: 40px;
-  padding: 10px 40px 14px 40px;
+  padding: 13px 40px 17px 40px;
   width: fit-content;
 `;
 export const ImageCards1 = styled.div`
   position: absolute;
+  z-index: -5;
   display: flex;
-  z-index: -50;
   justify-content: space-around;
   align-items: center;
   width: clamp(630px, 89vw, 840px);
   height: clamp(510px, 73vw, 680px);
-  right: 90px;
+  right: calc(90px);
   transition: transform: 1s;
   @media (max-width: 1023px) {
     right: revert;
@@ -95,16 +96,29 @@ export const Card3 = styled.div`
 export const ImageCards2 = styled.div`
   position: absolute;
   top: 0px;
-  right: 5%;
-  z-index: -50;
+  right: calc(5%);
+  z-index: 0;
   @media (max-width: 1400px) {
     right: revert;
   }
 `;
+export const CreatorText = styled.div`
+  z-index: 10;
+  max-width: 500px;
+  right: 100px;
+  position: absolute;
+  top: 300px;
+  transition: top 1s, right 1s;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    top: 100px;
+    right: 500px;
+  `}
+`;
+
 export const CryptoStar = styled.div`
   background-image: url(${Bob});
-  height: clamp(630px, 89vw, 840px);
-  width: clamp(953px, 136vw, 1270px);
+  height: clamp(630px, 135vw, 840px);
+  width: clamp(953px, 205vw, 1270px);
   background-size: cover;
 `;
 export const Name = styled.div`

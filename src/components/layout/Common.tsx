@@ -27,7 +27,7 @@ export const PageContentWrapper = styled.div`
 export const ContentWrapper = styled.div`
   width: 100%;
   max-width: ${MAX_CONTENT_WIDTH_PX};
-  padding: 0px 40px;
+  padding: 0px 10px;
 `;
 
 export const Row = styled.div`

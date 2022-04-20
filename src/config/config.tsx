@@ -1,10 +1,5 @@
 export const DEV = false;
-<<<<<<< HEAD
-export const TEST = false;
-
-=======
 export const TEST = true;
->>>>>>> fb7269ae5145dc58f1fc3ebbdee608caebe0ec87
 export const ENV = DEV ? 'DEV' : TEST ? 'TEST' : 'PROD';
 
 export const CHAIN_IDS = {
