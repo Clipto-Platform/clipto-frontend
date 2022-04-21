@@ -86,8 +86,8 @@ select {
 
 @font-face {
   font-family: 'Scto Grotesk A';
-  src: url('../assets/fonts/SctoGroteskA-Bold.woff2') format('woff2'),
-    url('../assets/fonts/SctoGroteskA-Bold.woff') format('woff');
+  src: url('../assets/fonts/SctoGroteskA/SctoGroteskA-Bold.woff2') format('woff2'),
+    url('../assets/fonts/SctoGroteskA/SctoGroteskA-Bold.woff') format('woff');
   font-weight: bold;
   font-style: normal;
   font-display: swap;
@@ -95,8 +95,8 @@ select {
 
 @font-face {
   font-family: 'Scto Grotesk A';
-  src: url('../assets/fonts/SctoGroteskA-Medium.woff2') format('woff2'),
-    url('../assets/fonts/SctoGroteskA-Medium.woff') format('woff');
+  src: url('../assets/fonts/SctoGroteskA/SctoGroteskA-Medium.woff2') format('woff2'),
+    url('../assets/fonts/SctoGroteskA/SctoGroteskA-Medium.woff') format('woff');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -104,8 +104,37 @@ select {
 
 @font-face {
   font-family: 'Scto Grotesk A';
-  src: url('../assets/fonts/SctoGroteskA-Regular.otf') format('woff2'),
-    url('../assets/fonts/SctoGroteskA-Regular.otf') format('woff');
+  src: url('../assets/fonts/SctoGroteskA/SctoGroteskA-Regular.otf') format('woff2'),
+    url('../assets/fonts/SctoGroteskA/SctoGroteskA-Regular.otf') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Eina01';
+  src: url('../assets/fonts/Eina/Eina01-Regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Eina01-Light';
+  src: url('../assets/fonts/Eina/Eina01-Light.otf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter-Bold';
+  src: url('../assets/fonts/Inter/Inter-Bold.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url('../assets/fonts/Inter/Inter-Regular.ttf');
   font-weight: normal;
   font-style: normal;
   font-display: swap;

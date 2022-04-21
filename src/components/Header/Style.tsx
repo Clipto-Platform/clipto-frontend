@@ -16,7 +16,7 @@ export const HeaderWrapperOuter = styled.div`
   height: ${HEADER_HEIGHT_IN_PX};
   max-height: ${HEADER_HEIGHT_IN_PX};
   min-height: ${HEADER_HEIGHT_IN_PX};
-  background: ${(props) => props.theme.black};
+  background: rgba(0, 0, 0, 0.5);
   z-index: 100;
 
   padding: 0 32px;
