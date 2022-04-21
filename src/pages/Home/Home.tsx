@@ -160,13 +160,13 @@ const HomePage = () => {
         <div style={{ maxWidth: '600px' }} />
         <ImageCards1>
           <Card1>
-            <img src={play} style={{ height: '80px' }} />
+            <img src={play} style={{ height: 'clamp(50px, 15%,80px)' }} />
           </Card1>
           <Card2>
-            <img src={play} style={{ height: '100px' }} />
+            <img src={play} style={{ height: 'clamp(70px, 15%,100px)' }} />
           </Card2>
           <Card3>
-            <img src={play} style={{ height: '80px' }} />
+            <img src={play} style={{ height: 'clamp(50px, 15%,80px)' }} />
           </Card3>
         </ImageCards1>
       </>,

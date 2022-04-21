@@ -21,7 +21,7 @@ export const OpacityGradient = styled.div`
 
 export const LeftContentWrapper = styled.div`
   z-index: 100;
-  padding: 200px 10px clamp(200px, 20vw, 350px) 10px;
+  padding: clamp(100px, 15vw, 200px) 10px clamp(160px, 20vw, 350px) 10px;
   ${({ theme }) => theme.mediaWidth.upToLarge`
     transform: translateY(150px)
   `}
@@ -31,15 +31,15 @@ export const LeftContentWrapper = styled.div`
 export const HeroTitle = styled.h1`
   font-family: 'Scto Grotesk A';
   font-weight: normal;
-  font-size: clamp(30px, 6.5vw, 40px);
+  font-size: clamp(26px, 6.5vw, 40px);
   line-height: 125%;
-  min-width: 360px;
+  min-width: 260px;
   max-width: 550px;
   margin-bottom: 50px;
 `;
 
 export const BookNow = styled.h3`
-  font-size: 16px;
+  font-size: clamp(14px, 2vw, 16px);
   font-family: 'Eina01-Light';
   font-weight: 700;
   background-color: ${(props) => props.color};
@@ -53,10 +53,9 @@ export const ImageCards1 = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  width: clamp(630px, 89vw, 840px);
-  height: clamp(510px, 73vw, 680px);
+  width: clamp(500px, 89vw, 840px);
+  height: clamp(360px, 73vw, 680px);
   right: calc(90px);
-  transition: transform: 1s;
   @media (max-width: 1023px) {
     right: revert;
   }
@@ -64,7 +63,7 @@ export const ImageCards1 = styled.div`
 export const Card1 = styled.div`
   display: flex;
   flex-grow: 1;
-  height: 80%;
+  height: 85%;
   justify-content: center;
   align-items: center;
   background-image: url(${card1});
@@ -85,7 +84,7 @@ export const Card2 = styled.div`
 export const Card3 = styled.div`
   display: flex;
   flex-grow: 1;
-  height: 80%;
+  height: 85%;
   justify-content: center;
   align-items: center;
   background-image: url(${card3});
@@ -111,7 +110,7 @@ export const CreatorText = styled.div`
   transition: top 1s, right 1s;
   ${({ theme }) => theme.mediaWidth.upToLarge`
     top: 100px;
-    right: 500px;
+    right: 47%;
   `}
 `;
 
