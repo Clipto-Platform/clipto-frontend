@@ -33,11 +33,11 @@ export const Grid = styled.div`
     grid-template-columns: repeat(5, 1fr);
     ${({ theme }) => theme.mediaWidth.upToMedium`
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    // grid-template-rows: repeat(2, 1fr);
   `}
     ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    // grid-template-rows: repeat(2, 1fr);
   `}
   grid-template-rows: 1fr;
     grid-column-gap: 32px;

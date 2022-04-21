@@ -11,6 +11,8 @@ export const PageWrapper = styled.div<{ blur?: boolean }>`
   min-height: 100vh;
   position: relative;
   overflow: hidden;
+  margin-bottom: 60px;
+  box-sizing: border-box;
 `;
 export const PageContentWrapper = styled.div`
   padding: 0 32px;

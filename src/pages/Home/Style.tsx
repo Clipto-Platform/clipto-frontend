@@ -14,7 +14,7 @@ export const OpacityGradient = styled.div`
   background: linear-gradient(rgba(0, 0, 0, 0), rgba(10, 10, 10, 1));
   opacity: 0;
   transition: opacity 1s;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     opacity: 1
   `};
 `;
@@ -22,7 +22,7 @@ export const OpacityGradient = styled.div`
 export const LeftContentWrapper = styled.div`
   z-index: 100;
   padding: clamp(100px, 15vw, 200px) 10px clamp(160px, 20vw, 350px) 10px;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     transform: translateY(150px)
   `}
   transition: transform 1s, width 1s;
@@ -104,11 +104,11 @@ export const ImageCards2 = styled.div`
 export const CreatorText = styled.div`
   z-index: 10;
   max-width: 500px;
-  right: 100px;
+  right: 155px;
   position: absolute;
   top: 300px;
   transition: top 1s, right 1s;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     top: 100px;
     right: 47%;
   `}
@@ -143,7 +143,7 @@ export const Left = styled.button`
   z-index: 10;
   opacity: 1;
   transition: opacity 1s;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     opacity: 0;
     pointer-events: none;
   `}
@@ -161,7 +161,7 @@ export const Right = styled.button`
   z-index: 10;
   opacity: 1;
   transition: opacity 1s;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     opacity: 0;
     pointer-events: none;
   `}
@@ -171,7 +171,11 @@ export const Ovals = styled.div`
   display: flex;
   flex-direction: row;
 `;
-export const Oval = styled.div`
+interface OvalProps {
+  index: number;
+  page: number;
+}
+export const Oval = styled.div<OvalProps>`
   background-color: ${(props) => (props.index == props.page ? props.theme.twitterBlue : '#6F6F6F')};
   width: 25px;
   height: 5px;
@@ -180,7 +184,7 @@ export const Oval = styled.div`
   opacity: 0;
   transition: opacity 1s;
   pointer-events: none;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     opacity: 1;
     pointer-events: revert;
   `}
