@@ -14,7 +14,7 @@ export const OpacityGradient = styled.div`
   background: linear-gradient(rgba(0, 0, 0, 0), rgba(10, 10, 10, 1));
   opacity: 0;
   transition: opacity 1s;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     opacity: 1
   `};
 `;
@@ -22,7 +22,7 @@ export const OpacityGradient = styled.div`
 export const LeftContentWrapper = styled.div`
   z-index: 100;
   padding: 200px 10px clamp(200px, 20vw, 350px) 10px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     transform: translateY(150px)
   `}
   transition: transform 1s, width 1s;
@@ -109,7 +109,7 @@ export const CreatorText = styled.div`
   position: absolute;
   top: 300px;
   transition: top 1s, right 1s;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     top: 100px;
     right: 500px;
   `}
@@ -144,7 +144,7 @@ export const Left = styled.button`
   z-index: 10;
   opacity: 1;
   transition: opacity 1s;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     opacity: 0;
     pointer-events: none;
   `}
@@ -162,7 +162,7 @@ export const Right = styled.button`
   z-index: 10;
   opacity: 1;
   transition: opacity 1s;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     opacity: 0;
     pointer-events: none;
   `}
@@ -181,7 +181,7 @@ export const Oval = styled.div`
   opacity: 0;
   transition: opacity 1s;
   pointer-events: none;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     opacity: 1;
     pointer-events: revert;
   `}
