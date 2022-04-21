@@ -173,7 +173,7 @@ export const Ovals = styled.div`
   flex-direction: row;
 `;
 export const Oval = styled.div`
-  background-color: #6f6f6f;
+  background-color: ${(props) => (props.index == props.page ? props.theme.twitterBlue : '#6F6F6F')};
   width: 20px;
   height: 4px;
   border-radius: 10px;

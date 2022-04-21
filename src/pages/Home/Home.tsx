@@ -77,16 +77,22 @@ const HomePage = () => {
       let temp = slidePosition;
       const round = Math.round(slidesPosition) % 100;
 
-      if (round == 0) temp[1] = slidePosition[1] - 300;
-      else if (round == 33 || round == -67) temp[0] = slidePosition[0] - 300;
-      else if (round == 67 || round == -33) temp[2] = slidePosition[2] - 300;
+      if (round == 0) {
+        temp[1] = slidePosition[1] - 300;
+        setPage(2);
+      } else if (round == 33 || round == -67) {
+        temp[0] = slidePosition[0] - 300;
+        setPage(1);
+      } else if (round == 67 || round == -33) {
+        temp[2] = slidePosition[2] - 300;
+        setPage(0);
+      }
 
       setSlidePosition(temp);
       setSlidesPosition(slidesPosition + 33.33);
       setClickEnabled(false);
       setTimeout(() => {
         setClickEnabled(true);
-        console.log('click enabled');
       }, 600);
     }
   };
@@ -96,16 +102,22 @@ const HomePage = () => {
       let temp = slidePosition;
       const round = Math.round(slidesPosition) % 100;
 
-      if (round == 0) temp[2] = slidePosition[2] + 300;
-      else if (round == 33 || round == -67) temp[1] = slidePosition[1] + 300;
-      else if (round == 67 || round == -33) temp[0] = slidePosition[0] + 300;
+      if (round == 0) {
+        temp[2] = slidePosition[2] + 300;
+        setPage(1);
+      } else if (round == 33 || round == -67) {
+        temp[1] = slidePosition[1] + 300;
+        setPage(0);
+      } else if (round == 67 || round == -33) {
+        temp[0] = slidePosition[0] + 300;
+        setPage(2);
+      }
 
       setSlidePosition(temp);
       setSlidesPosition(slidesPosition - 33.33);
       setClickEnabled(false);
       setTimeout(() => {
         setClickEnabled(true);
-        console.log('click enabled');
       }, 700);
     }
   };
@@ -115,7 +127,7 @@ const HomePage = () => {
     let slideArray: Array<any> = [];
     let ovals = [];
     for (let i = 0; i < 3; i++) {
-      ovals.push(<Oval />);
+      ovals.push(<Oval page={page} index={i} />);
     }
     let slideContent = [
       <>

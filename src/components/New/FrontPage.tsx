@@ -12,6 +12,7 @@ export const Slides = styled.div`
 `;
 export const BackgroundWrapper = styled.div`
   background-image: url(${(props) => props.background});
+  background-position: center center;
   background-size: cover;
   width: 100vw;
   height: 100%;
