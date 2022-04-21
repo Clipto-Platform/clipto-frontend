@@ -174,8 +174,8 @@ export const Ovals = styled.div`
 `;
 export const Oval = styled.div`
   background-color: ${(props) => (props.index == props.page ? props.theme.twitterBlue : '#6F6F6F')};
-  width: 20px;
-  height: 4px;
+  width: 25px;
+  height: 5px;
   border-radius: 10px;
   margin: 0 5px 0 5px;
   opacity: 0;

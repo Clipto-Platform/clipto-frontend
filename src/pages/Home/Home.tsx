@@ -48,13 +48,11 @@ const featuredListTest: string[] = [
 ];
 const HomePage = () => {
   let [creators, setCreators] = useState<EntityCreator[]>([]);
-  // console.log(window.innerWidth);
-  const [page, setPage] = useState<number>(0);
-  const [slidesPosition, setSlidesPosition] = useState<number>(-33.33);
-  const [slidePosition, setSlidePosition] = useState<Array<number>>([0, 0, 0]);
-  const [clickEnabled, setClickEnabled] = useState(true);
 
-  console.log(slidesPosition);
+  const [page, setPage] = useState<number>(0);
+  const [slidesPosition, setSlidesPosition] = useState<number>(0);
+  const [slidePosition, setSlidePosition] = useState<Array<number>>([0, 0, -300]);
+  const [clickEnabled, setClickEnabled] = useState(true);
 
   useEffect(() => {
     const creatorAddresses = TEST
@@ -122,12 +120,28 @@ const HomePage = () => {
     }
   };
 
+  const onOvalClick = (index: number) => {
+    if ((page < index && !(page == 0 && index == 2)) || (page == 2 && index == 0)) {
+      rightClick();
+    } else if ((page > index && !(page == 2 && index == 0)) || (page == 0 && index == 2)) {
+      leftClick();
+    }
+  };
+
   const slides = () => {
     let background = [background1, background2, background3];
     let slideArray: Array<any> = [];
     let ovals = [];
     for (let i = 0; i < 3; i++) {
-      ovals.push(<Oval page={page} index={i} />);
+      ovals.push(
+        <Oval
+          page={page}
+          index={i}
+          onClick={() => {
+            onOvalClick(i);
+          }}
+        />,
+      );
     }
     let slideContent = [
       <>
