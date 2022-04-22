@@ -4,7 +4,6 @@ import card2 from '../../assets/images/homepage/page1/card2.png';
 import card3 from '../../assets/images/homepage/page1/card3.png';
 import LeftArrow from '../../assets/images/homepage/LeftArrow.png';
 import RightArrow from '../../assets/images/homepage/RightArrow.png';
-import Bob from '../../assets/images/homepage/page2/bob.png';
 
 export const OpacityGradient = styled.div`
   position: absolute;
@@ -47,60 +46,7 @@ export const BookNow = styled.h3`
   padding: 13px 40px 17px 40px;
   width: fit-content;
 `;
-export const ImageCards1 = styled.div`
-  position: absolute;
-  z-index: -5;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: clamp(500px, 89vw, 840px);
-  height: clamp(360px, 73vw, 680px);
-  right: calc(90px);
-  @media (max-width: 1023px) {
-    right: revert;
-  }
-`;
-export const Card1 = styled.div`
-  display: flex;
-  flex-grow: 1;
-  height: 85%;
-  justify-content: center;
-  align-items: center;
-  background-image: url(${card1});
-  background-size: cover;
-  border-radius: 50px;
-`;
-export const Card2 = styled.div`
-  display: flex;
-  flex-grow: 1;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  background-image: url(${card2});
-  background-size: cover;
-  border-radius: 50px;
-  margin: 0px 3%;
-`;
-export const Card3 = styled.div`
-  display: flex;
-  flex-grow: 1;
-  height: 85%;
-  justify-content: center;
-  align-items: center;
-  background-image: url(${card3});
-  background-size: cover;
-  border-radius: 50px;
-`;
 
-export const ImageCards2 = styled.div`
-  position: absolute;
-  top: 0px;
-  right: calc(5%);
-  z-index: 0;
-  @media (max-width: 1400px) {
-    right: revert;
-  }
-`;
 export const CreatorText = styled.div`
   z-index: 10;
   max-width: 500px;
@@ -114,12 +60,6 @@ export const CreatorText = styled.div`
   `}
 `;
 
-export const CryptoStar = styled.div`
-  background-image: url(${Bob});
-  height: clamp(630px, 135vw, 840px);
-  width: clamp(953px, 205vw, 1270px);
-  background-size: cover;
-`;
 export const Name = styled.div`
   z-index: 10;
   font-size: 24px;
