@@ -14,7 +14,6 @@ import {
   BookNow,
   Left,
   Right,
-  CryptoStar,
   Name,
   Title,
   OpacityGradient,
@@ -167,6 +166,10 @@ const HomePage = () => {
             <Ovals>{ovals}</Ovals>
           </div>
         </LeftContentWrapper>
+        <CreatorText>
+          <Name>Bob Burnquist</Name>
+          <Title>Skateboarder</Title>
+        </CreatorText>
         <div style={{ maxWidth: '600px' }} />
       </>,
       <>
@@ -190,7 +193,8 @@ const HomePage = () => {
         <BackgroundWrapper
           background={element}
           translate={slidePosition[index]}
-          style={{ backgroundPosition: index == 2 ? 'center' : 'center right 10%' }}
+          index={index}
+          // style={{ backgroundPosition: index == 2 ? 'center' : 'center right 20%' }}
         >
           <OpacityGradient />
           <HeaderSpacer />

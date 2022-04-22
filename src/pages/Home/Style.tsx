@@ -19,12 +19,15 @@ export const OpacityGradient = styled.div`
 `;
 
 export const LeftContentWrapper = styled.div`
+  position: relative;
+  left: -80px;
   z-index: 100;
   padding: clamp(100px, 15vw, 200px) 10px clamp(160px, 20vw, 350px) 10px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    transform: translateY(150px)
-  `}
   transition: transform 1s, width 1s;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    transform: translateY(150px);
+    left:0;
+  `}
 `;
 
 export const HeroTitle = styled.h1`
@@ -50,13 +53,13 @@ export const BookNow = styled.h3`
 export const CreatorText = styled.div`
   z-index: 10;
   max-width: 500px;
-  right: 155px;
+  right: 5%;
   position: absolute;
-  top: 300px;
-  transition: top 1s, right 1s;
+  top: 270px;
+  padding: 5px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    top: 100px;
-    right: 47%;
+    top: 70px;
+    left: 5%;
   `}
 `;
 
@@ -65,10 +68,16 @@ export const Name = styled.div`
   font-size: 24px;
   font-family: 'Eina01';
   font-weight: 700;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 20px;
+  `}
 `;
 export const Title = styled.div`
   font-family: 'Eina01-Light';
   font-size: 24px;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 20px;
+  `}
 `;
 export const Left = styled.button`
   position: absolute;
