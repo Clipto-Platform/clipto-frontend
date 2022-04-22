@@ -22,7 +22,7 @@ export const LeftContentWrapper = styled.div`
   position: relative;
   left: -80px;
   z-index: 100;
-  padding: clamp(100px, 15vw, 200px) 10px clamp(160px, 20vw, 350px) 10px;
+  padding: clamp(100px, 15vw, 200px) 0px clamp(160px, 20vw, 350px) 0px;
   transition: transform 1s, width 1s;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     transform: translateY(150px);
@@ -46,7 +46,7 @@ export const BookNow = styled.h3`
   font-weight: 700;
   background-color: ${(props) => props.color};
   border-radius: 40px;
-  padding: 13px 40px 17px 40px;
+  padding: 14px 30px;
   width: fit-content;
 `;
 
@@ -69,14 +69,18 @@ export const Name = styled.div`
   font-family: 'Eina01';
   font-weight: 700;
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 20px;
+    font-size: 14px;
+    line-height: 16.41px;
+    color: #FFFFFF;
   `}
 `;
 export const Title = styled.div`
   font-family: 'Eina01-Light';
   font-size: 24px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 20px;
+  font-size: 14px;
+  line-height: 16.41px;
+  color: #FFFFFF;
   `}
 `;
 export const Left = styled.button`
