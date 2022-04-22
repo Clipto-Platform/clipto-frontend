@@ -158,17 +158,6 @@ const HomePage = () => {
           </div>
         </LeftContentWrapper>
         <div style={{ maxWidth: '600px' }} />
-        <ImageCards1>
-          <Card1>
-            <img src={play} style={{ height: 'clamp(50px, 15%,80px)' }} />
-          </Card1>
-          <Card2>
-            <img src={play} style={{ height: 'clamp(70px, 15%,100px)' }} />
-          </Card2>
-          <Card3>
-            <img src={play} style={{ height: 'clamp(50px, 15%,80px)' }} />
-          </Card3>
-        </ImageCards1>
       </>,
       <>
         <LeftContentWrapper>
@@ -184,13 +173,6 @@ const HomePage = () => {
           </div>
         </LeftContentWrapper>
         <div style={{ maxWidth: '600px' }} />
-        <ImageCards2>
-          <CreatorText>
-            <Name>Bob Burnquist</Name>
-            <Title>Skateboarder</Title>
-          </CreatorText>
-          <CryptoStar />
-        </ImageCards2>
       </>,
       <>
         <LeftContentWrapper>
@@ -210,7 +192,11 @@ const HomePage = () => {
     ];
     background.map((element, index) => {
       slideArray.push(
-        <BackgroundWrapper background={element} translate={slidePosition[index]}>
+        <BackgroundWrapper
+          background={element}
+          translate={slidePosition[index]}
+          style={{ backgroundPosition: index == 2 ? 'center' : 'center right 10%' }}
+        >
           <OpacityGradient />
           <HeaderSpacer />
           {/* <HeaderContentGapSpacer /> */}
