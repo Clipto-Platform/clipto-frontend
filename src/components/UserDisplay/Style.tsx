@@ -55,12 +55,16 @@ export const UserTitle = styled.div`
   font-weight: bold;
   font-size: 18px;
   line-height: 22px;
+  max-width: 150px;
+  overflow-wrap: break-word;
 `;
 
 export const UserDescription = styled.div`
   font-weight: normal;
   font-size: 16px;
   line-height: 20px;
+  max-width: 150px;
+  overflow-wrap: break-word;
   color: ${(props) => props.theme.lightGray};
 `;
 
