@@ -7,9 +7,9 @@ import {
   CardTitleWrapper,
   CardDescriptionWrapper,
 } from './Style';
-import Chatbox from '../../assets/images/homepage/creatorCards/chatbox.png';
-import Clapperboard from '../../assets/images/homepage/creatorCards/clapperboard.png';
-import Explore from '../../assets/images/homepage/creatorCards/explore.png';
+import Chatbox from '../../assets/svgs/chatbox.svg';
+import Clapperboard from '../../assets/svgs/clapper.svg';
+import Explore from '../../assets/svgs/explore.svg';
 
 const CreatorCards = () => {
   const title: Array<string> = ['Explore Creators', 'Send a request', 'Receive your NFT video!'];

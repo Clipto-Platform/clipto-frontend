@@ -1,7 +1,4 @@
 import styled from 'styled-components';
-import card1 from '../../assets/images/homepage/page1/card1.png';
-import card2 from '../../assets/images/homepage/page1/card2.png';
-import card3 from '../../assets/images/homepage/page1/card3.png';
 import LeftArrow from '../../assets/images/homepage/LeftArrow.png';
 import RightArrow from '../../assets/images/homepage/RightArrow.png';
 
@@ -42,8 +39,7 @@ export const HeroTitle = styled.h1`
 
 export const BookNow = styled.h3`
   font-size: clamp(14px, 2vw, 16px);
-  font-family: 'Eina01-Light';
-  font-weight: 700;
+  font-family: 'Eina01-Bold';
   background-color: ${(props) => props.color};
   border-radius: 40px;
   padding: 14px 30px;

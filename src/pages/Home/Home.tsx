@@ -23,9 +23,9 @@ import {
 } from './Style';
 import play from '../../assets/svgs/play.svg';
 import { TEST } from '../../config/config';
-import background1 from '../../assets/images/homepage/page1/background.png';
-import background2 from '../../assets/images/homepage/page2/background.png';
-import background3 from '../../assets/images/homepage/page3/background.png';
+import background1 from '../../assets/images/homepage/background1.png';
+import background2 from '../../assets/images/homepage/background2.png';
+import background3 from '../../assets/images/homepage/background3.jpg';
 
 const featuredList: string[] = [
   '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8', // Gabriel Haines.eth

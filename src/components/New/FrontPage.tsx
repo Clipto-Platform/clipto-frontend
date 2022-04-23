@@ -1,7 +1,4 @@
 import styled, { keyframes } from 'styled-components';
-import background1 from '../../assets/images/homepage/page1/background.png';
-import background2 from '../../assets/images/homepage/page2/background.png';
-import background3 from '../../assets/images/homepage/page3/background.png';
 
 interface SlidesProps {
   translate: any;
