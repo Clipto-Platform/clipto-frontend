@@ -4,9 +4,10 @@ import { featuredCreators } from '../../api/index';
 import { EntityCreator } from '../../api/types';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
-import { BackgroundWrapper, Slides } from '../../components/New/FrontPage';
+import { BackgroundWrapper } from '../../components/New/FrontPage';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
 import { CreatorCards } from '../../components/CreatorCards/CreatorCards';
+import { Slider } from '../../components/Slider/Slider';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   LeftContentWrapper,
@@ -43,11 +44,6 @@ const featuredListTest: string[] = [
 const HomePage = () => {
   let [creators, setCreators] = useState<EntityCreator[]>([]);
 
-  const [page, setPage] = useState<number>(0);
-  const [slidesPosition, setSlidesPosition] = useState<number>(0);
-  const [slidePosition, setSlidePosition] = useState<Array<number>>([0, 0, -300]);
-  const [clickEnabled, setClickEnabled] = useState(true);
-
   useEffect(() => {
     const creatorAddresses = TEST
       ? featuredListTest.map((c) => c.toLowerCase())
@@ -63,160 +59,10 @@ const HomePage = () => {
     });
   });
 
-  const leftClick = () => {
-    //allows user to click left arrow every .6 seconds
-    if (clickEnabled) {
-      let temp = slidePosition;
-      const round = Math.round(slidesPosition) % 100;
-
-      if (round == 0) {
-        temp[1] = slidePosition[1] - 300;
-        setPage(2);
-      } else if (round == 33 || round == -67) {
-        temp[0] = slidePosition[0] - 300;
-        setPage(1);
-      } else if (round == 67 || round == -33) {
-        temp[2] = slidePosition[2] - 300;
-        setPage(0);
-      }
-
-      setSlidePosition(temp);
-      setSlidesPosition(slidesPosition + 33.33);
-      setClickEnabled(false);
-      setTimeout(() => {
-        setClickEnabled(true);
-      }, 600);
-    }
-  };
-  const rightClick = () => {
-    //allows user to click right arrow every .6 seconds
-    if (clickEnabled) {
-      let temp = slidePosition;
-      const round = Math.round(slidesPosition) % 100;
-
-      if (round == 0) {
-        temp[2] = slidePosition[2] + 300;
-        setPage(1);
-      } else if (round == 33 || round == -67) {
-        temp[1] = slidePosition[1] + 300;
-        setPage(0);
-      } else if (round == 67 || round == -33) {
-        temp[0] = slidePosition[0] + 300;
-        setPage(2);
-      }
-
-      setSlidePosition(temp);
-      setSlidesPosition(slidesPosition - 33.33);
-      setClickEnabled(false);
-      setTimeout(() => {
-        setClickEnabled(true);
-      }, 700);
-    }
-  };
-
-  const onOvalClick = (index: number) => {
-    if ((page < index && !(page == 0 && index == 2)) || (page == 2 && index == 0)) {
-      rightClick();
-    } else if ((page > index && !(page == 2 && index == 0)) || (page == 0 && index == 2)) {
-      leftClick();
-    }
-  };
-
-  const slides = () => {
-    let background = [background1, background2, background3];
-    let slideArray: Array<any> = [];
-    let ovals = [];
-    for (let i = 0; i < 3; i++) {
-      ovals.push(
-        <Oval
-          page={page}
-          index={i}
-          onClick={() => {
-            onOvalClick(i);
-          }}
-        />,
-      );
-    }
-    let slideContent = [
-      <>
-        <LeftContentWrapper>
-          <HeroTitle>
-            Personalized videos from your favorite{' '}
-            <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-          </HeroTitle>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Link to={'/explore'}>
-              <BookNow color={'#5F21E2'}>Book Now</BookNow>
-            </Link>
-            <Ovals>{ovals}</Ovals>
-          </div>
-        </LeftContentWrapper>
-        <div style={{ maxWidth: '600px' }} />
-      </>,
-      <>
-        <LeftContentWrapper>
-          <HeroTitle>
-            Personalized videos from your favorite{' '}
-            <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-          </HeroTitle>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Link to={'/creator/0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f'}>
-              <BookNow color={'#1DA1F2'}>Book with Bob</BookNow>
-            </Link>
-            <Ovals>{ovals}</Ovals>
-          </div>
-        </LeftContentWrapper>
-        <CreatorText>
-          <Name>Bob Burnquist</Name>
-          <Title>Skateboarder</Title>
-        </CreatorText>
-        <div style={{ maxWidth: '600px' }} />
-      </>,
-      <>
-        <LeftContentWrapper>
-          <HeroTitle>
-            Personalized videos from your favorite{' '}
-            <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-          </HeroTitle>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Link to={'/explore'}>
-              <BookNow color={'#5F21E2'}>Become a Creator</BookNow>
-            </Link>
-            <Ovals>{ovals}</Ovals>
-          </div>
-        </LeftContentWrapper>
-        <div style={{ maxWidth: '600px' }} />
-      </>,
-    ];
-    background.map((element, index) => {
-      slideArray.push(
-        <BackgroundWrapper
-          background={element}
-          translate={slidePosition[index]}
-          index={index}
-          // style={{ backgroundPosition: index == 2 ? 'center' : 'center right 20%' }}
-        >
-          <OpacityGradient />
-          <HeaderSpacer />
-          {/* <HeaderContentGapSpacer /> */}
-          <PageContentWrapper style={{ justifyContent: 'space-around' }}>
-            {/* <ContentWrapper> */}
-            {slideContent[index]}
-            {/* </ContentWrapper> */}
-          </PageContentWrapper>
-        </BackgroundWrapper>,
-      );
-    });
-    return slideArray;
-  };
-
-  const theme = useTheme();
   return (
     <>
       <PageWrapper style={{ top: 0 }}>
-        <Left onClick={leftClick} />
-        <Right onClick={rightClick} />
-        <Slides translate={slidesPosition}>{slides()}</Slides>
+        <Slider></Slider>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />
         <CreatorCards />
       </PageWrapper>
