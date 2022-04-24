@@ -75,4 +75,4 @@ export const getOpensea = (addr: string, index: number) =>
     ? `https://testnets.opensea.io/assets/mumbai/${addr}/${index}`
     : `https://opensea.io/assets/matic/${addr}/${index}`;
 
-export const GOOGLE_TRACK_ID = 'UA-G-R1J0Z7YR2N';
+export const GOOGLE_TRACK_ID = 'UA-G-LVY3DLBQ0K';
