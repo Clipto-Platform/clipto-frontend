@@ -126,6 +126,13 @@ select {
   font-display: swap;
 }
 @font-face {
+  font-family: 'Eina01-Bold';
+  src: url('../assets/fonts/Eina/Eina01-Bold.ttf');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
   font-family: 'Inter-Bold';
   src: url('../assets/fonts/Inter/Inter-Bold.ttf');
   font-weight: normal;
