@@ -17,13 +17,11 @@ export const OpacityGradient = styled.div`
 
 export const LeftContentWrapper = styled.div`
   position: relative;
-  left: -80px;
   z-index: 100;
-  padding: clamp(100px, 15vw, 200px) 0px clamp(160px, 20vw, 350px) 0px;
+  margin: clamp(100px, 15vw, 180px) 0px clamp(160px, 20vw, 370px) 0px;
   transition: transform 1s, width 1s;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     transform: translateY(150px);
-    left:0;
   `}
 `;
 
@@ -34,7 +32,7 @@ export const HeroTitle = styled.h1`
   line-height: 125%;
   min-width: 260px;
   max-width: 550px;
-  margin-bottom: 50px;
+  margin-bottom: clamp(20px, 5vw, 50px);
 `;
 
 export const BookNow = styled.h3`
@@ -44,45 +42,37 @@ export const BookNow = styled.h3`
   border-radius: 40px;
   padding: 14px 30px;
   width: fit-content;
+  white-space: nowrap;
 `;
 
 export const CreatorText = styled.div`
   z-index: 10;
   max-width: 500px;
-  right: 5%;
+  left: 80%;
   position: absolute;
   top: 270px;
   padding: 5px;
+  transition: top 1s, left 1s;
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    top: 70px;
-    left: 5%;
+    top: 100px;
+    left: 15%;
   `}
 `;
 
 export const Name = styled.div`
   z-index: 10;
-  font-size: 24px;
+  font-size: clamp(14px, 2vw, 24px);
   font-family: 'Eina01';
   font-weight: 700;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 14px;
-    line-height: 16.41px;
-    color: #FFFFFF;
-  `}
 `;
 export const Title = styled.div`
   font-family: 'Eina01-Light';
-  font-size: 24px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-  font-size: 14px;
-  line-height: 16.41px;
-  color: #FFFFFF;
-  `}
+  font-size: clamp(14px, 2vw, 24px);
 `;
 export const Left = styled.button`
   position: absolute;
   left: clamp(0px, 4% - 8px, 50px);
-  top: 400px;
+  top: 380px;
   background-image: url(${LeftArrow});
   background-size: cover;
   background-color: transparent;
@@ -100,7 +90,7 @@ export const Left = styled.button`
 export const Right = styled.button`
   position: absolute;
   right: clamp(0px, 4% - 8px, 50px);
-  top: 400px;
+  top: 380px;
   background-image: url(${RightArrow});
   background-size: cover;
   background-color: transparent;

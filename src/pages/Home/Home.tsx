@@ -25,7 +25,7 @@ import play from '../../assets/svgs/play.svg';
 import { TEST } from '../../config/config';
 import background1 from '../../assets/images/homepage/background1.png';
 import background2 from '../../assets/images/homepage/background2.png';
-import background3 from '../../assets/images/homepage/background3.jpg';
+import background3 from '../../assets/images/homepage/background2.png';
 
 const featuredList: string[] = [
   '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8', // Gabriel Haines.eth
@@ -196,10 +196,20 @@ const HomePage = () => {
           index={index}
           // style={{ backgroundPosition: index == 2 ? 'center' : 'center right 20%' }}
         >
+          <div
+            style={{
+              backgroundImage: `url(${element})`,
+              backgroundColor: 'white',
+              backgroundSize: 'cover',
+              width: '100vw',
+              height: '780px',
+              position: 'absolute',
+            }}
+          />
           <OpacityGradient />
           <HeaderSpacer />
           {/* <HeaderContentGapSpacer /> */}
-          <PageContentWrapper style={{ justifyContent: 'space-around' }}>
+          <PageContentWrapper style={{ justifyContent: 'space-around', padding: '0 40px' }}>
             {/* <ContentWrapper> */}
             {slideContent[index]}
             {/* </ContentWrapper> */}
