@@ -48,7 +48,7 @@ export const BookNow = styled.h3`
 export const CreatorText = styled.div`
   z-index: 10;
   max-width: 500px;
-  left: 80%;
+  left: 85%;
   position: absolute;
   top: 270px;
   padding: 5px;
