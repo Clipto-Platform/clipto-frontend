@@ -1,19 +1,28 @@
 import styled, { keyframes } from 'styled-components';
-import background1 from '../../assets/images/homepage/page1/background.png';
-import background2 from '../../assets/images/homepage/page2/background.png';
-import background3 from '../../assets/images/homepage/page3/background.png';
 
 interface SlidesProps {
   translate: any;
 }
-export const Slides = styled.div<SlidesProps>`
+export const SlidesDesktop = styled.div<SlidesProps>`
   display: flex;
   flex-direction: row;
   width: 300vw;
   transition: transform 1s;
   transform: ${(props) => `translateX(${props.translate}%)`};
+  @media screen and (max-width: 600px) {
+    display: none;
+  }
 `;
-
+export const SlidesMobile = styled.div<SlidesProps>`
+  display: flex;
+  flex-direction: row;
+  width: 300vw;
+  transition: transform 1s;
+  transform: ${(props) => `translateX(${props.translate}%)`};
+  @media screen and (min-width: 601px) {
+    display: none;
+  }
+`;
 interface BackgroundWrapperProps {
   background: string;
   translate: any;
