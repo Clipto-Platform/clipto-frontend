@@ -41,14 +41,16 @@ export const HeroTitle = styled.h1`
 `;
 
 export const BookNow = styled.h3`
+  display: flex;
   font-size: clamp(14px, 2vw, 16px);
   font-family: 'Eina01-Bold';
   font-size: 16px;
-  ine-height: 19px;
+  line-height: 19px;
   background-color: ${(props) => props.color};
   border-radius: 40px;
   padding: 14px 30px;
   width: fit-content;
+  margin-right: 10px;
 `;
 
 export const CreatorText = styled.div`
@@ -127,8 +129,12 @@ export const Right = styled.button`
 `;
 
 export const Ovals = styled.div`
+  position: absolute;
   display: flex;
   flex-direction: row;
+  top: clamp(450px, 15.5%, 480px);
+  right: 40px;
+  z-index: 100;
 `;
 interface OvalProps {
   index: number;
@@ -142,9 +148,10 @@ export const Oval = styled.div<OvalProps>`
   margin: 0 5px 0 5px;
   opacity: 0;
   transition: opacity 1s;
+  z-index: 200;
   pointer-events: none;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     opacity: 1;
-    pointer-events: revert;
+    pointer-events: auto;
   `}
 `;

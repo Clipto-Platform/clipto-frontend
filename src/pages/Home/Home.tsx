@@ -51,7 +51,18 @@ const HomePage = () => {
   const [clickEnabled, setClickEnabled] = useState(true);
   const backgroudImaged = [background1D, background2D, background3D];
   const backgroudImagem = [background1D, background2D, background3M];
-
+  let ovals = [];
+  for (let i = 0; i < 3; i++) {
+    ovals.push(
+      <Oval
+        page={page}
+        index={i}
+        onClick={() => {
+          onOvalClick(i);
+        }}
+      />,
+    );
+  }
   useEffect(() => {
     const creatorAddresses = TEST
       ? featuredListTest.map((c) => c.toLowerCase())
@@ -76,14 +87,14 @@ const HomePage = () => {
     }
   }
 
-  useEffect(() => {
-    resetTimeout();
-    timeoutRef.current = setTimeout(rightClick, 8000);
+  // useEffect(() => {
+  //   resetTimeout();
+  //   timeoutRef.current = setTimeout(rightClick, 8000);
 
-    return () => {
-      resetTimeout();
-    };
-  }, [index]);
+  //   return () => {
+  //     resetTimeout();
+  //   };
+  // }, [index]);
 
   const leftClick = () => {
     //allows user to click left arrow every .6 seconds
@@ -152,17 +163,6 @@ const HomePage = () => {
     let background = backgroudImage;
     let slideArray: Array<any> = [];
     let ovals = [];
-    for (let i = 0; i < 3; i++) {
-      ovals.push(
-        <Oval
-          page={page}
-          index={i}
-          onClick={() => {
-            onOvalClick(i);
-          }}
-        />,
-      );
-    }
     let slideContent = [
       <>
         <LeftContentWrapper>
@@ -170,11 +170,10 @@ const HomePage = () => {
             Personalized videos from your favorite{' '}
             <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
           </HeroTitle>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ width: 'fit-content' }}>
             <Link to={'/explore'}>
               <BookNow color={'#5F21E2'}>Book Now</BookNow>
             </Link>
-            <Ovals>{ovals}</Ovals>
           </div>
         </LeftContentWrapper>
         <div style={{ maxWidth: '600px' }} />
@@ -185,11 +184,10 @@ const HomePage = () => {
             Personalized videos from your favorite{' '}
             <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
           </HeroTitle>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ width: 'fit-content' }}>
             <Link to={'/creator/0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f'}>
               <BookNow color={'#1DA1F2'}>Book with Bob</BookNow>
             </Link>
-            <Ovals>{ovals}</Ovals>
           </div>
         </LeftContentWrapper>
         <CreatorText>
@@ -204,11 +202,11 @@ const HomePage = () => {
             Personalized videos from your favorite{' '}
             <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
           </HeroTitle>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          {/* this div is needed to change hitbox of link*/}
+          <div style={{ width: 'fit-content' }}>
             <Link to={'/explore'}>
               <BookNow color={'#5F21E2'}>Become a Creator</BookNow>
             </Link>
-            <Ovals>{ovals}</Ovals>
           </div>
         </LeftContentWrapper>
         <div style={{ maxWidth: '600px' }} />
@@ -242,6 +240,7 @@ const HomePage = () => {
       <PageWrapper style={{ top: 0 }}>
         <Left onClick={leftClick} />
         <Right onClick={rightClick} />
+        <Ovals>{ovals}</Ovals>
         <SlidesDesktop translate={slidesPosition}>{slides(backgroudImaged)}</SlidesDesktop>
         <SlidesMobile translate={slidesPosition}>{slides(backgroudImagem)}</SlidesMobile>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />
