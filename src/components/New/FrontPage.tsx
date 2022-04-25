@@ -7,7 +7,7 @@ interface SlidesProps {
 export const Slides = styled.div<SlidesProps>`
   display: flex;
   flex-direction: row;
-  height: clamp(500px, 88vw, 800px);
+  height: clamp(500px, 88vw, 730px);
   width: 300vw;
   transition: transform 1s;
   transform: ${(props) => `translateX(${props.translate}%)`};
@@ -23,7 +23,7 @@ export const BackgroundWrapper = styled.div<BackgroundWrapperProps>`
   align-items: center;
   background-image: url(${(props) => props.background});
   background-position: ${(props) =>
-    props.index == 0 ? 'center right' : props.index == 1 ? 'center right 30%' : 'center 10%'};
+    props.index == 0 ? 'center right' : props.index == 1 ? 'bottom right 30%' : 'center 10%'};
   background-size: cover;
   object-fit: cover;
   width: 100vw;

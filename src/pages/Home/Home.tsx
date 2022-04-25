@@ -191,15 +191,6 @@ const HomePage = () => {
     background.map((element, index) => {
       slideArray.push(
         <BackgroundWrapper background={element} translate={slidePosition[index]} index={index}>
-          <div
-            style={{
-              position: 'absolute',
-              zIndex: '50',
-              height: '100%',
-              width: '100%',
-              background: 'linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))',
-            }}
-          />
           <OpacityGradient />
           {/* <HeaderContentGapSpacer /> */}
           <PageContentWrapper style={{ justifyContent: 'space-around', padding: '0 40px' }}>
