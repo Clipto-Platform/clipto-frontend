@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTheme } from 'styled-components';
 import { featuredCreators } from '../../api/index';
 import { EntityCreator } from '../../api/types';
@@ -51,6 +51,7 @@ const HomePage = () => {
   const [clickEnabled, setClickEnabled] = useState(true);
   const backgroudImaged = [background1D, background2D, background3D];
   const backgroudImagem = [background1D, background2D, background3M];
+
   useEffect(() => {
     const creatorAddresses = TEST
       ? featuredListTest.map((c) => c.toLowerCase())
@@ -66,8 +67,27 @@ const HomePage = () => {
     });
   });
 
+  const [index, setIndex] = useState(0);
+  const timeoutRef = useRef(null as any);
+
+  function resetTimeout() {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  }
+
+  useEffect(() => {
+    resetTimeout();
+    timeoutRef.current = setTimeout(rightClick, 8000);
+
+    return () => {
+      resetTimeout();
+    };
+  }, [index]);
+
   const leftClick = () => {
     //allows user to click left arrow every .6 seconds
+    resetTimeout();
     if (clickEnabled) {
       let temp = slidePosition;
       const round = Math.round(slidesPosition) % 100;
@@ -84,15 +104,17 @@ const HomePage = () => {
       }
 
       setSlidePosition(temp);
-      setSlidesPosition(slidesPosition + 33.33);
+      setSlidesPosition(slidesPosition + 100 / 3);
       setClickEnabled(false);
       setTimeout(() => {
         setClickEnabled(true);
+        setIndex((prevIndex) => prevIndex + 1);
       }, 600);
     }
   };
   const rightClick = () => {
     //allows user to click right arrow every .6 seconds
+    resetTimeout();
     if (clickEnabled) {
       let temp = slidePosition;
       const round = Math.round(slidesPosition) % 100;
@@ -109,11 +131,12 @@ const HomePage = () => {
       }
 
       setSlidePosition(temp);
-      setSlidesPosition(slidesPosition - 33.33);
+      setSlidesPosition(slidesPosition - 100 / 3);
       setClickEnabled(false);
       setTimeout(() => {
         setClickEnabled(true);
-      }, 700);
+        setIndex((prevIndex) => prevIndex + 1);
+      }, 600);
     }
   };
 
