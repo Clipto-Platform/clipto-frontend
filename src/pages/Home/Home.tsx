@@ -25,7 +25,7 @@ import play from '../../assets/svgs/play.svg';
 import { TEST } from '../../config/config';
 import background1 from '../../assets/images/homepage/background1.png';
 import background2 from '../../assets/images/homepage/background2.png';
-import background3 from '../../assets/images/homepage/background2.png';
+import background3 from '../../assets/images/homepage/background3.jpg';
 
 const featuredList: string[] = [
   '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8', // Gabriel Haines.eth
@@ -151,7 +151,7 @@ const HomePage = () => {
             <Ovals>{ovals}</Ovals>
           </div>
         </LeftContentWrapper>
-        <div style={{ maxWidth: '600px' }} />
+        <div style={{ width: 'clamp(0px, 20% - 75px, 250px)' }} />
       </>,
       <>
         <LeftContentWrapper>
@@ -170,7 +170,7 @@ const HomePage = () => {
           <Name>Bob Burnquist</Name>
           <Title>Skateboarder</Title>
         </CreatorText>
-        <div style={{ maxWidth: '600px' }} />
+        <div style={{ width: 'clamp(0px, 20% - 75px, 200px)' }} />
       </>,
       <>
         <LeftContentWrapper>
@@ -185,29 +185,22 @@ const HomePage = () => {
             <Ovals>{ovals}</Ovals>
           </div>
         </LeftContentWrapper>
-        <div style={{ maxWidth: '600px' }} />
+        <div style={{ width: 'clamp(0px, 30% - 110px, 500px)' }} />
       </>,
     ];
     background.map((element, index) => {
       slideArray.push(
-        <BackgroundWrapper
-          background={element}
-          translate={slidePosition[index]}
-          index={index}
-          // style={{ backgroundPosition: index == 2 ? 'center' : 'center right 20%' }}
-        >
+        <BackgroundWrapper background={element} translate={slidePosition[index]} index={index}>
           <div
             style={{
-              backgroundImage: `url(${element})`,
-              backgroundColor: 'white',
-              backgroundSize: 'cover',
-              width: '100vw',
-              height: '780px',
               position: 'absolute',
+              zIndex: '50',
+              height: '100%',
+              width: '100%',
+              background: 'linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))',
             }}
           />
           <OpacityGradient />
-          <HeaderSpacer />
           {/* <HeaderContentGapSpacer /> */}
           <PageContentWrapper style={{ justifyContent: 'space-around', padding: '0 40px' }}>
             {/* <ContentWrapper> */}

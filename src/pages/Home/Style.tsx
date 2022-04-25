@@ -17,8 +17,8 @@ export const OpacityGradient = styled.div`
 
 export const LeftContentWrapper = styled.div`
   position: relative;
+  margin-bottom: 100px;
   z-index: 100;
-  margin: clamp(100px, 15vw, 180px) 0px clamp(160px, 20vw, 370px) 0px;
   transition: transform 1s, width 1s;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     transform: translateY(150px);
