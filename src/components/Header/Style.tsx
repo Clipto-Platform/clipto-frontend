@@ -117,7 +117,7 @@ export const DesktopHeaderWrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   cursor: pointer;
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 620px) {
     display: none;
   }
 `;
@@ -142,14 +142,14 @@ export const MobileHeaderWrapper = styled.div`
     border
    }
 
-  @media screen and (min-width: 600px){
+  @media screen and (min-width: 620px){
     display:none;
   }
 `;
 
 export const MenuContainer = styled.span`
   padding: 5px 0px 0px 5px;
-  @media screen and (min-width: 600px) {
+  @media screen and (min-width: 620px) {
     display: none;
   }
 `;

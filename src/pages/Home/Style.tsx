@@ -20,9 +20,9 @@ export const OpacityGradient = styled.div`
 
 export const LeftContentWrapper = styled.div`
   position: relative;
-  left: -80px;
+  left: -120px;
   z-index: 100;
-  padding: clamp(100px, 15vw, 200px) 0px clamp(160px, 20vw, 350px) 0px;
+  padding: clamp(100px, 11vw, 200px) 0px clamp(160px, 20vw, 350px) 0px;
   transition: transform 1s, width 1s;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     transform: translateY(150px);
@@ -42,8 +42,9 @@ export const HeroTitle = styled.h1`
 
 export const BookNow = styled.h3`
   font-size: clamp(14px, 2vw, 16px);
-  font-family: 'Eina01-Light';
-  font-weight: 700;
+  font-family: 'Eina01-Bold';
+  font-size: 16px;
+  ine-height: 19px;
   background-color: ${(props) => props.color};
   border-radius: 40px;
   padding: 14px 30px;
@@ -55,7 +56,7 @@ export const CreatorText = styled.div`
   max-width: 500px;
   right: 5%;
   position: absolute;
-  top: 270px;
+  top: 240px;
   padding: 5px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     top: 70px;
@@ -65,34 +66,38 @@ export const CreatorText = styled.div`
 
 export const Name = styled.div`
   z-index: 10;
+  font-family: 'Eina01-Bold';
   font-size: 24px;
-  font-family: 'Eina01';
-  font-weight: 700;
+  line-height: 28px;
+  color: #ffffff;
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    font-size: 14px;
-    line-height: 16.41px;
-    color: #FFFFFF;
+  font-family: 'Eina01-Bold';
+  font-size: 14px;
+  line-height: 16px;
   `}
 `;
 export const Title = styled.div`
   font-family: 'Eina01-Light';
   font-size: 24px;
+  line-height: 28px;
+  color: #ffffff;
   ${({ theme }) => theme.mediaWidth.upToMedium`
+  font-family: 'Eina01-Light';
   font-size: 14px;
-  line-height: 16.41px;
-  color: #FFFFFF;
+  line-height: 16px;
   `}
 `;
 export const Left = styled.button`
   position: absolute;
-  left: clamp(0px, 4% - 8px, 50px);
+  left: 10px;
   top: 400px;
   background-image: url(${LeftArrow});
-  background-size: cover;
+  background-size: contain;
   background-color: transparent;
+  background-repeat: no-repeat;
   border: none;
-  height: 30px;
-  width: 17px;
+  height: 25px;
+  width: 25px;
   z-index: 10;
   opacity: 1;
   transition: opacity 1s;
@@ -103,14 +108,15 @@ export const Left = styled.button`
 `;
 export const Right = styled.button`
   position: absolute;
-  right: clamp(0px, 4% - 8px, 50px);
+  right: 10px;
   top: 400px;
   background-image: url(${RightArrow});
-  background-size: cover;
+  background-size: contain;
   background-color: transparent;
+  background-repeat: no-repeat;
   border: none;
-  height: 30px;
-  width: 17px;
+  height: 25px;
+  width: 25px;
   z-index: 10;
   opacity: 1;
   transition: opacity 1s;

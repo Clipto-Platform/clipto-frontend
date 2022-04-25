@@ -4,7 +4,7 @@ import { featuredCreators } from '../../api/index';
 import { EntityCreator } from '../../api/types';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
-import { BackgroundWrapper, Slides } from '../../components/New/FrontPage';
+import { BackgroundWrapper, SlidesMobile, SlidesDesktop } from '../../components/New/FrontPage';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
 import { CreatorCards } from '../../components/CreatorCards/CreatorCards';
 import { Link, useNavigate } from 'react-router-dom';
@@ -23,9 +23,10 @@ import {
 } from './Style';
 import play from '../../assets/svgs/play.svg';
 import { TEST } from '../../config/config';
-import background1 from '../../assets/images/homepage/page1/background.png';
-import background2 from '../../assets/images/homepage/page2/background.png';
-import background3 from '../../assets/images/homepage/page3/background.png';
+import background1D from '../../assets/images/homepage/page1/background1D.png';
+import background2D from '../../assets/images/homepage/page2/background2D.png';
+import background3D from '../../assets/images/homepage/page3/background3D.png';
+import background3M from '../../assets/images/homepage/page3/background3M.png';
 
 const featuredList: string[] = [
   '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8', // Gabriel Haines.eth
@@ -40,6 +41,7 @@ const featuredListTest: string[] = [
   '0x7cacbc75d74740b50dc68fbf0a573af80243ca56', // jon
   '0x6e4cd1a58e0d1309da36f1ce1e456e5b93483175', // lee
 ];
+
 const HomePage = () => {
   let [creators, setCreators] = useState<EntityCreator[]>([]);
 
@@ -47,7 +49,8 @@ const HomePage = () => {
   const [slidesPosition, setSlidesPosition] = useState<number>(0);
   const [slidePosition, setSlidePosition] = useState<Array<number>>([0, 0, -300]);
   const [clickEnabled, setClickEnabled] = useState(true);
-
+  const backgroudImaged = [background1D, background2D, background3D];
+  const backgroudImagem = [background1D, background2D, background3M];
   useEffect(() => {
     const creatorAddresses = TEST
       ? featuredListTest.map((c) => c.toLowerCase())
@@ -122,8 +125,8 @@ const HomePage = () => {
     }
   };
 
-  const slides = () => {
-    let background = [background1, background2, background3];
+  const slides = (backgroudImage: string[]) => {
+    let background = backgroudImage;
     let slideArray: Array<any> = [];
     let ovals = [];
     for (let i = 0; i < 3; i++) {
@@ -216,7 +219,8 @@ const HomePage = () => {
       <PageWrapper style={{ top: 0 }}>
         <Left onClick={leftClick} />
         <Right onClick={rightClick} />
-        <Slides translate={slidesPosition}>{slides()}</Slides>
+        <SlidesDesktop translate={slidesPosition}>{slides(backgroudImaged)}</SlidesDesktop>
+        <SlidesMobile translate={slidesPosition}>{slides(backgroudImagem)}</SlidesMobile>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />
         <CreatorCards />
       </PageWrapper>
