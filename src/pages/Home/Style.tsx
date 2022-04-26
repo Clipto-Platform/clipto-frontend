@@ -91,7 +91,7 @@ export const Title = styled.div`
 `;
 export const Left = styled.button`
   position: absolute;
-  left: 10px;
+  left: 30px;
   top: 400px;
   background-image: url(${LeftArrow});
   background-size: contain;
@@ -110,7 +110,7 @@ export const Left = styled.button`
 `;
 export const Right = styled.button`
   position: absolute;
-  right: 10px;
+  right: 30px;
   top: 400px;
   background-image: url(${RightArrow});
   background-size: contain;
@@ -127,13 +127,26 @@ export const Right = styled.button`
     pointer-events: none;
   `}
 `;
-
-export const Ovals = styled.div`
-  position: absolute;
+export const OvalSpacing = styled.div`
+  z-index: 200;
+  width: 100vw;
   display: flex;
   flex-direction: row;
-  top: clamp(450px, 15.5%, 480px);
-  right: 40px;
+  justify-content: space-around;
+  padding: 0 32px;
+  position: absolute;
+  top: clamp(460px, 40vw, 700px);
+  left: -220px;
+  transition: left 1s;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    left: 10px;
+    justify-content: right;
+    top: clamp(450px, 100vw,500px);
+  `}
+`;
+export const Ovals = styled.div`
+  display: flex;
+  flex-direction: row;
   z-index: 100;
 `;
 interface OvalProps {
@@ -142,16 +155,14 @@ interface OvalProps {
 }
 export const Oval = styled.div<OvalProps>`
   background-color: ${(props) => (props.index == props.page ? props.theme.twitterBlue : '#6F6F6F')};
-  width: 25px;
-  height: 5px;
+  width: 40px;
+  height: 6px;
   border-radius: 10px;
-  margin: 0 5px 0 5px;
-  opacity: 0;
+  margin: 0 10px 0 10px;
   transition: opacity 1s;
   z-index: 200;
   pointer-events: none;
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    opacity: 1;
     pointer-events: auto;
   `}
 `;

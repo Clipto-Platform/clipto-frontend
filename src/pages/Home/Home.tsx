@@ -20,6 +20,7 @@ import {
   Ovals,
   Oval,
   CreatorText,
+  OvalSpacing,
 } from './Style';
 import play from '../../assets/svgs/play.svg';
 import { TEST } from '../../config/config';
@@ -199,8 +200,9 @@ const HomePage = () => {
       <>
         <LeftContentWrapper>
           <HeroTitle>
-            Personalized videos from your favorite{' '}
-            <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
+            Become a creator
+            <br />
+            Make a CLIPTO profile <span style={{ color: theme.yellow, fontWeight: '700' }}>now</span>
           </HeroTitle>
           {/* this div is needed to change hitbox of link*/}
           <div style={{ width: 'fit-content' }}>
@@ -240,7 +242,10 @@ const HomePage = () => {
       <PageWrapper style={{ top: 0 }}>
         <Left onClick={leftClick} />
         <Right onClick={rightClick} />
-        <Ovals>{ovals}</Ovals>
+        <OvalSpacing>
+          <Ovals>{ovals}</Ovals>
+          <div />
+        </OvalSpacing>
         <SlidesDesktop translate={slidesPosition}>{slides(backgroudImaged)}</SlidesDesktop>
         <SlidesMobile translate={slidesPosition}>{slides(backgroudImagem)}</SlidesMobile>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />
