@@ -88,14 +88,14 @@ const HomePage = () => {
     }
   }
 
-  // useEffect(() => {
-  //   resetTimeout();
-  //   timeoutRef.current = setTimeout(rightClick, 8000);
+  useEffect(() => {
+    resetTimeout();
+    timeoutRef.current = setTimeout(rightClick, 8000);
 
-  //   return () => {
-  //     resetTimeout();
-  //   };
-  // }, [index]);
+    return () => {
+      resetTimeout();
+    };
+  }, [index]);
 
   const leftClick = () => {
     //allows user to click left arrow every .6 seconds
