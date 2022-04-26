@@ -201,8 +201,9 @@ const HomePage = () => {
       <>
         <LeftContentWrapper>
           <HeroTitle>
-            Personalized videos from your favorite{' '}
-            <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
+            Become a creator
+            <br />
+            Make a CLIPTO profile <span style={{ color: theme.yellow, fontWeight: '700' }}>now</span>
           </HeroTitle>
           <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <Link to={'/explore'}>

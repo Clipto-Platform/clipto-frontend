@@ -89,7 +89,7 @@ export const Title = styled.div`
 `;
 export const Left = styled.button`
   position: absolute;
-  left: 10px;
+  left: 30px;
   top: 400px;
   background-image: url(${LeftArrow});
   background-size: contain;
@@ -108,7 +108,7 @@ export const Left = styled.button`
 `;
 export const Right = styled.button`
   position: absolute;
-  right: 10px;
+  right: 30px;
   top: 400px;
   background-image: url(${RightArrow});
   background-size: contain;
