@@ -277,7 +277,11 @@ const SelectedOrderPage = () => {
                       </ImageCardContainer>
                     )}
                   </BookingCard>
-                  {uploadStatus && <Description style={{ fontSize: 16 }}>* this may take a few minutes</Description>}
+                  {uploadStatus && (
+                    <Description style={{ fontSize: 16, paddingBottom: '10px' }}>
+                      * this may take a few minutes
+                    </Description>
+                  )}
                 </div>
               </>
             )}
