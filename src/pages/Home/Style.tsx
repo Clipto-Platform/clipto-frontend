@@ -155,6 +155,7 @@ export const OvalSpacing = styled.div`
     left: 10px;
     justify-content: flex-end;
     top: clamp(450px, 100vw,500px);
+    padding: 0 32px;
   `}
 `;
 export const Ovals = styled.div`
