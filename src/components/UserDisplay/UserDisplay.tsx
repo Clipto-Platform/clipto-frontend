@@ -25,7 +25,7 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
     <>
       <ContainerWrapper style={{ ...style }}>
         <ContentWrapper>
-          <Title style={{ marginTop: 64, marginBottom: 36 }}>{title}</Title>
+          <Title style={{ marginBottom: 36 }}>{title}</Title>
           <div style={{ width: '100%', height: '100%', position: 'relative' }}>
             {users && users.length > 0 ? (
               <Grid>
@@ -45,7 +45,12 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
                     return (
                       <Link key={user.address} to={`/creator/${user.address}`}>
                         <UserCardContainer key={user.id}>
-                          <UserImage src={user.profilePicture} onLoad={handleLoad} style={{ marginBottom: 24 }} />
+                          <UserImage
+                            src={user.profilePicture}
+                            twitterHandle={user.twitterHandle}
+                            onLoad={handleLoad}
+                            style={{ marginBottom: 24 }}
+                          />
                           <UserTitle style={{ marginBottom: 4 }}>{user.userName}</UserTitle>
                           <UserDescription style={{ marginBottom: 16 }}>{user.twitterHandle}</UserDescription>
                           <UserStartingPrice>

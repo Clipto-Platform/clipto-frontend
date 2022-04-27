@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { Formik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -14,22 +14,27 @@ import { PrimaryButton } from '../../components/Button';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
 import { PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { SYMBOL, DEFAULT_CHAIN_ID, CHAIN_NAMES } from '../../config/config';
-import { useExchangeContract } from '../../hooks/useContracts';
+import { CHAIN_NAMES, SYMBOL, TOKENS } from '../../config/config';
+import { getProviderOrSigner, useERC20Contract, useExchangeContract } from '../../hooks/useContracts';
 import { useCreator } from '../../hooks/useCreator';
 import { useFee } from '../../hooks/useFee';
 import { Description, Label } from '../../styles/typography';
 import { getShortenedAddress } from '../../utils/address';
-import { convertToFloat, convertToInt, formatETH } from '../../utils/format';
+import { convertToFloat, convertToInt, formatETH, removeTrailingZero } from '../../utils/format';
 import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
 import { BookingFormValues } from './types';
+import { parseUnits } from 'ethers/lib/utils';
+import { EXCHANGE_ADDRESS, DEFAULT_CHAIN_ID, ERC20_CONTRACTS } from '../../config/config';
+import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
+import { ERC20__factory } from '../../contracts';
+import axios from 'axios';
+import { exchnageRates } from '../../api';
 
 const BookingPage = () => {
   const { creatorId } = useParams();
   const { account, library, chainId } = useWeb3React<Web3Provider>();
-
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const exchangeContract = useExchangeContract(true);
@@ -37,10 +42,20 @@ const BookingPage = () => {
   const { FeeDescription } = useFee();
   const [user, setUser] = useState();
   const getUser = useSelector((state: any) => state.user);
+  const ref = useRef(null as any);
+  const [token, setToken] = useState<string>('MATIC');
+  const [price, setPrice] = useState<number>(0);
 
   useEffect(() => {
     setUser(getUser);
   }, [getUser]);
+  useEffect(() => {
+    if (ref && ref.current) {
+      window.scrollTo({
+        top: ref.current.offsetTop,
+      });
+    }
+  }, [ref]);
 
   const makeBooking = async (values: BookingFormValues) => {
     try {
@@ -59,11 +74,15 @@ const BookingPage = () => {
         deadline: convertToInt(values.deadline),
         description: values.description,
       };
-      const transaction = await exchangeContract.newRequest(creatorId, JSON.stringify(requestData), {
+      let transaction;
+      transaction = await exchangeContract.newRequest(creatorId, JSON.stringify(requestData), {
         value: ethers.utils.parseEther(values.amount),
       });
+
+      toast.dismiss();
       toast.loading('Creating a new booking, waiting for confirmation');
-      const receipt = await transaction.wait();
+      // const receipt = transaction &&
+      await transaction.wait();
       toast.dismiss();
       toast.success('Booking completed, your Order will reflect in few moments.');
       navigate('/orders');
@@ -76,7 +95,7 @@ const BookingPage = () => {
   return (
     <PageWrapper>
       <HeaderContentGapSpacer />
-      <PageContentWrapper>
+      <PageContentWrapper ref={ref}>
         <PageGrid>
           <ImagesColumnContainer>
             {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
@@ -89,14 +108,18 @@ const BookingPage = () => {
                     <Label style={{ marginBottom: 8 }}>{creator.userName}</Label>
                     <Description>
                       Twitter:{' '}
-                      <a href={`https://twitter.com/${creator.twitterHandle}`} style={{ color: '#EDE641' }}>
+                      <a
+                        href={`https://twitter.com/${creator.twitterHandle}`}
+                        target="_blank"
+                        style={{ color: '#EDE641' }}
+                      >
                         @{creator.twitterHandle}
                       </a>{' '}
                     </Description>
                     <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
                   </div>
                   <div>
-                    <AvatarComponent url={creator.profilePicture} size="medium" />
+                    <AvatarComponent url={creator.profilePicture} size="medium" twitterHandle={creator.twitterHandle} />
                   </div>
                 </FlexRow>
                 <FlexRow style={{ marginBottom: 24 }}>
@@ -199,13 +222,17 @@ const BookingPage = () => {
                       <div style={{ marginBottom: 40 }}>
                         <TextField
                           inputStyles={{
-                            width: 172,
+                            width: 220,
                           }}
                           label="Amount to pay"
                           description={'Increase your bid to get your video earlier'}
-                          endText={SYMBOL}
+                          endText={token}
                           type="number"
-                          placeholder={formatETH(convertToFloat(creator.price)) + '+'}
+                          placeholder={
+                            price && price != 0
+                              ? removeTrailingZero(price.toFixed(7)) + '+'
+                              : formatETH(convertToFloat(creator.price)) + '+'
+                          }
                           onChange={handleChange('amount')}
                           errorMessage={errors.amount}
                         />

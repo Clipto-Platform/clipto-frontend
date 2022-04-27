@@ -210,3 +210,13 @@ query GetFeaturedCreators (
   }
 }
 `;
+export const queryGetCreatorUserName = `
+query GetAllCreators {
+    creators(
+      orderBy: timestamp,
+      orderDirection: asc
+    ){
+      twitterHandle
+    }
+}
+`;

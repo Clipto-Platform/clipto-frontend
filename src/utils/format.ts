@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
 
 export const formatETH = (value: number | string, maxDecimalPlaces?: number) => {
   const num = convertToFloat(value);
@@ -14,14 +14,20 @@ export const formatETH = (value: number | string, maxDecimalPlaces?: number) => 
 
 export const bigIntToReadable = (value: string | number) => {
   return ethers.utils.formatEther(value);
-}
+};
 
 export const convertToFloat = (value: string | number): number => {
-  if(typeof value === 'string') return parseFloat(value);
+  if (typeof value === 'string') return parseFloat(value);
   return value;
-}
+};
 
 export const convertToInt = (value: string | number): number => {
   if (typeof value === 'string') return parseInt(value);
   return value;
+};
+
+export const removeTrailingZero = (value: string): string => {
+  const regex = /^(\d+\.\d*?[1-9])0+$/;
+  const match = regex.exec(value);
+  return match ? match[1] : parseFloat(value).toString();
 };

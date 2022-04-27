@@ -51,7 +51,9 @@ const SelectedOrderPage = () => {
   const [history, setHistory] = useState<NFTHistories[]>();
 
   const validate = (name: string, desc: string) => {
-    if (name.length === 0) return { name: 'This field cannot be empty' };
+    if (name.length === 0 && desc.length === 0) {
+      return { name: 'This field cannot be empty', description: 'This field cannot be empty' };
+    } else if (name.length === 0) return { name: 'This field cannot be empty' };
     else if (desc.length === 0) return { description: 'This field cannot be empty' };
     return;
   };
@@ -211,6 +213,29 @@ const SelectedOrderPage = () => {
           <PageContentWrapper style={{ display: 'block', maxWidth: '600px', margin: 'auto' }}>
             {!((request && request.delivered) || done) && (
               <>
+                <Divider>
+                  <TextField
+                    type="text"
+                    label={'Title for the NFT'}
+                    placeholder={`Give an awesome title`}
+                    value={nftName}
+                    onChange={setNftName}
+                    maxLength={50}
+                    errorMessage={error?.name}
+                  />
+                </Divider>
+
+                <Divider>
+                  <TextField
+                    inputElementType="textarea"
+                    label={'Description for the NFT'}
+                    placeholder="Some good description"
+                    value={description}
+                    maxLength={1000}
+                    onChange={setDescription}
+                    errorMessage={error?.description}
+                  />
+                </Divider>
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
                   <BookingCard style={{ textAlign: 'center', display: 'flex', marginBottom: 24 }}>
@@ -252,32 +277,12 @@ const SelectedOrderPage = () => {
                       </ImageCardContainer>
                     )}
                   </BookingCard>
-                  {uploadStatus && <Description style={{ fontSize: 16 }}>* this may take a few minutes</Description>}
+                  {uploadStatus && (
+                    <Description style={{ fontSize: 16, paddingBottom: '10px' }}>
+                      * this may take a few minutes
+                    </Description>
+                  )}
                 </div>
-
-                <Divider>
-                  <TextField
-                    type="text"
-                    label={'Title for the NFT'}
-                    placeholder={`Give an awesome title`}
-                    value={nftName}
-                    onChange={setNftName}
-                    maxLength={50}
-                    errorMessage={error?.name}
-                  />
-                </Divider>
-
-                <Divider>
-                  <TextField
-                    inputElementType="textarea"
-                    label={'Description for the NFT'}
-                    placeholder="Some good description"
-                    value={description}
-                    maxLength={1000}
-                    onChange={setDescription}
-                    errorMessage={error?.description}
-                  />
-                </Divider>
               </>
             )}
 

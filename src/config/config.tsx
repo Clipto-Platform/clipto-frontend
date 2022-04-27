@@ -53,7 +53,13 @@ export const GRAPH_APIS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_TESTNET]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph-v2',
   [CHAIN_IDS.DAPPTOOLS]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph',
 };
+export const ERC20_CONTRACTS: { [token: string]: string } = {
+  MATIC: '0x0000000000000000000000000000000000000000',
+  WMATIC: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
+  WETH: '0x714550C2C1Ea08688607D86ed8EeF4f5E4F22323',
+};
 
+export const TOKENS = ['MATIC', 'WMATIC', 'WETH'];
 export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
 export const DISCORD_LINK = 'https://discord.com/invite/fpVMmerNZm';
@@ -62,7 +68,7 @@ export const DOCS_LINK = 'https://cliptodao.gitbook.io/clipto/';
 export const TERMS_LINK = 'https://cliptodao.gitbook.io/clipto/';
 export const PRIVACY_LINK = 'https://cliptodao.gitbook.io/clipto/';
 
-export const API_URL = DEV ? 'http://localhost:8000' : 'https://api.clipto.io';
+export const API_URL = DEV ? 'http://localhost:8000' : TEST ? 'https://testapi.clipto.io' : 'https://api.clipto.io';
 
 export const getPolygonScan = (addr: string) =>
   ENV === 'TEST' ? `https://mumbai.polygonscan.com/token/${addr}` : `https://polygonscan.com/token/${addr}`;
@@ -74,3 +80,9 @@ export const getOpensea = (addr: string, index: number) =>
   ENV === 'TEST'
     ? `https://testnets.opensea.io/assets/mumbai/${addr}/${index}`
     : `https://opensea.io/assets/matic/${addr}/${index}`;
+
+export const getTokenSymbol = (token: string) => {
+  return Object.keys(ERC20_CONTRACTS).find((key) => {
+    return ERC20_CONTRACTS[key].toLowerCase() === token.toLowerCase();
+  });
+};

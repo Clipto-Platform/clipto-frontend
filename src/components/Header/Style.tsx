@@ -16,7 +16,7 @@ export const HeaderWrapperOuter = styled.div`
   height: ${HEADER_HEIGHT_IN_PX};
   max-height: ${HEADER_HEIGHT_IN_PX};
   min-height: ${HEADER_HEIGHT_IN_PX};
-  background: ${(props) => props.theme.black};
+  background: rgba(0, 0, 0, 0.5);
   z-index: 100;
 
   padding: 0 32px;
@@ -30,8 +30,8 @@ export const ChainContainer = styled.div`
   text-align: center;
   width: 100%;
   position: fixed;
-  top: 66px;
-  z-index: 100;
+  top: 64px;
+  z-index: 99;
   padding: 10px;
   // margin-top: ${HEADER_HEIGHT_IN_PX};
   background: ${(props) => props.theme.yellow};
@@ -117,7 +117,7 @@ export const DesktopHeaderWrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   cursor: pointer;
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 830px) {
     display: none;
   }
 `;
@@ -142,14 +142,14 @@ export const MobileHeaderWrapper = styled.div`
     border
    }
 
-  @media screen and (min-width: 600px){
+  @media screen and (min-width: 830px){
     display:none;
   }
 `;
 
 export const MenuContainer = styled.span`
   padding: 5px 0px 0px 5px;
-  @media screen and (min-width: 600px) {
+  @media screen and (min-width: 831px) {
     display: none;
   }
 `;
@@ -165,12 +165,12 @@ export const Wrapper = styled.div`
   height: 100vh;
 `;
 export const LinkWrapper = styled.span`
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 830px) {
     display: none;
   }
 `;
 export const DiscordWrapper = styled.span`
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 830px) {
     display: none;
   }
 `;
