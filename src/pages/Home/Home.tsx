@@ -23,6 +23,7 @@ import {
   Oval,
   CreatorText,
   BookNowButton,
+  OvalSpacing,
 } from './Style';
 import play from '../../assets/svgs/play.svg';
 import { TEST } from '../../config/config';
@@ -82,6 +83,18 @@ const HomePage = () => {
     getCreatorData();
   }, [account]);
 
+  let ovals = [];
+  for (let i = 0; i < 3; i++) {
+    ovals.push(
+      <Oval
+        page={page}
+        index={i}
+        onClick={() => {
+          onOvalClick(i);
+        }}
+      />,
+    );
+  }
   useEffect(() => {
     const creatorAddresses = TEST
       ? featuredListTest.map((c) => c.toLowerCase())
@@ -180,18 +193,6 @@ const HomePage = () => {
   const slides = (backgroudImage: string[]) => {
     let background = backgroudImage;
     let slideArray: Array<any> = [];
-    let ovals = [];
-    for (let i = 0; i < 3; i++) {
-      ovals.push(
-        <Oval
-          page={page}
-          index={i}
-          onClick={() => {
-            onOvalClick(i);
-          }}
-        />,
-      );
-    }
     let slideContent = [
       <>
         <LeftContentWrapper>
@@ -199,11 +200,10 @@ const HomePage = () => {
             Personalized videos from your favorite{' '}
             <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
           </HeroTitle>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'inline-block', width: 'fit-content' }}>
             <Link to={'/explore'}>
               <BookNow color={'#5F21E2'}>Book Now</BookNow>
             </Link>
-            <Ovals>{ovals}</Ovals>
           </div>
         </LeftContentWrapper>
         <div style={{ maxWidth: '600px' }} />
@@ -214,11 +214,10 @@ const HomePage = () => {
             Personalized videos from your favorite{' '}
             <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
           </HeroTitle>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'inline-block', width: 'fit-content' }}>
             <Link to={'/creator/0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f'}>
               <BookNow color={'#1DA1F2'}>Book with Bob</BookNow>
             </Link>
-            <Ovals>{ovals}</Ovals>
           </div>
         </LeftContentWrapper>
         <CreatorText>
@@ -234,7 +233,7 @@ const HomePage = () => {
             <br />
             Make a CLIPTO profile <span style={{ color: theme.yellow, fontWeight: '700' }}>now</span>
           </HeroTitle>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'inline-block', width: 'fit-content' }}>
             {user && creator ? (
               <BookNowButton
                 color={'#5F21E2'}
@@ -253,7 +252,6 @@ const HomePage = () => {
                 Become a Creator
               </BookNowButton>
             )}
-            <Ovals>{ovals}</Ovals>
           </div>
         </LeftContentWrapper>
         <div style={{ maxWidth: '600px' }} />
@@ -287,6 +285,10 @@ const HomePage = () => {
       <PageWrapper style={{ top: 0 }}>
         <Left onClick={leftClick} />
         <Right onClick={rightClick} />
+        <OvalSpacing>
+          <Ovals>{ovals}</Ovals>
+          <div />
+        </OvalSpacing>
         <SlidesDesktop translate={slidesPosition}>{slides(backgroudImaged)}</SlidesDesktop>
         <SlidesMobile translate={slidesPosition}>{slides(backgroudImagem)}</SlidesMobile>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />

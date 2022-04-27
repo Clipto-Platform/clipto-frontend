@@ -22,7 +22,7 @@ export const LeftContentWrapper = styled.div`
   position: relative;
   left: -120px;
   z-index: 100;
-  padding: clamp(100px, 11vw, 200px) 0px clamp(160px, 20vw, 350px) 0px;
+  padding: clamp(100px, 11vw, 200px) 0 clamp(160px, 20vw, 350px) 0;
   transition: transform 1s, width 1s;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     transform: translateY(150px);
@@ -44,11 +44,12 @@ export const BookNow = styled.h3`
   font-size: clamp(14px, 2vw, 16px);
   font-family: 'Eina01-Bold';
   font-size: 16px;
-  ine-height: 19px;
+  line-height: 19px;
   background-color: ${(props) => props.color};
   border-radius: 40px;
   padding: 14px 30px;
   width: fit-content;
+  margin-right: 10px;
 `;
 
 export const BookNowButton = styled.button`
@@ -138,10 +139,27 @@ export const Right = styled.button`
     pointer-events: none;
   `}
 `;
-
+export const OvalSpacing = styled.div`
+  z-index: 200;
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 0 32px;
+  position: absolute;
+  top: clamp(500px, 45vw, 700px);
+  justify-content: flex-start;
+  transition: left 1s;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    left: 10px;
+    justify-content: flex-end;
+    top: clamp(450px, 100vw,500px);
+  `}
+`;
 export const Ovals = styled.div`
   display: flex;
   flex-direction: row;
+  z-index: 100;
 `;
 interface OvalProps {
   index: number;
@@ -149,15 +167,16 @@ interface OvalProps {
 }
 export const Oval = styled.div<OvalProps>`
   background-color: ${(props) => (props.index == props.page ? props.theme.twitterBlue : '#6F6F6F')};
-  width: 25px;
-  height: 5px;
+  width: 40px;
+  height: 6px;
   border-radius: 10px;
-  margin: 0 5px 0 5px;
-  opacity: 0;
+  margin: 0 10px;
   transition: opacity 1s;
-  pointer-events: none;
+  z-index: 200;
+  pointer-events: auto;
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    opacity: 1;
-    pointer-events: revert;
+    width: 18px;
+    height: 4px;
+    margin: 0 5px;
   `}
 `;

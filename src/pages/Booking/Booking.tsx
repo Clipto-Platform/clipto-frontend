@@ -136,7 +136,11 @@ const BookingPage = () => {
                     <Label style={{ marginBottom: 8 }}>{creator.userName}</Label>
                     <Description>
                       Twitter:{' '}
-                      <a href={`https://twitter.com/${creator.twitterHandle}`} style={{ color: '#EDE641' }}>
+                      <a
+                        href={`https://twitter.com/${creator.twitterHandle}`}
+                        target="_blank"
+                        style={{ color: '#EDE641' }}
+                      >
                         @{creator.twitterHandle}
                       </a>{' '}
                     </Description>
