@@ -48,7 +48,10 @@ export const HeaderWrapperInner = styled.div`
   max-width: ${MAX_HEADER_WIDTH_IN_PX};
 
   color: #ffffff;
-  margin: 0 auto 0 auto;
+  margin: 0 87px;
+  @media screen and (max-width: 1100px) {
+    margin: 0 auto 0 auto;
+  }
 `;
 
 export const LeftWrapper = styled.div`
