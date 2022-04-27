@@ -10,7 +10,7 @@ export const OpacityGradient = styled.div`
   z-index: 50;
   height: 100%;
   width: 100%;
-  background: linear-gradient(rgba(0, 0, 0, 0), rgba(10, 10, 10, 1));
+  background: linear-gradient(rgba(0, 0, 0, 0), rgba(10, 10, 10, 0.5));
   opacity: 0;
   transition: opacity 1s;
   ${({ theme }) => theme.mediaWidth.upToMedium`
