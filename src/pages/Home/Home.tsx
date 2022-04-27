@@ -29,6 +29,8 @@ import { TEST } from '../../config/config';
 import background1D from '../../assets/images/homepage/page1/background1D.png';
 import background2D from '../../assets/images/homepage/page2/background2D.png';
 import background3D from '../../assets/images/homepage/page3/background3D.png';
+import background1M from '../../assets/images/homepage/page1/background1M.png';
+import background2M from '../../assets/images/homepage/page2/background2M.png';
 import background3M from '../../assets/images/homepage/page3/background3M.png';
 import { useSelector } from 'react-redux';
 import { useWeb3React } from '@web3-react/core';
@@ -58,7 +60,7 @@ const HomePage = () => {
   const [clickEnabled, setClickEnabled] = useState(true);
   const [creator, setCreator] = useState<Partial<UserProfile> | null>();
   const backgroudImaged = [background1D, background2D, background3D];
-  const backgroudImagem = [background1D, background2D, background3M];
+  const backgroudImagem = [background1M, background2M, background3M];
   const user = useSelector((state: any) => state.user);
   const { account } = useWeb3React<Web3Provider>();
   const [index, setIndex] = useState(0);

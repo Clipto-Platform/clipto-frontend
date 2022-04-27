@@ -39,4 +39,7 @@ export const BackgroundWrapper = styled.div<BackgroundWrapperProps>`
   opacity: 100%;
   transform: ${(props) => `translate(${props.translate}%)`};
   overflow: hidden;
+  @media screen and (max-width: 601px) {
+    background-position: center center;
+  }
 `;
