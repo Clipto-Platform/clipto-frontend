@@ -31,7 +31,7 @@ interface BackgroundWrapperProps {
 export const BackgroundWrapper = styled.div<BackgroundWrapperProps>`
   background-image: url(${(props) => props.background});
   background-position: ${(props) =>
-    props.index == 0 ? 'center right 15%' : props.index == 1 ? 'center right 30%' : 'center'};
+    props.index == 0 ? 'center right' : props.index == 1 ? 'center right 30%' : 'center'};
   background-size: cover;
   object-fit: cover;
   width: 100vw;
