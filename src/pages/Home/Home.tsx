@@ -231,7 +231,8 @@ const HomePage = () => {
           <HeroTitle>
             Become a creator
             <br />
-            Make a CLIPTO profile <span style={{ color: theme.yellow, fontWeight: '700' }}>now</span>
+            Make a <span style={{ fontFamily: 'Eina01-Bold' }}>CLIPTO</span> profile{' '}
+            <span style={{ color: theme.yellow, fontWeight: '700' }}>now</span>
           </HeroTitle>
           <div style={{ display: 'inline-block', width: 'fit-content' }}>
             {user && creator ? (
