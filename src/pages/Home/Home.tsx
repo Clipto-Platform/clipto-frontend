@@ -8,6 +8,8 @@ import { BackgroundWrapper, SlidesMobile, SlidesDesktop } from '../../components
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
 import { CreatorCards } from '../../components/CreatorCards/CreatorCards';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import * as api from '../../api';
 import {
   LeftContentWrapper,
   HeroTitle,
@@ -20,6 +22,7 @@ import {
   Ovals,
   Oval,
   CreatorText,
+  BookNowButton,
 } from './Style';
 import play from '../../assets/svgs/play.svg';
 import { TEST } from '../../config/config';
@@ -27,6 +30,10 @@ import background1D from '../../assets/images/homepage/page1/background1D.png';
 import background2D from '../../assets/images/homepage/page2/background2D.png';
 import background3D from '../../assets/images/homepage/page3/background3D.png';
 import background3M from '../../assets/images/homepage/page3/background3M.png';
+import { useSelector } from 'react-redux';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import { UserProfile } from '../../hooks/useProfile';
 
 const featuredList: string[] = [
   '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8', // Gabriel Haines.eth
@@ -49,8 +56,29 @@ const HomePage = () => {
   const [slidesPosition, setSlidesPosition] = useState<number>(0);
   const [slidePosition, setSlidePosition] = useState<Array<number>>([0, 0, -300]);
   const [clickEnabled, setClickEnabled] = useState(true);
+  const [creator, setCreator] = useState<Partial<UserProfile> | null>();
   const backgroudImaged = [background1D, background2D, background3D];
   const backgroudImagem = [background1D, background2D, background3M];
+  const user = useSelector((state: any) => state.user);
+  const { account } = useWeb3React<Web3Provider>();
+  const [index, setIndex] = useState(0);
+  const timeoutRef = useRef(null as any);
+
+  useEffect(() => {
+    const getCreatorData = async () => {
+      if (account) {
+        try {
+          const response = await api.creatorById(account || '');
+          if (response.data && response.data.creator) {
+            setCreator(response.data.creator);
+          }
+        } catch (e) {
+          setCreator(null);
+        }
+      }
+    };
+    getCreatorData();
+  }, [account]);
 
   useEffect(() => {
     const creatorAddresses = TEST
@@ -66,9 +94,6 @@ const HomePage = () => {
       }
     });
   });
-
-  const [index, setIndex] = useState(0);
-  const timeoutRef = useRef(null as any);
 
   function resetTimeout() {
     if (timeoutRef.current) {
@@ -147,7 +172,9 @@ const HomePage = () => {
       leftClick();
     }
   };
-
+  const warning = (msg: string) => {
+    toast.warn(msg);
+  };
   const slides = (backgroudImage: string[]) => {
     let background = backgroudImage;
     let slideArray: Array<any> = [];
@@ -206,9 +233,24 @@ const HomePage = () => {
             Make a CLIPTO profile <span style={{ color: theme.yellow, fontWeight: '700' }}>now</span>
           </HeroTitle>
           <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Link to={'/explore'}>
-              <BookNow color={'#5F21E2'}>Become a Creator</BookNow>
-            </Link>
+            {user && creator ? (
+              <BookNowButton
+                color={'#5F21E2'}
+                onClick={() => {
+                  warning("You're already a creator");
+                }}
+              >
+                Become a Creator
+              </BookNowButton>
+            ) : user ? (
+              <Link to={'/onboarding'}>
+                <BookNow color={'#5F21E2'}>Become a Creator</BookNow>
+              </Link>
+            ) : (
+              <BookNowButton color={'#5F21E2'} onClick={() => warning('Please connect your wallet')}>
+                Become a Creator
+              </BookNowButton>
+            )}
             <Ovals>{ovals}</Ovals>
           </div>
         </LeftContentWrapper>

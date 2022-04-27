@@ -51,6 +51,19 @@ export const BookNow = styled.h3`
   width: fit-content;
 `;
 
+export const BookNowButton = styled.button`
+  font-size: clamp(14px, 2vw, 16px);
+  font-family: 'Eina01-Bold';
+  font-size: 16px;
+  ine-height: 19px;
+  background-color: ${(props) => props.color};
+  border-radius: 40px;
+  padding: 14px 30px;
+  width: fit-content;
+  border: transparent;
+  color: white;
+`;
+
 export const CreatorText = styled.div`
   z-index: 10;
   max-width: 500px;
