@@ -146,20 +146,15 @@ export const OvalSpacing = styled.div`
   width: 100vw;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  padding-left: 110px;
+  padding: 0 75px;
   position: absolute;
   top: clamp(500px, 45vw, 700px);
   justify-content: flex-start;
   transition: left 1s;
-  @media screen and (max-width: 1200px) {
-    padding: 0 32px;
-  }
   ${({ theme }) => theme.mediaWidth.upToMedium`
     left: 10px;
     justify-content: flex-end;
     top: clamp(450px, 100vw,500px);
-    padding:0 32px;
   `}
 `;
 export const Ovals = styled.div`
