@@ -63,6 +63,8 @@ export const BookNowButton = styled.button`
   width: fit-content;
   border: transparent;
   color: white;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
 `;
 
 export const CreatorText = styled.div`
