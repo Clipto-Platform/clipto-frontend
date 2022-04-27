@@ -48,7 +48,10 @@ export const HeaderWrapperInner = styled.div`
   max-width: ${MAX_HEADER_WIDTH_IN_PX};
 
   color: #ffffff;
-  margin: 0 auto 0 auto;
+  margin: 0 87px;
+  @media screen and (max-width: 1100px) {
+    margin: 0 auto 0 auto;
+  }
 `;
 
 export const LeftWrapper = styled.div`
@@ -117,7 +120,7 @@ export const DesktopHeaderWrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   cursor: pointer;
-  @media screen and (max-width: 620px) {
+  @media screen and (max-width: 830px) {
     display: none;
   }
 `;
@@ -142,14 +145,14 @@ export const MobileHeaderWrapper = styled.div`
     border
    }
 
-  @media screen and (min-width: 620px){
+  @media screen and (min-width: 830px){
     display:none;
   }
 `;
 
 export const MenuContainer = styled.span`
   padding: 5px 0px 0px 5px;
-  @media screen and (min-width: 620px) {
+  @media screen and (min-width: 831px) {
     display: none;
   }
 `;
@@ -165,12 +168,12 @@ export const Wrapper = styled.div`
   height: 100vh;
 `;
 export const LinkWrapper = styled.span`
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 830px) {
     display: none;
   }
 `;
 export const DiscordWrapper = styled.span`
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 830px) {
     display: none;
   }
 `;
