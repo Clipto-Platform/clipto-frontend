@@ -200,7 +200,7 @@ const HomePage = () => {
             Personalized videos from your favorite{' '}
             <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
           </HeroTitle>
-          <div style={{ width: 'fit-content' }}>
+          <div style={{ display: 'inline-block', width: 'fit-content' }}>
             <Link to={'/explore'}>
               <BookNow color={'#5F21E2'}>Book Now</BookNow>
             </Link>
@@ -214,7 +214,7 @@ const HomePage = () => {
             Personalized videos from your favorite{' '}
             <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
           </HeroTitle>
-          <div style={{ width: 'fit-content' }}>
+          <div style={{ display: 'inline-block', width: 'fit-content' }}>
             <Link to={'/creator/0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f'}>
               <BookNow color={'#1DA1F2'}>Book with Bob</BookNow>
             </Link>
@@ -233,7 +233,7 @@ const HomePage = () => {
             <br />
             Make a CLIPTO profile <span style={{ color: theme.yellow, fontWeight: '700' }}>now</span>
           </HeroTitle>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'inline-block', width: 'fit-content' }}>
             {user && creator ? (
               <BookNowButton
                 color={'#5F21E2'}
