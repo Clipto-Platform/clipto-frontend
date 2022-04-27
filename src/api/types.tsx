@@ -57,5 +57,4 @@ export interface EntityRequest extends RequestData {
   txHash: string;
   block: number;
   timestamp: number;
-  token: string;
 }

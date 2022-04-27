@@ -36,7 +36,6 @@ query GetRequestById (
       txHash
       block
       timestamp
-      token
     }
   }
 `;
@@ -136,7 +135,6 @@ query GetCreatorRequests (
     txHash
     block
     timestamp
-    token
   }
 }
 `;
@@ -185,7 +183,6 @@ query GetUserRequests (
     txHash
     block
     timestamp
-    token
   }
 }
 `;
