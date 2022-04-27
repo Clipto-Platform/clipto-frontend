@@ -24,8 +24,7 @@ export interface CliptoExchangeInterface extends utils.Interface {
     "creators(address)": FunctionFragment;
     "deliverRequest(uint256,string)": FunctionFragment;
     "feeRate()": FunctionFragment;
-    "newRequest(address,string,address,uint256)": FunctionFragment;
-    "newRequestPayable(address,string)": FunctionFragment;
+    "newRequest(address,string)": FunctionFragment;
     "owner()": FunctionFragment;
     "refundRequest(address,uint256)": FunctionFragment;
     "registerCreator(string,string)": FunctionFragment;
@@ -49,10 +48,6 @@ export interface CliptoExchangeInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "feeRate", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "newRequest",
-    values: [string, string, string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "newRequestPayable",
     values: [string, string]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -97,10 +92,6 @@ export interface CliptoExchangeInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "feeRate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "newRequest", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "newRequestPayable",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "refundRequest",
@@ -130,7 +121,7 @@ export interface CliptoExchangeInterface extends utils.Interface {
     "CreatorRegistered(address,address,string)": EventFragment;
     "CreatorUpdated(address,string)": EventFragment;
     "DeliveredRequest(address,address,uint256,uint256,address,uint256)": EventFragment;
-    "NewRequest(address,address,uint256,uint256,string,address)": EventFragment;
+    "NewRequest(address,address,uint256,uint256,string)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "RefundedRequest(address,address,uint256,uint256)": EventFragment;
     "RequestUpdated(address,address,uint256,uint256)": EventFragment;
@@ -176,14 +167,13 @@ export type DeliveredRequestEventFilter =
   TypedEventFilter<DeliveredRequestEvent>;
 
 export type NewRequestEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, string, string],
+  [string, string, BigNumber, BigNumber, string],
   {
     creator: string;
     requester: string;
     amount: BigNumber;
     index: BigNumber;
     data: string;
-    token: string;
   }
 >;
 
@@ -258,14 +248,6 @@ export interface CliptoExchange extends BaseContract {
     newRequest(
       creator: string,
       data: string,
-      token: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    newRequestPayable(
-      creator: string,
-      data: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -288,11 +270,10 @@ export interface CliptoExchange extends BaseContract {
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, boolean, string] & {
+      [string, BigNumber, boolean] & {
         requester: string;
         amount: BigNumber;
         fulfilled: boolean;
-        token: string;
       }
     >;
 
@@ -336,14 +317,6 @@ export interface CliptoExchange extends BaseContract {
   newRequest(
     creator: string,
     data: string,
-    token: string,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  newRequestPayable(
-    creator: string,
-    data: string,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -366,11 +339,10 @@ export interface CliptoExchange extends BaseContract {
     arg1: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    [string, BigNumber, boolean, string] & {
+    [string, BigNumber, boolean] & {
       requester: string;
       amount: BigNumber;
       fulfilled: boolean;
-      token: string;
     }
   >;
 
@@ -414,14 +386,6 @@ export interface CliptoExchange extends BaseContract {
     newRequest(
       creator: string,
       data: string,
-      token: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    newRequestPayable(
-      creator: string,
-      data: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -444,11 +408,10 @@ export interface CliptoExchange extends BaseContract {
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, boolean, string] & {
+      [string, BigNumber, boolean] & {
         requester: string;
         amount: BigNumber;
         fulfilled: boolean;
-        token: string;
       }
     >;
 
@@ -512,21 +475,19 @@ export interface CliptoExchange extends BaseContract {
       tokenId?: null
     ): DeliveredRequestEventFilter;
 
-    "NewRequest(address,address,uint256,uint256,string,address)"(
+    "NewRequest(address,address,uint256,uint256,string)"(
       creator?: string | null,
       requester?: string | null,
       amount?: null,
       index?: null,
-      data?: null,
-      token?: null
+      data?: null
     ): NewRequestEventFilter;
     NewRequest(
       creator?: string | null,
       requester?: string | null,
       amount?: null,
       index?: null,
-      data?: null,
-      token?: null
+      data?: null
     ): NewRequestEventFilter;
 
     "OwnershipTransferred(address,address)"(
@@ -579,14 +540,6 @@ export interface CliptoExchange extends BaseContract {
     feeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     newRequest(
-      creator: string,
-      data: string,
-      token: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    newRequestPayable(
       creator: string,
       data: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -656,14 +609,6 @@ export interface CliptoExchange extends BaseContract {
     feeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     newRequest(
-      creator: string,
-      data: string,
-      token: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    newRequestPayable(
       creator: string,
       data: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
