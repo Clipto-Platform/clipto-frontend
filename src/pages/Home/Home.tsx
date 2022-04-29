@@ -30,15 +30,8 @@ const featuredListTest: string[] = [
 const HomePage = () => {
   let [creators, setCreators] = useState<EntityCreator[]>([]);
 
-  const [page, setPage] = useState<number>(0);
-  const [slidesPosition, setSlidesPosition] = useState<number>(0);
-  const [slidePosition, setSlidePosition] = useState<Array<number>>([0, 0, -300]);
-  const [clickEnabled, setClickEnabled] = useState(true);
   const [creator, setCreator] = useState<Partial<UserProfile> | null>();
-  const user = useSelector((state: any) => state.user);
   const { account } = useWeb3React<Web3Provider>();
-  const [index, setIndex] = useState(0);
-  const timeoutRef = useRef(null as any);
 
   useEffect(() => {
     const getCreatorData = async () => {
