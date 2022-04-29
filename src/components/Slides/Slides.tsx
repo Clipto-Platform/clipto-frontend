@@ -37,32 +37,26 @@ const Slides = () => {
   const [creator, setCreator] = useState<Partial<UserProfile> | null>();
   const timeoutRef = useRef(null as any);
 
-  useEffect(() => {
-    resetTimeout();
-    timeoutRef.current = setTimeout(rightClick, 8000);
-
-    return () => {
-      resetTimeout();
-    };
-  }, [index]);
-
   let ovals = [];
   for (let i = 0; i < 3; i++) {
     ovals.push(<Oval page={page} index={i} onClick={() => onOvalClick(i)} />);
   }
 
+  useEffect(() => {
+    resetTimeout();
+    timeoutRef.current = setTimeout(rightClick, 8000);
+
+    return () => resetTimeout();
+  }, [index]);
+
   function resetTimeout() {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
   }
-  const warning = (msg: string) => {
-    toast.warn(msg);
-  };
+  const warning = (msg: string) => toast.warn(msg);
 
   const leftClick = () => {
-    //allows user to click left arrow every .6 seconds
     resetTimeout();
+
     if (clickEnabled) {
       let temp = slidePosition;
       const round = Math.round(slidesPosition) % 100;
@@ -88,8 +82,8 @@ const Slides = () => {
     }
   };
   const rightClick = () => {
-    //allows user to click right arrow every .6 seconds
     resetTimeout();
+
     if (clickEnabled) {
       let temp = slidePosition;
       const round = Math.round(slidesPosition) % 100;
@@ -126,20 +120,17 @@ const Slides = () => {
   const customSlides = () => {
     let slideArray: Array<any> = [];
     let slideContent = [
-      <>
-        <LeftContentWrapper>
-          <HeroTitle>
-            Personalized videos from your favorite{' '}
-            <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-          </HeroTitle>
-          <div style={{ display: 'inline-block', width: 'fit-content' }}>
-            <Link to={'/explore'}>
-              <BookNow color={'#5F21E2'}>Book Now</BookNow>
-            </Link>
-          </div>
-        </LeftContentWrapper>
-        <div style={{ maxWidth: '600px' }} />
-      </>,
+      <LeftContentWrapper>
+        <HeroTitle>
+          Personalized videos from your favorite{' '}
+          <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
+        </HeroTitle>
+        <div style={{ display: 'inline-block', width: 'fit-content' }}>
+          <Link to={'/explore'}>
+            <BookNow color={'#5F21E2'}>Book Now</BookNow>
+          </Link>
+        </div>
+      </LeftContentWrapper>,
       <>
         <LeftContentWrapper>
           <HeroTitle>
@@ -156,46 +147,45 @@ const Slides = () => {
           <Name>Bob Burnquist</Name>
           <Title>Skateboarder</Title>
         </CreatorText>
-        <div style={{ maxWidth: '600px' }} />
       </>,
-      <>
-        <LeftContentWrapper>
-          <HeroTitle>
-            Become a creator
-            <br />
-            Make a <span style={{ fontFamily: 'Eina01-Bold' }}>CLIPTO</span> profile{' '}
-            <span style={{ color: theme.yellow, fontWeight: '700' }}>now</span>
-          </HeroTitle>
-          <div style={{ display: 'inline-block', width: 'fit-content' }}>
-            {user && creator ? (
-              <BookNowButton
-                color={'#5F21E2'}
-                onClick={() => {
-                  warning("You're already a creator");
-                }}
-              >
-                Become a Creator
-              </BookNowButton>
-            ) : user ? (
-              <Link to={'/onboarding'}>
-                <BookNow color={'#5F21E2'}>Become a Creator</BookNow>
-              </Link>
-            ) : (
-              <BookNowButton color={'#5F21E2'} onClick={() => warning('Please connect your wallet')}>
-                Become a Creator
-              </BookNowButton>
-            )}
-          </div>
-        </LeftContentWrapper>
-        <div style={{ maxWidth: '600px' }} />
-      </>,
+      <LeftContentWrapper>
+        <HeroTitle>
+          Become a creator
+          <br />
+          Make a <span style={{ fontFamily: 'Eina01-Bold' }}>CLIPTO</span> profile{' '}
+          <span style={{ color: theme.yellow, fontWeight: '700' }}>now</span>
+        </HeroTitle>
+        <div style={{ display: 'inline-block', width: 'fit-content' }}>
+          {user && creator ? (
+            <BookNowButton
+              color={theme.purple}
+              onClick={() => {
+                warning("You're already a creator");
+              }}
+            >
+              Become a Creator
+            </BookNowButton>
+          ) : user ? (
+            <Link to={'/onboarding'}>
+              <BookNow color={theme.purple}>Become a Creator</BookNow>
+            </Link>
+          ) : (
+            <BookNowButton color={theme.purple} onClick={() => warning('Please connect your wallet')}>
+              Become a Creator
+            </BookNowButton>
+          )}
+        </div>
+      </LeftContentWrapper>,
     ];
     slideContent.map((element, index) => {
       slideArray.push(
         <BackgroundWrapper translate={slidePosition[index]} index={index}>
           <OpacityGradient />
           <HeaderSpacer />
-          <PageContentWrapper style={{ justifyContent: 'space-around' }}>{slideContent[index]}</PageContentWrapper>
+          <PageContentWrapper style={{ justifyContent: 'space-around' }}>
+            {slideContent[index]}
+            <div style={{ maxWidth: '600px' }} />
+          </PageContentWrapper>
         </BackgroundWrapper>,
       );
     });
