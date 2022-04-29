@@ -1,18 +1,6 @@
 import styled from 'styled-components';
-import card1 from '../../assets/images/homepage/page1/card1.png';
-import card2 from '../../assets/images/homepage/page1/card2.png';
-import card3 from '../../assets/images/homepage/page1/card3.png';
 import LeftArrow from '../../assets/images/homepage/LeftArrow.png';
 import RightArrow from '../../assets/images/homepage/RightArrow.png';
-import background1D from '../../assets/images/homepage/page1/background1D.png';
-import background2D from '../../assets/images/homepage/page2/background2D.png';
-import background3D from '../../assets/images/homepage/page3/background3D.png';
-import background1M from '../../assets/images/homepage/page1/background1M.png';
-import background2M from '../../assets/images/homepage/page2/background2M.png';
-import background3M from '../../assets/images/homepage/page3/background3M.png';
-
-const backgroundD = [background1D, background2D, background3D];
-const backgroundM = [background1M, background2M, background3M];
 
 interface SlidesProps {
   translate: any;
@@ -27,9 +15,11 @@ export const SlideContentWrapper = styled.div<SlidesProps>`
 interface BackgroundWrapperProps {
   translate: any;
   index: number;
+  backgroundD: string;
+  backgroundM: string;
 }
 export const BackgroundWrapper = styled.div<BackgroundWrapperProps>`
-  background-image: url(${(props) => backgroundD[props.index]});
+  background-image: url(${(props) => props.backgroundD[props.index]});
   background-position: ${(props) =>
     props.index == 0 ? 'center right' : props.index == 1 ? 'center right 30%' : 'center'};
   background-size: cover;
@@ -41,7 +31,7 @@ export const BackgroundWrapper = styled.div<BackgroundWrapperProps>`
   overflow: hidden;
   @media screen and (max-width: 601px) {
     background-position: center center;
-    background-image: url(${(props) => backgroundM[props.index]});
+    background-image: url(${(props) => props.backgroundM[props.index]});
   }
 `;
 

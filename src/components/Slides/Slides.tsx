@@ -1,10 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useTheme } from 'styled-components';
-import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
-import { UserProfile } from '../../hooks/useProfile';
-
 import {
   LeftContentWrapper,
   HeroTitle,
@@ -25,22 +19,13 @@ import {
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../layout/Common';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../Header/Header';
 
-const Slides = () => {
-  const theme = useTheme();
-  const user = useSelector((state: any) => state.user);
-
+const Slides = (props: any) => {
   const [page, setPage] = useState<number>(0);
   const [slidesPosition, setSlidesPosition] = useState<number>(0);
   const [slidePosition, setSlidePosition] = useState<Array<number>>([0, 0, -300]);
   const [clickEnabled, setClickEnabled] = useState(true);
   const [index, setIndex] = useState(0);
-  const [creator, setCreator] = useState<Partial<UserProfile> | null>();
   const timeoutRef = useRef(null as any);
-
-  let ovals = [];
-  for (let i = 0; i < 3; i++) {
-    ovals.push(<Oval page={page} index={i} onClick={() => onOvalClick(i)} />);
-  }
 
   useEffect(() => {
     resetTimeout();
@@ -52,7 +37,6 @@ const Slides = () => {
   function resetTimeout() {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
   }
-  const warning = (msg: string) => toast.warn(msg);
 
   const leftClick = () => {
     resetTimeout();
@@ -116,89 +100,34 @@ const Slides = () => {
       leftClick();
     }
   };
-
-  const customSlides = () => {
-    let slideArray: Array<any> = [];
-    let slideContent = [
-      <LeftContentWrapper>
-        <HeroTitle>
-          Personalized videos from your favorite{' '}
-          <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-        </HeroTitle>
-        <div style={{ display: 'inline-block', width: 'fit-content' }}>
-          <Link to={'/explore'}>
-            <BookNow color={'#5F21E2'}>Book Now</BookNow>
-          </Link>
-        </div>
-      </LeftContentWrapper>,
-      <>
-        <LeftContentWrapper>
-          <HeroTitle>
-            Personalized videos from your favorite{' '}
-            <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-          </HeroTitle>
-          <div style={{ display: 'inline-block', width: 'fit-content' }}>
-            <Link to={'/creator/0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f'}>
-              <BookNow color={'#1DA1F2'}>Book with Bob</BookNow>
-            </Link>
-          </div>
-        </LeftContentWrapper>
-        <CreatorText>
-          <Name>Bob Burnquist</Name>
-          <Title>Skateboarder</Title>
-        </CreatorText>
-      </>,
-      <LeftContentWrapper>
-        <HeroTitle>
-          Become a creator
-          <br />
-          Make a <span style={{ fontFamily: 'Eina01-Bold' }}>CLIPTO</span> profile{' '}
-          <span style={{ color: theme.yellow, fontWeight: '700' }}>now</span>
-        </HeroTitle>
-        <div style={{ display: 'inline-block', width: 'fit-content' }}>
-          {user && creator ? (
-            <BookNowButton
-              color={theme.purple}
-              onClick={() => {
-                warning("You're already a creator");
-              }}
-            >
-              Become a Creator
-            </BookNowButton>
-          ) : user ? (
-            <Link to={'/onboarding'}>
-              <BookNow color={theme.purple}>Become a Creator</BookNow>
-            </Link>
-          ) : (
-            <BookNowButton color={theme.purple} onClick={() => warning('Please connect your wallet')}>
-              Become a Creator
-            </BookNowButton>
-          )}
-        </div>
-      </LeftContentWrapper>,
-    ];
-    slideContent.map((element, index) => {
-      slideArray.push(
-        <BackgroundWrapper translate={slidePosition[index]} index={index}>
-          <OpacityGradient />
-          <HeaderSpacer />
-          <PageContentWrapper style={{ justifyContent: 'space-around' }}>
-            {slideContent[index]}
-            <div style={{ maxWidth: '600px' }} />
-          </PageContentWrapper>
-        </BackgroundWrapper>,
-      );
-    });
-    return slideArray;
-  };
   return (
     <>
       <Left onClick={leftClick} />
       <Right onClick={rightClick} />
       <OvalSpacing>
-        <Ovals>{ovals}</Ovals>
+        <Ovals>
+          {[...Array(3)].map((_, index) => (
+            <Oval page={page} index={index} onClick={() => onOvalClick(index)} />
+          ))}
+        </Ovals>
       </OvalSpacing>
-      <SlideContentWrapper translate={slidesPosition}>{customSlides()}</SlideContentWrapper>
+      <SlideContentWrapper translate={slidesPosition}>
+        {[...Array(3)].map((_, index) => (
+          <BackgroundWrapper
+            translate={slidePosition[index]}
+            index={index}
+            backgroundM={props.backgroundM}
+            backgroundD={props.backgroundD}
+          >
+            <OpacityGradient />
+            <HeaderSpacer />
+            <PageContentWrapper style={{ justifyContent: 'space-around' }}>
+              {props.children[index]}
+              <div style={{ maxWidth: '600px' }} />
+            </PageContentWrapper>
+          </BackgroundWrapper>
+        ))}
+      </SlideContentWrapper>
     </>
   );
 };
