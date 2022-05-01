@@ -5,6 +5,8 @@ export const ContainerWrapper = styled(PageContentWrapper)`
   display: flex;
   flex: 1;
   width: 100%;
+  background-color: rgb(10, 10, 10);
+  padding: 80px 0px;
 `;
 
 export const HeroTitle = styled.h1`
@@ -31,11 +33,11 @@ export const Grid = styled.div`
     grid-template-columns: repeat(5, 1fr);
     ${({ theme }) => theme.mediaWidth.upToMedium`
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    // grid-template-rows: repeat(2, 1fr);
   `}
     ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    // grid-template-rows: repeat(2, 1fr);
   `}
   grid-template-rows: 1fr;
     grid-column-gap: 32px;
@@ -53,12 +55,16 @@ export const UserTitle = styled.div`
   font-weight: bold;
   font-size: 18px;
   line-height: 22px;
+  max-width: 150px;
+  overflow-wrap: break-word;
 `;
 
 export const UserDescription = styled.div`
   font-weight: normal;
   font-size: 16px;
   line-height: 20px;
+  max-width: 150px;
+  overflow-wrap: break-word;
   color: ${(props) => props.theme.lightGray};
 `;
 

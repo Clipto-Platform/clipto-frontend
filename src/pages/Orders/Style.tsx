@@ -29,4 +29,5 @@ export const SingleColumnPageContent = styled(PageContentWrapper)`
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  padding-bottom: 50px;
 `;

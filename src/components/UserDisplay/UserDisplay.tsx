@@ -25,7 +25,7 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
     <>
       <ContainerWrapper style={{ ...style }}>
         <ContentWrapper>
-          <Title style={{ marginTop: 64, marginBottom: 36 }}>{title}</Title>
+          <Title style={{ marginBottom: 36 }}>{title}</Title>
           <div style={{ width: '100%', height: '100%', position: 'relative' }}>
             {users && users.length > 0 ? (
               <Grid>
