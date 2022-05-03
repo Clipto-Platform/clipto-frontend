@@ -37,6 +37,7 @@ import { useSelector } from 'react-redux';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { UserProfile } from '../../hooks/useProfile';
+import * as lens from '../../api/lens';
 
 const featuredList: string[] = [
   '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8', // Gabriel Haines.eth

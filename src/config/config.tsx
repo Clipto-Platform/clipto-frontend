@@ -86,3 +86,11 @@ export const getTokenSymbol = (token: string) => {
     return ERC20_CONTRACTS[key].toLowerCase() === token.toLowerCase();
   });
 };
+
+
+export const LENS_URI = {
+  DEV: undefined,
+  TEST: "https://api-mumbai.lens.dev/",
+  PROD: undefined
+}[ENV] //wtf - this is a thing?
+
