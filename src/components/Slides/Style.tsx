@@ -4,11 +4,12 @@ import RightArrow from '../../assets/images/homepage/RightArrow.png';
 
 interface SlidesProps {
   translate: any;
+  NSlides: number;
 }
 export const SlideContentWrapper = styled.div<SlidesProps>`
   display: flex;
   flex-direction: row;
-  width: 300vw;
+  width: ${(props) => props.NSlides * 100}vw;
   transition: transform 1s;
   transform: ${(props) => `translateX(${props.translate}%)`};
 `;
