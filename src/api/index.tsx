@@ -12,7 +12,7 @@ import {
   queryGetCreatorUserName,
 } from './query';
 
-import { EntityCreator, EntityRequest, FinalizeFileUpload, TweetData, UploadFileLinkRequest } from './types';
+import { EntityCreator, EntityRequest, FinalizeFileUpload, MetaData, TweetData, UploadFileLinkRequest } from './types';
 
 // Axios config
 const axiosInstance = axios.create({
@@ -44,6 +44,10 @@ export const tweetVerify = (data: TweetData) => {
 
 export const getTwitterData = (data: string[]) => {
   return axiosInstance.post('/usersData', data);
+};
+
+export const uploadToIpfs = (data: MetaData) => {
+  return axiosInstance.post('ipfs/pin', data);
 };
 
 export const userRequests = (
