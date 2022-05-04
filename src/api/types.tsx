@@ -30,7 +30,7 @@ export interface CreatorData {
 export interface EntityCreator extends CreatorData {
   id: string;
   address: string;
-  tokenAddress: string;
+  nftTokenAddress: string;
   txHash: string;
   block: number;
   timestamp: number;
@@ -47,14 +47,26 @@ export interface EntityRequest extends RequestData {
   creator: EntityCreator;
   requester: string;
   amount: number;
-  tokenId: number;
-  tokenUri: string;
-  tokenAddress: string;
+  nftTokenId: number;
+  nftTokenUri: string;
+  nftTokenAddress: string;
   refunded: boolean;
   delivered: boolean;
   description: string;
   deadline: number;
   txHash: string;
   block: number;
-  timestamp: number;
+  createdTimestamp: number;
+  updatedTimestamp: number;
+}
+
+export interface MetaData {
+  name: string;
+  metadataJSON: string;
+}
+
+export interface IPFS {
+  IpfsHash: string;
+  PinSize: string;
+  Timestamp: string;
 }

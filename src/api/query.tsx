@@ -13,7 +13,7 @@ query GetRequestById (
       creator {
         id
         address
-        tokenAddress
+        nftTokenAddress
         twitterHandle
         bio
         deliveryTime
@@ -30,12 +30,13 @@ query GetRequestById (
       deadline
       delivered
       refunded
-      tokenAddress
-      tokenId
-      tokenUri
+      nftTokenAddress
+      nftTokenId
+      nftTokenUri
       txHash
       block
-      timestamp
+      createdTimestamp
+      updatedTimestamp
     }
   }
 `;
@@ -53,7 +54,8 @@ query GetAllCreators (
     ){
       id
       address
-      tokenAddress
+      metadataURI
+      nftTokenAddress
       twitterHandle
       bio
       deliveryTime
@@ -76,7 +78,8 @@ query GetCreatorById (
   {
     id
     address
-    tokenAddress
+    nftTokenAddress
+    metadataURI
     twitterHandle
     bio
     deliveryTime
@@ -112,7 +115,8 @@ query GetCreatorRequests (
     creator {
       id
       address
-      tokenAddress
+      metadataURI
+      nftTokenAddress
       twitterHandle
       bio
       deliveryTime
@@ -129,12 +133,13 @@ query GetCreatorRequests (
     deadline
     delivered
     refunded
-    tokenAddress
-    tokenId
-    tokenUri
+    nftTokenAddress
+    nftTokenId
+    nftTokenUri
     txHash
     block
-    timestamp
+    createdTimestamp
+    updatedTimestamp
   }
 }
 `;
@@ -160,7 +165,7 @@ query GetUserRequests (
     creator {
       id
       address
-      tokenAddress
+      nftTokenAddress
       twitterHandle
       bio
       deliveryTime
@@ -177,7 +182,7 @@ query GetUserRequests (
     deadline
     delivered
     refunded
-    tokenAddress
+    nftTokenAddress
     tokenId
     tokenUri
     txHash
@@ -196,7 +201,7 @@ query GetFeaturedCreators (
   {
     id
     address
-    tokenAddress
+    nftTokenAddress
     twitterHandle
     bio
     deliveryTime

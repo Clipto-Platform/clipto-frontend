@@ -22,9 +22,9 @@ export const getTokenIdAndAddress = async (request: EntityRequest) => {
   if (response.data) {
     const output = response.data?.requests[0];
     return {
-      tokenId: convertToInt(output.tokenId),
-      tokenAddress: output.tokenAddress.toString(),
-      tokenUri: output.tokenUri,
+      tokenId: convertToInt(output.nftTokenId),
+      tokenAddress: output.nftTokenAddress.toString(),
+      tokenUri: output.nftTokenUri,
     };
   }
   return undefined;

@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import { CHAIN_NAMES, DEFAULT_CHAIN_ID } from '../config/config';
 
-import { CliptoExchange } from '../contracts';
+import { CliptoExchange, CliptoExchangeV1 } from '../contracts';
 
 /**
  *
@@ -34,21 +34,21 @@ export const signMessage = async (
 
 //note(jonathanng) - If this function errors, this means that your wallet is not properly connected to the contracts.
 export const isCreatorOnChain = async (
-  exchangeContract: CliptoExchange,
+  exchangeContractV1: CliptoExchangeV1,
   account: string | null | undefined,
 ): Promise<boolean> => {
-  let cliptoTokenAddress: string | undefined;
+  let cliptoTokenAddress: { nft: string; metadataURI: string };
   if (!account) {
     throw {
       message: 'account does not exist',
     };
   }
   try {
-    cliptoTokenAddress = await exchangeContract.creators(account);
+    cliptoTokenAddress = await exchangeContractV1.creators(account);
   } catch (err) {
     throw 'Error : If you get the missing headers metamask error, try switching the network and back';
   }
-  if (parseInt(cliptoTokenAddress) === 0) {
+  if (parseInt(cliptoTokenAddress.nft) === 0) {
     return false;
   } else {
     return true;
@@ -58,11 +58,11 @@ export const isCreatorOnChain = async (
 //TODO - this only works in PROD environment
 export const switchNetwork = async () => {
   // @ts-ignore - need to find right type
-  const ethereum = window.ethereum
+  const ethereum = window.ethereum;
   if (!ethereum) {
-    console.error('Metamask is not detected.')
+    console.error('Metamask is not detected.');
   }
-  
+
   try {
     await ethereum.request({
       method: 'wallet_switchEthereumChain',
@@ -78,12 +78,12 @@ export const switchNetwork = async () => {
             {
               chainId: ethers.utils.hexlify(DEFAULT_CHAIN_ID),
               chainName: CHAIN_NAMES[DEFAULT_CHAIN_ID],
-              rpcUrls: ['https://polygon-rpc.com'] /* ... */, 
+              rpcUrls: ['https://polygon-rpc.com'] /* ... */,
               nativeCurrency: {
                 name: 'Matic Token',
                 symbol: 'MATIC',
-                decimals: 18
-              }
+                decimals: 18,
+              },
             },
           ],
         });
@@ -93,4 +93,4 @@ export const switchNetwork = async () => {
     }
     // handle other "switch" errors
   }
-}
+};

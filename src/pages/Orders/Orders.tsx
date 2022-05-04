@@ -13,7 +13,7 @@ import { PageWrapper } from '../../components/layout/Common';
 import { OrderCard } from '../../components/OrderCard/OrderCard';
 import { OrdersTab, Status } from '../../components/Orders/OrdersTab';
 import { Item, Tabs } from '../../components/Tabs';
-import { useExchangeContract } from '../../hooks/useContracts';
+import { useExchangeContract, useExchangeContractV1 } from '../../hooks/useContracts';
 import { Label } from '../../styles/typography';
 import { isRequestExpired } from '../../utils/time';
 import { HighlightText, SingleColumnPageContent } from './Style';
@@ -23,6 +23,7 @@ const OrdersPage = () => {
   const [requestsToUser, setRequestsToUser] = useState<EntityRequest[]>([]);
   const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
+  const exchangeContractV1 = useExchangeContractV1(true);
   const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate();
   const [userRequestsPage, setUserRequestsPage] = useState<number>(1);
@@ -81,7 +82,9 @@ const OrdersPage = () => {
 
   const refund = async (request: EntityRequest) => {
     try {
-      const tx = await exchangeContract.refundRequest(request.creator.address, request.requestId);
+      const version = request.id.split('-')[1];
+      const contract = version === '0' ? exchangeContract : exchangeContractV1;
+      const tx = await contract.refundRequest(request.creator.address, request.requestId);
       await tx.wait();
       toast.success('Successfully refunded!');
 
@@ -163,10 +166,10 @@ const OrdersPage = () => {
                               View clip
                             </PrimaryButton>
                           )}
-                          {!i.delivered && !isRequestExpired(i.timestamp, i.deadline) && !i.refunded && (
+                          {!i.delivered && !isRequestExpired(i.createdTimestamp, i.deadline) && !i.refunded && (
                             <Status style={{ marginTop: 20 }}>PENDING</Status>
                           )}
-                          {!i.delivered && isRequestExpired(i.timestamp, i.deadline) && !i.refunded && (
+                          {!i.delivered && isRequestExpired(i.createdTimestamp, i.deadline) && !i.refunded && (
                             <PrimaryButton
                               size="small"
                               width="small"
@@ -232,7 +235,7 @@ const OrdersPage = () => {
                     >
                       {requests.map((i, n, f) => (
                         <OrderCard key={i.id} request={i} isReceived={true}>
-                          {!i.delivered && !isRequestExpired(i.timestamp, i.deadline) && (
+                          {!i.delivered && !isRequestExpired(i.createdTimestamp, i.deadline) && (
                             <PrimaryButton
                               onPress={() => {
                                 navigate(`/orders/${i.creator.address}/${i.requestId}`);
@@ -244,7 +247,7 @@ const OrdersPage = () => {
                               Upload clip
                             </PrimaryButton>
                           )}
-                          {!i.delivered && isRequestExpired(i.timestamp, i.deadline) && (
+                          {!i.delivered && isRequestExpired(i.createdTimestamp, i.deadline) && (
                             <Status style={{ marginTop: 20, minWidth: 160 }}>PAST DEADLINE</Status>
                           )}
                           {i.delivered && (

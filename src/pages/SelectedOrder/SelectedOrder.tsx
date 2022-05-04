@@ -17,7 +17,7 @@ import { NFTHistory } from '../../components/NFTHistory';
 import { OrderCard } from '../../components/OrderCard/OrderCard';
 import { TextField } from '../../components/TextField';
 import { Video } from '../../components/Video';
-import { useExchangeContract } from '../../hooks/useContracts';
+import { useExchangeContract, useExchangeContractV1 } from '../../hooks/useContracts';
 import { Description, Label } from '../../styles/typography';
 import { getNFTDetails, getNFTHistory, getTokenIdAndAddress } from '../../web3/nft';
 import { signMessage } from '../../web3/request';
@@ -38,6 +38,7 @@ const SelectedOrderPage = () => {
   const [uploadStatus, setUploadStatus] = useState('');
   const [done, setDone] = useState(false);
   const { account, library } = useWeb3React<Web3Provider>();
+  const exchangeContractV1 = useExchangeContractV1(true);
   const exchangeContract = useExchangeContract(true);
   const { creator, requestId } = useParams();
   const [request, setRequest] = useState<EntityRequest>();
@@ -145,8 +146,10 @@ const SelectedOrderPage = () => {
 
     try {
       setMinting(true);
-      const tx = await exchangeContract.deliverRequest(request.requestId, 'https://arweave.net/' + tokenUri);
-      const receipt = await tx.wait();
+      const version = request.id.split('-')[1];
+      const contract = version === '0' ? exchangeContract : exchangeContractV1;
+      const transaction = await contract.deliverRequest(request.requestId, 'https://arweave.net/' + tokenUri);
+      const receipt = await transaction.wait();
       const eventArgs = receipt.events?.find((i) => i.event === 'DeliveredRequest')?.args;
       const tokenAddress = eventArgs?.tokenAddress;
       const tokenId = eventArgs?.tokenId.toNumber();
