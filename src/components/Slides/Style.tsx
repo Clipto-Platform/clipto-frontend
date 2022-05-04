@@ -185,6 +185,7 @@ export const OvalSpacing = styled.div`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     left: 10px;
     justify-content: flex-end;
+    padding: 0 32px;
     top: clamp(450px, 100vw,500px);
     padding: 0 32px;
   `}
