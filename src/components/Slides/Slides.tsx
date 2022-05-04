@@ -27,7 +27,7 @@ const Slides = (props: any) => {
   const [firstSlide, setFirstSlide] = useState<number>(0);
   const [lastSlide, setLastSlide] = useState<number>(NSlides - 1);
   const [visibleSlide, setVisibleSlide] = useState<number>(0);
-  const [slidesPosition, setSlidesPosition] = useState<anny>(0);
+  const [slidesPosition, setSlidesPosition] = useState<number>(0);
   const [slidePosition, setSlidePosition] = useState<Array<number>>([...Array(NSlides)].fill(0));
 
   const [clickEnabled, setClickEnabled] = useState(true);
@@ -47,7 +47,7 @@ const Slides = (props: any) => {
   );
   useEffect(() => {
     resetTimeout();
-    timeoutRef.current = setTimeout(rightClick, 8000);
+    if (NSlides > 1) timeoutRef.current = setTimeout(rightClick, 8000);
 
     return () => resetTimeout();
   }, [index]);
@@ -123,15 +123,19 @@ const Slides = (props: any) => {
   };
   return (
     <>
-      <Left onClick={leftClick} />
-      <Right onClick={rightClick} />
-      <OvalSpacing>
-        <Ovals>
-          {[...Array(NSlides)].map((_, index) => (
-            <Oval page={visibleSlide} index={index} onClick={() => onOvalClick(index)} />
-          ))}
-        </Ovals>
-      </OvalSpacing>
+      {NSlides > 1 && (
+        <>
+          <Left onClick={leftClick} />
+          <Right onClick={rightClick} />
+          <OvalSpacing>
+            <Ovals>
+              {[...Array(NSlides)].map((_, index) => (
+                <Oval page={visibleSlide} index={index} onClick={() => onOvalClick(index)} />
+              ))}
+            </Ovals>
+          </OvalSpacing>
+        </>
+      )}
       <SlideContentWrapper translate={slidesPosition} NSlides={NSlides}>
         {[...Array(NSlides)].map((_, index) => (
           <BackgroundWrapper

@@ -114,38 +114,12 @@ const HomePage = () => {
         <Title>Skateboarder</Title>
       </CreatorText>
     </>,
-    <LeftContentWrapper>
-      <HeroTitle>
-        Become a creator
-        <br />
-        Make a <span style={{ fontFamily: 'Eina01-Bold' }}>CLIPTO</span> profile{' '}
-        <span style={{ color: theme.yellow, fontWeight: '700' }}>now</span>
-      </HeroTitle>
-      <div style={{ display: 'inline-block', width: 'fit-content' }}>
-        {user && creator ? (
-          <BookNowButton color={theme.purple} onClick={() => warning("You're already a creator")}>
-            Become a Creator
-          </BookNowButton>
-        ) : user ? (
-          <Link to={'/onboarding'}>
-            <BookNow color={theme.purple}>Become a Creator</BookNow>
-          </Link>
-        ) : (
-          <BookNowButton color={theme.purple} onClick={() => warning('Please connect your wallet')}>
-            Become a Creator
-          </BookNowButton>
-        )}
-      </div>
-    </LeftContentWrapper>,
   ];
 
   return (
     <>
       <PageWrapper style={{ top: 0 }}>
-        <Slides
-          backgroundD={[background1D, background2D, background3D]}
-          backgroundM={[background1M, background2M, background3M]}
-        >
+        <Slides backgroundD={[background1D]} backgroundM={[background1M]}>
           {slideContent}
         </Slides>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />
