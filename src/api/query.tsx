@@ -106,7 +106,7 @@ query GetCreatorRequests (
     }, 
     first: $first,
     skip: $skip,
-    orderBy: timestamp
+    orderBy: createdTimestamp
     orderDirection: desc
   ) {
     id
@@ -156,7 +156,7 @@ query GetUserRequests (
     }, 
     first: $first,
     skip: $skip,
-    orderBy: timestamp
+    orderBy: createdTimestamp
     orderDirection: desc
   ) {
     id
@@ -183,11 +183,11 @@ query GetUserRequests (
     delivered
     refunded
     nftTokenAddress
-    tokenId
-    tokenUri
+    nftTokenId
+    nftTokenUri
     txHash
     block
-    timestamp
+    createdTimestamp
   }
 }
 `;

@@ -46,8 +46,11 @@ export const getTwitterData = (data: string[]) => {
   return axiosInstance.post('/usersData', data);
 };
 
-export const uploadToIpfs = (data: MetaData) => {
-  return axiosInstance.post('ipfs/pin', data);
+export const uploadToIpfs = async (data: MetaData) => {
+  const response = await axiosInstance.post('ipfs/pin', data);
+  console.log('ipfs', response.data);
+  const metadataURI = 'ipfs://'.concat(response.data.IpfsHash);
+  return metadataURI;
 };
 
 export const userRequests = (

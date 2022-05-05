@@ -14,7 +14,6 @@ import { SYMBOL } from '../../config/config';
 import { useExchangeContract, useExchangeContractV1 } from '../../hooks/useContracts';
 import { useFee } from '../../hooks/useFee';
 import { useProfile } from '../../hooks/useProfile';
-import { getIpfsURI } from '../../utils/ipfs';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
@@ -32,7 +31,7 @@ const OnboardProfilePage = () => {
 
   const updateUserProfile = async (creatorData: CreatorData) => {
     try {
-      const metadatURI = await getIpfsURI('creator', JSON.stringify(creatorData));
+      const metadatURI = await api.uploadToIpfs({ name: account as string, metadata: creatorData });
       const txResult = await exchangeContractV1.updateCreator(metadatURI);
       toast.loading('Profile updating, waiting for confirmation!');
       await txResult.wait();
@@ -56,7 +55,7 @@ const OnboardProfilePage = () => {
 
     if (!userOnChain) {
       try {
-        const metadatURI = await getIpfsURI('creator', JSON.stringify(creatorData));
+        const metadatURI = await api.uploadToIpfs({ name: account as string, metadata: creatorData });
         const txResult = await exchangeContractV1.registerCreator(creatorData.userName, metadatURI);
         toast.loading('Profile created, waiting for confirmation!');
         await txResult.wait();

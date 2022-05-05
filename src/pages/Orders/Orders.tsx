@@ -83,7 +83,7 @@ const OrdersPage = () => {
   const refund = async (request: EntityRequest) => {
     try {
       const version = request.id.split('-')[1];
-      const contract = version === '0' ? exchangeContract : exchangeContractV1;
+      const contract = version === 'v0' ? exchangeContract : exchangeContractV1;
       const tx = await contract.refundRequest(request.creator.address, request.requestId);
       await tx.wait();
       toast.success('Successfully refunded!');

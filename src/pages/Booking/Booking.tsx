@@ -37,7 +37,6 @@ import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
 import { ERC20__factory } from '../../contracts';
 import axios from 'axios';
 import { exchnageRates, uploadToIpfs } from '../../api';
-import { getIpfsURI } from '../../utils/ipfs';
 
 const BookingPage = () => {
   const { creatorId } = useParams();
@@ -92,16 +91,18 @@ const BookingPage = () => {
         deadline: convertToInt(values.deadline),
         description: values.description,
       };
-      const metadatURI = await getIpfsURI('creatorRequest', JSON.stringify(requestData));
+      const metadatURI = await uploadToIpfs({
+        name: creatorId.concat('-').concat(account as string),
+        metadata: requestData,
+      });
 
       let transaction;
       if (token && token == 'MATIC') {
         transaction = await exchangeContractV1.nativeNewRequest(creatorId, account as string, metadatURI, {
           value: ethers.utils.parseEther(values.amount),
         });
-        console.log('error');
       } else if (token) {
-        const ERC20 = getErc20Contract(token);
+        const ERC20 = getErc20Contract(token, account as string, library as Web3Provider);
 
         const tx = await ERC20.approve(EXCHANGE_ADDRESSV1[DEFAULT_CHAIN_ID], parseUnits(values.amount));
         toast.loading('waiting for approval');

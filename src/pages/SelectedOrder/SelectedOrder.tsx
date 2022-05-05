@@ -147,7 +147,7 @@ const SelectedOrderPage = () => {
     try {
       setMinting(true);
       const version = request.id.split('-')[1];
-      const contract = version === '0' ? exchangeContract : exchangeContractV1;
+      const contract = version === 'v0' ? exchangeContract : exchangeContractV1;
       const transaction = await contract.deliverRequest(request.requestId, 'https://arweave.net/' + tokenUri);
       const receipt = await transaction.wait();
       const eventArgs = receipt.events?.find((i) => i.event === 'DeliveredRequest')?.args;

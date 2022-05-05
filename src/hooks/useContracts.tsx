@@ -53,8 +53,7 @@ export const useNFTContract = (nftAddress: string, withSignerIfPossible = false)
     return CliptoToken__factory.connect(nftAddress, provider);
   }, [account, library, withSignerIfPossible]);
 };
-export const getErc20Contract = (token: string) => {
-  const { account, library } = useWeb3React<Web3Provider>();
+export const getErc20Contract = (token: string, account: string, library: Web3Provider) => {
   const provider = getProviderOrSigner(library, account ? account : undefined);
   return ERC20__factory.connect(ERC20_CONTRACTS[token], provider);
 };

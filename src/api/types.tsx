@@ -56,13 +56,14 @@ export interface EntityRequest extends RequestData {
   deadline: number;
   txHash: string;
   block: number;
+  erc20: string;
   createdTimestamp: number;
   updatedTimestamp: number;
 }
 
 export interface MetaData {
   name: string;
-  metadataJSON: string;
+  metadata: CreatorData | RequestData;
 }
 
 export interface IPFS {

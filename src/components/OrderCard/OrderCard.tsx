@@ -24,7 +24,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
   const userAddress = props.isReceived ? props.request.requester : props.request.creator.address;
   const status = request.delivered ? (isReceived ? 'Received' : 'Paid') : 'Bid';
 
-  const symbol = getTokenSymbol(request.nftTokenAddress);
+  const symbol = getTokenSymbol(request.erc20);
 
   return (
     <OrderCardContainer>
