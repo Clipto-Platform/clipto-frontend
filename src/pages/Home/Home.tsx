@@ -97,23 +97,6 @@ const HomePage = () => {
         </Link>
       </div>
     </LeftContentWrapper>,
-    <>
-      <LeftContentWrapper>
-        <HeroTitle>
-          Personalized videos from your favorite{' '}
-          <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-        </HeroTitle>
-        <div style={{ display: 'inline-block', width: 'fit-content' }}>
-          <Link to={'/creator/0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f'}>
-            <BookNow color={theme.twitterBlue}>Book with Bob</BookNow>
-          </Link>
-        </div>
-      </LeftContentWrapper>
-      <CreatorText>
-        <Name>Bob Burnquist</Name>
-        <Title>Skateboarder</Title>
-      </CreatorText>
-    </>,
     <LeftContentWrapper>
       <HeroTitle>
         Become a creator
@@ -142,10 +125,7 @@ const HomePage = () => {
   return (
     <>
       <PageWrapper style={{ top: 0 }}>
-        <Slides
-          backgroundD={[background1D, background2D, background3D]}
-          backgroundM={[background1M, background2M, background3M]}
-        >
+        <Slides backgroundD={[background1D, background3D]} backgroundM={[background1M, background3M]}>
           {slideContent}
         </Slides>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />

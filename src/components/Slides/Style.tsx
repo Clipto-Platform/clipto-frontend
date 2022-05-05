@@ -21,14 +21,13 @@ interface BackgroundWrapperProps {
 }
 export const BackgroundWrapper = styled.div<BackgroundWrapperProps>`
   background-image: url(${(props) => props.backgroundD[props.index]});
-  background-position: ${(props) =>
-    props.index == 0 ? 'center right' : props.index == 1 ? 'center right 30%' : 'center'};
+  background-position: ${(props) => (props.index == 0 ? 'center right' : 'center')};
   background-size: cover;
   object-fit: cover;
   width: 100vw;
   height: 100%;
   opacity: 100%;
-  transform: ${(props) => (props.index == 2 ? `translate(${props.translate}%)` : `translate(${props.translate}%,5px)`)};
+  transform: ${(props) => (props.index == 1 ? `translate(${props.translate}%)` : `translate(${props.translate}%,5px)`)};
   overflow: hidden;
   @media screen and (max-width: 601px) {
     background-position: center center;
