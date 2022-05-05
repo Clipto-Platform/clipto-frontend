@@ -57,22 +57,6 @@ const BookingPage = () => {
     }
   }, [ref]);
 
-  useEffect(() => {
-    if (loaded && creator) {
-      exchnageRates(token, creator.price).then((convertedPrice) => {
-        setPrice(parseFloat(convertedPrice));
-      });
-    }
-  }, [loaded, token]);
-
-  const getErc20Contract = () => {
-    const provider = getProviderOrSigner(library, account ? account : undefined);
-    return ERC20__factory.connect(ERC20_CONTRACTS[token], provider);
-  };
-
-  const handleSelect = (e: any) => {
-    setToken(e.target.value);
-  };
   const makeBooking = async (values: BookingFormValues) => {
     try {
       if (!creatorId) {
@@ -91,26 +75,14 @@ const BookingPage = () => {
         description: values.description,
       };
       let transaction;
-      if (token && token == 'MATIC') {
-        transaction = await exchangeContract.newRequestPayable(creatorId, JSON.stringify(requestData), {
-          value: ethers.utils.parseEther(values.amount),
-        });
-      } else if (token) {
-        const ERC20 = getErc20Contract();
+      transaction = await exchangeContract.newRequest(creatorId, JSON.stringify(requestData), {
+        value: ethers.utils.parseEther(values.amount),
+      });
 
-        const tx = await ERC20.approve(EXCHANGE_ADDRESS[DEFAULT_CHAIN_ID], parseUnits(values.amount));
-        toast.loading('waiting for approval');
-        console.log('approve request', await tx.wait());
-        transaction = await exchangeContract.newRequest(
-          creatorId,
-          JSON.stringify(requestData),
-          ERC20_CONTRACTS[token],
-          parseUnits(values.amount),
-        );
-      }
       toast.dismiss();
       toast.loading('Creating a new booking, waiting for confirmation');
-      const receipt = transaction && (await transaction.wait());
+      // const receipt = transaction &&
+      await transaction.wait();
       toast.dismiss();
       toast.success('Booking completed, your Order will reflect in few moments.');
       navigate('/orders');
@@ -245,17 +217,6 @@ const BookingPage = () => {
                           value={user}
                           isDisabled
                         />
-                      </div>
-
-                      <div style={{ marginBottom: 40 }}>
-                        <Dropdown formLabel="Select payment type" onChange={handleSelect}>
-                          {TOKENS.map((tok, i) => {
-                            if (i == 0) {
-                              <Option key={i} selected value={tok} />;
-                            }
-                            return <Option key={i} value={tok} />;
-                          })}
-                        </Dropdown>
                       </div>
 
                       <div style={{ marginBottom: 40 }}>

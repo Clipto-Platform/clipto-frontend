@@ -45,6 +45,7 @@ export const colors: Colors = {
   green: '#1DB954',
   yellow: '#EDE641',
   red: '#FF6868',
+  purple: '#5F21E2',
   // Semantic colors
   primary: white,
   secondary: '#888F96',
