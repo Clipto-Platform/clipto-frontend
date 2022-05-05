@@ -1,9 +1,40 @@
 import styled from 'styled-components';
-import card1 from '../../assets/images/homepage/page1/card1.png';
-import card2 from '../../assets/images/homepage/page1/card2.png';
-import card3 from '../../assets/images/homepage/page1/card3.png';
 import LeftArrow from '../../assets/images/homepage/LeftArrow.png';
 import RightArrow from '../../assets/images/homepage/RightArrow.png';
+
+interface SlidesProps {
+  translate: any;
+  NSlides: number;
+}
+export const SlideContentWrapper = styled.div<SlidesProps>`
+  display: flex;
+  flex-direction: row;
+  width: ${(props) => props.NSlides * 100}vw;
+  transition: transform 1s;
+  transform: ${(props) => `translateX(${props.translate}%)`};
+`;
+interface BackgroundWrapperProps {
+  translate: any;
+  index: number;
+  backgroundD: string;
+  backgroundM: string;
+}
+export const BackgroundWrapper = styled.div<BackgroundWrapperProps>`
+  background-image: url(${(props) => props.backgroundD[props.index]});
+  background-position: ${(props) =>
+    props.index == 0 ? 'center right' : props.index == 1 ? 'center right 30%' : 'center'};
+  background-size: cover;
+  object-fit: cover;
+  width: 100vw;
+  height: 100%;
+  opacity: 100%;
+  transform: ${(props) => (props.index == 2 ? `translate(${props.translate}%)` : `translate(${props.translate}%,5px)`)};
+  overflow: hidden;
+  @media screen and (max-width: 601px) {
+    background-position: center center;
+    background-image: url(${(props) => props.backgroundM[props.index]});
+  }
+`;
 
 export const OpacityGradient = styled.div`
   position: absolute;
