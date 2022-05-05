@@ -20,8 +20,6 @@ import { ContentWrapper, PageContentWrapper, PageWrapper } from '../layout/Commo
 import { HeaderContentGapSpacer, HeaderSpacer } from '../Header/Header';
 
 const Slides = (props: any) => {
-  if (props.backgroundD.length != props.backgroundM.length || props.children.length != props.backgroundM.length)
-    console.warn('Slider props should have same length');
   const NSlides = props.backgroundD.length;
 
   const [firstSlide, setFirstSlide] = useState<number>(0);
@@ -33,18 +31,7 @@ const Slides = (props: any) => {
   const [clickEnabled, setClickEnabled] = useState(true);
   const [index, setIndex] = useState(0);
   const timeoutRef = useRef(null as any);
-  console.log(
-    'firstSlide:',
-    firstSlide,
-    'lastSlide:',
-    lastSlide,
-    'visibleSlide:',
-    visibleSlide,
-    'slidePosition:',
-    slidePosition,
-    'SlidesPosition:',
-    slidesPosition,
-  );
+
   useEffect(() => {
     resetTimeout();
     if (NSlides > 1) timeoutRef.current = setTimeout(rightClick, 8000);
@@ -112,14 +99,12 @@ const Slides = (props: any) => {
   };
 
   const onOvalClick = (index: number) => {
-    if ((visibleSlide < index && !(visibleSlide == 0 && index == NSlides)) || (visibleSlide == NSlides && index == 0)) {
-      rightClick();
-    } else if (
-      (visibleSlide > index && !(visibleSlide == NSlides && index == 0)) ||
-      (visibleSlide == 0 && index == NSlides)
+    if (
+      (visibleSlide < index && !(visibleSlide == 0 && index == NSlides - 1)) ||
+      (visibleSlide == NSlides - 1 && index == 0)
     ) {
-      leftClick();
-    }
+      rightClick();
+    } else leftClick();
   };
   return (
     <>
