@@ -267,6 +267,8 @@ const SelectedOrderPage = () => {
                                 Drag and drop a video or click to select a file to upload
                                 <br />
                                 (max video size 50mb)
+                                <br />
+                                *Video length should not be less than 6 seconds
                               </Description>
                             )}
                           </>
