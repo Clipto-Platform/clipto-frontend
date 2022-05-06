@@ -30,6 +30,7 @@ query GetRequestById (
       deadline
       delivered
       refunded
+      erc20
       nftTokenAddress
       nftTokenId
       nftTokenUri
@@ -133,6 +134,7 @@ query GetCreatorRequests (
     deadline
     delivered
     refunded
+    erc20
     nftTokenAddress
     nftTokenId
     nftTokenUri
@@ -182,6 +184,7 @@ query GetUserRequests (
     deadline
     delivered
     refunded
+    erc20
     nftTokenAddress
     nftTokenId
     nftTokenUri
