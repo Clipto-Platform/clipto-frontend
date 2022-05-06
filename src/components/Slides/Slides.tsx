@@ -15,6 +15,7 @@ import {
   OvalSpacing,
   SlideContentWrapper,
   BackgroundWrapper,
+  SlidesContentWrapper,
 } from './Style';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../layout/Common';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../Header/Header';
@@ -99,12 +100,11 @@ const Slides = (props: any) => {
   };
 
   const onOvalClick = (index: number) => {
-    if (
-      (visibleSlide < index && !(visibleSlide == 0 && index == NSlides - 1)) ||
-      (visibleSlide == NSlides - 1 && index == 0)
-    ) {
+    if (index < visibleSlide) {
+      leftClick();
+    } else if (index > visibleSlide) {
       rightClick();
-    } else leftClick();
+    }
   };
   return (
     <>
@@ -114,9 +114,9 @@ const Slides = (props: any) => {
           <Right onClick={rightClick} />
           <OvalSpacing>
             <Ovals>
-              {[...Array(NSlides)].map((_, index) => (
-                <Oval page={visibleSlide} index={index} onClick={() => onOvalClick(index)} />
-              ))}
+              {[...Array(NSlides)].map((_, index) => {
+                return <Oval key={index} page={visibleSlide} index={index} onClick={() => onOvalClick(index)} />;
+              })}
             </Ovals>
           </OvalSpacing>
         </>
@@ -131,10 +131,10 @@ const Slides = (props: any) => {
           >
             <OpacityGradient />
             <HeaderSpacer />
-            <PageContentWrapper style={{ justifyContent: 'space-around' }}>
+            <SlidesContentWrapper>
               {props.children[index]}
               <div style={{ maxWidth: '600px' }} />
-            </PageContentWrapper>
+            </SlidesContentWrapper>
           </BackgroundWrapper>
         ))}
       </SlideContentWrapper>
