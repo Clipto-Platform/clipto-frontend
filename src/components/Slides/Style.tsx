@@ -50,8 +50,8 @@ export const OpacityGradient = styled.div`
 
 export const LeftContentWrapper = styled.div`
   position: relative;
-  left: -120px;
   z-index: 100;
+  left: 6%;
   padding: clamp(100px, 11vw, 200px) 0 clamp(160px, 20vw, 350px) 0;
   transition: transform 1s, width 1s;
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -176,7 +176,7 @@ export const OvalSpacing = styled.div`
   width: 100vw;
   display: flex;
   flex-direction: row;
-  padding: 0 75px;
+  padding-left: 8%;
   position: absolute;
   top: clamp(500px, 45vw, 700px);
   justify-content: flex-start;
@@ -210,5 +210,13 @@ export const Oval = styled.div<OvalProps>`
     width: 18px;
     height: 4px;
     margin: 0 5px;
+  `}
+`;
+export const SlidesContentWrapper = styled.div`
+  padding: 0 32px;
+  width: 100%;
+  display: flex;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0 16px;
   `}
 `;
