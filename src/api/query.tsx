@@ -1,11 +1,13 @@
 export const queryGetRequest = `
 query GetRequestById (
     $requestId: BigInt!,
-    $creator: Bytes!
+    $creator: Bytes!,
+    $version: String!
 ) {
     requests(where: {
         requestId: $requestId,
-        creator: $creator
+        creator: $creator,
+        version: $version
     }){
       id
       requestId
@@ -31,6 +33,8 @@ query GetRequestById (
       delivered
       refunded
       erc20
+      version
+      metadataURI
       nftTokenAddress
       nftTokenId
       nftTokenUri
@@ -56,6 +60,8 @@ query GetAllCreators (
       id
       address
       metadataURI
+      cat
+      metadataURI
       nftTokenAddress
       twitterHandle
       bio
@@ -79,6 +85,7 @@ query GetCreatorById (
   {
     id
     address
+    metadataURI
     nftTokenAddress
     metadataURI
     twitterHandle
@@ -135,6 +142,8 @@ query GetCreatorRequests (
     delivered
     refunded
     erc20
+    version
+    metadataURI
     nftTokenAddress
     nftTokenId
     nftTokenUri
@@ -185,6 +194,8 @@ query GetUserRequests (
     delivered
     refunded
     erc20
+    version
+    metadataURI
     nftTokenAddress
     nftTokenId
     nftTokenUri
@@ -204,6 +215,7 @@ query GetFeaturedCreators (
   {
     id
     address
+    metadataURI
     nftTokenAddress
     twitterHandle
     bio
@@ -218,6 +230,7 @@ query GetFeaturedCreators (
   }
 }
 `;
+
 export const queryGetCreatorUserName = `
 query GetAllCreators {
     creators(

@@ -157,7 +157,7 @@ const OrdersPage = () => {
                           {i.delivered && (
                             <PrimaryButton
                               onPress={() => {
-                                navigate(`/orders/${i.creator.address}/${i.requestId}`);
+                                navigate(`/orders/${i.creator.address}/${i.requestId}/${i.version}`);
                               }}
                               size="small"
                               width="small"
@@ -238,7 +238,7 @@ const OrdersPage = () => {
                           {!i.delivered && !isRequestExpired(i.createdTimestamp, i.deadline) && (
                             <PrimaryButton
                               onPress={() => {
-                                navigate(`/orders/${i.creator.address}/${i.requestId}`);
+                                navigate(`/orders/${i.creator.address}/${i.requestId}/${i.version}`);
                               }}
                               size="small"
                               width="small"
@@ -253,7 +253,7 @@ const OrdersPage = () => {
                           {i.delivered && (
                             <PrimaryButton
                               onPress={() => {
-                                navigate(`/orders/${i.creator.address}/${i.requestId}`);
+                                navigate(`/orders/${i.creator.address}/${i.requestId}/${i.version}`);
                               }}
                               variant="secondary"
                               size="small"

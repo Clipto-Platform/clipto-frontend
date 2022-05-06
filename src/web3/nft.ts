@@ -18,7 +18,7 @@ const getDate = (timestamp: number) => {
 };
 
 export const getTokenIdAndAddress = async (request: EntityRequest) => {
-  const response = await api.requestById(request.requestId, request.creator.address);
+  const response = await api.requestById(request.requestId, request.creator.address, request.version);
   if (response.data) {
     const output = response.data?.requests[0];
     return {

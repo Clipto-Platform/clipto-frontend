@@ -46,7 +46,7 @@ function App() {
             {/* <Route path="mint" element={<MintPage />} /> */}
             <Route path="onboarding" element={user ? <OnboardingPage /> : <Navigate to="/" />} />
             <Route path="orders" element={user ? <OrdersPage /> : <Navigate to="/" />} />
-            <Route path="orders/:creator/:requestId" element={user ? <SelectedOrderPage /> : <Navigate to="/" />} />
+            <Route path="orders/:creator/:requestId/:version" element={user ? <SelectedOrderPage /> : <Navigate to="/" />} />
             <Route path="creator/:creatorId" element={<BookingPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

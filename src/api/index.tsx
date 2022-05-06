@@ -95,11 +95,13 @@ export const extractResumeableUrl = async (url: string): Promise<string | null> 
 export const requestById = async (
   requestId: string | number,
   creator: string,
+  version: string,
 ): Promise<OperationResult<{ requests: EntityRequest[] }>> => {
   return graphInstance
     .query(queryGetRequest, {
       requestId,
       creator,
+      version,
     })
     .toPromise();
 };

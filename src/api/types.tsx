@@ -30,6 +30,7 @@ export interface CreatorData {
 export interface EntityCreator extends CreatorData {
   id: string;
   address: string;
+  metadataURI: string;
   nftTokenAddress: string;
   txHash: string;
   block: number;
@@ -50,6 +51,8 @@ export interface EntityRequest extends RequestData {
   nftTokenId: number;
   nftTokenUri: string;
   nftTokenAddress: string;
+  metadataURI: string;
+  version: 'v0' | 'v1';
   refunded: boolean;
   delivered: boolean;
   description: string;

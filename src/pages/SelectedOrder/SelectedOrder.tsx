@@ -40,7 +40,7 @@ const SelectedOrderPage = () => {
   const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContractV1 = useExchangeContractV1(true);
   const exchangeContract = useExchangeContract(true);
-  const { creator, requestId } = useParams();
+  const { creator, requestId, version } = useParams();
   const [request, setRequest] = useState<EntityRequest>();
   const [loaded, setLoaded] = useState<boolean>(false);
   const [minting, setMinting] = useState<boolean>(false);
@@ -191,9 +191,9 @@ const SelectedOrderPage = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'video/*,.mkv,.flv' });
 
   useEffect(() => {
-    if (creator && requestId) {
+    if (creator && requestId && version) {
       api
-        .requestById(requestId, creator)
+        .requestById(requestId, creator, version)
         .then((res) => {
           if (res.data) {
             const request = res.data.requests[0];
