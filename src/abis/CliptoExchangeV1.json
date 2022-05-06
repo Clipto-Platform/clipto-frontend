@@ -13,6 +13,12 @@
         "internalType": "address",
         "name": "nft",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "jsondata",
+        "type": "string"
       }
     ],
     "name": "CreatorRegistered",
@@ -30,7 +36,7 @@
       {
         "indexed": false,
         "internalType": "string",
-        "name": "metadataURI",
+        "name": "jsondata",
         "type": "string"
       }
     ],
@@ -89,6 +95,12 @@
         "internalType": "uint256",
         "name": "requestId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "jsondata",
+        "type": "string"
       }
     ],
     "name": "NewRequest",
@@ -183,13 +195,8 @@
     "outputs": [
       {
         "internalType": "address",
-        "name": "nft",
+        "name": "",
         "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "metadataURI",
-        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -224,21 +231,9 @@
     "name": "getCreator",
     "outputs": [
       {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "nft",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "metadataURI",
-            "type": "string"
-          }
-        ],
-        "internalType": "struct CliptoExchangeStorage.Creator",
+        "internalType": "address",
         "name": "",
-        "type": "tuple"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -303,11 +298,6 @@
             "internalType": "bool",
             "name": "fulfilled",
             "type": "bool"
-          },
-          {
-            "internalType": "string",
-            "name": "metadataURI",
-            "type": "string"
           }
         ],
         "internalType": "struct CliptoExchangeStorage.Request",
@@ -368,7 +358,7 @@
       },
       {
         "internalType": "string",
-        "name": "_metadataURI",
+        "name": "_jsonData",
         "type": "string"
       }
     ],
@@ -401,7 +391,7 @@
       },
       {
         "internalType": "string",
-        "name": "_metadataURI",
+        "name": "_jsonData",
         "type": "string"
       }
     ],
@@ -470,7 +460,7 @@
       },
       {
         "internalType": "string",
-        "name": "_metadataURI",
+        "name": "_jsondata",
         "type": "string"
       }
     ],
@@ -518,11 +508,6 @@
         "internalType": "bool",
         "name": "fulfilled",
         "type": "bool"
-      },
-      {
-        "internalType": "string",
-        "name": "metadataURI",
-        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -588,7 +573,7 @@
     "inputs": [
       {
         "internalType": "string",
-        "name": "_metadataURI",
+        "name": "_jsondata",
         "type": "string"
       }
     ],

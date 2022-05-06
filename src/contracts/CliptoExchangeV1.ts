@@ -18,20 +18,12 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export type CreatorStruct = { nft: string; metadataURI: string };
-
-export type CreatorStructOutput = [string, string] & {
-  nft: string;
-  metadataURI: string;
-};
-
 export type RequestStruct = {
   requester: string;
   nftReceiver: string;
   erc20: string;
   amount: BigNumberish;
   fulfilled: boolean;
-  metadataURI: string;
 };
 
 export type RequestStructOutput = [
@@ -39,15 +31,13 @@ export type RequestStructOutput = [
   string,
   string,
   BigNumber,
-  boolean,
-  string
+  boolean
 ] & {
   requester: string;
   nftReceiver: string;
   erc20: string;
   amount: BigNumber;
   fulfilled: boolean;
-  metadataURI: string;
 };
 
 export interface CliptoExchangeV1Interface extends utils.Interface {
@@ -186,11 +176,11 @@ export interface CliptoExchangeV1Interface extends utils.Interface {
   ): Result;
 
   events: {
-    "CreatorRegistered(address,address)": EventFragment;
+    "CreatorRegistered(address,address,string)": EventFragment;
     "CreatorUpdated(address,string)": EventFragment;
     "DeliveredRequest(address,uint256,uint256)": EventFragment;
     "MigrationCreator(address[])": EventFragment;
-    "NewRequest(address,uint256)": EventFragment;
+    "NewRequest(address,uint256,string)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "RefundedRequest(address,uint256)": EventFragment;
@@ -209,8 +199,8 @@ export interface CliptoExchangeV1Interface extends utils.Interface {
 }
 
 export type CreatorRegisteredEvent = TypedEvent<
-  [string, string],
-  { creator: string; nft: string }
+  [string, string, string],
+  { creator: string; nft: string; jsondata: string }
 >;
 
 export type CreatorRegisteredEventFilter =
@@ -218,7 +208,7 @@ export type CreatorRegisteredEventFilter =
 
 export type CreatorUpdatedEvent = TypedEvent<
   [string, string],
-  { creator: string; metadataURI: string }
+  { creator: string; jsondata: string }
 >;
 
 export type CreatorUpdatedEventFilter = TypedEventFilter<CreatorUpdatedEvent>;
@@ -240,8 +230,8 @@ export type MigrationCreatorEventFilter =
   TypedEventFilter<MigrationCreatorEvent>;
 
 export type NewRequestEvent = TypedEvent<
-  [string, BigNumber],
-  { creator: string; requestId: BigNumber }
+  [string, BigNumber, string],
+  { creator: string; requestId: BigNumber; jsondata: string }
 >;
 
 export type NewRequestEventFilter = TypedEventFilter<NewRequestEvent>;
@@ -298,10 +288,7 @@ export interface CliptoExchangeV1 extends BaseContract {
   functions: {
     beacon(overrides?: CallOverrides): Promise<[string]>;
 
-    creators(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[string, string] & { nft: string; metadataURI: string }>;
+    creators(arg0: string, overrides?: CallOverrides): Promise<[string]>;
 
     deliverRequest(
       _requestId: BigNumberish,
@@ -309,10 +296,7 @@ export interface CliptoExchangeV1 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    getCreator(
-      _creator: string,
-      overrides?: CallOverrides
-    ): Promise<[CreatorStructOutput]>;
+    getCreator(_creator: string, overrides?: CallOverrides): Promise<[string]>;
 
     getFeeRate(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
 
@@ -337,7 +321,7 @@ export interface CliptoExchangeV1 extends BaseContract {
     nativeNewRequest(
       _creator: string,
       _nftReceiver: string,
-      _metadataURI: string,
+      _jsonData: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -346,7 +330,7 @@ export interface CliptoExchangeV1 extends BaseContract {
       _nftReceiver: string,
       _erc20: string,
       _amount: BigNumberish,
-      _metadataURI: string,
+      _jsonData: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -366,7 +350,7 @@ export interface CliptoExchangeV1 extends BaseContract {
 
     registerCreator(
       _creatorName: string,
-      _metadataURI: string,
+      _jsondata: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -375,13 +359,12 @@ export interface CliptoExchangeV1 extends BaseContract {
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, string, BigNumber, boolean, string] & {
+      [string, string, string, BigNumber, boolean] & {
         requester: string;
         nftReceiver: string;
         erc20: string;
         amount: BigNumber;
         fulfilled: boolean;
-        metadataURI: string;
       }
     >;
 
@@ -407,17 +390,14 @@ export interface CliptoExchangeV1 extends BaseContract {
     ): Promise<ContractTransaction>;
 
     updateCreator(
-      _metadataURI: string,
+      _jsondata: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
   beacon(overrides?: CallOverrides): Promise<string>;
 
-  creators(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<[string, string] & { nft: string; metadataURI: string }>;
+  creators(arg0: string, overrides?: CallOverrides): Promise<string>;
 
   deliverRequest(
     _requestId: BigNumberish,
@@ -425,10 +405,7 @@ export interface CliptoExchangeV1 extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  getCreator(
-    _creator: string,
-    overrides?: CallOverrides
-  ): Promise<CreatorStructOutput>;
+  getCreator(_creator: string, overrides?: CallOverrides): Promise<string>;
 
   getFeeRate(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
 
@@ -453,7 +430,7 @@ export interface CliptoExchangeV1 extends BaseContract {
   nativeNewRequest(
     _creator: string,
     _nftReceiver: string,
-    _metadataURI: string,
+    _jsonData: string,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -462,7 +439,7 @@ export interface CliptoExchangeV1 extends BaseContract {
     _nftReceiver: string,
     _erc20: string,
     _amount: BigNumberish,
-    _metadataURI: string,
+    _jsonData: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -482,7 +459,7 @@ export interface CliptoExchangeV1 extends BaseContract {
 
   registerCreator(
     _creatorName: string,
-    _metadataURI: string,
+    _jsondata: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -491,13 +468,12 @@ export interface CliptoExchangeV1 extends BaseContract {
     arg1: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    [string, string, string, BigNumber, boolean, string] & {
+    [string, string, string, BigNumber, boolean] & {
       requester: string;
       nftReceiver: string;
       erc20: string;
       amount: BigNumber;
       fulfilled: boolean;
-      metadataURI: string;
     }
   >;
 
@@ -523,17 +499,14 @@ export interface CliptoExchangeV1 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   updateCreator(
-    _metadataURI: string,
+    _jsondata: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     beacon(overrides?: CallOverrides): Promise<string>;
 
-    creators(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[string, string] & { nft: string; metadataURI: string }>;
+    creators(arg0: string, overrides?: CallOverrides): Promise<string>;
 
     deliverRequest(
       _requestId: BigNumberish,
@@ -541,10 +514,7 @@ export interface CliptoExchangeV1 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    getCreator(
-      _creator: string,
-      overrides?: CallOverrides
-    ): Promise<CreatorStructOutput>;
+    getCreator(_creator: string, overrides?: CallOverrides): Promise<string>;
 
     getFeeRate(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
 
@@ -569,7 +539,7 @@ export interface CliptoExchangeV1 extends BaseContract {
     nativeNewRequest(
       _creator: string,
       _nftReceiver: string,
-      _metadataURI: string,
+      _jsonData: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -578,7 +548,7 @@ export interface CliptoExchangeV1 extends BaseContract {
       _nftReceiver: string,
       _erc20: string,
       _amount: BigNumberish,
-      _metadataURI: string,
+      _jsonData: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -596,7 +566,7 @@ export interface CliptoExchangeV1 extends BaseContract {
 
     registerCreator(
       _creatorName: string,
-      _metadataURI: string,
+      _jsondata: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -605,13 +575,12 @@ export interface CliptoExchangeV1 extends BaseContract {
       arg1: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, string, BigNumber, boolean, string] & {
+      [string, string, string, BigNumber, boolean] & {
         requester: string;
         nftReceiver: string;
         erc20: string;
         amount: BigNumber;
         fulfilled: boolean;
-        metadataURI: string;
       }
     >;
 
@@ -634,29 +603,28 @@ export interface CliptoExchangeV1 extends BaseContract {
 
     unpause(overrides?: CallOverrides): Promise<void>;
 
-    updateCreator(
-      _metadataURI: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    updateCreator(_jsondata: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
-    "CreatorRegistered(address,address)"(
+    "CreatorRegistered(address,address,string)"(
       creator?: string | null,
-      nft?: string | null
+      nft?: string | null,
+      jsondata?: null
     ): CreatorRegisteredEventFilter;
     CreatorRegistered(
       creator?: string | null,
-      nft?: string | null
+      nft?: string | null,
+      jsondata?: null
     ): CreatorRegisteredEventFilter;
 
     "CreatorUpdated(address,string)"(
       creator?: string | null,
-      metadataURI?: null
+      jsondata?: null
     ): CreatorUpdatedEventFilter;
     CreatorUpdated(
       creator?: string | null,
-      metadataURI?: null
+      jsondata?: null
     ): CreatorUpdatedEventFilter;
 
     "DeliveredRequest(address,uint256,uint256)"(
@@ -673,13 +641,15 @@ export interface CliptoExchangeV1 extends BaseContract {
     "MigrationCreator(address[])"(creators?: null): MigrationCreatorEventFilter;
     MigrationCreator(creators?: null): MigrationCreatorEventFilter;
 
-    "NewRequest(address,uint256)"(
+    "NewRequest(address,uint256,string)"(
       creator?: string | null,
-      requestId?: null
+      requestId?: null,
+      jsondata?: null
     ): NewRequestEventFilter;
     NewRequest(
       creator?: string | null,
-      requestId?: null
+      requestId?: null,
+      jsondata?: null
     ): NewRequestEventFilter;
 
     "OwnershipTransferred(address,address)"(
@@ -743,7 +713,7 @@ export interface CliptoExchangeV1 extends BaseContract {
     nativeNewRequest(
       _creator: string,
       _nftReceiver: string,
-      _metadataURI: string,
+      _jsonData: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -752,7 +722,7 @@ export interface CliptoExchangeV1 extends BaseContract {
       _nftReceiver: string,
       _erc20: string,
       _amount: BigNumberish,
-      _metadataURI: string,
+      _jsonData: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -772,7 +742,7 @@ export interface CliptoExchangeV1 extends BaseContract {
 
     registerCreator(
       _creatorName: string,
-      _metadataURI: string,
+      _jsondata: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -804,7 +774,7 @@ export interface CliptoExchangeV1 extends BaseContract {
     ): Promise<BigNumber>;
 
     updateCreator(
-      _metadataURI: string,
+      _jsondata: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -851,7 +821,7 @@ export interface CliptoExchangeV1 extends BaseContract {
     nativeNewRequest(
       _creator: string,
       _nftReceiver: string,
-      _metadataURI: string,
+      _jsonData: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -860,7 +830,7 @@ export interface CliptoExchangeV1 extends BaseContract {
       _nftReceiver: string,
       _erc20: string,
       _amount: BigNumberish,
-      _metadataURI: string,
+      _jsonData: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -880,7 +850,7 @@ export interface CliptoExchangeV1 extends BaseContract {
 
     registerCreator(
       _creatorName: string,
-      _metadataURI: string,
+      _jsondata: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -912,7 +882,7 @@ export interface CliptoExchangeV1 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     updateCreator(
-      _metadataURI: string,
+      _jsondata: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

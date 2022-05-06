@@ -37,7 +37,7 @@ export const isCreatorOnChain = async (
   exchangeContractV1: CliptoExchangeV1,
   account: string | null | undefined,
 ): Promise<boolean> => {
-  let cliptoTokenAddress: { nft: string; metadataURI: string };
+  let cliptoTokenAddress: string;
   if (!account) {
     throw {
       message: 'account does not exist',
@@ -48,7 +48,7 @@ export const isCreatorOnChain = async (
   } catch (err) {
     throw 'Error : If you get the missing headers metamask error, try switching the network and back';
   }
-  if (parseInt(cliptoTokenAddress.nft) === 0) {
+  if (parseInt(cliptoTokenAddress) === 0) {
     return false;
   } else {
     return true;

@@ -25,6 +25,12 @@ const _abi = [
         name: "nft",
         type: "address",
       },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "jsondata",
+        type: "string",
+      },
     ],
     name: "CreatorRegistered",
     type: "event",
@@ -41,7 +47,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "string",
-        name: "metadataURI",
+        name: "jsondata",
         type: "string",
       },
     ],
@@ -100,6 +106,12 @@ const _abi = [
         internalType: "uint256",
         name: "requestId",
         type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "jsondata",
+        type: "string",
       },
     ],
     name: "NewRequest",
@@ -194,13 +206,8 @@ const _abi = [
     outputs: [
       {
         internalType: "address",
-        name: "nft",
+        name: "",
         type: "address",
-      },
-      {
-        internalType: "string",
-        name: "metadataURI",
-        type: "string",
       },
     ],
     stateMutability: "view",
@@ -235,21 +242,9 @@ const _abi = [
     name: "getCreator",
     outputs: [
       {
-        components: [
-          {
-            internalType: "address",
-            name: "nft",
-            type: "address",
-          },
-          {
-            internalType: "string",
-            name: "metadataURI",
-            type: "string",
-          },
-        ],
-        internalType: "struct CliptoExchangeStorage.Creator",
+        internalType: "address",
         name: "",
-        type: "tuple",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -315,11 +310,6 @@ const _abi = [
             name: "fulfilled",
             type: "bool",
           },
-          {
-            internalType: "string",
-            name: "metadataURI",
-            type: "string",
-          },
         ],
         internalType: "struct CliptoExchangeStorage.Request",
         name: "",
@@ -379,7 +369,7 @@ const _abi = [
       },
       {
         internalType: "string",
-        name: "_metadataURI",
+        name: "_jsonData",
         type: "string",
       },
     ],
@@ -412,7 +402,7 @@ const _abi = [
       },
       {
         internalType: "string",
-        name: "_metadataURI",
+        name: "_jsonData",
         type: "string",
       },
     ],
@@ -481,7 +471,7 @@ const _abi = [
       },
       {
         internalType: "string",
-        name: "_metadataURI",
+        name: "_jsondata",
         type: "string",
       },
     ],
@@ -529,11 +519,6 @@ const _abi = [
         internalType: "bool",
         name: "fulfilled",
         type: "bool",
-      },
-      {
-        internalType: "string",
-        name: "metadataURI",
-        type: "string",
       },
     ],
     stateMutability: "view",
@@ -599,7 +584,7 @@ const _abi = [
     inputs: [
       {
         internalType: "string",
-        name: "_metadataURI",
+        name: "_jsondata",
         type: "string",
       },
     ],
