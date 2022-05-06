@@ -9,6 +9,7 @@ import TwitterIcon from '../../components/icons/TwitterIcon';
 import { CenterContainer, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { useProfile } from '../../hooks/useProfile';
 import { Description, Label } from '../../styles/typography';
+import { colors } from '../../styles/theme';
 
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
@@ -34,8 +35,6 @@ const BountyDone = (props: any) => {
       <PageWrapper>
         <HeaderSpacer />
         <PageContentWrapper>
-          {/* TODO(jonathanng) - fix spacing to better match figma */}
-          {/* paddingTop will probably need to change depending on what containers it is put in */}
           <CenterContainer style={{ textAlign: 'center', maxWidth: 700 }}>
             <SuccessIcon />
             <OnboardTitle style={{ marginTop: '14px' }}>Success</OnboardTitle>
@@ -43,11 +42,16 @@ const BountyDone = (props: any) => {
               style={{
                 display: 'flex',
                 justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
-              {/* TODO(jonathanng) - make arrow look like figma */}
-              <XAvatarOrb /> -----------------{'>'} <XAvatarOrb />
+              <XAvatarOrb />
+              <hr style={{ width: '30%', marginLeft: '20px' }} />
+              <div style={{ marginRight: '20px', marginLeft: -8 }}>{'>'}</div>
+              <XAvatarOrb />
             </div>
+            <br />
+            <br />
             {/* TODO(jonathanng) - add names below XAvatorOrb */}
             <Label as={'label'} style={{ marginTop: '14px' }}>
               Your bounty request has been posted!
@@ -55,19 +59,24 @@ const BountyDone = (props: any) => {
             <Description style={{ marginTop: '14px' }}>
               Share and invite the creator to complete your request
             </Description>
+            <br />
             <PrimaryButton
               style={{
                 backgroundColor: theme.twitterBlue,
                 color: 'white',
                 marginTop: '30px',
-                marginBottom: '30px',
+                marginBottom: '20px',
               }}
             >
               <TwitterIcon />
               Share on Twitter
             </PrimaryButton>
             <PrimaryButton
-              // style={{ borderWidth: 100, backgroundColor: colors.black, color: colors.yellow, borderColor: colors.yellow }}
+              style={{
+                borderWidth: 1,
+                color: colors.yellow,
+                borderColor: colors.yellow,
+              }}
               variant="secondary"
             >
               Copy Shareable Link

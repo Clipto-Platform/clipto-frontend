@@ -17,6 +17,9 @@ const Input = styled.input`
   font-size: 16px;
   line-height: 20px;
   color: #ffffff;
+  ::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
 `;
 
 const Textarea = styled.textarea`
