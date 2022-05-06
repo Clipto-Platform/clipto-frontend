@@ -21,14 +21,13 @@ interface BackgroundWrapperProps {
 }
 export const BackgroundWrapper = styled.div<BackgroundWrapperProps>`
   background-image: url(${(props) => props.backgroundD[props.index]});
-  background-position: ${(props) =>
-    props.index == 0 ? 'center right' : props.index == 1 ? 'center right 30%' : 'center'};
+  background-position: ${(props) => (props.index == 0 ? 'center right' : 'center')};
   background-size: cover;
   object-fit: cover;
   width: 100vw;
   height: 100%;
   opacity: 100%;
-  transform: ${(props) => (props.index == 2 ? `translate(${props.translate}%)` : `translate(${props.translate}%,5px)`)};
+  transform: ${(props) => (props.index == 1 ? `translate(${props.translate}%)` : `translate(${props.translate}%,5px)`)};
   overflow: hidden;
   @media screen and (max-width: 601px) {
     background-position: center center;
@@ -51,8 +50,8 @@ export const OpacityGradient = styled.div`
 
 export const LeftContentWrapper = styled.div`
   position: relative;
-  left: -120px;
   z-index: 100;
+  left: 6%;
   padding: clamp(100px, 11vw, 200px) 0 clamp(160px, 20vw, 350px) 0;
   transition: transform 1s, width 1s;
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -177,7 +176,7 @@ export const OvalSpacing = styled.div`
   width: 100vw;
   display: flex;
   flex-direction: row;
-  padding: 0 75px;
+  padding-left: 8%;
   position: absolute;
   top: clamp(500px, 45vw, 700px);
   justify-content: flex-start;
@@ -212,5 +211,13 @@ export const Oval = styled.div<OvalProps>`
     width: 18px;
     height: 4px;
     margin: 0 5px;
+  `}
+`;
+export const SlidesContentWrapper = styled.div`
+  padding: 0 32px;
+  width: 100%;
+  display: flex;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 0 16px;
   `}
 `;

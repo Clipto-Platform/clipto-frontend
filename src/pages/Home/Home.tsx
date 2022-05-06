@@ -97,29 +97,35 @@ const HomePage = () => {
         </Link>
       </div>
     </LeftContentWrapper>,
-    <>
-      <LeftContentWrapper>
-        <HeroTitle>
-          Personalized videos from your favorite{' '}
-          <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-        </HeroTitle>
-        <div style={{ display: 'inline-block', width: 'fit-content' }}>
-          <Link to={'/creator/0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f'}>
-            <BookNow color={theme.twitterBlue}>Book with Bob</BookNow>
+    <LeftContentWrapper>
+      <HeroTitle>
+        Become a creator
+        <br />
+        Make a <span style={{ fontFamily: 'Eina01-Bold' }}>CLIPTO</span> profile{' '}
+        <span style={{ color: theme.yellow, fontWeight: '700' }}>now</span>
+      </HeroTitle>
+      <div style={{ display: 'inline-block', width: 'fit-content' }}>
+        {user && creator ? (
+          <BookNowButton color={theme.purple} onClick={() => warning("You're already a creator")}>
+            Become a Creator
+          </BookNowButton>
+        ) : user ? (
+          <Link to={'/onboarding'}>
+            <BookNow color={theme.purple}>Become a Creator</BookNow>
           </Link>
-        </div>
-      </LeftContentWrapper>
-      <CreatorText>
-        <Name>Bob Burnquist</Name>
-        <Title>Skateboarder</Title>
-      </CreatorText>
-    </>,
+        ) : (
+          <BookNowButton color={theme.purple} onClick={() => warning('Please connect your wallet')}>
+            Become a Creator
+          </BookNowButton>
+        )}
+      </div>
+    </LeftContentWrapper>,
   ];
 
   return (
     <>
       <PageWrapper style={{ top: 0 }}>
-        <Slides backgroundD={[background1D]} backgroundM={[background1M]}>
+        <Slides backgroundD={[background1D, background3D]} backgroundM={[background1M, background3M]}>
           {slideContent}
         </Slides>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />

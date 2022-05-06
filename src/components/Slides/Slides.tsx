@@ -15,13 +15,12 @@ import {
   OvalSpacing,
   SlideContentWrapper,
   BackgroundWrapper,
+  SlidesContentWrapper,
 } from './Style';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../layout/Common';
 import { HeaderContentGapSpacer, HeaderSpacer } from '../Header/Header';
 
 const Slides = (props: any) => {
-  if (props.backgroundD.length != props.backgroundM.length || props.children.length != props.backgroundM.length)
-    console.warn('Slider props should have same length');
   const NSlides = props.backgroundD.length;
 
   const [firstSlide, setFirstSlide] = useState<number>(0);
@@ -100,13 +99,10 @@ const Slides = (props: any) => {
   };
 
   const onOvalClick = (index: number) => {
-    if ((visibleSlide < index && !(visibleSlide == 0 && index == NSlides)) || (visibleSlide == NSlides && index == 0)) {
-      rightClick();
-    } else if (
-      (visibleSlide > index && !(visibleSlide == NSlides && index == 0)) ||
-      (visibleSlide == 0 && index == NSlides)
-    ) {
+    if (index < visibleSlide) {
       leftClick();
+    } else if (index > visibleSlide) {
+      rightClick();
     }
   };
   return (
@@ -117,9 +113,9 @@ const Slides = (props: any) => {
           <Right onClick={rightClick} />
           <OvalSpacing>
             <Ovals>
-              {[...Array(NSlides)].map((_, index) => (
-                <Oval page={visibleSlide} index={index} onClick={() => onOvalClick(index)} />
-              ))}
+              {[...Array(NSlides)].map((_, index) => {
+                return <Oval key={index} page={visibleSlide} index={index} onClick={() => onOvalClick(index)} />;
+              })}
             </Ovals>
           </OvalSpacing>
         </>
@@ -134,10 +130,10 @@ const Slides = (props: any) => {
           >
             <OpacityGradient />
             <HeaderSpacer />
-            <PageContentWrapper style={{ justifyContent: 'space-around' }}>
+            <SlidesContentWrapper>
               {props.children[index]}
               <div style={{ maxWidth: '600px' }} />
-            </PageContentWrapper>
+            </SlidesContentWrapper>
           </BackgroundWrapper>
         ))}
       </SlideContentWrapper>

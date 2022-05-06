@@ -69,9 +69,9 @@ export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
 export const DISCORD_LINK = 'https://discord.com/invite/fpVMmerNZm';
 export const TWITTER_LINK = 'https://twitter.com/CliptoDAO';
-export const DOCS_LINK = 'https://cliptodao.gitbook.io/clipto/';
-export const TERMS_LINK = 'https://cliptodao.gitbook.io/clipto/';
-export const PRIVACY_LINK = 'https://cliptodao.gitbook.io/clipto/';
+export const DOCS_LINK = 'https://docs.clipto.io/';
+export const TERMS_LINK = 'https://docs.clipto.io/';
+export const PRIVACY_LINK = 'https://docs.clipto.io/';
 
 export const API_URL = DEV ? 'http://localhost:8000' : TEST ? 'https://testapi.clipto.io' : 'https://api.clipto.io';
 

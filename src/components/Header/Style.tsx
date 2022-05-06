@@ -45,10 +45,12 @@ export const HeaderWrapperInner = styled.div`
   position: relative;
   align-items: center;
   justify-content: space-between;
-  max-width: ${MAX_HEADER_WIDTH_IN_PX};
-
+  max-width: 100%;
   color: #ffffff;
-  margin: 0 auto 0 auto;
+  margin: 0 6%;
+  @media screen and (max-width: 960px) {
+    margin: 0 auto 0 auto;
+  }
 `;
 
 export const LeftWrapper = styled.div`
