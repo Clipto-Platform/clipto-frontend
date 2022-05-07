@@ -142,7 +142,6 @@ export const getNFTHistory = async (
   nftContract: string,
   tokenId: number,
 ): Promise<OperationResult<{ transfers: types.Transfer[] }>> => {
-  console.log(nftContract, tokenId);
   return graphInstance
     .query(query.queryGetNFTHistory, {
       nftContract: nftContract.toLowerCase(),
