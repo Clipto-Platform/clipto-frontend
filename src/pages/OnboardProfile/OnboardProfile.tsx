@@ -7,11 +7,10 @@ import { toast } from 'react-toastify';
 import * as api from '../../api';
 import { CreatorData, EntityCreator } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
-import { HeaderSpacer } from '../../components/Header/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
 import { SYMBOL } from '../../config/config';
-import { useExchangeContract, useExchangeContractV1 } from '../../hooks/useContracts';
+import { useExchangeContractV1 } from '../../hooks/useContracts';
 import { useFee } from '../../hooks/useFee';
 import { useProfile } from '../../hooks/useProfile';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
@@ -31,10 +30,10 @@ const OnboardProfilePage = () => {
 
   const updateUserProfile = async (creatorData: CreatorData) => {
     try {
-      const metadatURI = await api.uploadToIpfs({ name: account as string, metadata: creatorData });
-      const txResult = await exchangeContractV1.updateCreator(metadatURI);
+      const txResult = await exchangeContractV1.updateCreator(JSON.stringify(creatorData));
       toast.loading('Profile updating, waiting for confirmation!');
       await txResult.wait();
+
       toast.dismiss();
       toast.success('Changes will be reflected soon!');
       navigate(`/creator/${account}`);
@@ -55,10 +54,10 @@ const OnboardProfilePage = () => {
 
     if (!userOnChain) {
       try {
-        const metadatURI = await api.uploadToIpfs({ name: account as string, metadata: creatorData });
-        const txResult = await exchangeContractV1.registerCreator(creatorData.userName, metadatURI);
+        const txResult = await exchangeContractV1.registerCreator(creatorData.userName, JSON.stringify(creatorData));
         toast.loading('Profile created, waiting for confirmation!');
         await txResult.wait();
+
         toast.dismiss();
         toast.success('Your account will be reflected here soon!');
         navigate(`/explore`);

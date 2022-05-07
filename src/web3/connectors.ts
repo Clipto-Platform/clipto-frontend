@@ -1,6 +1,6 @@
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { DEFAULT_CHAIN_ID, RPC_URLS, TEST } from '../config/config';
+import { TEST } from '../config/config';
 export const injected = new InjectedConnector({
   // allow any chain to 'connect' so we can help redirect them
 });

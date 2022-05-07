@@ -60,8 +60,6 @@ query GetAllCreators (
       id
       address
       metadataURI
-      cat
-      metadataURI
       nftTokenAddress
       twitterHandle
       bio
@@ -239,5 +237,29 @@ query GetAllCreators {
     ){
       twitterHandle
     }
+}
+`;
+
+export const queryGetNFTHistory = `
+query GetNFTHistory(
+  $nftContract: String!,
+  $tokenId: Int!
+) {
+  transfers (
+    where: {
+      nftContract: $nftContract,
+      tokenId: $tokenId
+    },
+    orderBy: timestamp,
+    orderDirection: desc
+  ) {
+    from {
+      id
+    }
+    to {
+      id
+    }
+    timestamp
+  }
 }
 `;

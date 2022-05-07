@@ -74,3 +74,13 @@ export interface IPFS {
   PinSize: string;
   Timestamp: string;
 }
+
+export interface Transfer {
+  from: {
+    id: string;
+  };
+  to: {
+    id: string;
+  };
+  timestamp: string;
+}

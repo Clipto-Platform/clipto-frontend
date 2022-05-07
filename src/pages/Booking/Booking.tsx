@@ -1,27 +1,31 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 import { Formik } from 'formik';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { IPFS, RequestData } from '../../api/types';
+import { exchnageRates } from '../../api';
+import { RequestData } from '../../api/types';
 import { AvatarComponent } from '../../components/AvatarOrb';
 import { ImagesSlider } from '../../components/Booking/ImagesSlider';
 import { BookingCard, RightPanel } from '../../components/Booking/RightPanel';
 import { PrimaryButton } from '../../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
+import { HeaderContentGapSpacer } from '../../components/Header/Header';
 import { PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { CHAIN_NAMES, SYMBOL, TOKENS } from '../../config/config';
 import {
-  getErc20Contract,
-  getProviderOrSigner,
-  useERC20Contract,
-  useExchangeContract,
-  useExchangeContractV1,
-} from '../../hooks/useContracts';
+  CHAIN_NAMES,
+  DEFAULT_CHAIN_ID,
+  ERC20_CONTRACTS,
+  EXCHANGE_ADDRESSV1,
+  SYMBOL,
+  TOKENS,
+} from '../../config/config';
+import { getErc20Contract, useExchangeContractV1 } from '../../hooks/useContracts';
 import { useCreator } from '../../hooks/useCreator';
 import { useFee } from '../../hooks/useFee';
 import { Description, Label } from '../../styles/typography';
@@ -31,12 +35,6 @@ import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
 import { BookingFormValues } from './types';
-import { parseUnits } from 'ethers/lib/utils';
-import { EXCHANGE_ADDRESSV1, DEFAULT_CHAIN_ID, ERC20_CONTRACTS } from '../../config/config';
-import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
-import { ERC20__factory } from '../../contracts';
-import axios from 'axios';
-import { exchnageRates, uploadToIpfs } from '../../api';
 
 const BookingPage = () => {
   const { creatorId } = useParams();
@@ -55,6 +53,7 @@ const BookingPage = () => {
   useEffect(() => {
     setUser(getUser);
   }, [getUser]);
+
   useEffect(() => {
     if (ref && ref.current) {
       window.scrollTo({
@@ -74,6 +73,7 @@ const BookingPage = () => {
   const handleSelect = (e: any) => {
     setToken(e.target.value);
   };
+
   const makeBooking = async (values: BookingFormValues) => {
     try {
       if (!creatorId) {
@@ -91,28 +91,30 @@ const BookingPage = () => {
         deadline: convertToInt(values.deadline),
         description: values.description,
       };
-      const metadatURI = await uploadToIpfs({
-        name: creatorId.concat('-').concat(account as string),
-        metadata: requestData,
-      });
 
       let transaction;
       if (token && token == 'MATIC') {
-        transaction = await exchangeContractV1.nativeNewRequest(creatorId, account as string, metadatURI, {
-          value: ethers.utils.parseEther(values.amount),
-        });
+        transaction = await exchangeContractV1.nativeNewRequest(
+          creatorId,
+          account as string,
+          JSON.stringify(requestData),
+          {
+            value: ethers.utils.parseEther(values.amount),
+          },
+        );
       } else if (token) {
         const ERC20 = getErc20Contract(token, account as string, library as Web3Provider);
-
         const tx = await ERC20.approve(EXCHANGE_ADDRESSV1[DEFAULT_CHAIN_ID], parseUnits(values.amount));
-        toast.loading('waiting for approval');
-        console.log('approve request', await tx.wait());
+
+        toast.loading('Waiting for approval');
+        await tx.wait();
+
         transaction = await exchangeContractV1.newRequest(
           creatorId,
           account as string,
           ERC20_CONTRACTS[token],
           parseUnits(values.amount),
-          metadatURI,
+          JSON.stringify(requestData),
         );
       }
 
