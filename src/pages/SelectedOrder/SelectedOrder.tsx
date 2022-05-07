@@ -1,6 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import * as UpChunk from '@mux/upchunk';
 import { useWeb3React } from '@web3-react/core';
+import { BigNumber } from 'ethers';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useParams } from 'react-router-dom';
@@ -17,9 +18,9 @@ import { NFTHistory } from '../../components/NFTHistory';
 import { OrderCard } from '../../components/OrderCard/OrderCard';
 import { TextField } from '../../components/TextField';
 import { Video } from '../../components/Video';
-import { useExchangeContract } from '../../hooks/useContracts';
+import { useExchangeContract, useExchangeContractV1 } from '../../hooks/useContracts';
 import { Description, Label } from '../../styles/typography';
-import { getNFTDetails, getNFTHistory, getTokenIdAndAddress } from '../../web3/nft';
+import { getNFTDetails, getNFTHistory } from '../../web3/nft';
 import { signMessage } from '../../web3/request';
 import {
   BookingCard,
@@ -32,14 +33,16 @@ import {
 import { ArweaveResponse, NFTDetailsType, NFTFormError, NFTHistories } from './types';
 
 const SelectedOrderPage = () => {
+  const { account, library } = useWeb3React<Web3Provider>();
+  const { creator, requestId, version } = useParams();
+  const exchangeContractV1 = useExchangeContractV1(true);
+  const exchangeContract = useExchangeContract(true);
+
   const theme = useTheme();
   const [uploadMetadata, setUploadMetadata] = useState<ArweaveResponse | undefined>(undefined);
   const [tokenUri, setTokenUri] = useState('');
   const [uploadStatus, setUploadStatus] = useState('');
   const [done, setDone] = useState(false);
-  const { account, library } = useWeb3React<Web3Provider>();
-  const exchangeContract = useExchangeContract(true);
-  const { creator, requestId } = useParams();
   const [request, setRequest] = useState<EntityRequest>();
   const [loaded, setLoaded] = useState<boolean>(false);
   const [minting, setMinting] = useState<boolean>(false);
@@ -49,6 +52,44 @@ const SelectedOrderPage = () => {
   const [description, setDescription] = useState<string>('');
   const [error, setError] = useState<NFTFormError>();
   const [history, setHistory] = useState<NFTHistories[]>();
+
+  useEffect(() => {
+    if (creator && requestId && version) {
+      api
+        .requestById(requestId, creator, version)
+        .then((res) => {
+          if (res.data) {
+            const request = res.data.requests[0];
+            setRequest(request);
+
+            if (request.delivered && exchangeContract) {
+              fetchNFTDetails(request);
+            }
+          }
+        })
+        .finally(() => setLoaded(true));
+    }
+  }, [exchangeContract]);
+
+  exchangeContract.once(
+    'DeliveredRequest',
+    (
+      _creator: string,
+      _requester: string,
+      _amount: BigNumber,
+      _index: BigNumber,
+      tokenAddress: string,
+      tokenId: BigNumber,
+    ) => {
+      fetchNFT(tokenAddress, tokenId.toNumber(), tokenUri);
+      setDone(true);
+    },
+  );
+
+  exchangeContractV1.once('DeliveredRequest', (_creator: string, _requestId: BigNumber, nftTokenId: BigNumber) => {
+    fetchNFT(request?.creator.nftTokenAddress as string, nftTokenId.toNumber(), tokenUri);
+    setDone(true);
+  });
 
   const validate = (name: string, desc: string) => {
     if (name.length === 0 && desc.length === 0) {
@@ -137,6 +178,8 @@ const SelectedOrderPage = () => {
     [nftName, description],
   );
 
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'video/*,.mkv,.flv' });
+
   const completeBooking = async () => {
     if (!request) {
       toast.error('Request not found. Try reloading the page...');
@@ -145,16 +188,14 @@ const SelectedOrderPage = () => {
 
     try {
       setMinting(true);
-      const tx = await exchangeContract.deliverRequest(request.requestId, 'https://arweave.net/' + tokenUri);
-      const receipt = await tx.wait();
-      const eventArgs = receipt.events?.find((i) => i.event === 'DeliveredRequest')?.args;
-      const tokenAddress = eventArgs?.tokenAddress;
-      const tokenId = eventArgs?.tokenId.toNumber();
-      fetchNFT(tokenAddress, tokenId, tokenUri);
+      const version = request.id.split('-')[1];
+      const contract = version === 'v0' ? exchangeContract : exchangeContractV1;
+      const transaction = await contract.deliverRequest(request.requestId, 'https://arweave.net/' + tokenUri);
+      await transaction.wait();
 
       toast.success('Successfully completed order! Order status will be reflected shortly.');
-      setDone(true);
     } catch (e) {
+      console.log(e);
       setMinting(false);
       toast.error('Failed to mint NFT!');
     }
@@ -176,34 +217,15 @@ const SelectedOrderPage = () => {
   };
 
   const fetchNFTDetails = async (request: EntityRequest) => {
-    const data = await getTokenIdAndAddress(request);
-    if (data) {
-      const { tokenAddress, tokenUri, tokenId } = data;
-      fetchNFT(tokenAddress, tokenId, tokenUri);
-    } else {
-      toast.error('Error loading NFT, please check back later');
-    }
+    const details = getNFTDetails(request.nftTokenAddress, request.nftTokenId, request.nftTokenUri);
+    setNftDetails(details);
+    getNFTVideo(details.arweave);
+
+    getNFTHistory(request.nftTokenAddress, request.nftTokenId).then((histories) => {
+      console.log(histories);
+      setHistory(histories);
+    });
   };
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'video/*,.mkv,.flv' });
-
-  useEffect(() => {
-    if (creator && requestId) {
-      api
-        .requestById(requestId, creator)
-        .then((res) => {
-          if (res.data) {
-            const request = res.data.requests[0];
-            setRequest(request);
-
-            if (request.delivered && exchangeContract) {
-              fetchNFTDetails(request);
-            }
-          }
-        })
-        .finally(() => setLoaded(true));
-    }
-  }, [exchangeContract]);
 
   return (
     <>

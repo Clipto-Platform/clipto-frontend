@@ -32,7 +32,6 @@ const Slides = (props: any) => {
   const [clickEnabled, setClickEnabled] = useState(true);
   const [index, setIndex] = useState(0);
   const timeoutRef = useRef(null as any);
-
   useEffect(() => {
     resetTimeout();
     if (NSlides > 1) timeoutRef.current = setTimeout(rightClick, 8000);

@@ -1,21 +1,31 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 import { Formik } from 'formik';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { exchnageRates } from '../../api';
 import { RequestData } from '../../api/types';
 import { AvatarComponent } from '../../components/AvatarOrb';
 import { ImagesSlider } from '../../components/Booking/ImagesSlider';
 import { BookingCard, RightPanel } from '../../components/Booking/RightPanel';
 import { PrimaryButton } from '../../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
+import { HeaderContentGapSpacer } from '../../components/Header/Header';
 import { PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { CHAIN_NAMES, SYMBOL, TOKENS } from '../../config/config';
-import { getProviderOrSigner, useERC20Contract, useExchangeContract } from '../../hooks/useContracts';
+import {
+  CHAIN_NAMES,
+  DEFAULT_CHAIN_ID,
+  ERC20_CONTRACTS,
+  EXCHANGE_ADDRESSV1,
+  SYMBOL,
+  TOKENS,
+} from '../../config/config';
+import { getErc20Contract, useExchangeContractV1 } from '../../hooks/useContracts';
 import { useCreator } from '../../hooks/useCreator';
 import { useFee } from '../../hooks/useFee';
 import { Description, Label } from '../../styles/typography';
@@ -25,19 +35,13 @@ import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
 import { BookingFormValues } from './types';
-import { parseUnits } from 'ethers/lib/utils';
-import { EXCHANGE_ADDRESS, DEFAULT_CHAIN_ID, ERC20_CONTRACTS } from '../../config/config';
-import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
-import { ERC20__factory } from '../../contracts';
-import axios from 'axios';
-import { exchnageRates } from '../../api';
 
 const BookingPage = () => {
   const { creatorId } = useParams();
   const { account, library, chainId } = useWeb3React<Web3Provider>();
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const exchangeContract = useExchangeContract(true);
+  const exchangeContractV1 = useExchangeContractV1(true);
   const { creator, loaded } = useCreator(creatorId);
   const { FeeDescription } = useFee();
   const [user, setUser] = useState();
@@ -49,6 +53,7 @@ const BookingPage = () => {
   useEffect(() => {
     setUser(getUser);
   }, [getUser]);
+
   useEffect(() => {
     if (ref && ref.current) {
       window.scrollTo({
@@ -57,6 +62,18 @@ const BookingPage = () => {
     }
   }, [ref]);
 
+  useEffect(() => {
+    if (loaded && creator) {
+      exchnageRates(token, creator.price).then((convertedPrice) => {
+        setPrice(parseFloat(convertedPrice));
+      });
+    }
+  }, [loaded, token]);
+
+  const handleSelect = (e: any) => {
+    setToken(e.target.value);
+  };
+
   const makeBooking = async (values: BookingFormValues) => {
     try {
       if (!creatorId) {
@@ -64,7 +81,7 @@ const BookingPage = () => {
         return;
       }
 
-      const isCreator = await isCreatorOnChain(exchangeContract, creatorId);
+      const isCreator = await isCreatorOnChain(exchangeContractV1, creatorId);
       if (!isCreator) {
         toast.error('Booking request for this content creator cannot be created');
         return;
@@ -74,15 +91,36 @@ const BookingPage = () => {
         deadline: convertToInt(values.deadline),
         description: values.description,
       };
+
       let transaction;
-      transaction = await exchangeContract.newRequest(creatorId, JSON.stringify(requestData), {
-        value: ethers.utils.parseEther(values.amount),
-      });
+      if (token && token == 'MATIC') {
+        transaction = await exchangeContractV1.nativeNewRequest(
+          creatorId,
+          account as string,
+          JSON.stringify(requestData),
+          {
+            value: ethers.utils.parseEther(values.amount),
+          },
+        );
+      } else if (token) {
+        const ERC20 = getErc20Contract(token, account as string, library as Web3Provider);
+        const tx = await ERC20.approve(EXCHANGE_ADDRESSV1[DEFAULT_CHAIN_ID], parseUnits(values.amount));
+
+        toast.loading('Waiting for approval');
+        await tx.wait();
+
+        transaction = await exchangeContractV1.newRequest(
+          creatorId,
+          account as string,
+          ERC20_CONTRACTS[token],
+          parseUnits(values.amount),
+          JSON.stringify(requestData),
+        );
+      }
 
       toast.dismiss();
       toast.loading('Creating a new booking, waiting for confirmation');
-      // const receipt = transaction &&
-      await transaction.wait();
+      const receipt = transaction && (await transaction.wait());
       toast.dismiss();
       toast.success('Booking completed, your Order will reflect in few moments.');
       navigate('/orders');
@@ -217,6 +255,17 @@ const BookingPage = () => {
                           value={user}
                           isDisabled
                         />
+                      </div>
+
+                      <div style={{ marginBottom: 40 }}>
+                        <Dropdown formLabel="Select payment type" onChange={handleSelect}>
+                          {TOKENS.map((tok, i) => {
+                            if (i == 0) {
+                              <Option key={i} selected value={tok} />;
+                            }
+                            return <Option key={i} value={tok} />;
+                          })}
+                        </Dropdown>
                       </div>
 
                       <div style={{ marginBottom: 40 }}>

@@ -2,8 +2,8 @@ import { JsonRpcProvider, JsonRpcSigner, Web3Provider } from '@ethersproject/pro
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 
-import { DEFAULT_CHAIN_ID, EXCHANGE_ADDRESS, RPC_URLS } from '../config/config';
-import { CliptoExchange__factory, CliptoToken__factory, ERC20__factory } from '../contracts';
+import { DEFAULT_CHAIN_ID, ERC20_CONTRACTS, EXCHANGE_ADDRESSV1, EXCHANGE_ADDRESS, RPC_URLS } from '../config/config';
+import { CliptoExchangeV1__factory, CliptoExchange__factory, CliptoToken__factory, ERC20__factory } from '../contracts';
 
 export const getSigner = (library: Web3Provider, account: string): JsonRpcSigner => {
   return library.getSigner(account).connectUnchecked();
@@ -30,6 +30,14 @@ export const useExchangeContract = (withSignerIfPossible = false) => {
   }, [account, library, withSignerIfPossible]);
 };
 
+export const useExchangeContractV1 = (withSignerIfPossible = false) => {
+  const { account, library } = useWeb3React<Web3Provider>();
+  return useMemo(() => {
+    const provider = getProviderOrSigner(library, withSignerIfPossible && account ? account : undefined);
+    return CliptoExchangeV1__factory.connect(EXCHANGE_ADDRESSV1[DEFAULT_CHAIN_ID], provider);
+  }, [account, library, withSignerIfPossible]);
+};
+
 export const useERC20Contract = (Erc20TokenAddress: any, withSignerIfPossible = false) => {
   const { account, library } = useWeb3React<Web3Provider>();
   return useMemo(() => {
@@ -44,4 +52,8 @@ export const useNFTContract = (nftAddress: string, withSignerIfPossible = false)
     const provider = getProviderOrSigner(library, withSignerIfPossible && account ? account : undefined);
     return CliptoToken__factory.connect(nftAddress, provider);
   }, [account, library, withSignerIfPossible]);
+};
+export const getErc20Contract = (token: string, account: string, library: Web3Provider) => {
+  const provider = getProviderOrSigner(library, account ? account : undefined);
+  return ERC20__factory.connect(ERC20_CONTRACTS[token], provider);
 };

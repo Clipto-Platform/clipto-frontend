@@ -16,17 +16,4 @@ npx prettier --write src/**/*.tsx
 
 ## deployed contract address
 
-V1:
-
-- Polygon : 0x3C78bF376815C322d216899d041ff90Ed86bbFa7
-- Mumbai : 0x36A9F25B8AA6b941B0c8177684E8ecff59376D9a
-
-V2:
-
-- Polygon : 0x36A9F25B8AA6b941B0c8177684E8ecff59376D9a
-- Mumbai : 0x307736eCecF51104a841CfF44A2508775878fe3f
-
-Multi-token:
-
-- Polygon :
-- Mumbai : 0x515b631E814d3CB586e3e2cF486c0c814CC8A0Bb
+Refer [here](https://github.com/Clipto-Platform/clipto/tree/test#latest)

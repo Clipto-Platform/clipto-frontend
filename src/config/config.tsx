@@ -1,5 +1,5 @@
 export const DEV = false;
-export const TEST = false;
+export const TEST = true;
 export const ENV = DEV ? 'DEV' : TEST ? 'TEST' : 'PROD';
 
 export const CHAIN_IDS = {
@@ -35,12 +35,17 @@ export const DEFAULT_CHAIN_ID = DEV
   : CHAIN_IDS.POLYGON_MAINNET;
 export const SYMBOL = SYMBOLS[DEFAULT_CHAIN_ID];
 
+export const EXCHANGE_ADDRESSV1: { [chainId: number]: string } = {
+  [CHAIN_IDS.POLYGON_MAINNET]: '0x36A9F25B8AA6b941B0c8177684E8ecff59376D9a',
+  [CHAIN_IDS.POLYGON_TESTNET]: '0x10970e6FD7545d24021c2dE1ee7963E6F3235df2',
+  [CHAIN_IDS.DAPPTOOLS]: '0x500fB9CAE50b307Fb82C9282f5eaCBdF14fa8cC2',
+};
+
 export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_MAINNET]: '0x36A9F25B8AA6b941B0c8177684E8ecff59376D9a',
   [CHAIN_IDS.POLYGON_TESTNET]: '0x307736eCecF51104a841CfF44A2508775878fe3f',
   [CHAIN_IDS.DAPPTOOLS]: '0x500fB9CAE50b307Fb82C9282f5eaCBdF14fa8cC2',
 };
-
 // block number of contract deployment
 export const START_BLOCKS: { [chainId: number]: number } = {
   [CHAIN_IDS.POLYGON_MAINNET]: 25833562,
@@ -50,7 +55,7 @@ export const START_BLOCKS: { [chainId: number]: number } = {
 
 export const GRAPH_APIS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_MAINNET]: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-mainnet',
-  [CHAIN_IDS.POLYGON_TESTNET]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph-v2',
+  [CHAIN_IDS.POLYGON_TESTNET]: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-tstnet',
   [CHAIN_IDS.DAPPTOOLS]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph',
 };
 export const ERC20_CONTRACTS: { [token: string]: string } = {

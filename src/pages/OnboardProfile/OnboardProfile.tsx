@@ -7,11 +7,10 @@ import { toast } from 'react-toastify';
 import * as api from '../../api';
 import { CreatorData, EntityCreator } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
-import { HeaderSpacer } from '../../components/Header/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
 import { SYMBOL } from '../../config/config';
-import { useExchangeContract } from '../../hooks/useContracts';
+import { useExchangeContractV1 } from '../../hooks/useContracts';
 import { useFee } from '../../hooks/useFee';
 import { useProfile } from '../../hooks/useProfile';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
@@ -21,7 +20,7 @@ import { OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
 const OnboardProfilePage = () => {
   const userProfile = useProfile();
   const { account, library } = useWeb3React<Web3Provider>();
-  const exchangeContract = useExchangeContract(true);
+  const exchangeContractV1 = useExchangeContractV1(true);
   const [loading, setLoading] = useState(false); //state of form button
   const [hasAccount, setHasAccount] = useState<boolean>(false); //state of if the user is a creator or not
   const [userProfileDB, setUserProfileDB] = useState<EntityCreator>();
@@ -31,9 +30,10 @@ const OnboardProfilePage = () => {
 
   const updateUserProfile = async (creatorData: CreatorData) => {
     try {
-      const txResult = await exchangeContract.updateCreator(JSON.stringify(creatorData));
+      const txResult = await exchangeContractV1.updateCreator(JSON.stringify(creatorData));
       toast.loading('Profile updating, waiting for confirmation!');
       await txResult.wait();
+
       toast.dismiss();
       toast.success('Changes will be reflected soon!');
       navigate(`/creator/${account}`);
@@ -46,7 +46,7 @@ const OnboardProfilePage = () => {
   const createUserProfile = async (creatorData: CreatorData) => {
     let userOnChain;
     try {
-      userOnChain = await isCreatorOnChain(exchangeContract, account);
+      userOnChain = await isCreatorOnChain(exchangeContractV1, account);
     } catch (err) {
       toast.error('Error connecting to wallet. Toggle your networks and reload.');
       return;
@@ -54,9 +54,10 @@ const OnboardProfilePage = () => {
 
     if (!userOnChain) {
       try {
-        const txResult = await exchangeContract.registerCreator(creatorData.userName, JSON.stringify(creatorData));
+        const txResult = await exchangeContractV1.registerCreator(creatorData.userName, JSON.stringify(creatorData));
         toast.loading('Profile created, waiting for confirmation!');
         await txResult.wait();
+
         toast.dismiss();
         toast.success('Your account will be reflected here soon!');
         navigate(`/explore`);
