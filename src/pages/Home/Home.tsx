@@ -10,6 +10,7 @@ import { CreatorCards } from '../../components/CreatorCards/CreatorCards';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as api from '../../api';
+
 import {
   LeftContentWrapper,
   HeroTitle,
@@ -38,6 +39,9 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { UserProfile } from '../../hooks/useProfile';
 import * as lens from '../../api/lens';
+import { useQuery } from 'urql';
+import { queryDoesFollow } from '../../api/lens/query';
+import { DoesFollow, DoesFollowResponse } from '../../generated/graphql';
 
 const featuredList: string[] = [
   '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8', // Gabriel Haines.eth
@@ -55,7 +59,6 @@ const featuredListTest: string[] = [
 
 const HomePage = () => {
   let [creators, setCreators] = useState<EntityCreator[]>([]);
-
   const [page, setPage] = useState<number>(0);
   const [slidesPosition, setSlidesPosition] = useState<number>(0);
   const [slidePosition, setSlidePosition] = useState<Array<number>>([0, 0, -300]);
@@ -67,10 +70,24 @@ const HomePage = () => {
   const { account } = useWeb3React<Web3Provider>();
   const [index, setIndex] = useState(0);
   const timeoutRef = useRef(null as any);
-
   useEffect(() => {
     const getCreatorData = async () => {
       if (account) {
+        // console.log(await lens.isFollowing(account, "0x01"))
+        const accessToken = await lens.getAccess(account)
+        if (!accessToken) return
+        const access = accessToken.data.authenticate.accessToken
+        // lens.txWait('0xbbb6c23aa4056fbcf7343f40430eae045a84b64a452a36dc83c542c30d295dec', access).then(console.log)
+        //console.log(access)
+        //const res = await lens.follow("0x01", access)
+        //const res = await lens.unfollow("0x01", access)
+        //console.log(res)
+        // const lensAccount = await lens.getProfile(account)
+        // console.log(lensAccount)
+        // if (!lensAccount) return
+        // console.log(lensAccount.data.profiles.items[0].id)
+        //const res = await lens.getFollowNFTs(account, lensAccount.data.profiles.items[0].id)
+        //console.log(res)
         try {
           const response = await api.creatorById(account || '');
           if (response.data && response.data.creator) {

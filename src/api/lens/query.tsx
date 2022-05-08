@@ -35,6 +35,12 @@ export const queryProfile = `query Profiles($address: EthereumAddress!) {
       location
       website
       twitter
+      stats {
+        ... on ProfileStats {
+          totalFollowers
+          totalFollowing
+        }
+      }
       picture {
         ... on NftImage {
           contractAddress
@@ -107,11 +113,11 @@ export const queryProfile = `query Profiles($address: EthereumAddress!) {
 
 
 export const mutationFollow = `
-  mutation CreateFollowTypedData {
+  mutation CreateFollowTypedData ($profile: ProfileId!){
     createFollowTypedData(request:{
       follow: [
         {
-          profile: "0x01",
+          profile: $profile,
           followModule: null
         }
       ]
@@ -143,8 +149,10 @@ export const mutationFollow = `
 `
 
 export const mutationUnfollow = `
-  mutation($request: UnfollowRequest!) { 
-    createUnfollowTypedData(request: $request) {
+  mutation($profile: ProfileId!) { 
+    createUnfollowTypedData(request:{
+      profile: $profile,
+    }) {
       id
       expiresAt
       typedData {
@@ -170,11 +178,211 @@ export const mutationUnfollow = `
   }
 `
 
-export const queryFollowerNFTs = `
-  query($request: FollowerNftOwnedTokenIdsRequest!) {
-    followerNftOwnedTokenIds(request: $request) { 
-            followerNftAddress
-        tokensIds
+export const queryFollowing = `
+query($request: FollowingRequest!) {
+  following(request: $request) { 
+              items {
+         profile {
+            id
+            name
+            bio
+            location
+            website
+            twitter
+            handle
+            picture {
+              ... on NftImage {
+                contractAddress
+                tokenId
+                uri
+                verified
+              }
+              ... on MediaSet {
+                original {
+                  url
+                  width
+                  height
+                  mimeType
+                }
+                medium {
+                  url
+                  width
+                  height
+                  mimeType
+                }
+                small {
+                  url
+                  width
+                  height
+                  mimeType
+                }
+              }
+            }
+            coverPicture {
+              ... on NftImage {
+                contractAddress
+                tokenId
+                uri
+                verified
+              }
+              ... on MediaSet {
+                original {
+                  url
+                  width
+                  height
+                  mimeType
+                }
+                small {
+                  width
+                  url
+                  height
+                  mimeType
+                }
+                medium {
+                  url
+                  width
+                  height
+                  mimeType
+                }
+              }
+            }
+            ownedBy
+            depatcher {
+              address
+              canUseRelay
+            }
+            stats {
+              totalFollowers
+              totalFollowing
+              totalPosts
+              totalComments
+              totalMirrors
+              totalPublications
+              totalCollects
+            }
+            followModule {
+              ... on FeeFollowModuleSettings {
+                type
+                amount {
+                  asset {
+                    name
+                    symbol
+                    decimals
+                    address
+                  }
+                  value
+                }
+                recipient
+              }
+          }
         }
+      }
+     pageInfo {
+        prev
+        next
+        totalCount
+     }
+      }
+}
+`
+
+export const queryDoesFollow = `
+  query DoesFollow ($address: EthereumAddress!, $profileId: ProfileId!) {
+    doesFollow(request: { 
+                  followInfos: [
+                    {
+                      followerAddress: $address,
+                      profileId: $profileId
+                    }
+                  ] 
+              }) {
+      followerAddress
+      profileId
+      follows
+    }
   }
+`
+
+export const queryTxWait = `
+query HasTxHashBeenIndexed ($txHash: TxHash!){
+  hasTxHashBeenIndexed(request: { txHash: $txHash }) {
+    ... on TransactionIndexedResult {
+      indexed
+      txReceipt {
+        to
+        from
+        contractAddress
+        transactionIndex
+        root
+        gasUsed
+        logsBloom
+        blockHash
+        transactionHash
+        blockNumber
+        confirmations
+        cumulativeGasUsed
+        effectiveGasPrice
+        byzantium
+        type
+        status
+        logs {
+          blockNumber
+          blockHash
+          transactionIndex
+          removed
+          address
+          data
+          topics
+          transactionHash
+          logIndex
+        }
+      }
+      metadataStatus {
+        status
+        reason
+      }
+    }
+    ... on TransactionError {
+      reason
+      txReceipt {
+        to
+        from
+        contractAddress
+        transactionIndex
+        root
+        gasUsed
+        logsBloom
+        blockHash
+        transactionHash
+        blockNumber
+        confirmations
+        cumulativeGasUsed
+        effectiveGasPrice
+        byzantium
+        type
+        status
+        logs {
+          blockNumber
+          blockHash
+          transactionIndex
+          removed
+          address
+          data
+          topics
+          transactionHash
+          logIndex
+        }
+      }
+    },
+    __typename
+  }
+}
+`
+
+export const queryVerify = `
+query Query ($accessToken: Jwt!) {
+  verify(request: {
+    accessToken:$accessToken
+  })
+}
 `

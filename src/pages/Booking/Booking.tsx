@@ -31,6 +31,10 @@ import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
 import { ERC20__factory } from '../../contracts';
 import axios from 'axios';
 import { exchnageRates } from '../../api';
+import * as lens from '../../api/lens'
+import { useQuery } from 'urql';
+import { queryProfile } from '../../api/lens/query';
+import { ProfileSearchResult } from '../../generated/graphql';
 
 const BookingPage = () => {
   const { creatorId } = useParams();
@@ -45,7 +49,13 @@ const BookingPage = () => {
   const ref = useRef(null as any);
   const [token, setToken] = useState<string>('MATIC');
   const [price, setPrice] = useState<number>(0);
-
+  const [doesFollow, setDoesFollow] = useState<boolean>(false);
+  const [{data, fetching, error}, executeQuery] = useQuery({
+    query: queryProfile, 
+    variables: {
+    address: creatorId
+    }
+  })
   useEffect(() => {
     setUser(getUser);
   }, [getUser]);
@@ -64,6 +74,21 @@ const BookingPage = () => {
       });
     }
   }, [loaded, token]);
+
+  useEffect(() => {
+    console.log('data')
+    console.log(data)
+    if (account && data && data.profiles && data.profiles.items.length != 0) {
+      console.log('aaae')
+      lens.isFollowing(account, data.profiles.items[0].id).then(res => {
+        console.log(res)
+        if (res) {
+          console.log('hhhhe')
+          setDoesFollow(res.data.doesFollow[0].follows)
+        }
+      })
+    }
+  }, [account, data])
 
   const getErc20Contract = () => {
     const provider = getProviderOrSigner(library, account ? account : undefined);
@@ -145,6 +170,21 @@ const BookingPage = () => {
                       </a>{' '}
                     </Description>
                     <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
+                    {data && data.profiles && data.profiles.items && data.profiles.items.length != 0 && <Description>🌿: <button onClick={async () => {
+                      const accessToken = await lens.getAccess(account)
+                      if (!accessToken) return
+                      const access = accessToken.data.authenticate.accessToken
+                      console.log(access)
+                      
+                      const res = doesFollow ? 
+                        await lens.unfollow(data?.profiles.items[0].id, access) : 
+                        await lens.follow(data?.profiles.items[0].id, access)
+                      //const res = await lens.unfollow("0xeb", access)
+                    }}>
+                      {data?.profiles.items[0].handle}
+                      </button>
+                      Is following: {`${doesFollow}`}
+                    </Description>}
                   </div>
                   <div>
                     <AvatarComponent url={creator.profilePicture} size="medium" twitterHandle={creator.twitterHandle} />
@@ -248,7 +288,7 @@ const BookingPage = () => {
                       </div>
 
                       <div style={{ marginBottom: 40 }}>
-                        <Dropdown formLabel="Select payment type" onChange={handleSelect}>
+                        <Dropdown name="token" formLabel="Select payment type" onChange={handleSelect}>
                           {TOKENS.map((tok, i) => {
                             if (i == 0) {
                               <Option key={i} selected value={tok} />;

@@ -5,8 +5,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as api from '../../api';
+import * as lens from '../../api/lens';
 import { CreatorData, EntityCreator } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
+import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
 import { HeaderSpacer } from '../../components/Header/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
@@ -28,7 +30,7 @@ const OnboardProfilePage = () => {
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState<boolean>(false);
   const { FeeDescription } = useFee();
-
+  const [lensProfiles, setLensProfiles] = useState<Array<{id: string, handle: string}>>([])
   const updateUserProfile = async (creatorData: CreatorData) => {
     try {
       const txResult = await exchangeContract.updateCreator(JSON.stringify(creatorData));
@@ -78,7 +80,6 @@ const OnboardProfilePage = () => {
         .then((res) => {
           if (res.data && res.data.creator) {
             const creator = res.data.creator;
-
             setHasAccount(true);
             setUserProfileDB(creator);
           }
@@ -92,6 +93,11 @@ const OnboardProfilePage = () => {
             setLoaded(true);
           }
         });
+      lens.getProfile(account).then(res => {
+        if (res && res.data) {
+          setLensProfiles(res.data.profiles.items.map((item: any) => ({id: item.id, handle: item.handle})))
+        }
+      })
     }
   }, [account]);
 
@@ -122,6 +128,7 @@ const OnboardProfilePage = () => {
                     demo1: userProfile.demos[0] || userProfileDB?.demos[0] || '',
                     demo2: userProfile.demos[1] || userProfileDB?.demos[1] || '',
                     demo3: userProfile.demos[2] || userProfileDB?.demos[2] || '',
+                    lensHandle: userProfile.lensHandle || ''
                   }}
                   onSubmit={async (values) => {
                     setLoading(true);
@@ -139,6 +146,7 @@ const OnboardProfilePage = () => {
                       demos: demos,
                       price: parseFloat(values.price),
                       profilePicture: values.profilePicture,
+                      lensHandle: values.lensHandle,
                     };
                     hasAccount ? await updateUserProfile(creatorData) : await createUserProfile(creatorData);
                     setLoading(false);
@@ -313,7 +321,37 @@ const OnboardProfilePage = () => {
                           />
                           <FeeDescription />
                         </div>
-
+                        <div style={{ marginBottom: 12}}>
+                          <Dropdown formLabel="Connect Lens Profile" onChange={async (e) => {
+                            if (e.target.value === 'Create new Lens Profile 🌿') {
+                              if (account) {
+                                const lensHandle = '0xjonomnom1'
+                                const accessRes = await lens.getAccess(account)
+                                if (!accessRes) return;
+                                const profileRes = await lens.createProfile({
+                                  handle: '0xjonomnom1'
+                                }, 
+                                  accessRes.data.authenticate.accessToken
+                                )
+                                console.log(profileRes && profileRes.data.createProfile && profileRes.data.createProfile.reason ||
+                                  profileRes && profileRes.data.createProfile && profileRes.data.createProfile
+                                )
+                                if(profileRes && profileRes.data.createProfile && !profileRes.data.createProfile.reason) {
+                                  setLensProfiles([...lensProfiles, {id: '', handle:lensHandle}])
+                                }
+                              }
+                            }
+                            handleChange('lensHandle')(e)
+                          }} name="lens">
+                            {/* Creates an array of existing lens profiles and gives user to create a new lens profile */}
+                            {[{id:'', handle: ''}, {id:'', handle: 'Create new Lens Profile 🌿'}, ...(lensProfiles || [])].map(({id, handle}, i) => {
+                              if (userProfile.lensHandle === handle) {
+                                <Option key={i} selected value={handle} />;
+                              }
+                              return <Option key={i} value={handle} />;
+                            })}
+                          </Dropdown>
+                        </div>
                         <div style={{ marginBottom: 12 }}>
                           <TextField
                             onChange={handleChange('demo1')}

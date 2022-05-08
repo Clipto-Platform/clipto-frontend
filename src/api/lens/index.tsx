@@ -1,28 +1,30 @@
 import { ethers } from 'ethers';
 import { createClient } from "urql";
 import { LENS_URI } from "../../config/config";
-import { mutationFollow, mutationProfile, mutationUnfollow, queryAuth, queryChallenge, queryFollowerNFTs, queryProfile } from './query';
+import { getFollowNftContract, lensHub } from './contract';
+import { getAddressFromSigner, signedTypeData, splitSignature } from './ethers-service';
+import { mutationFollow, mutationProfile, mutationUnfollow, queryAuth, queryChallenge, queryDoesFollow, queryFollowing, queryProfile, queryTxWait, queryVerify } from './query';
 import { CreateProfileRequest } from './types';
 
 declare var window: any //this removes window.ethereum type error
 
-const graphInstance = LENS_URI && createClient({
+export const graphInstance = createClient({
   url: LENS_URI,
 });
 
 export const generateChallenge = (address : any) => {
-  return graphInstance && graphInstance.query(queryChallenge, {address}).toPromise()
+  return graphInstance.query(queryChallenge, {address}).toPromise()
 }
 
 export const authenticate = (address: string, signature: string) => {
-  return graphInstance && graphInstance.mutation(queryAuth, {
+  return graphInstance.mutation(queryAuth, {
     address,
     signature
   }).toPromise()
 }
 
 export const createProfile = async (createProfileRequest: CreateProfileRequest, accessToken : string) => {
-  return graphInstance && graphInstance.mutation(mutationProfile, {request: createProfileRequest}, {
+  return graphInstance.mutation(mutationProfile, {request: createProfileRequest}, {
     fetchOptions: {
       headers: {
         "x-access-token": accessToken
@@ -33,7 +35,7 @@ export const createProfile = async (createProfileRequest: CreateProfileRequest, 
 
 
 export const getProfile = async (address : string) => {
-  return graphInstance && graphInstance.query(queryProfile, {address}).toPromise()
+  return graphInstance.query(queryProfile, {address}).toPromise()
 }
 
 // This code will assume you are using MetaMask.
@@ -50,6 +52,21 @@ export const signText = (text : string) => {
 
 //gets access and request tokens
 export const getAccess = async (address : string) => {
+  let localAccess = localStorage.getItem('lensAccessToken'); // Note - this should be refactored to be in the state and in a hook inside
+  //This is a major security flaw! ^^ Vulnerable to XSS
+  if (localAccess) {
+    const isAccessValid = await verify(localAccess)
+    if (isAccessValid && isAccessValid.data.verify) {
+      return {
+        data: {
+          authenticate: {
+          accessToken: localAccess,
+          refreshToken: localAccess
+          }
+        }
+      }
+    }
+  }
   const challengeResponse = await generateChallenge(address);
   console.log(challengeResponse)
   // sign the text with the wallet
@@ -58,6 +75,9 @@ export const getAccess = async (address : string) => {
   const authResponse = signature && await authenticate(address, signature)
   console.log(authResponse)
   !authResponse && console.error('Unable to login in')
+  if (authResponse && authResponse.data) {
+    localStorage.setItem('lensAccessToken', authResponse.data.authenticate.accessToken)
+  }
   return authResponse
 }
 
@@ -81,15 +101,11 @@ export const signUp = async (address : string) => {
 }
 
 
+
 //Need to check what type of follow module - (don't want to have to pay for a fee)
-// todo - untested
-export const follow = async (address : string, addressToFollow : string, accessToken : string) => {
-  return graphInstance && graphInstance.mutation(mutationFollow, {
-    request: [
-      {
-        profile: addressToFollow
-      }
-    ]
+export const follow = async (handle : string, accessToken : string) => {
+  const result = await graphInstance.mutation(mutationFollow, {
+    profile: handle
   }, {
     fetchOptions: {
       headers: {
@@ -97,16 +113,36 @@ export const follow = async (address : string, addressToFollow : string, accessT
       }
     }
   }).toPromise()
+  if (!result) throw 'result is undefined'
+  try {
+    const typedData = result.data.createFollowTypedData.typedData;
+    const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
+    const { v, r, s } = splitSignature(signature);
+    const tx = await lensHub.followWithSig({
+      follower: await getAddressFromSigner(),
+      profileIds: typedData.value.profileIds,
+      datas: typedData.value.datas,
+      sig: {
+        v,
+        r,
+        s,
+        deadline: typedData.value.deadline,
+      },
+    });
+    console.log(tx.hash);
+    return tx.hash
+    // you can look at how to know when its been indexed here: 
+    //   - https://docs.lens.dev/docs/has-transaction-been-indexed
+  } catch (e) {
+    console.error(e)
+    console.error('Make sure you are on the correct network!')
+  }
 }
 
-// todo - untested
-export const unfollow = async (address : string, addressToFollow : string, accessToken : string) => {
-  return graphInstance && graphInstance.mutation(mutationUnfollow, {
-    request: [
-      {
-        profile: addressToFollow
-      }
-    ]
+
+export const unfollow = async (handle : string, accessToken : string) => {
+  const result = await graphInstance.mutation(mutationUnfollow, {
+    profile: handle
   }, {
     fetchOptions: {
       headers: {
@@ -114,14 +150,83 @@ export const unfollow = async (address : string, addressToFollow : string, acces
       }
     }
   }).toPromise()
+  if (!result) return
+  console.log(result)
+  const typedData = result.data.createUnfollowTypedData.typedData;
+  const followNftContract = getFollowNftContract(typedData);
+  const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
+  const { v, r, s } = splitSignature(signature);
+  
+  const sig = {
+      v,
+      r,
+      s,
+      deadline: typedData.value.deadline,
+  }
+  
+  const tx = await followNftContract.burnWithSig(typedData.value.tokenId, sig);
+  console.log(tx.hash);
+  return tx.hash
+  // you can look at how to know when its been indexed here: 
+  //   - https://docs.lens.dev/docs/has-transaction-been-indexed
 }
 
 // todo - untested
+// todo - get list of your current follows
 export const getFollowNFTs = async (address : string, profileId: string) => {
-  return graphInstance && graphInstance.query(queryFollowerNFTs, {
+  return graphInstance.query(queryFollowing, {
     request: {
       address,
       profileId
     }
   }).toPromise()
+
 }
+
+
+// todo - add access tokens to either the state or the localstorage
+//      - modify api to use localstorage or state for access token
+const verify = async (accessToken : string) => {
+  return graphInstance.query(queryVerify, {
+    accessToken: accessToken
+  }).toPromise()
+}
+
+
+// todo - given one address, return if you are following or not
+//address of creator on booking page
+/**
+ * 
+ * @param address the address that wants to know if they follow the handle
+ * @param id 
+ * @returns 
+ */
+export const isFollowing = async (address : string, id: string) => {
+  return graphInstance.query(queryDoesFollow, {
+    address: address,
+    profileId: id
+  }).toPromise()
+}
+
+/**
+ * Note: Do not use tx.wait() because it is not the single source of truth, read more here: https://docs.lens.dev/docs/has-transaction-been-indexed
+ * @param txHash
+ */
+export const txWait = async (txHash: string, accessToken : string) => {
+  return graphInstance.query(queryTxWait, {
+    txHash: txHash
+  }, {
+    fetchOptions: {
+      headers: {
+        "x-access-token": accessToken
+      }
+    }
+  }).toPromise()
+}
+
+// todo - sharing to lens as a publication
+
+
+// todo - get publications
+
+// todo - create publication

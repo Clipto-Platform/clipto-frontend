@@ -89,8 +89,13 @@ export const getTokenSymbol = (token: string) => {
 
 
 export const LENS_URI = {
-  DEV: undefined,
+  DEV: "https://api-mumbai.lens.dev/",
   TEST: "https://api-mumbai.lens.dev/",
-  PROD: undefined
+  PROD: "https://api-mumbai.lens.dev/"
 }[ENV] //wtf - this is a thing?
 
+export const LENS_HUB_CONTRACT_ADDRESS = {
+  DEV: undefined,
+  TEST: "0x4BF0c7AD32Fd2d32089790a54485e23f5C7736C0",
+  PROD: undefined
+}[ENV]
