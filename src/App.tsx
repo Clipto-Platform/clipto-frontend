@@ -1,25 +1,21 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { ThemeProvider } from 'styled-components';
-
+import { BottomBar } from './components/BottomBar/BottomBar';
 import { Header } from './components/Header/Header';
 import { BookingPage } from './pages/Booking/Booking';
-import { BountyPage } from './pages/bounty/Bounty';
-import { BountyDone } from './pages/bounty/BountyDone';
-import { InvitationPage } from './pages/bounty/Invitation';
-import { MintPage } from './pages/bounty/Mint';
-import { OnboardingPage } from './pages/Onboard/Onboard';
-import { OnboardProfilePage } from './pages/OnboardProfile/OnboardProfile';
 import { ExplorePage } from './pages/Explore/Explore';
 import { HomePage } from './pages/Home/Home';
 import { NotFoundPage } from './pages/NotFound/NotFound';
+import { OnboardingPage } from './pages/Onboard/Onboard';
+import { OnboardProfilePage } from './pages/OnboardProfile/OnboardProfile';
 import { OrdersPage } from './pages/Orders/Orders';
 import { SelectedOrderPage } from './pages/SelectedOrder/SelectedOrder';
 import { theme } from './styles/theme';
-import { BottomBar } from './components/BottomBar/BottomBar';
-import { useSelector } from 'react-redux';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -46,7 +42,10 @@ function App() {
             {/* <Route path="mint" element={<MintPage />} /> */}
             <Route path="onboarding" element={user ? <OnboardingPage /> : <Navigate to="/" />} />
             <Route path="orders" element={user ? <OrdersPage /> : <Navigate to="/" />} />
-            <Route path="orders/:creator/:requestId" element={user ? <SelectedOrderPage /> : <Navigate to="/" />} />
+            <Route
+              path="orders/:creator/:requestId/:version"
+              element={user ? <SelectedOrderPage /> : <Navigate to="/" />}
+            />
             <Route path="creator/:creatorId" element={<BookingPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

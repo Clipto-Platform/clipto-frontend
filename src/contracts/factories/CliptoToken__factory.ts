@@ -61,13 +61,19 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "newRate",
-        type: "uint256",
+        indexed: true,
+        internalType: "address",
+        name: "oldOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
       },
     ],
-    name: "RoyaltyRateSet",
+    name: "OwnershipTransferred",
     type: "event",
   },
   {
@@ -94,32 +100,6 @@ const _abi = [
     ],
     name: "Transfer",
     type: "event",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_SEPARATOR",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "PERMIT_TYPEHASH",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
   },
   {
     inputs: [
@@ -159,6 +139,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "burn",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "contractURI",
     outputs: [
@@ -192,6 +185,16 @@ const _abi = [
   },
   {
     inputs: [
+      {
+        internalType: "address",
+        name: "_owner",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_minter",
+        type: "address",
+      },
       {
         internalType: "string",
         name: "_creatorName",
@@ -229,31 +232,25 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "name",
+    name: "minter",
     outputs: [
       {
-        internalType: "string",
+        internalType: "address",
         name: "",
-        type: "string",
+        type: "address",
       },
     ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "nonces",
+    inputs: [],
+    name: "name",
     outputs: [
       {
-        internalType: "uint256",
+        internalType: "string",
         name: "",
-        type: "uint256",
+        type: "string",
       },
     ],
     stateMutability: "view",
@@ -286,76 +283,6 @@ const _abi = [
         internalType: "address",
         name: "",
         type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "spender",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "deadline",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "sig",
-        type: "bytes",
-      },
-    ],
-    name: "permit",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "salePrice",
-        type: "uint256",
-      },
-    ],
-    name: "royaltyInfo",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "royaltyRate",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -431,19 +358,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "scale",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -464,12 +378,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "newRate",
-        type: "uint256",
+        internalType: "address",
+        name: "_minter",
+        type: "address",
       },
     ],
-    name: "setRoyaltyRate",
+    name: "setMinter",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -510,63 +424,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
-    ],
-    name: "tokenByIndex",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "tokenIdCounter",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
-    ],
-    name: "tokenOfOwnerByIndex",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
+        name: "_tokenId",
         type: "uint256",
       },
     ],
@@ -621,69 +479,11 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "from",
+        name: "newOwner",
         type: "address",
-      },
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "deadline",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "sig",
-        type: "bytes",
-      },
-      {
-        internalType: "bytes",
-        name: "data",
-        type: "bytes",
       },
     ],
-    name: "transferWithPermit",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "from",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "deadline",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "sig",
-        type: "bytes",
-      },
-    ],
-    name: "transferWithPermit",
+    name: "transferOwnership",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

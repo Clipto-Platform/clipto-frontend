@@ -1,26 +1,17 @@
 import axios from 'axios';
 import { createClient, OperationResult } from 'urql';
-import { API_URL, DEFAULT_CHAIN_ID, GRAPH_APIS } from '../config/config';
+import config from '../config/config';
 import { convertToInt } from '../utils/format';
-import {
-  queryCreatorRequests,
-  queryGetCreatorById,
-  queryGetCreators,
-  queryGetRequest,
-  queryUserRequests,
-  queryGetFeaturedCreators,
-  queryGetCreatorUserName,
-} from './query';
-
-import { EntityCreator, EntityRequest, FinalizeFileUpload, TweetData, UploadFileLinkRequest } from './types';
+import * as query from './query';
+import * as types from './types';
 
 // Axios config
 const axiosInstance = axios.create({
-  baseURL: API_URL,
+  baseURL: config.apiUrl,
 });
 
 const graphInstance = createClient({
-  url: GRAPH_APIS[DEFAULT_CHAIN_ID],
+  url: config.graphApi,
 });
 
 export const exchnageRates = async (token: string, price: number) => {
@@ -38,7 +29,7 @@ export const exchnageRates = async (token: string, price: number) => {
   return convertedPrice;
 };
 
-export const tweetVerify = (data: TweetData) => {
+export const tweetVerify = (data: types.TweetData) => {
   return axiosInstance.post('/user/verify', data);
 };
 
@@ -50,9 +41,9 @@ export const userRequests = (
   account: string,
   page: number,
   limit: number,
-): Promise<OperationResult<{ requests: EntityRequest[] }>> => {
+): Promise<OperationResult<{ requests: types.EntityRequest[] }>> => {
   return graphInstance
-    .query(queryUserRequests, {
+    .query(query.queryUserRequests, {
       requester: account.toLowerCase(),
       first: limit,
       skip: (convertToInt(page) - 1) * convertToInt(limit),
@@ -64,9 +55,9 @@ export const creatorRequests = (
   account: string,
   page: number,
   limit: number,
-): Promise<OperationResult<{ requests: EntityRequest[] }>> => {
+): Promise<OperationResult<{ requests: types.EntityRequest[] }>> => {
   return graphInstance
-    .query(queryCreatorRequests, {
+    .query(query.queryCreatorRequests, {
       creator: account.toLowerCase(),
       first: limit,
       skip: (convertToInt(page) - 1) * convertToInt(limit),
@@ -88,11 +79,13 @@ export const extractResumeableUrl = async (url: string): Promise<string | null> 
 export const requestById = async (
   requestId: string | number,
   creator: string,
-): Promise<OperationResult<{ requests: EntityRequest[] }>> => {
+  version: string,
+): Promise<OperationResult<{ requests: types.EntityRequest[] }>> => {
   return graphInstance
-    .query(queryGetRequest, {
+    .query(query.queryGetRequest, {
       requestId,
       creator,
+      version,
     })
     .toPromise();
 };
@@ -100,26 +93,26 @@ export const requestById = async (
 export const creators = async (
   page: number,
   limit: number,
-): Promise<OperationResult<{ creators: EntityCreator[] }>> => {
+): Promise<OperationResult<{ creators: types.EntityCreator[] }>> => {
   return graphInstance
-    .query(queryGetCreators, {
+    .query(query.queryGetCreators, {
       first: limit,
       skip: (convertToInt(page) - 1) * convertToInt(limit),
     })
     .toPromise();
 };
 export const getAllCreatorsUserName = async (): Promise<OperationResult<{ creators: [{ twitterHandle: string }] }>> => {
-  return graphInstance.query(queryGetCreatorUserName).toPromise();
+  return graphInstance.query(query.queryGetCreatorUserName).toPromise();
 };
-export const creatorById = async (id: string): Promise<OperationResult<{ creator: EntityCreator }>> => {
+export const creatorById = async (id: string): Promise<OperationResult<{ creator: types.EntityCreator }>> => {
   return graphInstance
-    .query(queryGetCreatorById, {
+    .query(query.queryGetCreatorById, {
       id: id.toLowerCase(),
     })
     .toPromise();
 };
 
-export const getUploadFileLink = (data: UploadFileLinkRequest) => {
+export const getUploadFileLink = (data: types.UploadFileLinkRequest) => {
   return axiosInstance.post('/upload', data);
 };
 
@@ -127,17 +120,32 @@ export const getUploadFileStatus = (uploadUuid: string) => {
   return axiosInstance.get(`/upload/status/${uploadUuid}`);
 };
 
-export const finalizeFileUpload = (data: FinalizeFileUpload) => {
+export const finalizeFileUpload = (data: types.FinalizeFileUpload) => {
   return axiosInstance.post('/upload/finalize', data);
 };
 
 export const getArweaveMetadata = (arweaveToken: string) => {
   return axios.get(`https://arweave.net/${arweaveToken}`);
 };
-export const featuredCreators = async (address: string[]): Promise<OperationResult<{ creators: EntityCreator[] }>> => {
+
+export const featuredCreators = async (
+  address: string[],
+): Promise<OperationResult<{ creators: types.EntityCreator[] }>> => {
   return graphInstance
-    .query(queryGetFeaturedCreators, {
+    .query(query.queryGetFeaturedCreators, {
       address,
+    })
+    .toPromise();
+};
+
+export const getNFTHistory = async (
+  nftContract: string,
+  tokenId: number,
+): Promise<OperationResult<{ transfers: types.Transfer[] }>> => {
+  return graphInstance
+    .query(query.queryGetNFTHistory, {
+      nftContract: nftContract.toLowerCase(),
+      tokenId: parseInt(tokenId.toString()),
     })
     .toPromise();
 };

@@ -4,12 +4,21 @@ import { CSSProperties } from 'styled-components';
 
 import { Description, Label } from '../styles/typography';
 import { EndText, Input, Textarea } from './Input';
+import { BsFillCheckCircleFill } from 'react-icons/bs';
+import Loader from 'react-spinners/ClipLoader';
 
 export interface TextFieldProps {
   label?: string;
   endText?: string;
   inputStyles?: CSSProperties;
+  isSuccess?: boolean;
+  isLoader?: boolean;
 }
+
+const iconStyle = {
+  color: 'green',
+  margin: 'auto 0 auto -36px',
+};
 
 function TextField(props: AriaTextFieldOptions<'input' | 'textarea'> & TextFieldProps) {
   const ref = useRef<HTMLInputElement | null>(null);
@@ -34,14 +43,22 @@ function TextField(props: AriaTextFieldOptions<'input' | 'textarea'> & TextField
             style={props.errorMessage ? { ...inputStyles, borderColor: 'red' } : { ...inputStyles }}
           />
         ) : (
-          <Input
-            {...(inputProps as any)}
-            min="0"
-            step="1"
-            onWheel={(e) => (e.target as HTMLElement).blur()}
-            ref={ref}
-            style={props.errorMessage ? { ...inputStyles, borderColor: 'red' } : { ...inputStyles }}
-          />
+          <>
+            <Input
+              {...(inputProps as any)}
+              min="0"
+              step="1"
+              onWheel={(e) => (e.target as HTMLElement).blur()}
+              ref={ref}
+              style={props.errorMessage ? { ...inputStyles, borderColor: 'red' } : { ...inputStyles }}
+            />
+            {props.isSuccess ? <BsFillCheckCircleFill size={24} style={iconStyle} /> : null}
+            {props.isLoader ? (
+              <div style={iconStyle}>
+                <Loader color="#fff" size={20} />
+              </div>
+            ) : null}
+          </>
         )}
         {props.endText && (
           <div style={{ position: 'relative' }}>

@@ -1,7 +1,6 @@
-import { getTokenSymbol, SYMBOL } from '../../config/config';
 import { theme } from '../../styles/theme';
 import { Label, Text } from '../../styles/typography';
-import { getShortenedAddress } from '../../utils/address';
+import { getErcTokenSymbol, getShortenedAddress } from '../../utils/address';
 import { bigIntToReadable } from '../../utils/format';
 import { deadlineMessage, isRequestExpired } from '../../utils/time';
 import { AvatarComponent } from '../AvatarOrb';
@@ -23,6 +22,8 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
   const { isReceived, request } = props;
   const userAddress = props.isReceived ? props.request.requester : props.request.creator.address;
   const status = request.delivered ? (isReceived ? 'Received' : 'Paid') : 'Bid';
+
+  const symbol = getErcTokenSymbol(request.erc20);
 
   return (
     <OrderCardContainer>
@@ -48,7 +49,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
                 <Text
                   style={{
                     color: `${(() => {
-                      if (isRequestExpired(request.timestamp, request.deadline)) {
+                      if (isRequestExpired(request.createdTimestamp, request.deadline)) {
                         return theme.red;
                       } else {
                         return '#ffffff';
@@ -56,14 +57,14 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
                     })()}`,
                   }}
                 >
-                  {deadlineMessage(request.timestamp, request.deadline)}
+                  {deadlineMessage(request.createdTimestamp, request.deadline)}
                 </Text>
               </Column>
             )}
             <Column style={{ textAlign: 'right' }}>
               <SecondaryLabel style={{ marginBottom: 2 }}> {status} </SecondaryLabel>
               <BidAmount>
-                {bigIntToReadable(request.amount)} {SYMBOL}
+                {bigIntToReadable(request.amount)} {symbol}
               </BidAmount>
             </Column>
           </WideContainer>

@@ -1,24 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
+import { HeaderSpacer } from '../Header/Header';
 import {
-  LeftContentWrapper,
-  HeroTitle,
-  BookNow,
-  Left,
-  Right,
-  Name,
-  Title,
-  OpacityGradient,
-  Ovals,
-  Oval,
-  CreatorText,
-  BookNowButton,
-  OvalSpacing,
-  SlideContentWrapper,
   BackgroundWrapper,
+  Left,
+  OpacityGradient,
+  Oval,
+  Ovals,
+  OvalSpacing,
+  Right,
+  SlideContentWrapper,
   SlidesContentWrapper,
 } from './Style';
-import { ContentWrapper, PageContentWrapper, PageWrapper } from '../layout/Common';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../Header/Header';
 
 const Slides = (props: any) => {
   const NSlides = props.backgroundD.length;
@@ -32,7 +24,6 @@ const Slides = (props: any) => {
   const [clickEnabled, setClickEnabled] = useState(true);
   const [index, setIndex] = useState(0);
   const timeoutRef = useRef(null as any);
-
   useEffect(() => {
     resetTimeout();
     if (NSlides > 1) timeoutRef.current = setTimeout(rightClick, 8000);
@@ -124,6 +115,7 @@ const Slides = (props: any) => {
       <SlideContentWrapper translate={slidesPosition} NSlides={NSlides}>
         {[...Array(NSlides)].map((_, index) => (
           <BackgroundWrapper
+            key={index}
             translate={slidePosition[index]}
             index={index}
             backgroundM={props.backgroundM}
