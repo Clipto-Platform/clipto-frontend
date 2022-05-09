@@ -35,14 +35,17 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route index element={<HomePage />} />
             <Route path="explore" element={<ExplorePage />} />
-            <Route path="bounty" element={<BountyPage />} />
+            {/* <Route path="bounty" element={<BountyPage />} /> */}
             <Route path="onboarding/profile" element={user ? <OnboardProfilePage /> : <Navigate to="/" />} />
-            <Route path="bountyDone" element={<BountyDone />} />
+            {/* <Route path="bountyDone" element={<BountyDone />} /> */}
             {/* <Route path="invitation" element={<InvitationPage />} /> */}
             {/* <Route path="mint" element={<MintPage />} /> */}
             <Route path="onboarding" element={user ? <OnboardingPage /> : <Navigate to="/" />} />
             <Route path="orders" element={user ? <OrdersPage /> : <Navigate to="/" />} />
-            <Route path="orders/:creator/:requestId/:version" element={user ? <SelectedOrderPage /> : <Navigate to="/" />} />
+            <Route
+              path="orders/:creator/:requestId/:version"
+              element={user ? <SelectedOrderPage /> : <Navigate to="/" />}
+            />
             <Route path="creator/:creatorId" element={<BookingPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

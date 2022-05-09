@@ -58,6 +58,7 @@ export const GRAPH_APIS: { [chainId: number]: string } = {
   [CHAIN_IDS.POLYGON_TESTNET]: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-tstnet',
   [CHAIN_IDS.DAPPTOOLS]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph',
 };
+
 export const ERC20_CONTRACTS: { [token: string]: string } = {
   MATIC: '0x0000000000000000000000000000000000000000',
   WMATIC: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
