@@ -42,7 +42,7 @@ const configProd = {
   chainSymbol: 'MATIC',
 
   exchangeAddress: '0x36a9f25b8aa6b941b0c8177684e8ecff59376d9a',
-  exchangeAddressV1: '0x36a9f25b8aa6b941b0c8177684e8ecff59376d9a',
+  exchangeAddressV1: '0xB491F739463B5bD43bCb243703F2B6742d9F779b',
   erc20TokenNames: ['MATIC', 'WMATIC', 'WETH', 'USDC'],
   erc20Contracts: {
     MATIC: '0x0000000000000000000000000000000000000000',
