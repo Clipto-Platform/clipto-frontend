@@ -65,6 +65,7 @@ export const ERC20_CONTRACTS: { [token: string]: string } = {
 };
 
 export const TOKENS = ['MATIC', 'WMATIC', 'WETH'];
+export const BOUNTY_TOKENS = ['USDC', 'MATIC', 'WMATIC', 'WETH'];
 export const HELP_EMAIL = 'admin@clipto.io';
 export const MIN_DELIVERY_TIME = 3;
 export const DISCORD_LINK = 'https://discord.com/invite/fpVMmerNZm';
