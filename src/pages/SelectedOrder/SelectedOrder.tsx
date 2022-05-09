@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import * as UpChunk from '@mux/upchunk';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber } from 'ethers';
+import { BigNumber, ContractReceipt } from 'ethers';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useParams } from 'react-router-dom';
@@ -70,26 +70,6 @@ const SelectedOrderPage = () => {
         .finally(() => setLoaded(true));
     }
   }, [exchangeContract]);
-
-  exchangeContract.once(
-    'DeliveredRequest',
-    (
-      _creator: string,
-      _requester: string,
-      _amount: BigNumber,
-      _index: BigNumber,
-      tokenAddress: string,
-      tokenId: BigNumber,
-    ) => {
-      fetchNFT(tokenAddress, tokenId.toNumber(), tokenUri);
-      setDone(true);
-    },
-  );
-
-  exchangeContractV1.once('DeliveredRequest', (_creator: string, _requestId: BigNumber, nftTokenId: BigNumber) => {
-    fetchNFT(request?.creator.nftTokenAddress as string, nftTokenId.toNumber(), tokenUri);
-    setDone(true);
-  });
 
   const validate = (name: string, desc: string) => {
     if (name.length === 0 && desc.length === 0) {
@@ -180,6 +160,20 @@ const SelectedOrderPage = () => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'video/*,.mkv,.flv' });
 
+  const extractEvent = async (receipt: ContractReceipt, request: EntityRequest) => {
+    const events = receipt.events;
+    const filtered = events?.find((event) => event.event === 'DeliveredRequest');
+
+    if (filtered && filtered.args) {
+      let nftTokenAddress = request.creator.nftTokenAddress;
+      let nftTokenId =
+        request.version === 'v0' ? filtered.args.tokenId.toNumber() : filtered.args.nftTokenId.toNumber();
+
+      fetchNFT(nftTokenAddress, nftTokenId, tokenUri);
+      setDone(true);
+    }
+  };
+
   const completeBooking = async () => {
     if (!request) {
       toast.error('Request not found. Try reloading the page...');
@@ -191,11 +185,12 @@ const SelectedOrderPage = () => {
       const version = request.id.split('-')[1];
       const contract = version === 'v0' ? exchangeContract : exchangeContractV1;
       const transaction = await contract.deliverRequest(request.requestId, 'https://arweave.net/' + tokenUri);
-      await transaction.wait();
+      const receipt = await transaction.wait();
+
+      await extractEvent(receipt, request);
 
       toast.success('Successfully completed order! Order status will be reflected shortly.');
     } catch (e) {
-      console.log(e);
       setMinting(false);
       toast.error('Failed to mint NFT!');
     }
@@ -222,7 +217,6 @@ const SelectedOrderPage = () => {
     getNFTVideo(details.arweave);
 
     getNFTHistory(request.nftTokenAddress, request.nftTokenId).then((histories) => {
-      console.log(histories);
       setHistory(histories);
     });
   };
