@@ -1,16 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
-import { CHAIN_NAMES, DEFAULT_CHAIN_ID } from '../config/config';
+import config from '../config/config';
+import { CliptoExchangeV1 } from '../contracts';
 
-import { CliptoExchange, CliptoExchangeV1 } from '../contracts';
-
-/**
- *
- * @param library
- * @param account
- * @param message
- * @returns a signed message used to authenticate user for api requests
- */
 export const signMessage = async (
   library: Web3Provider | undefined,
   account: string | null | undefined,
@@ -66,7 +58,7 @@ export const switchNetwork = async () => {
   try {
     await ethereum.request({
       method: 'wallet_switchEthereumChain',
-      params: [{ chainId: ethers.utils.hexlify(DEFAULT_CHAIN_ID) }],
+      params: [{ chainId: ethers.utils.hexlify(config.chainId) }],
     });
   } catch (switchError: any) {
     // This error code indicates that the chain has not been added to MetaMask.
@@ -76,8 +68,8 @@ export const switchNetwork = async () => {
           method: 'wallet_addEthereumChain',
           params: [
             {
-              chainId: ethers.utils.hexlify(DEFAULT_CHAIN_ID),
-              chainName: CHAIN_NAMES[DEFAULT_CHAIN_ID],
+              chainId: ethers.utils.hexlify(config.chainId),
+              chainName: config.chainName,
               rpcUrls: ['https://polygon-rpc.com'] /* ... */,
               nativeCurrency: {
                 name: 'Matic Token',

@@ -1,10 +1,13 @@
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { TEST } from '../config/config';
+import config from '../config/config';
+
 export const injected = new InjectedConnector({
   // allow any chain to 'connect' so we can help redirect them
 });
 
+// keep the values static, using config constants
+// fails for some reason
 const ProdConfig = {
   supportedChainIds: [137],
   chainId: 137,
@@ -35,5 +38,5 @@ const TestConfig = {
   },
 };
 
-const config = TEST ? TestConfig : ProdConfig;
-export const walletconnect = new WalletConnectConnector(config);
+const walletConfig = config.environment == 'test' ? TestConfig : ProdConfig;
+export const walletconnect = new WalletConnectConnector(walletConfig);
