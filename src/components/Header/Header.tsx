@@ -10,12 +10,11 @@ import styled from 'styled-components';
 import create, { State } from 'zustand';
 import * as api from '../../api';
 import menu from '../../assets/svgs/hamburger.svg';
-import { CHAIN_NAMES, DEFAULT_CHAIN_ID, DEV, DISCORD_LINK, ENV } from '../../config/config';
+import config from '../../config/config';
 import { useEagerConnect } from '../../hooks/useEagerConnect';
 import { useEns } from '../../hooks/useEns';
 import { useInactiveListener } from '../../hooks/useInactiveListener';
 import { UserProfile } from '../../hooks/useProfile';
-import { Label } from '../../styles/typography';
 import { getShortenedAddress } from '../../utils/address';
 import { immer } from '../../utils/zustand';
 import { injected, walletconnect } from '../../web3/connectors';
@@ -28,22 +27,18 @@ import {
   ChainContainer,
   ConnectWallet,
   ConnectWalletPopup,
-  DesktopHeaderWrapper,
-  Divider,
+  DesktopHeaderWrapper, DiscordWrapper, Divider,
   DropDownItem,
   Error,
   HeaderWrapperInner,
   HeaderWrapperOuter,
   HEADER_HEIGHT_IN_PX,
-  LeftWrapper,
-  MenuButton,
+  LeftWrapper, LinkWrapper, MenuButton,
   MenuContainer,
   MobileHeaderWrapper,
   RightWrapper,
   StyledSpan,
-  Wrapper,
-  LinkWrapper,
-  DiscordWrapper,
+  Wrapper
 } from './Style';
 
 interface HeaderStore extends State {
@@ -109,7 +104,7 @@ const DesktopHeader = (props: any) => {
       )}
       <DiscordButton
         onPress={() => {
-          window.open(DISCORD_LINK);
+          window.open(config.discord);
         }}
       />
     </DesktopHeaderWrapper>
@@ -147,7 +142,7 @@ const MobileHeader = (props: any) => {
             )}
             <DiscordButton
               onPress={() => {
-                window.open(DISCORD_LINK);
+                window.open(config.discord);
                 handleClick();
               }}
             />
@@ -161,7 +156,7 @@ const Header: React.FC<HeaderProps> = () => {
   const [checkLogin, setCheckLogin] = useState<boolean | null>(false);
   const { activate, account, deactivate, chainId } = useWeb3React<Web3Provider>();
   const [chainDialog, setChainDialog] = useState<boolean | null>(false);
-  const currentChainName = CHAIN_NAMES[DEFAULT_CHAIN_ID];
+  const currentChainName = config.chainName;
 
   const showLoginDialog = useHeaderStore((s) => s.showDialog);
   const setShowLoginDialog = useHeaderStore((s) => s.setShowDialog);
@@ -278,7 +273,7 @@ const Header: React.FC<HeaderProps> = () => {
   }, [checkLogin]);
 
   useEffect(() => {
-    if (chainId !== DEFAULT_CHAIN_ID) {
+    if (chainId !== config.chainId) {
       setChainDialog(true);
     } else if (chainId) {
       setChainDialog(false);
@@ -293,7 +288,6 @@ const Header: React.FC<HeaderProps> = () => {
             <Link to={'/'}>
               <Logo />
             </Link>
-            {DEV && <Label>In DEV environment</Label>}
           </LeftWrapper>
           {hasTriedEagerConnect && (
             <>
@@ -308,7 +302,7 @@ const Header: React.FC<HeaderProps> = () => {
                     <DiscordWrapper>
                       <DiscordButton
                         onPress={() => {
-                          window.open(DISCORD_LINK);
+                          window.open(config.discord);
                         }}
                       />
                     </DiscordWrapper>
@@ -461,7 +455,9 @@ const Header: React.FC<HeaderProps> = () => {
         <>
           <ChainContainer>
             {`Please switch to ${currentChainName}`}
-            {ENV === 'PROD' && <NetworkButton onClick={switchNetwork}>Switch Network</NetworkButton>}
+            {config.environment === 'production' && (
+              <NetworkButton onClick={switchNetwork}>Switch Network</NetworkButton>
+            )}
           </ChainContainer>
         </>
       )}

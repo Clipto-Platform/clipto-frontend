@@ -9,7 +9,7 @@ import { CreatorData, EntityCreator } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { SYMBOL } from '../../config/config';
+import config from '../../config/config';
 import { useExchangeContractV1 } from '../../hooks/useContracts';
 import { useFee } from '../../hooks/useFee';
 import { useProfile } from '../../hooks/useProfile';
@@ -319,11 +319,11 @@ const OnboardProfilePage = () => {
                           <TextField
                             onChange={handleChange('price')}
                             label="Minimum amount to charge for bookings"
-                            description={`Fans will be able to pay this in ${SYMBOL}`}
+                            description={`Fans will be able to pay this in ${config.chainSymbol}`}
                             placeholder="0.5"
                             value={values.price}
                             type="number"
-                            endText={SYMBOL}
+                            endText={config.chainSymbol}
                             onBlur={handleBlur}
                             errorMessage={errors.price}
                           />

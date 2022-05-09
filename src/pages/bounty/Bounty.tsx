@@ -1,17 +1,17 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
+import { getTwitterData } from '../../api';
 import { PrimaryButton } from '../../components/Button';
+import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
 import { HeaderSpacer } from '../../components/Header/Header';
 import { CenterContainer, ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
+import config from '../../config/config';
 import { useProfile } from '../../hooks/useProfile';
-import { BountyConfirmation } from './BountyConfirmation';
-import { BOUNTY_TOKENS } from '../../config/config';
-import { getTwitterData } from '../../api';
 import { validateBountyData } from '../../utils/validation';
+import { BountyConfirmation } from './BountyConfirmation';
 
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
@@ -167,7 +167,7 @@ const BountyPage = () => {
                 </FieldWrapper>
                 <FieldWrapper>
                   <Dropdown formLabel="Select payment type" onChange={(e: any) => setToken(e.target.value)}>
-                    {BOUNTY_TOKENS.map((tok, i) => {
+                    {config.erc20TokenNames.map((tok, i) => {
                       if (i == 0) {
                         <Option key={i} selected value={tok} />;
                       }

@@ -1,34 +1,28 @@
-import { useEffect, useRef, useState } from 'react';
+import { Web3Provider } from '@ethersproject/providers';
+import { useWeb3React } from '@web3-react/core';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useTheme } from 'styled-components';
+import * as api from '../../api';
 import { featuredCreators } from '../../api/index';
 import { EntityCreator } from '../../api/types';
-import { toast } from 'react-toastify';
-import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
+import background1D from '../../assets/images/homepage/page1/background1D.png';
+import background1M from '../../assets/images/homepage/page1/background1M.png';
+import background3D from '../../assets/images/homepage/page3/background3D.png';
+import background3M from '../../assets/images/homepage/page3/background3M.png';
+import { CreatorCards } from '../../components/CreatorCards/CreatorCards';
+import { PageWrapper } from '../../components/layout/Common';
+import Slides from '../../components/Slides/Slides';
 import {
-  LeftContentWrapper,
   BookNow,
   BookNowButton,
-  HeroTitle,
-  CreatorText,
-  Name,
-  Title,
+  HeroTitle, LeftContentWrapper
 } from '../../components/Slides/Style';
-import { Link, useNavigate } from 'react-router-dom';
-import Slides from '../../components/Slides/Slides';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
-import { CreatorCards } from '../../components/CreatorCards/CreatorCards';
-import * as api from '../../api';
-import { TEST } from '../../config/config';
-import { useSelector } from 'react-redux';
-import { useWeb3React } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
+import config from '../../config/config';
 import { UserProfile } from '../../hooks/useProfile';
-import background1D from '../../assets/images/homepage/page1/background1D.png';
-import background2D from '../../assets/images/homepage/page2/background2D.png';
-import background3D from '../../assets/images/homepage/page3/background3D.png';
-import background1M from '../../assets/images/homepage/page1/background1M.png';
-import background2M from '../../assets/images/homepage/page2/background2M.png';
-import background3M from '../../assets/images/homepage/page3/background3M.png';
 
 const featuredList: string[] = [
   '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8', // Gabriel Haines.eth
@@ -71,9 +65,10 @@ const HomePage = () => {
   }, [account]);
 
   useEffect(() => {
-    const creatorAddresses = TEST
-      ? featuredListTest.map((c) => c.toLowerCase())
-      : featuredList.map((c) => c.toLowerCase());
+    const creatorAddresses =
+      config.environment === 'test'
+        ? featuredListTest.map((c) => c.toLowerCase())
+        : featuredList.map((c) => c.toLowerCase());
 
     featuredCreators(creatorAddresses).then((response) => {
       if (response.data) {
