@@ -9,7 +9,7 @@ export const DropdownWrapper = styled.div`
 export const StyledSelectDiv = styled.div`
   max-width: 220px;
   height: 100%;
-  padding: 0.5rem;
+  // padding: 0.5rem;
   margin-bottom: 1rem;
   border: 1px solid #2a2a2a;
   box-sizing: border-box;

@@ -25,7 +25,7 @@ const CreatorCards = () => {
       <CreatorCardWrapper>
         {title.map((element, index) => {
           return (
-            <CreatorCard>
+            <CreatorCard key={index}>
               <Icon>
                 <img src={icon[index]} />
               </Icon>

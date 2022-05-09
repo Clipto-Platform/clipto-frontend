@@ -1,17 +1,17 @@
 import axios from 'axios';
 import { createClient, OperationResult } from 'urql';
-import { API_URL, DEFAULT_CHAIN_ID, GRAPH_APIS } from '../config/config';
+import config from '../config/config';
 import { convertToInt } from '../utils/format';
 import * as query from './query';
 import * as types from './types';
 
 // Axios config
 const axiosInstance = axios.create({
-  baseURL: API_URL,
+  baseURL: config.apiUrl,
 });
 
 const graphInstance = createClient({
-  url: GRAPH_APIS[DEFAULT_CHAIN_ID],
+  url: config.graphApi,
 });
 
 export const exchnageRates = async (token: string, price: number) => {

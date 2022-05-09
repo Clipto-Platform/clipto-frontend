@@ -1,7 +1,7 @@
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link } from 'react-router-dom';
 import Loader from 'react-spinners/ClipLoader';
-import { SYMBOL } from '../../config/config';
+import config from '../../config/config';
 import { useImagesLoaded } from '../../hooks/useImagesLoaded';
 import { formatETH } from '../../utils/format';
 import { ContentWrapper } from '../layout/Common';
@@ -56,7 +56,7 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
                           <UserStartingPrice>
                             From{' '}
                             <span style={{ fontWeight: 700 }}>
-                              {formatETH(user.price)} {SYMBOL}
+                              {formatETH(user.price)} {config.chainSymbol}
                             </span>
                           </UserStartingPrice>
                         </UserCardContainer>

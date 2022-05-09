@@ -9,7 +9,7 @@ import { CreatorData, EntityCreator } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { SYMBOL } from '../../config/config';
+import config from '../../config/config';
 import { useExchangeContractV1 } from '../../hooks/useContracts';
 import { useFee } from '../../hooks/useFee';
 import { useProfile } from '../../hooks/useProfile';
@@ -19,14 +19,14 @@ import { OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
 
 const OnboardProfilePage = () => {
   const userProfile = useProfile();
+  const navigate = useNavigate();
+  const { FeeDescription } = useFee();
   const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContractV1 = useExchangeContractV1(true);
   const [loading, setLoading] = useState(false); //state of form button
   const [hasAccount, setHasAccount] = useState<boolean>(false); //state of if the user is a creator or not
   const [userProfileDB, setUserProfileDB] = useState<EntityCreator>();
-  const navigate = useNavigate();
   const [loaded, setLoaded] = useState<boolean>(false);
-  const { FeeDescription } = useFee();
 
   const updateUserProfile = async (creatorData: CreatorData) => {
     try {
@@ -95,6 +95,21 @@ const OnboardProfilePage = () => {
         });
     }
   }, [account]);
+
+  useEffect(() => {
+    if (userProfileDB) {
+      api.getTwitterData([userProfileDB.twitterHandle]).then((response) => {
+        if (response.data && response.data.data.length > 0) {
+          const image = response.data.data[0].profile_image_url.replace('normal', '400x400');
+          userProfile.setProfilePicture(image);
+          setUserProfileDB({
+            ...userProfileDB,
+            profilePicture: image,
+          });
+        }
+      });
+    }
+  }, [userProfileDB]);
 
   return (
     <>
@@ -304,11 +319,11 @@ const OnboardProfilePage = () => {
                           <TextField
                             onChange={handleChange('price')}
                             label="Minimum amount to charge for bookings"
-                            description={`Fans will be able to pay this in ${SYMBOL}`}
+                            description={`Fans will be able to pay this in ${config.chainSymbol}`}
                             placeholder="0.5"
                             value={values.price}
                             type="number"
-                            endText={SYMBOL}
+                            endText={config.chainSymbol}
                             onBlur={handleBlur}
                             errorMessage={errors.price}
                           />

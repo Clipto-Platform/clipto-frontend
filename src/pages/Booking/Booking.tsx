@@ -17,14 +17,8 @@ import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
 import { HeaderContentGapSpacer } from '../../components/Header/Header';
 import { PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import {
-  CHAIN_NAMES,
-  DEFAULT_CHAIN_ID,
-  ERC20_CONTRACTS,
-  EXCHANGE_ADDRESSV1,
-  SYMBOL,
-  TOKENS,
-} from '../../config/config';
+import config from '../../config/config';
+import { ERCTokenType } from '../../config/types';
 import { getErc20Contract, useExchangeContractV1 } from '../../hooks/useContracts';
 import { useCreator } from '../../hooks/useCreator';
 import { useFee } from '../../hooks/useFee';
@@ -47,7 +41,7 @@ const BookingPage = () => {
   const [user, setUser] = useState();
   const getUser = useSelector((state: any) => state.user);
   const ref = useRef(null as any);
-  const [token, setToken] = useState<string>('MATIC');
+  const [token, setToken] = useState<ERCTokenType>('MATIC');
   const [price, setPrice] = useState<number>(0);
 
   useEffect(() => {
@@ -104,7 +98,7 @@ const BookingPage = () => {
         );
       } else if (token) {
         const ERC20 = getErc20Contract(token, account as string, library as Web3Provider);
-        const tx = await ERC20.approve(EXCHANGE_ADDRESSV1[DEFAULT_CHAIN_ID], parseUnits(values.amount));
+        const tx = await ERC20.approve(config.exchangeAddressV1, parseUnits(values.amount));
 
         toast.loading('Waiting for approval');
         await tx.wait();
@@ -112,7 +106,7 @@ const BookingPage = () => {
         transaction = await exchangeContractV1.newRequest(
           creatorId,
           account as string,
-          ERC20_CONTRACTS[token],
+          config.erc20Contracts[token],
           parseUnits(values.amount),
           JSON.stringify(requestData),
         );
@@ -126,7 +120,7 @@ const BookingPage = () => {
       navigate('/orders');
     } catch (e) {
       toast.dismiss();
-      toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
+      toast.error(`The transaction failed. Make sure you have enough ${token} for gas.`);
     }
   };
 
@@ -215,7 +209,7 @@ const BookingPage = () => {
                         <FlexRow style={{ marginBottom: 7 }}>
                           <Label>Personal use</Label>
                           <Label style={{ fontSize: 14 }}>
-                            {formatETH(convertToFloat(creator.price))} {SYMBOL}+
+                            {formatETH(convertToFloat(creator.price))} {config.chainSymbol}+
                           </Label>
                         </FlexRow>
                         <Description>Personalized video for you or someone else</Description>
@@ -259,7 +253,7 @@ const BookingPage = () => {
 
                       <div style={{ marginBottom: 40 }}>
                         <Dropdown formLabel="Select payment type" onChange={handleSelect}>
-                          {TOKENS.map((tok, i) => {
+                          {config.erc20TokenNames.map((tok, i) => {
                             if (i == 0) {
                               <Option key={i} selected value={tok} />;
                             }
@@ -298,12 +292,12 @@ const BookingPage = () => {
                           }
                           setLoading(false);
                         }}
-                        isDisabled={user && chainId === DEFAULT_CHAIN_ID ? loading : true}
+                        isDisabled={user && chainId === config.chainId ? loading : true}
                       >
                         {user
-                          ? chainId === DEFAULT_CHAIN_ID
+                          ? chainId === config.chainId
                             ? 'Book now'
-                            : `Change Network to ${CHAIN_NAMES[DEFAULT_CHAIN_ID]}`
+                            : `Change Network to ${config.chainName}`
                           : 'Please Connect your wallet'}
                       </PrimaryButton>
                       <Description style={{ fontSize: 12, margin: '15px 0px' }}>
