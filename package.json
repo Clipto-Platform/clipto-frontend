@@ -2,8 +2,8 @@
   "name": "clipto-frontend",
   "version": "0.0.0",
   "scripts": {
-    "env:test": "export REACT_APP_ENV=development",
-    "env:prod": "export REACT_APP_ENV=production",
+    "env:test": "echo 'VITE_APP_ENV=test' > .env",
+    "env:prod": "echo 'VITE_APP_ENV=production' > .env",
     "dev": "npm run env:test && vite",
     "prod": "npm run env:prod && vite",
     "build": "echo 'run either \n npm run build:test \n npm run build:prod'",

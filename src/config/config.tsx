@@ -59,10 +59,9 @@ const configProd = {
   getTokenExplorer: (address: string) => `https://polygonscan.com/token/${address}`,
   getOpenSeaExplorer: (address: string, tokenId: number) => `https://opensea.io/assets/matic/${address}/${tokenId}`,
 };
-console.log(process.env.REACT_APP_ENV);
 
 const config: Config =
-  process.env.REACT_APP_ENV === 'production'
+  import.meta.env.VITE_APP_ENV === 'production'
     ? {
         environment: 'production',
         ...configCommon,

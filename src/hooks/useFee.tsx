@@ -15,7 +15,7 @@ export const useFee = () => {
   const fetchFeePercent = async () => {
     try {
       const fees = await exchangeContract.getFeeRate();
-      const percent = fees[0].toNumber() / fees[1].toNumber();
+      const percent = (fees[0].toNumber() / fees[1].toNumber()) * 100;
 
       setFeePercent(`${percent}%`);
     } catch (err) {}

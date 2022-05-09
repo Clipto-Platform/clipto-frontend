@@ -26,7 +26,7 @@ export const getNFTHistory = async (tokenAddress: string, tokenId: number): Prom
       return histories.data.transfers.map((transfer) => {
         return {
           from: transfer.from.id,
-          to: transfer.from.id,
+          to: transfer.to.id,
           timestamp: time.getDateFromTimestamp(transfer.timestamp),
         };
       });
