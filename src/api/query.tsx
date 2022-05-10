@@ -263,3 +263,31 @@ query GetNFTHistory(
   }
 }
 `;
+
+export const queryGetRequestByHash = `
+query GetRequestByTxHash(
+  $txHash: String!
+) {
+  requests (
+    where: {
+      txHash: $txHash
+    }
+  ) {
+    id
+  }
+}
+`;
+
+export const queryGetCreatorByHash = `
+query GetCreatorByTxHash(
+  $txHash: String!
+) {
+  creators (
+    where: {
+      txHash: $txHash
+    }
+  ) {
+    id
+  }
+}
+`

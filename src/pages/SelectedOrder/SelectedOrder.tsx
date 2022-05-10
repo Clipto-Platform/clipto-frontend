@@ -160,6 +160,12 @@ const SelectedOrderPage = () => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'video/*,.mkv,.flv' });
 
+  const waitForIndexing = async (txHash: string) => {
+    toast.loading('Indexing your request, will be done soon');
+    await api.indexRequest(txHash);
+    toast.dismiss();
+  };
+
   const extractEvent = async (receipt: ContractReceipt, request: EntityRequest) => {
     const events = receipt.events;
     const filtered = events?.find((event) => event.event === 'DeliveredRequest');
@@ -188,6 +194,7 @@ const SelectedOrderPage = () => {
       const receipt = await transaction.wait();
 
       await extractEvent(receipt, request);
+      await waitForIndexing(transaction.hash);
 
       toast.success('Successfully completed order! Order status will be reflected shortly.');
     } catch (e) {
