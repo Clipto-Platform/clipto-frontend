@@ -55,12 +55,6 @@ const HomePage = () => {
   useEffect(() => {
     const getCreatorData = async () => {
       if (account) {
-        const accessToken = await lens.getAccess(account)
-        if (!accessToken) return
-        const access = accessToken.data.authenticate.accessToken
-        // lens.txWait('0xbbb6c23aa4056fbcf7343f40430eae045a84b64a452a36dc83c542c30d295dec', access).then(console.log)
-        //console.log(access)
-
         try {
           const response = await api.creatorById(account || '');
           if (response.data && response.data.creator) {

@@ -40,7 +40,8 @@ import {
   StyledSpan,
   Wrapper
 } from './Style';
-
+import * as lens from '../../api/lens'
+import { toast } from 'react-toastify';
 interface HeaderStore extends State {
   showProfileDropDown: boolean;
   showDialog: boolean;
@@ -154,7 +155,7 @@ const MobileHeader = (props: any) => {
 };
 const Header: React.FC<HeaderProps> = () => {
   const [checkLogin, setCheckLogin] = useState<boolean | null>(false);
-  const { activate, account, deactivate, chainId } = useWeb3React<Web3Provider>();
+  const { activate, account, deactivate, chainId, library } = useWeb3React<Web3Provider>();
   const [chainDialog, setChainDialog] = useState<boolean | null>(false);
   const currentChainName = config.chainName;
 
@@ -175,7 +176,7 @@ const Header: React.FC<HeaderProps> = () => {
 
   const user = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
-
+  const [lensAccess, setLensAccess] = useState(''); // if about to get access token, then lens will be 🌿
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -261,6 +262,23 @@ const Header: React.FC<HeaderProps> = () => {
         } catch (e) {
           setLoggedInProfile(null);
         }
+      }
+    };
+    getCreatorData();
+  }, [account]);
+
+  useEffect(() => {
+    const getCreatorData = async () => {
+      if (account) {
+        toast.loading('Logining into Lens 🌿')
+        const accessToken = await lens.getAccess(account)
+        toast.dismiss()
+        if (!accessToken) {
+          toast.error('Login failed')
+          return
+        }
+        toast.success('Login success')
+        setLensAccess('🌿')
       }
     };
     getCreatorData();
@@ -364,7 +382,7 @@ const Header: React.FC<HeaderProps> = () => {
                       style={{ position: 'relative' }}
                     >
                       <StyledSpan style={{ marginRight: 16 }}>
-                        {userEnsName ?? getShortenedAddress(account, 6, 4)}
+                        {userEnsName ?? getShortenedAddress(account, 6, 4)} 🌿
                       </StyledSpan>
                       <AvatarComponent
                         address={account}

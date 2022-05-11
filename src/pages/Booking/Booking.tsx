@@ -51,6 +51,7 @@ const BookingPage = () => {
   const [token, setToken] = useState<ERCTokenType>('MATIC');
   const [price, setPrice] = useState<number>(0);
   const [doesFollow, setDoesFollow] = useState<boolean>(false);
+  const [toggle, setToggle] = useState<boolean>(true);
   const [{data, fetching, error}, executeQuery] = useQuery({
     query: queryProfile, 
     variables: {
@@ -90,7 +91,7 @@ const BookingPage = () => {
         }
       })
     }
-  }, [account, data])
+  }, [account, data, toggle])
 
   const getErc20Contract = () => {
     const provider = getProviderOrSigner(library, account ? account : undefined);
@@ -182,20 +183,29 @@ const BookingPage = () => {
                       </a>{' '}
                     </Description>
                     <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
-                    {data && library && data.profiles && data.profiles.items && data.profiles.items.length != 0 && <Description>🌿: <button onClick={async () => {
+                    {data && library && data.profiles && data.profiles.items && data.profiles.items.length != 0 && <PrimaryButton
+                      size="small"
+                      width="small"
+                      style={{ margin: 10, marginLeft: 0, maxWidth: 100, background: '#5F21E2', color: 'white' }}
+                      onPress={async e => {
+                        toast.loading(doesFollow ? 'Awaiting unfollow confirmation' : 'Awaiting follow confirmation')
                       const accessToken = await lens.getAccess(account)
                       if (!accessToken) return
                       const access = accessToken.data.authenticate.accessToken
-                      console.log(access)
-                      
-                      const res = doesFollow ? 
+                      const txHash = doesFollow ? 
                         await lens.unfollow(data?.profiles.items[0].id, access, library) : 
                         await lens.follow(data?.profiles.items[0].id, access, library)
-                    }}>
-                      {data?.profiles.items[0].handle}
-                      </button>
-                      Is following: {`${doesFollow}`}
-                    </Description>}
+                      toast.dismiss()
+                      toast.loading('Waiting for transaction to complete')
+                      const f = await lens.pollUntilIndexed(txHash, access)
+                      console.log(f)
+                      setToggle(!toggle) //todo(jonathanng) - this is trashcan code!
+                      toast.dismiss()
+                      toast.success('Transaction is finished')
+                      }}
+                    >
+                      {doesFollow ? "Follow" : "Unfollow"} 
+                    </PrimaryButton>}
                   </div>
                   <div>
                     <AvatarComponent url={creator.profilePicture} size="medium" twitterHandle={creator.twitterHandle} />

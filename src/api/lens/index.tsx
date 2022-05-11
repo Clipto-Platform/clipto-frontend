@@ -9,9 +9,15 @@ import { CreateProfileRequest } from './types';
 
 declare var window: any //this removes window.ethereum type error
 
-export const graphInstance = createClient({
+export const graphInstance = createClient({ // for performance reasons
   url: LENS_URI,
+  requestPolicy: 'cache-and-network' 
 });
+
+export const graphInstanceDisabledCache = createClient({
+  url: LENS_URI,
+  requestPolicy: 'network-only' //defaults to no-cache option: https://formidable.com/open-source/urql/docs/basics/document-caching/
+})
 
 export const generateChallenge = (address : any) => {
   return graphInstance.query(queryChallenge, {address}).toPromise()
@@ -214,7 +220,7 @@ export const isFollowing = async (address : string, id: string) => {
  * @param txHash
  */
 export const txWait = async (txHash: string, accessToken : string) => {
-  return graphInstance.query(queryTxWait, {
+  return graphInstanceDisabledCache.query(queryTxWait, {
     txHash: txHash
   }, {
     fetchOptions: {
@@ -224,7 +230,38 @@ export const txWait = async (txHash: string, accessToken : string) => {
     }
   }).toPromise()
 }
+export const pollUntilIndexed = async (txHash: string, accessToken : string) => {
+  while (true) {
+    const result = await txWait(txHash, accessToken);
+    console.log(result)
+    const response = result.data.hasTxHashBeenIndexed;
+    if (response.__typename === 'TransactionIndexedResult') {
+      if (response.metadataStatus) {
+        if (response.metadataStatus.status === 'SUCCESS') {
+          return response;
+        }
 
+        if (response.metadataStatus.status === 'METADATA_VALIDATION_FAILED') {
+          throw new Error(response.metadataStatus.reason);
+        }
+      } else {
+        if (response.indexed) {
+          return response;
+        }
+      }
+
+      // sleep for a second before trying again
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    try {
+      throw new Error(response.reason);
+
+    } catch (e) {
+      //console.warn(e)
+    }
+    // it got reverted and failed!
+  }
+};
 // todo - sharing to lens as a publication
 
 
