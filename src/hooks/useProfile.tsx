@@ -94,7 +94,7 @@ export const useProfile = create<UserProfile>(
     setTwitterHandle: (twitterHandle: string) => {
       set((draft) => {
         draft.twitterHandle = twitterHandle;
-      }); 
+      });
     },
     setProfilePicture: (profilePicture: string) => {
       set((draft) => {

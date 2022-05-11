@@ -8,12 +8,10 @@ import * as api from '../../api';
 import * as lens from '../../api/lens';
 import { CreatorData, EntityCreator } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
-import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
-import { HeaderSpacer } from '../../components/Header/Header';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { SYMBOL } from '../../config/config';
-import { useExchangeContract } from '../../hooks/useContracts';
+import config from '../../config/config';
+import { useExchangeContractV1 } from '../../hooks/useContracts';
 import { useFee } from '../../hooks/useFee';
 import { useProfile } from '../../hooks/useProfile';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
@@ -22,20 +20,22 @@ import { OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
 
 const OnboardProfilePage = () => {
   const userProfile = useProfile();
+  const navigate = useNavigate();
+  const { FeeDescription } = useFee();
   const { account, library } = useWeb3React<Web3Provider>();
-  const exchangeContract = useExchangeContract(true);
+  const exchangeContractV1 = useExchangeContractV1(true);
   const [loading, setLoading] = useState(false); //state of form button
   const [hasAccount, setHasAccount] = useState<boolean>(false); //state of if the user is a creator or not
   const [userProfileDB, setUserProfileDB] = useState<EntityCreator>();
-  const navigate = useNavigate();
   const [loaded, setLoaded] = useState<boolean>(false);
-  const { FeeDescription } = useFee();
   const [lensProfiles, setLensProfiles] = useState<Array<{id: string, handle: string}>>([])
+
   const updateUserProfile = async (creatorData: CreatorData) => {
     try {
-      const txResult = await exchangeContract.updateCreator(JSON.stringify(creatorData));
+      const txResult = await exchangeContractV1.updateCreator(JSON.stringify(creatorData));
       toast.loading('Profile updating, waiting for confirmation!');
       await txResult.wait();
+
       toast.dismiss();
       toast.success('Changes will be reflected soon!');
       navigate(`/creator/${account}`);
@@ -48,7 +48,7 @@ const OnboardProfilePage = () => {
   const createUserProfile = async (creatorData: CreatorData) => {
     let userOnChain;
     try {
-      userOnChain = await isCreatorOnChain(exchangeContract, account);
+      userOnChain = await isCreatorOnChain(exchangeContractV1, account);
     } catch (err) {
       toast.error('Error connecting to wallet. Toggle your networks and reload.');
       return;
@@ -56,9 +56,10 @@ const OnboardProfilePage = () => {
 
     if (!userOnChain) {
       try {
-        const txResult = await exchangeContract.registerCreator(creatorData.userName, JSON.stringify(creatorData));
+        const txResult = await exchangeContractV1.registerCreator(creatorData.userName, JSON.stringify(creatorData));
         toast.loading('Profile created, waiting for confirmation!');
         await txResult.wait();
+
         toast.dismiss();
         toast.success('Your account will be reflected here soon!');
         navigate(`/explore`);
@@ -100,6 +101,21 @@ const OnboardProfilePage = () => {
       })
     }
   }, [account]);
+
+  useEffect(() => {
+    if (userProfileDB) {
+      api.getTwitterData([userProfileDB.twitterHandle]).then((response) => {
+        if (response.data && response.data.data.length > 0) {
+          const image = response.data.data[0].profile_image_url.replace('normal', '400x400');
+          userProfile.setProfilePicture(image);
+          setUserProfileDB({
+            ...userProfileDB,
+            profilePicture: image,
+          });
+        }
+      });
+    }
+  }, [userProfileDB]);
 
   return (
     <>
@@ -311,11 +327,11 @@ const OnboardProfilePage = () => {
                           <TextField
                             onChange={handleChange('price')}
                             label="Minimum amount to charge for bookings"
-                            description={`Fans will be able to pay this in ${SYMBOL}`}
+                            description={`Fans will be able to pay this in ${config.chainSymbol}`}
                             placeholder="0.5"
                             value={values.price}
                             type="number"
-                            endText={SYMBOL}
+                            endText={config.chainSymbol}
                             onBlur={handleBlur}
                             errorMessage={errors.price}
                           />

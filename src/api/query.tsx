@@ -1,11 +1,13 @@
 export const queryGetRequest = `
 query GetRequestById (
     $requestId: BigInt!,
-    $creator: Bytes!
+    $creator: Bytes!,
+    $version: String!
 ) {
     requests(where: {
         requestId: $requestId,
-        creator: $creator
+        creator: $creator,
+        version: $version
     }){
       id
       requestId
@@ -13,7 +15,7 @@ query GetRequestById (
       creator {
         id
         address
-        tokenAddress
+        nftTokenAddress
         twitterHandle
         bio
         deliveryTime
@@ -30,13 +32,16 @@ query GetRequestById (
       deadline
       delivered
       refunded
-      tokenAddress
-      tokenId
-      tokenUri
+      erc20
+      version
+      metadataURI
+      nftTokenAddress
+      nftTokenId
+      nftTokenUri
       txHash
       block
-      timestamp
-      token
+      createdTimestamp
+      updatedTimestamp
     }
   }
 `;
@@ -54,7 +59,8 @@ query GetAllCreators (
     ){
       id
       address
-      tokenAddress
+      metadataURI
+      nftTokenAddress
       twitterHandle
       bio
       deliveryTime
@@ -77,7 +83,9 @@ query GetCreatorById (
   {
     id
     address
-    tokenAddress
+    metadataURI
+    nftTokenAddress
+    metadataURI
     twitterHandle
     bio
     deliveryTime
@@ -104,7 +112,7 @@ query GetCreatorRequests (
     }, 
     first: $first,
     skip: $skip,
-    orderBy: timestamp
+    orderBy: createdTimestamp
     orderDirection: desc
   ) {
     id
@@ -113,7 +121,8 @@ query GetCreatorRequests (
     creator {
       id
       address
-      tokenAddress
+      metadataURI
+      nftTokenAddress
       twitterHandle
       bio
       deliveryTime
@@ -130,13 +139,16 @@ query GetCreatorRequests (
     deadline
     delivered
     refunded
-    tokenAddress
-    tokenId
-    tokenUri
+    erc20
+    version
+    metadataURI
+    nftTokenAddress
+    nftTokenId
+    nftTokenUri
     txHash
     block
-    timestamp
-    token
+    createdTimestamp
+    updatedTimestamp
   }
 }
 `;
@@ -153,7 +165,7 @@ query GetUserRequests (
     }, 
     first: $first,
     skip: $skip,
-    orderBy: timestamp
+    orderBy: createdTimestamp
     orderDirection: desc
   ) {
     id
@@ -162,7 +174,7 @@ query GetUserRequests (
     creator {
       id
       address
-      tokenAddress
+      nftTokenAddress
       twitterHandle
       bio
       deliveryTime
@@ -179,13 +191,15 @@ query GetUserRequests (
     deadline
     delivered
     refunded
-    tokenAddress
-    tokenId
-    tokenUri
+    erc20
+    version
+    metadataURI
+    nftTokenAddress
+    nftTokenId
+    nftTokenUri
     txHash
     block
-    timestamp
-    token
+    createdTimestamp
   }
 }
 `;
@@ -199,7 +213,8 @@ query GetFeaturedCreators (
   {
     id
     address
-    tokenAddress
+    metadataURI
+    nftTokenAddress
     twitterHandle
     bio
     deliveryTime
@@ -213,6 +228,7 @@ query GetFeaturedCreators (
   }
 }
 `;
+
 export const queryGetCreatorUserName = `
 query GetAllCreators {
     creators(
@@ -221,5 +237,29 @@ query GetAllCreators {
     ){
       twitterHandle
     }
+}
+`;
+
+export const queryGetNFTHistory = `
+query GetNFTHistory(
+  $nftContract: String!,
+  $tokenId: Int!
+) {
+  transfers (
+    where: {
+      nftContract: $nftContract,
+      tokenId: $tokenId
+    },
+    orderBy: timestamp,
+    orderDirection: desc
+  ) {
+    from {
+      id
+    }
+    to {
+      id
+    }
+    timestamp
+  }
 }
 `;

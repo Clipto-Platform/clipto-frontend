@@ -1,21 +1,25 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 import { Formik } from 'formik';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { exchnageRates } from '../../api';
 import { RequestData } from '../../api/types';
 import { AvatarComponent } from '../../components/AvatarOrb';
 import { ImagesSlider } from '../../components/Booking/ImagesSlider';
 import { BookingCard, RightPanel } from '../../components/Booking/RightPanel';
 import { PrimaryButton } from '../../components/Button';
-import { HeaderContentGapSpacer, HeaderSpacer } from '../../components/Header/Header';
+import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
+import { HeaderContentGapSpacer } from '../../components/Header/Header';
 import { PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
-import { CHAIN_NAMES, SYMBOL, TOKENS } from '../../config/config';
-import { getProviderOrSigner, useERC20Contract, useExchangeContract } from '../../hooks/useContracts';
+import config from '../../config/config';
+import { ERCTokenType } from '../../config/types';
+import { getErc20Contract, getProviderOrSigner, useExchangeContractV1 } from '../../hooks/useContracts';
 import { useCreator } from '../../hooks/useCreator';
 import { useFee } from '../../hooks/useFee';
 import { Description, Label } from '../../styles/typography';
@@ -25,12 +29,9 @@ import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
 import { BookingFormValues } from './types';
-import { parseUnits } from 'ethers/lib/utils';
-import { EXCHANGE_ADDRESS, DEFAULT_CHAIN_ID, ERC20_CONTRACTS } from '../../config/config';
-import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
+import { ERC20_CONTRACTS } from '../../config/config';
 import { ERC20__factory } from '../../contracts';
 import axios from 'axios';
-import { exchnageRates } from '../../api';
 import * as lens from '../../api/lens'
 import { useQuery } from 'urql';
 import { queryProfile } from '../../api/lens/query';
@@ -41,13 +42,13 @@ const BookingPage = () => {
   const { account, library, chainId } = useWeb3React<Web3Provider>();
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const exchangeContract = useExchangeContract(true);
+  const exchangeContractV1 = useExchangeContractV1(true);
   const { creator, loaded } = useCreator(creatorId);
   const { FeeDescription } = useFee();
   const [user, setUser] = useState();
   const getUser = useSelector((state: any) => state.user);
   const ref = useRef(null as any);
-  const [token, setToken] = useState<string>('MATIC');
+  const [token, setToken] = useState<ERCTokenType>('MATIC');
   const [price, setPrice] = useState<number>(0);
   const [doesFollow, setDoesFollow] = useState<boolean>(false);
   const [{data, fetching, error}, executeQuery] = useQuery({
@@ -59,6 +60,7 @@ const BookingPage = () => {
   useEffect(() => {
     setUser(getUser);
   }, [getUser]);
+
   useEffect(() => {
     if (ref && ref.current) {
       window.scrollTo({
@@ -98,6 +100,7 @@ const BookingPage = () => {
   const handleSelect = (e: any) => {
     setToken(e.target.value);
   };
+
   const makeBooking = async (values: BookingFormValues) => {
     try {
       if (!creatorId) {
@@ -105,7 +108,7 @@ const BookingPage = () => {
         return;
       }
 
-      const isCreator = await isCreatorOnChain(exchangeContract, creatorId);
+      const isCreator = await isCreatorOnChain(exchangeContractV1, creatorId);
       if (!isCreator) {
         toast.error('Booking request for this content creator cannot be created');
         return;
@@ -115,24 +118,33 @@ const BookingPage = () => {
         deadline: convertToInt(values.deadline),
         description: values.description,
       };
+
       let transaction;
       if (token && token == 'MATIC') {
-        transaction = await exchangeContract.newRequestPayable(creatorId, JSON.stringify(requestData), {
-          value: ethers.utils.parseEther(values.amount),
-        });
-      } else if (token) {
-        const ERC20 = getErc20Contract();
-
-        const tx = await ERC20.approve(EXCHANGE_ADDRESS[DEFAULT_CHAIN_ID], parseUnits(values.amount));
-        toast.loading('waiting for approval');
-        console.log('approve request', await tx.wait());
-        transaction = await exchangeContract.newRequest(
+        transaction = await exchangeContractV1.nativeNewRequest(
           creatorId,
+          account as string,
           JSON.stringify(requestData),
-          ERC20_CONTRACTS[token],
+          {
+            value: ethers.utils.parseEther(values.amount),
+          },
+        );
+      } else if (token) {
+        const ERC20 = getErc20Contract(token, account as string, library as Web3Provider);
+        const tx = await ERC20.approve(config.exchangeAddressV1, parseUnits(values.amount));
+
+        toast.loading('Waiting for approval');
+        await tx.wait();
+
+        transaction = await exchangeContractV1.newRequest(
+          creatorId,
+          account as string,
+          config.erc20Contracts[token],
           parseUnits(values.amount),
+          JSON.stringify(requestData),
         );
       }
+
       toast.dismiss();
       toast.loading('Creating a new booking, waiting for confirmation');
       const receipt = transaction && (await transaction.wait());
@@ -141,7 +153,7 @@ const BookingPage = () => {
       navigate('/orders');
     } catch (e) {
       toast.dismiss();
-      toast.error(`The transaction failed. Make sure you have enough ${SYMBOL} for gas.`);
+      toast.error(`The transaction failed. Make sure you have enough ${token} for gas.`);
     }
   };
 
@@ -244,7 +256,7 @@ const BookingPage = () => {
                         <FlexRow style={{ marginBottom: 7 }}>
                           <Label>Personal use</Label>
                           <Label style={{ fontSize: 14 }}>
-                            {formatETH(convertToFloat(creator.price))} {SYMBOL}+
+                            {formatETH(convertToFloat(creator.price))} {config.chainSymbol}+
                           </Label>
                         </FlexRow>
                         <Description>Personalized video for you or someone else</Description>
@@ -287,8 +299,8 @@ const BookingPage = () => {
                       </div>
 
                       <div style={{ marginBottom: 40 }}>
-                        <Dropdown name="token" formLabel="Select payment type" onChange={handleSelect}>
-                          {TOKENS.map((tok, i) => {
+                        <Dropdown formLabel="Select payment type" onChange={handleSelect}>
+                          {config.erc20TokenNames.map((tok, i) => {
                             if (i == 0) {
                               <Option key={i} selected value={tok} />;
                             }
@@ -327,12 +339,12 @@ const BookingPage = () => {
                           }
                           setLoading(false);
                         }}
-                        isDisabled={user && chainId === DEFAULT_CHAIN_ID ? loading : true}
+                        isDisabled={user && chainId === config.chainId ? loading : true}
                       >
                         {user
-                          ? chainId === DEFAULT_CHAIN_ID
+                          ? chainId === config.chainId
                             ? 'Book now'
-                            : `Change Network to ${CHAIN_NAMES[DEFAULT_CHAIN_ID]}`
+                            : `Change Network to ${config.chainName}`
                           : 'Please Connect your wallet'}
                       </PrimaryButton>
                       <Description style={{ fontSize: 12, margin: '15px 0px' }}>

@@ -8,6 +8,7 @@ import { ConfirmationText } from '../../components/ConfirmationText';
 import { CenterContainer, Container, FieldWrapper } from '../../components/layout/Common';
 import { useProfile } from '../../hooks/useProfile';
 import { Text } from '../../styles/typography';
+import moment from 'moment';
 // TODO(johnrjj) - Consolidate final typography into stylesheet
 const OnboardTitle = styled.h1`
   font-family: 'Scto Grotesk A';
@@ -36,6 +37,7 @@ export interface BountyConfirmationProps {
   requestDue: string;
   offerAmount: string;
   recipientWallet: string;
+  token: string;
 }
 
 const BountyConfirmation = (props: BountyConfirmationProps) => {
@@ -54,13 +56,13 @@ const BountyConfirmation = (props: BountyConfirmationProps) => {
           <ConfirmationText label="Instructions" description={props.instructions} />
         </FieldWrapper>
         <FieldWrapper>
-          <ConfirmationText label="Request Deadline" description={props.requestDue} />
+          <ConfirmationText label="Request Deadline" description={moment(props.requestDue).format('LL')} />
         </FieldWrapper>
         <FieldWrapper>
           <ConfirmationText
             //TODO(jonathanng) - convert eth into usd display
             label="Offer Amount"
-            description={props.offerAmount}
+            description={`${props.offerAmount} ${props.token}`}
           />
         </FieldWrapper>
         <FieldWrapper>
@@ -68,7 +70,9 @@ const BountyConfirmation = (props: BountyConfirmationProps) => {
         </FieldWrapper>
         <HR style={{ marginBottom: 36 }} />
         <Link to={'/bountyDone'}>
-          <PrimaryButton style={{ marginBottom: '16px' }}>Place order {props.offerAmount}</PrimaryButton>
+          <PrimaryButton style={{ marginBottom: '16px' }}>
+            Place order ({props.offerAmount} {props.token})
+          </PrimaryButton>
         </Link>
       </CenterContainer>
     </>

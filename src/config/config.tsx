@@ -1,85 +1,84 @@
-export const DEV = false;
-export const TEST = true;
-export const ENV = DEV ? 'DEV' : TEST ? 'TEST' : 'PROD';
+import { Config } from './types';
 
-export const CHAIN_IDS = {
-  POLYGON_MAINNET: 137,
-  POLYGON_TESTNET: 80001,
-  DAPPTOOLS: 99,
+const configCommon = {
+  minDeliveryTime: 3,
+
+  email: 'admin@clipto.io',
+  discord: 'https://discord.com/invite/fpVMmerNZm',
+  twitter: 'https://twitter.com/CliptoDAO',
+  documentation: 'https://docs.clipto.io/',
+  terms: 'https://docs.clipto.io/',
+  policy: 'https://docs.clipto.io/',
 };
 
-const SYMBOLS = {
-  [CHAIN_IDS.POLYGON_MAINNET]: 'MATIC',
-  [CHAIN_IDS.POLYGON_TESTNET]: 'MATIC',
-  [CHAIN_IDS.DAPPTOOLS]: 'ETH',
+const configTest = {
+  chainId: 80001,
+  chainName: 'Polygon Testnet Mumbai',
+  chainSymbol: 'MATIC',
+
+  exchangeAddress: '0x307736ececf51104a841cff44a2508775878fe3f',
+  exchangeAddressV1: '0x10970e6fd7545d24021c2de1ee7963e6f3235df2',
+  erc20TokenNames: ['MATIC', 'WMATIC', 'WETH', 'USDC'],
+  erc20Contracts: {
+    MATIC: '0x0000000000000000000000000000000000000000',
+    WMATIC: '0x9c3c9283d3e44854697cd22d3faa240cfb032889',
+    WETH: '0x714550c2c1ea08688607d86ed8eef4f5e4f22323',
+    USDC: '0xe11a86849d99f524cac3e7a0ec1241828e332c62', // not official
+  },
+
+  rpcUrl: 'https://polygon-mumbai.g.alchemy.com/v2/VMBpFqjMYv2w-MWnc9df92w3R2TpMvSG',
+  graphApi: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-tstnet',
+  apiUrl: 'https://testapi.clipto.io',
+
+  getContractExplorer: (address: string) => `https://mumbai.polygonscan.com/address/${address}`,
+  getTokenExplorer: (address: string) => `https://mumbai.polygonscan.com/token/${address}`,
+  getOpenSeaExplorer: (address: string, tokenId: number) =>
+    `https://testnets.opensea.io/assets/mumbai/${address}/${tokenId}`,
 };
 
-export const CHAIN_NAMES: { [chainId: number]: string } = {
-  '137': 'Polygon',
-  '80001': 'Polygon Testnet Mumbai',
-  '99': 'Dapp tools localhost',
+const configProd = {
+  chainId: 137,
+  chainName: 'Polygon',
+  chainSymbol: 'MATIC',
+
+  exchangeAddress: '0x36a9f25b8aa6b941b0c8177684e8ecff59376d9a',
+  exchangeAddressV1: '0xB491F739463B5bD43bCb243703F2B6742d9F779b',
+  erc20TokenNames: ['MATIC', 'WMATIC', 'WETH', 'USDC'],
+  erc20Contracts: {
+    MATIC: '0x0000000000000000000000000000000000000000',
+    WMATIC: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+    WETH: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
+    USDC: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+  },
+
+  rpcUrl: 'https://polygon-mainnet.g.alchemy.com/v2/Wk4fc10DkXi2lhLq30tw_eSHPuzUyRnV',
+  graphApi: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-mainnet',
+  apiUrl: 'https://api.clipto.io',
+
+  getContractExplorer: (address: string) => `https://polygonscan.com/address/${address}`,
+  getTokenExplorer: (address: string) => `https://polygonscan.com/token/${address}`,
+  getOpenSeaExplorer: (address: string, tokenId: number) => `https://opensea.io/assets/matic/${address}/${tokenId}`,
 };
 
-export const POLLING_INTERVAL = 12000;
+const config: Config =
+  import.meta.env.VITE_APP_ENV === 'production'
+    ? {
+        environment: 'production',
+        ...configCommon,
+        ...configProd,
+      }
+    : {
+        environment: 'test',
+        ...configCommon,
+        ...configTest,
+      };
 
-export const RPC_URLS: { [chainId: number]: string } = {
-  [CHAIN_IDS.POLYGON_MAINNET]: 'https://polygon-mainnet.g.alchemy.com/v2/Wk4fc10DkXi2lhLq30tw_eSHPuzUyRnV',
-  [CHAIN_IDS.POLYGON_TESTNET]: 'https://polygon-mumbai.g.alchemy.com/v2/VMBpFqjMYv2w-MWnc9df92w3R2TpMvSG',
-  [CHAIN_IDS.DAPPTOOLS]: 'http://localhost:8545',
-};
-
-export const DEFAULT_CHAIN_ID = DEV
-  ? CHAIN_IDS.DAPPTOOLS
-  : TEST
-  ? CHAIN_IDS.POLYGON_TESTNET
-  : CHAIN_IDS.POLYGON_MAINNET;
-export const SYMBOL = SYMBOLS[DEFAULT_CHAIN_ID];
-
-export const EXCHANGE_ADDRESS: { [chainId: number]: string } = {
-  [CHAIN_IDS.POLYGON_MAINNET]: '0x36A9F25B8AA6b941B0c8177684E8ecff59376D9a',
-  [CHAIN_IDS.POLYGON_TESTNET]: '0x515b631E814d3CB586e3e2cF486c0c814CC8A0Bb',
-  [CHAIN_IDS.DAPPTOOLS]: '0x500fB9CAE50b307Fb82C9282f5eaCBdF14fa8cC2',
-};
-
-// block number of contract deployment
-export const START_BLOCKS: { [chainId: number]: number } = {
-  [CHAIN_IDS.POLYGON_MAINNET]: 25833562,
-  [CHAIN_IDS.POLYGON_TESTNET]: 24789312,
-  [CHAIN_IDS.DAPPTOOLS]: 0,
-};
-
-export const GRAPH_APIS: { [chainId: number]: string } = {
-  [CHAIN_IDS.POLYGON_MAINNET]: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-mainnet',
-  [CHAIN_IDS.POLYGON_TESTNET]: 'https://api.thegraph.com/subgraphs/name/rushidhanwant/multitoken_subgraph',
-  [CHAIN_IDS.DAPPTOOLS]: 'https://api.thegraph.com/subgraphs/name/ap-atul/clipto-subgraph',
-};
+// jonathan - sorry atul 
 export const ERC20_CONTRACTS: { [token: string]: string } = {
   MATIC: '0x0000000000000000000000000000000000000000',
   WMATIC: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
   WETH: '0x714550C2C1Ea08688607D86ed8EeF4f5E4F22323',
 };
-
-export const TOKENS = ['MATIC', 'WMATIC', 'WETH'];
-export const HELP_EMAIL = 'admin@clipto.io';
-export const MIN_DELIVERY_TIME = 3;
-export const DISCORD_LINK = 'https://discord.com/invite/fpVMmerNZm';
-export const TWITTER_LINK = 'https://twitter.com/CliptoDAO';
-export const DOCS_LINK = 'https://docs.clipto.io/';
-export const TERMS_LINK = 'https://docs.clipto.io/';
-export const PRIVACY_LINK = 'https://docs.clipto.io/';
-
-export const API_URL = DEV ? 'http://localhost:8000' : TEST ? 'https://testapi.clipto.io' : 'https://api.clipto.io';
-
-export const getPolygonScan = (addr: string) =>
-  ENV === 'TEST' ? `https://mumbai.polygonscan.com/token/${addr}` : `https://polygonscan.com/token/${addr}`;
-
-export const getContractLink = (addr: string) =>
-  ENV === 'TEST' ? `https://mumbai.polygonscan.com/address/${addr}` : `https://polygonscan.com/address/${addr}`;
-
-export const getOpensea = (addr: string, index: number) =>
-  ENV === 'TEST'
-    ? `https://testnets.opensea.io/assets/mumbai/${addr}/${index}`
-    : `https://opensea.io/assets/matic/${addr}/${index}`;
 
 export const getTokenSymbol = (token: string) => {
   return Object.keys(ERC20_CONTRACTS).find((key) => {
@@ -87,7 +86,7 @@ export const getTokenSymbol = (token: string) => {
   });
 };
 
-
+const ENV = 'TEST'
 export const LENS_URI = {
   DEV: "https://api-mumbai.lens.dev/",
   TEST: "https://api-mumbai.lens.dev/",
@@ -99,3 +98,4 @@ export const LENS_HUB_CONTRACT_ADDRESS = {
   TEST: "0x4BF0c7AD32Fd2d32089790a54485e23f5C7736C0",
   PROD: undefined
 }[ENV]
+export default config;

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Description } from '../styles/typography';
-import { useExchangeContract } from './useContracts';
+import { useExchangeContractV1 } from './useContracts';
 
 export const useFee = () => {
-  const exchangeContract = useExchangeContract(true);
+  const exchangeContract = useExchangeContractV1(true);
   const [feePercent, setFeePercent] = useState('');
 
   useEffect(() => {
@@ -14,12 +14,13 @@ export const useFee = () => {
 
   const fetchFeePercent = async () => {
     try {
-      const scale = await exchangeContract.scale();
-      const feeRate = await exchangeContract.feeRate();
-      const percent = ((feeRate.toNumber() / scale.toNumber()) * 100).toFixed(1);
+      const fees = await exchangeContract.getFeeRate();
+      const percent = (fees[0].toNumber() / fees[1].toNumber()) * 100;
+
       setFeePercent(`${percent}%`);
     } catch (err) {}
   };
+
   return {
     feePercent,
     FeeDescription: () => (

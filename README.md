@@ -4,8 +4,31 @@ This is one of three parts of the clipto project.
 
 ## Setup
 
-1.  `npm install`
-2.  `npm run dev`
+1. Install the dependencies
+
+```
+npm install
+```
+
+2. Run specific environment
+
+```
+# for dev/test environment
+npm run dev
+
+# for production environment
+npm run prod
+```
+
+3. Build specific environment
+
+```
+# for dev/test environment
+npm run build:test
+
+# for production environment
+npm run build:prod
+```
 
 ## To fix all prettier issue
 
@@ -16,17 +39,4 @@ npx prettier --write src/**/*.tsx
 
 ## deployed contract address
 
-V1:
-
-- Polygon : 0x3C78bF376815C322d216899d041ff90Ed86bbFa7
-- Mumbai : 0x36A9F25B8AA6b941B0c8177684E8ecff59376D9a
-
-V2:
-
-- Polygon : 0x36A9F25B8AA6b941B0c8177684E8ecff59376D9a
-- Mumbai : 0x307736eCecF51104a841CfF44A2508775878fe3f
-
-Multi-token:
-
-- Polygon :
-- Mumbai : 0x515b631E814d3CB586e3e2cF486c0c814CC8A0Bb
+Refer [here](https://github.com/Clipto-Platform/clipto/tree/test#latest)
