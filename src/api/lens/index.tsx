@@ -1,7 +1,8 @@
+import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import { createClient } from "urql";
 import { LENS_URI } from "../../config/config";
-import { getFollowNftContract, lensHub } from './contract';
+import { getFollowNftContract, getLensHub } from './contract';
 import { getAddressFromSigner, signedTypeData, splitSignature } from './ethers-service';
 import { mutationFollow, mutationProfile, mutationUnfollow, queryAuth, queryChallenge, queryDoesFollow, queryFollowing, queryProfile, queryTxWait, queryVerify } from './query';
 import { CreateProfileRequest } from './types';
@@ -103,7 +104,7 @@ export const signUp = async (address : string) => {
 
 
 //Need to check what type of follow module - (don't want to have to pay for a fee)
-export const follow = async (handle : string, accessToken : string) => {
+export const follow = async (handle : string, accessToken : string, library : Web3Provider) => {
   const result = await graphInstance.mutation(mutationFollow, {
     profile: handle
   }, {
@@ -116,10 +117,10 @@ export const follow = async (handle : string, accessToken : string) => {
   if (!result) throw 'result is undefined'
   try {
     const typedData = result.data.createFollowTypedData.typedData;
-    const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
+    const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value, library);
     const { v, r, s } = splitSignature(signature);
-    const tx = await lensHub.followWithSig({
-      follower: await getAddressFromSigner(),
+    const tx = await getLensHub(library).followWithSig({
+      follower: await getAddressFromSigner(library),
       profileIds: typedData.value.profileIds,
       datas: typedData.value.datas,
       sig: {
@@ -140,7 +141,7 @@ export const follow = async (handle : string, accessToken : string) => {
 }
 
 
-export const unfollow = async (handle : string, accessToken : string) => {
+export const unfollow = async (handle : string, accessToken : string, library : Web3Provider) => {
   const result = await graphInstance.mutation(mutationUnfollow, {
     profile: handle
   }, {
@@ -153,8 +154,8 @@ export const unfollow = async (handle : string, accessToken : string) => {
   if (!result) return
   console.log(result)
   const typedData = result.data.createUnfollowTypedData.typedData;
-  const followNftContract = getFollowNftContract(typedData);
-  const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
+  const followNftContract = getFollowNftContract(typedData, library);
+  const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value, library);
   const { v, r, s } = splitSignature(signature);
   
   const sig = {

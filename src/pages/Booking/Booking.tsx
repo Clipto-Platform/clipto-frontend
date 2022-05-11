@@ -170,16 +170,15 @@ const BookingPage = () => {
                       </a>{' '}
                     </Description>
                     <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
-                    {data && data.profiles && data.profiles.items && data.profiles.items.length != 0 && <Description>🌿: <button onClick={async () => {
+                    {data && library && data.profiles && data.profiles.items && data.profiles.items.length != 0 && <Description>🌿: <button onClick={async () => {
                       const accessToken = await lens.getAccess(account)
                       if (!accessToken) return
                       const access = accessToken.data.authenticate.accessToken
                       console.log(access)
                       
                       const res = doesFollow ? 
-                        await lens.unfollow(data?.profiles.items[0].id, access) : 
-                        await lens.follow(data?.profiles.items[0].id, access)
-                      //const res = await lens.unfollow("0xeb", access)
+                        await lens.unfollow(data?.profiles.items[0].id, access, library) : 
+                        await lens.follow(data?.profiles.items[0].id, access, library)
                     }}>
                       {data?.profiles.items[0].handle}
                       </button>

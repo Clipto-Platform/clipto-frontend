@@ -73,21 +73,12 @@ const HomePage = () => {
   useEffect(() => {
     const getCreatorData = async () => {
       if (account) {
-        // console.log(await lens.isFollowing(account, "0x01"))
         const accessToken = await lens.getAccess(account)
         if (!accessToken) return
         const access = accessToken.data.authenticate.accessToken
         // lens.txWait('0xbbb6c23aa4056fbcf7343f40430eae045a84b64a452a36dc83c542c30d295dec', access).then(console.log)
         //console.log(access)
-        //const res = await lens.follow("0x01", access)
-        //const res = await lens.unfollow("0x01", access)
-        //console.log(res)
-        // const lensAccount = await lens.getProfile(account)
-        // console.log(lensAccount)
-        // if (!lensAccount) return
-        // console.log(lensAccount.data.profiles.items[0].id)
-        //const res = await lens.getFollowNFTs(account, lensAccount.data.profiles.items[0].id)
-        //console.log(res)
+
         try {
           const response = await api.creatorById(account || '');
           if (response.data && response.data.creator) {
