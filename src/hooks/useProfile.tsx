@@ -12,6 +12,7 @@ export type CreateUserDto = {
   price: number | undefined;
   tweetUrl: string | undefined;
   address: string | undefined;
+  businessPrice: number;
 };
 
 export interface CreateUserDtoFull {

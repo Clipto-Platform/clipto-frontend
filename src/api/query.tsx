@@ -96,6 +96,7 @@ query GetCreatorById (
     txHash
     block
     timestamp
+    businessPrice
   }
 }
 `;
