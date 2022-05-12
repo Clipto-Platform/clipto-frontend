@@ -25,6 +25,7 @@ export interface CreatorData {
   userName: string;
   price: number;
   demos: string[];
+  businessPrice: number;
 }
 
 export interface EntityCreator extends CreatorData {
@@ -40,6 +41,11 @@ export interface EntityCreator extends CreatorData {
 export interface RequestData {
   description: string;
   deadline: number;
+  isBusiness: boolean;
+  businessName?: string;
+  businessEmail?: string;
+  businessTwitter?: string;
+  businessInfo?: string;
 }
 
 export interface EntityRequest extends RequestData {

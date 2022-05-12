@@ -16,6 +16,8 @@ import { useProfile } from '../../hooks/useProfile';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
+import Toggle from 'react-toggle';
+import './ToggleStyle.css';
 
 const OnboardProfilePage = () => {
   const userProfile = useProfile();
@@ -29,6 +31,7 @@ const OnboardProfilePage = () => {
   const [hasAccount, setHasAccount] = useState<boolean>(false); //state of if the user is a creator or not
   const [userProfileDB, setUserProfileDB] = useState<EntityCreator>();
   const [loaded, setLoaded] = useState<boolean>(false);
+  const [isBusiness, setIsBusiness] = useState<boolean>(false);
 
   const waitForIndexing = async (txHash: string) => {
     toast.dismiss();
@@ -134,6 +137,8 @@ const OnboardProfilePage = () => {
                     demo1: userProfile.demos[0] || userProfileDB?.demos[0] || '',
                     demo2: userProfile.demos[1] || userProfileDB?.demos[1] || '',
                     demo3: userProfile.demos[2] || userProfileDB?.demos[2] || '',
+                    businessPrice: userProfile.businessPrice || userProfileDB?.businessPrice || 0,
+                    isBusiness: isBusiness,
                   }}
                   onSubmit={async (values) => {
                     setLoading(true);
@@ -151,6 +156,7 @@ const OnboardProfilePage = () => {
                       demos: demos,
                       price: parseFloat(values.price),
                       profilePicture: values.profilePicture,
+                      businessPrice: isBusiness ? values.businessPrice : 0,
                     };
                     hasAccount ? await updateUserProfile(creatorData) : await createUserProfile(creatorData);
                     setLoading(false);
@@ -311,7 +317,7 @@ const OnboardProfilePage = () => {
                           />
                         </div>
 
-                        <div style={{ marginBottom: 48 }}>
+                        <div style={{ marginBottom: 24 }}>
                           <TextField
                             onChange={handleChange('price')}
                             label="Minimum amount to charge for bookings"
@@ -324,6 +330,30 @@ const OnboardProfilePage = () => {
                             errorMessage={errors.price}
                           />
                           <FeeDescription />
+                        </div>
+
+                        <div style={{ marginBottom: 24 }}>
+                          <TextField
+                            onChange={handleChange('businessPrice')}
+                            label="Minimum amount to charge for business bookings"
+                            description={`Fans will be able to pay this in ${config.chainSymbol}`}
+                            placeholder="0.5"
+                            value={values.businessPrice.toString()}
+                            type="number"
+                            endText={config.chainSymbol}
+                            onBlur={handleBlur}
+                            errorMessage={errors.businessPrice}
+                          />
+                          <FeeDescription />
+                        </div>
+
+                        <div style={{ marginBottom: 48 }}>
+                          <Toggle
+                            defaultChecked={values.businessPrice > 0 ? true : false}
+                            icons={false}
+                            onChange={(e: any) => setIsBusiness(e.target.checked)}
+                          />
+                          <span>Open to receive booking requests</span>
                         </div>
 
                         <div style={{ marginBottom: 12 }}>

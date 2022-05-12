@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
-import { ethers } from 'ethers';
+import { errors, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { Formik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
@@ -28,7 +28,8 @@ import { convertToFloat, convertToInt, formatETH, removeTrailingZero } from '../
 import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
-import { BookingFormValues } from './types';
+import { BookingFormValues, UsesOptions } from './types';
+import { getTwitterData } from '../../api';
 
 const BookingPage = () => {
   const navigate = useNavigate();
@@ -45,6 +46,11 @@ const BookingPage = () => {
   const [user, setUser] = useState();
   const [token, setToken] = useState<ERCTokenType>('MATIC');
   const [price, setPrice] = useState<number>(0);
+  const [uses, setUses] = useState<UsesOptions>(UsesOptions.personal);
+  const [isTwitterAccount, setIsTwitterAccount] = useState<boolean>(false);
+  const [isLoader, setIsLoader] = useState<boolean>(false);
+  const [businessTwitter, setBusinessTwitter] = useState<string>('');
+  const [invalidTwitter, setInvalidTwitter] = useState<string>('');
 
   useEffect(() => {
     setUser(getUser);
@@ -65,6 +71,37 @@ const BookingPage = () => {
       });
     }
   }, [loaded, token]);
+
+  useEffect(() => {
+    setIsTwitterAccount(false);
+    setInvalidTwitter('');
+    let timer: any;
+    if (businessTwitter.length) {
+      setIsLoader(true);
+      clearTimeout();
+      timer = setTimeout(async () => {
+        try {
+          const twitterHandle = await getTwitterData([businessTwitter]);
+          const isTwitterPrfile =
+            !!twitterHandle && twitterHandle.data && twitterHandle.data.data && twitterHandle.data.data.length === 1;
+          if (isTwitterPrfile) {
+            setIsTwitterAccount(true);
+            setInvalidTwitter('');
+          } else {
+            setIsTwitterAccount(false);
+          }
+        } catch (e) {
+          setIsTwitterAccount(false);
+          if (uses === UsesOptions.business) setInvalidTwitter('Invalid twitter handle.');
+        }
+      }, 3000);
+    } else {
+      setInvalidTwitter('');
+      setIsTwitterAccount(false);
+      setIsLoader(false);
+    }
+    return () => clearTimeout(timer);
+  }, [businessTwitter]);
 
   const handleSelect = (e: any) => {
     setToken(e.target.value);
@@ -102,7 +139,14 @@ const BookingPage = () => {
       const requestData: RequestData = {
         deadline: convertToInt(values.deadline),
         description: values.description,
+        isBusiness: uses === UsesOptions.business ? true : false,
       };
+      if (uses === UsesOptions.business) {
+        requestData.businessName = values.businessName;
+        requestData.businessEmail = values.businessEmail;
+        requestData.businessTwitter = values.businessTwitter;
+        requestData.businessInfo = values.businessInfo;
+      }
 
       let transaction;
       if (token !== 'MATIC') {
@@ -178,13 +222,28 @@ const BookingPage = () => {
                     deadline: '0',
                     description: '',
                     amount: '0',
+                    businessName: '',
+                    businessEmail: '',
+                    businessTwitter: '',
+                    businessInfo: '',
                   }}
-                  validate={({ deadline, description, amount }) => {
+                  validate={({
+                    deadline,
+                    description,
+                    amount,
+                    businessName,
+                    businessEmail,
+                    businessTwitter,
+                    businessInfo,
+                  }) => {
                     const errors: any = {};
                     try {
                       Number.parse(parseFloat(amount));
                       if (parseFloat(amount) < convertToFloat(creator.price)) {
                         errors.amount = `Amount must be greater than ${creator.price}`;
+                      }
+                      if (uses === UsesOptions.business && parseFloat(amount) < convertToFloat(creator.businessPrice)) {
+                        errors.amount = `Amount must be greater than ${creator.businessPrice}`;
                       }
                       if (parseFloat(amount) > 700) {
                         errors.amount = `Amount must be less than 700 Matic`;
@@ -207,6 +266,9 @@ const BookingPage = () => {
                         errors.description = 'Please write some instructions for the creator.';
                       }
                     }
+                    const isBusiness = uses === UsesOptions.business;
+                    if (isBusiness && !businessEmail) errors.businessEmail = `Business email is required`;
+                    if (isBusiness && !businessInfo) errors.businessInfo = `Business description is required`;
                     return errors;
                   }}
                   validateOnBlur={false}
@@ -217,9 +279,16 @@ const BookingPage = () => {
                     setLoading(false);
                   }}
                 >
-                  {({ initialValues, handleChange, handleSubmit, errors, validateForm }) => (
+                  {({ initialValues, handleChange, handleSubmit, errors, validateForm, setFieldValue }) => (
                     <>
-                      <PurchaseOption style={{ marginBottom: 40 }}>
+                      <div style={{ margin: '0 0 15px 2px' }}>Choose an option</div>
+                      <PurchaseOption
+                        style={{
+                          marginBottom: 20,
+                          border: `${uses === UsesOptions.personal ? '1px solid yellow' : '1px solid #2A2A2A'}`,
+                        }}
+                        onClick={() => setUses(UsesOptions.personal)}
+                      >
                         <FlexRow style={{ marginBottom: 7 }}>
                           <Label>Personal use</Label>
                           <Label style={{ fontSize: 14 }}>
@@ -228,6 +297,26 @@ const BookingPage = () => {
                         </FlexRow>
                         <Description>Personalized video for you or someone else</Description>
                       </PurchaseOption>
+                      {creator.businessPrice > 0 ? (
+                        <PurchaseOption
+                          style={{
+                            marginBottom: 40,
+                            border: `${uses === UsesOptions.business ? '1px solid yellow' : '1px solid #2A2A2A'}`,
+                          }}
+                          onClick={() => setUses(UsesOptions.business)}
+                        >
+                          <FlexRow style={{ marginBottom: 7 }}>
+                            <Label>Business use</Label>
+                            <Label style={{ fontSize: 14 }}>
+                              {formatETH(convertToFloat(creator.price))} {config.chainSymbol}+
+                            </Label>
+                          </FlexRow>
+                          <Description>Engaging video content for your company, customers, or employees</Description>
+                        </PurchaseOption>
+                      ) : (
+                        ''
+                      )}
+
                       <div style={{ marginBottom: 40 }}>
                         <TextField
                           inputStyles={{
@@ -244,6 +333,56 @@ const BookingPage = () => {
                           errorMessage={errors.deadline}
                         />
                       </div>
+                      {uses === UsesOptions.business ? (
+                        <div>
+                          <div style={{ marginBottom: 40 }}>
+                            <TextField
+                              label="Business Name"
+                              placeholder="Business Name"
+                              onChange={handleChange('businessName')}
+                              errorMessage={errors.businessName}
+                            />
+                          </div>
+
+                          <div style={{ marginBottom: 40 }}>
+                            <TextField
+                              label="Email"
+                              type="email"
+                              placeholder="jimmy@gmail.com"
+                              onChange={handleChange('businessEmail')}
+                              errorMessage={errors.businessEmail}
+                            />
+                          </div>
+
+                          <div style={{ marginBottom: 40 }}>
+                            <TextField
+                              label="Twitter"
+                              placeholder="@jimmy"
+                              isSuccess={isTwitterAccount}
+                              isLoader={isLoader && !isTwitterAccount && !invalidTwitter}
+                              onChange={(e: any) => {
+                                setBusinessTwitter(e);
+                                // handleChange('businessTwitter');
+                                setFieldValue('businessTwitter', e);
+                              }}
+                              errorMessage={errors.businessTwitter || invalidTwitter}
+                            />
+                          </div>
+
+                          <div style={{ marginBottom: 40 }}>
+                            <TextField
+                              inputElementType="textarea"
+                              maxLength={1000}
+                              label="Tell us about your company"
+                              placeholder="Tell us what you guys do!"
+                              onChange={handleChange('businessInfo')}
+                              errorMessage={errors.businessInfo}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        ''
+                      )}
 
                       <div style={{ marginBottom: 40 }}>
                         <TextField
