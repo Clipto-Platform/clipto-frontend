@@ -19,6 +19,8 @@ export interface Config {
   graphApi: string;
   apiUrl: string;
 
+  cyberConnectGraphApi: string;
+
   minDeliveryTime: number;
 
   email: string;

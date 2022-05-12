@@ -30,6 +30,8 @@ const configTest = {
   graphApi: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-tstnet',
   apiUrl: 'https://testapi.clipto.io',
 
+  cyberConnectGraphApi: 'https://api.stg.cybertino.io/connect/',
+
   getContractExplorer: (address: string) => `https://mumbai.polygonscan.com/address/${address}`,
   getTokenExplorer: (address: string) => `https://mumbai.polygonscan.com/token/${address}`,
   getOpenSeaExplorer: (address: string, tokenId: number) =>
@@ -54,6 +56,8 @@ const configProd = {
   rpcUrl: 'https://polygon-mainnet.g.alchemy.com/v2/Wk4fc10DkXi2lhLq30tw_eSHPuzUyRnV',
   graphApi: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-mainnet',
   apiUrl: 'https://api.clipto.io',
+
+  cyberConnectGraphApi: 'https://api.cybertino.io/connect/',
 
   getContractExplorer: (address: string) => `https://polygonscan.com/address/${address}`,
   getTokenExplorer: (address: string) => `https://polygonscan.com/token/${address}`,
