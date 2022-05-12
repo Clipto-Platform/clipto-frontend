@@ -22,22 +22,32 @@ import './ToggleStyle.css';
 const OnboardProfilePage = () => {
   const userProfile = useProfile();
   const navigate = useNavigate();
+
+  const exchangeContractV1 = useExchangeContractV1(true);
   const { FeeDescription } = useFee();
   const { account, library } = useWeb3React<Web3Provider>();
-  const exchangeContractV1 = useExchangeContractV1(true);
+
   const [loading, setLoading] = useState(false); //state of form button
   const [hasAccount, setHasAccount] = useState<boolean>(false); //state of if the user is a creator or not
   const [userProfileDB, setUserProfileDB] = useState<EntityCreator>();
   const [loaded, setLoaded] = useState<boolean>(false);
   const [isBusiness, setIsBusiness] = useState<boolean>(false);
 
+  const waitForIndexing = async (txHash: string) => {
+    toast.dismiss();
+    toast.loading('Indexing your data, will be done soon');
+    await api.indexCreator(txHash);
+    toast.dismiss();
+  };
+
   const updateUserProfile = async (creatorData: CreatorData) => {
     try {
       const txResult = await exchangeContractV1.updateCreator(JSON.stringify(creatorData));
       toast.loading('Profile updating, waiting for confirmation!');
-      await txResult.wait();
 
-      toast.dismiss();
+      await txResult.wait();
+      await waitForIndexing(txResult.hash);
+
       toast.success('Changes will be reflected soon!');
       navigate(`/creator/${account}`);
     } catch (err: any) {
@@ -59,11 +69,12 @@ const OnboardProfilePage = () => {
       try {
         const txResult = await exchangeContractV1.registerCreator(creatorData.userName, JSON.stringify(creatorData));
         toast.loading('Profile created, waiting for confirmation!');
-        await txResult.wait();
 
-        toast.dismiss();
+        await txResult.wait();
+        await waitForIndexing(txResult.hash);
+
         toast.success('Your account will be reflected here soon!');
-        navigate(`/explore`);
+        navigate(`/creator/${account}`);
       } catch (err: any) {
         toast.dismiss();
         if (err.message) {

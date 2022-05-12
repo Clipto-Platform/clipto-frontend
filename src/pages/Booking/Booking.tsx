@@ -7,7 +7,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { exchnageRates } from '../../api';
+import { exchangeRates, indexRequest } from '../../api';
 import { RequestData } from '../../api/types';
 import { AvatarComponent } from '../../components/AvatarOrb';
 import { ImagesSlider } from '../../components/Booking/ImagesSlider';
@@ -32,16 +32,18 @@ import { BookingFormValues, UsesOptions } from './types';
 import { getTwitterData } from '../../api';
 
 const BookingPage = () => {
-  const { creatorId } = useParams();
-  const { account, library, chainId } = useWeb3React<Web3Provider>();
-  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  const ref = useRef(null as any);
   const exchangeContractV1 = useExchangeContractV1(true);
+  const getUser = useSelector((state: any) => state.user);
+
+  const { account, library, chainId } = useWeb3React<Web3Provider>();
+  const { creatorId } = useParams();
   const { creator, loaded } = useCreator(creatorId);
   const { FeeDescription } = useFee();
+
+  const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState();
-  const getUser = useSelector((state: any) => state.user);
-  const ref = useRef(null as any);
   const [token, setToken] = useState<ERCTokenType>('MATIC');
   const [price, setPrice] = useState<number>(0);
   const [uses, setUses] = useState<UsesOptions>(UsesOptions.personal);
@@ -64,7 +66,7 @@ const BookingPage = () => {
 
   useEffect(() => {
     if (loaded && creator) {
-      exchnageRates(token, creator.price).then((convertedPrice) => {
+      exchangeRates(token, creator.price).then((convertedPrice) => {
         setPrice(parseFloat(convertedPrice));
       });
     }
@@ -105,13 +107,29 @@ const BookingPage = () => {
     setToken(e.target.value);
   };
 
+  const waitForTransaction = async (transaction: ethers.ContractTransaction) => {
+    toast.loading('Creating a new booking, waiting for confirmation');
+    await transaction.wait();
+    toast.dismiss();
+  };
+
+  const waitForIndexing = async (txHash: string) => {
+    toast.loading('Indexing your request, will be done soon');
+    await indexRequest(txHash);
+    toast.dismiss();
+  };
+
+  const addAllowance = async (amount: string) => {
+    const ERC20 = getErc20Contract(token, account as string, library as Web3Provider);
+    const tx = await ERC20.approve(config.exchangeAddressV1, parseUnits(amount));
+
+    toast.loading('Waiting for approval');
+    await tx.wait();
+    toast.dismiss();
+  };
+
   const makeBooking = async (values: BookingFormValues) => {
     try {
-      if (!creatorId) {
-        toast.error('Booking request for this content creator cannot be created');
-        return;
-      }
-
       const isCreator = await isCreatorOnChain(exchangeContractV1, creatorId);
       if (!isCreator) {
         toast.error('Booking request for this content creator cannot be created');
@@ -129,39 +147,34 @@ const BookingPage = () => {
         requestData.businessTwitter = values.businessTwitter;
         requestData.businessInfo = values.businessInfo;
       }
-      console.log(requestData);
 
       let transaction;
-      if (token && token == 'MATIC') {
+      if (token !== 'MATIC') {
+        await addAllowance(values.amount);
+
+        transaction = await exchangeContractV1.newRequest(
+          creatorId as string,
+          account as string,
+          config.erc20Contracts[token],
+          parseUnits(values.amount),
+          JSON.stringify(requestData),
+        );
+      } else {
         transaction = await exchangeContractV1.nativeNewRequest(
-          creatorId,
+          creatorId as string,
           account as string,
           JSON.stringify(requestData),
           {
             value: ethers.utils.parseEther(values.amount),
           },
         );
-      } else {
-        const ERC20 = getErc20Contract(token, account as string, library as Web3Provider);
-        const tx = await ERC20.approve(config.exchangeAddressV1, parseUnits(values.amount));
-
-        toast.loading('Waiting for approval');
-        await tx.wait();
-
-        transaction = await exchangeContractV1.newRequest(
-          creatorId,
-          account as string,
-          config.erc20Contracts[token],
-          parseUnits(values.amount),
-          JSON.stringify(requestData),
-        );
       }
 
+      await waitForTransaction(transaction);
+      await waitForIndexing(transaction.hash);
+
       toast.dismiss();
-      toast.loading('Creating a new booking, waiting for confirmation');
-      const receipt = transaction && (await transaction.wait());
-      toast.dismiss();
-      toast.success('Booking completed, your Order will reflect in few moments.');
+      toast.success('Booking completed, your Order has been created.');
       navigate('/orders');
     } catch (e) {
       toast.dismiss();
