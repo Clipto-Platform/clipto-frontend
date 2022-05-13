@@ -16,10 +16,11 @@ import { PageContentWrapper, PageWrapper } from '../../components/layout/Common'
 import { NFTDetails } from '../../components/NFTDetails';
 import { NFTHistory } from '../../components/NFTHistory';
 import { OrderCard } from '../../components/OrderCard/OrderCard';
+import { SecondaryLabel } from '../../components/OrderCard/Style';
 import { TextField } from '../../components/TextField';
 import { Video } from '../../components/Video';
 import { useExchangeContract, useExchangeContractV1 } from '../../hooks/useContracts';
-import { Description, Label } from '../../styles/typography';
+import { Description, Label, Text } from '../../styles/typography';
 import { getNFTDetails, getNFTHistory } from '../../web3/nft';
 import { signMessage } from '../../web3/request';
 import {
@@ -328,7 +329,16 @@ const SelectedOrderPage = () => {
             )}
 
             {(request?.delivered || clipDetails) && <Video src={clipDetails} />}
-            {request && <OrderCard request={request!} key={request.id} isReceived={false} />}
+
+            {request && (
+              <OrderCard
+                request={request!}
+                key={request.id}
+                displayBusiness={true}
+                isReceived={false}
+                isBusiness={false}
+              />
+            )}
             {!request && <Label>Could not find request</Label>}
             {nftDetails && <NFTDetails details={nftDetails} />}
             {history && <NFTHistory history={history} />}

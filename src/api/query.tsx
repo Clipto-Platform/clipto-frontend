@@ -31,6 +31,11 @@ query GetRequestById (
       description
       deadline
       delivered
+      isBusiness
+      businessName
+      businessEmail
+      businessTwitter
+      businessInfo
       refunded
       erc20
       version
@@ -139,6 +144,11 @@ query GetCreatorRequests (
     description
     deadline
     delivered
+    isBusiness
+    businessName
+    businessEmail
+    businessTwitter
+    businessInfo
     refunded
     erc20
     version
@@ -191,6 +201,11 @@ query GetUserRequests (
     description
     deadline
     delivered
+    isBusiness
+    businessName
+    businessEmail
+    businessTwitter
+    businessInfo
     refunded
     erc20
     version
@@ -291,4 +306,4 @@ query GetCreatorByTxHash(
     id
   }
 }
-`
+`;

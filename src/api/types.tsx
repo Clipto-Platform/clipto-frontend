@@ -68,6 +68,11 @@ export interface EntityRequest extends RequestData {
   erc20: string;
   createdTimestamp: number;
   updatedTimestamp: number;
+  isBusiness: boolean;
+  businessName?: string;
+  businessEmail?: string;
+  businessTwitter?: string;
+  businessInfo?: string;
 }
 
 export interface MetaData {
