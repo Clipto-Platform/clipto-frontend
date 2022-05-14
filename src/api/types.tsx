@@ -18,7 +18,7 @@ export interface TweetData {
 
 // types for v2 arch
 export interface CreatorData {
-  twitterHandle: string; // possible vulnerability - user can put at twitterHandle 
+  twitterHandle: string; // possible vulnerability - user can put at twitterHandle
   bio: string;
   deliveryTime: number;
   profilePicture: string;

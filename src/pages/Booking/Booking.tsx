@@ -31,7 +31,7 @@ import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './
 import { BookingFormValues } from './types';
 import { ERC20__factory } from '../../contracts';
 import axios from 'axios';
-import * as lens from '../../api/lens'
+import * as lens from '../../api/lens';
 import { useQuery } from 'urql';
 import { queryProfile } from '../../api/lens/query';
 import { ProfileSearchResult } from '../../generated/graphql';
@@ -51,12 +51,12 @@ const BookingPage = () => {
   const [price, setPrice] = useState<number>(0);
   const [doesFollow, setDoesFollow] = useState<boolean>(false);
   const [toggle, setToggle] = useState<boolean>(true);
-  const [{data, fetching, error}, executeQuery] = useQuery({
-    query: queryProfile, 
+  const [{ data, fetching, error }, executeQuery] = useQuery({
+    query: queryProfile,
     variables: {
-    address: creatorId
-    }
-  })
+      address: creatorId,
+    },
+  });
   useEffect(() => {
     setUser(getUser);
   }, [getUser]);
@@ -79,16 +79,15 @@ const BookingPage = () => {
 
   useEffect(() => {
     if (account && data && data.profiles && data.profiles.items.length != 0) {
-      console.log('aaae')
-      lens.isFollowing(account, data.profiles.items[0].id).then(res => {
-        console.log(res)
+      console.log('aaae');
+      lens.isFollowing(account, data.profiles.items[0].id).then((res) => {
+        console.log(res);
         if (res) {
-          setDoesFollow(res.data.doesFollow[0].follows)
+          setDoesFollow(res.data.doesFollow[0].follows);
         }
-      })
+      });
     }
-  }, [account, data, toggle,error])
-
+  }, [account, data, toggle, error]);
 
   const handleSelect = (e: any) => {
     setToken(e.target.value);
@@ -175,34 +174,36 @@ const BookingPage = () => {
                       </a>{' '}
                     </Description>
                     <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
-                    {data && library && data.profiles && data.profiles.items && data.profiles.items.length != 0 && <PrimaryButton
-                      size="small"
-                      width="small"
-                      style={{ margin: 10, marginLeft: 0, maxWidth: 100, background: '#5F21E2', color: 'white' }}
-                      onPress={async e => {
-                        toast.loading(doesFollow ? 'Awaiting unfollow confirmation' : 'Awaiting follow confirmation')
-                      const accessToken = await lens.getAccess(account)
-                      if (!accessToken) return
-                      const access = accessToken.data.authenticate.accessToken
-                      const txHash = doesFollow ? 
-                        await lens.unfollow(data?.profiles.items[0].id, access, library) : 
-                        await lens.follow(data?.profiles.items[0].id, access, library)
-                      toast.dismiss()
-                      toast.loading('Waiting for transaction to complete')
-                      console.log(txHash)
-                      if (!txHash) {
-                        console.error('no txHash detected!')
-                        return;
-                      }
-                      const f = await lens.pollUntilIndexed(txHash, access)
-                      console.log(f)
-                      setToggle(!toggle) //todo(jonathanng) - this is trashcan code!
-                      toast.dismiss()
-                      toast.success('Transaction is finished')
-                      }}
-                    >
-                      {doesFollow ? "Unfollow" : "Follow"} 
-                    </PrimaryButton>}
+                    {data && library && data.profiles && data.profiles.items && data.profiles.items.length != 0 && (
+                      <PrimaryButton
+                        size="small"
+                        width="small"
+                        style={{ margin: 10, marginLeft: 0, maxWidth: 100, background: '#5F21E2', color: 'white' }}
+                        onPress={async (e) => {
+                          toast.loading(doesFollow ? 'Awaiting unfollow confirmation' : 'Awaiting follow confirmation');
+                          const accessToken = await lens.getAccess(account);
+                          if (!accessToken) return;
+                          const access = accessToken.data.authenticate.accessToken;
+                          const txHash = doesFollow
+                            ? await lens.unfollow(data?.profiles.items[0].id, access, library)
+                            : await lens.follow(data?.profiles.items[0].id, access, library);
+                          toast.dismiss();
+                          toast.loading('Waiting for transaction to complete');
+                          console.log(txHash);
+                          if (!txHash) {
+                            console.error('no txHash detected!');
+                            return;
+                          }
+                          const f = await lens.pollUntilIndexed(txHash, access);
+                          console.log(f);
+                          setToggle(!toggle); //todo(jonathanng) - this is trashcan code!
+                          toast.dismiss();
+                          toast.success('Transaction is finished');
+                        }}
+                      >
+                        {doesFollow ? 'Unfollow' : 'Follow'}
+                      </PrimaryButton>
+                    )}
                   </div>
                   <div>
                     <AvatarComponent url={creator.profilePicture} size="medium" twitterHandle={creator.twitterHandle} />

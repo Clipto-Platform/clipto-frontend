@@ -1,35 +1,34 @@
 export type CreateProfileRequest = {
-  handle: string,
-  profilePictureUri?: string,
-  followModule?: any,
-  followNFTURI?: string
-}
+  handle: string;
+  profilePictureUri?: string;
+  followModule?: any;
+  followNFTURI?: string;
+};
 
 export type FollowerNftOwnedTokenIdsRequest = {
-  address: EthereumAddress,
-  profileId: ProfileId
-}
+  address: EthereumAddress;
+  profileId: ProfileId;
+};
 
 export type FollowRequest = {
-  follow: [Follow]
-}
+  follow: [Follow];
+};
 
 export type Follow = {
-  profile: ProfileId,
-  followModule: FollowModuleParams
-}
+  profile: ProfileId;
+  followModule: FollowModuleParams;
+};
 
 export type FollowModuleParams = {
   // The follower fee follower module
-  feeFollowModule: FeeFollowModuleParams
+  feeFollowModule: FeeFollowModuleParams;
   // The empty follow module
-  emptyFollowModule: Boolean
-}
+  emptyFollowModule: Boolean;
+};
 export type UnfollowRequest = {
-  profile: ProfileId
-}
+  profile: ProfileId;
+};
 
-type FeeFollowModuleParams = any
-type EthereumAddress = string
-type ProfileId = string
-
+type FeeFollowModuleParams = any;
+type EthereumAddress = string;
+type ProfileId = string;

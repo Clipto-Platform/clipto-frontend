@@ -99,9 +99,7 @@ query GetAllCreators ($lensHandles: [String]!) {
     timestamp
   }
 }
-`
-
-
+`;
 
 export const queryGetCreatorById = `
 query GetCreatorById (

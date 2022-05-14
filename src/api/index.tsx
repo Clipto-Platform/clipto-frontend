@@ -103,15 +103,14 @@ export const creators = async (
 };
 
 export const creatorsByLens = async (
-  lensHandles: Array<string>
+  lensHandles: Array<string>,
 ): Promise<OperationResult<{ creators: types.EntityCreator[] }>> => {
   return graphInstance
     .query(query.queryGetCreatorsByLensHandle, {
-      lensHandles
+      lensHandles,
     })
     .toPromise();
 };
-
 
 export const getAllCreatorsUserName = async (): Promise<OperationResult<{ creators: [{ twitterHandle: string }] }>> => {
   return graphInstance.query(query.queryGetCreatorUserName).toPromise();

@@ -15,7 +15,7 @@ export interface Config {
     USDC: string;
   };
   lensContract: string;
-  
+
   rpcUrl: string;
   graphApi: string;
   apiUrl: string;

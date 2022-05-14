@@ -33,26 +33,35 @@ const ExplorePage = () => {
   };
   useEffect(() => {
     if (!account) return;
-    lens.getFollowNFTs(account).then(res => {
-      console.log(res)
+    lens.getFollowNFTs(account).then((res) => {
+      console.log(res);
       if (res.error && !res.data) {
         toast.error('Unable to find who you follow');
         return;
       }
-      const lensHandleOfFollow : Array<string> = res.data.following.items.map((one : {profile: {handle: string}}) => one.profile.handle);
-      api.creatorsByLens(lensHandleOfFollow).then(res => {
+      const lensHandleOfFollow: Array<string> = res.data.following.items.map(
+        (one: { profile: { handle: string } }) => one.profile.handle,
+      );
+      api.creatorsByLens(lensHandleOfFollow).then((res) => {
         if (!res.data) return;
-        setFollowing(res.data?.creators)
-      })
-      
-    })
+        setFollowing(res.data?.creators);
+      });
+    });
   }, [account]);
   return (
     <>
       <PageWrapper>
-        {following.length > 0 && <UserDisplay title="Your Favorites" users={following} handleScroll={()=>{}} hasMore={false} style={{
-          marginBottom: -100
-        }} />}
+        {following.length > 0 && (
+          <UserDisplay
+            title="Your Favorites"
+            users={following}
+            handleScroll={() => {}}
+            hasMore={false}
+            style={{
+              marginBottom: -100,
+            }}
+          />
+        )}
         <UserDisplay title="Explore the community" users={users} handleScroll={handleScroll} hasMore={hasMore} />
       </PageWrapper>
     </>

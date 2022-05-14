@@ -6,14 +6,13 @@ import omitDeep from 'omit-deep';
 // It will also assume that you have already done all the connecting to metamask
 // this is purely here to show you how the public API hooks together
 
+export const getSigner = (library: Web3Provider) => {
+  return library.getSigner();
+};
 
-export const getSigner = (library : Web3Provider) => {
-    return library.getSigner();
-}
-
-export const getAddressFromSigner = (library : Web3Provider) => {
-  return getSigner(library).getAddress()
-}
+export const getAddressFromSigner = (library: Web3Provider) => {
+  return getSigner(library).getAddress();
+};
 
 //todo(jonathanng) - delete
 // export const init = async() => {
@@ -21,21 +20,21 @@ export const getAddressFromSigner = (library : Web3Provider) => {
 //   return accounts[0];
 // }
 
-export const signedTypeData = (domain, types, value, library : Web3Provider) => {
+export const signedTypeData = (domain, types, value, library: Web3Provider) => {
   const signer = getSigner(library);
   // remove the __typedname from the signature!
   return signer._signTypedData(
     omitDeep(domain, '__typename'),
     omitDeep(types, '__typename'),
-    omitDeep(value, '__typename')
+    omitDeep(value, '__typename'),
   );
-}
+};
 
 export const splitSignature = (signature) => {
-    return utils.splitSignature(signature)
-}
+  return utils.splitSignature(signature);
+};
 
-export const sendTx = (transaction, library : Web3Provider) => {
+export const sendTx = (transaction, library: Web3Provider) => {
   const signer = library.getSigner();
   return signer.sendTransaction(transaction);
-}
+};

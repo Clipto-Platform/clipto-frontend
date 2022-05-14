@@ -107,7 +107,13 @@ export type ClaimableHandles = {
   reservedHandles: Array<ReservedClaimableHandle>;
 };
 
-export type CollectModule = FeeCollectModuleSettings | FreeCollectModuleSettings | LimitedFeeCollectModuleSettings | LimitedTimedFeeCollectModuleSettings | RevertCollectModuleSettings | TimedFeeCollectModuleSettings;
+export type CollectModule =
+  | FeeCollectModuleSettings
+  | FreeCollectModuleSettings
+  | LimitedFeeCollectModuleSettings
+  | LimitedTimedFeeCollectModuleSettings
+  | RevertCollectModuleSettings
+  | TimedFeeCollectModuleSettings;
 
 export type CollectModuleParams = {
   feeCollectModule?: InputMaybe<FeeCollectModuleParams>;
@@ -124,7 +130,7 @@ export enum CollectModules {
   LimitedFeeCollectModule = 'LimitedFeeCollectModule',
   LimitedTimedFeeCollectModule = 'LimitedTimedFeeCollectModule',
   RevertCollectModule = 'RevertCollectModule',
-  TimedFeeCollectModule = 'TimedFeeCollectModule'
+  TimedFeeCollectModule = 'TimedFeeCollectModule',
 }
 
 export type Comment = {
@@ -684,7 +690,7 @@ export type FollowModuleRedeemParams = {
 };
 
 export enum FollowModules {
-  FeeFollowModule = 'FeeFollowModule'
+  FeeFollowModule = 'FeeFollowModule',
 }
 
 export type FollowOnlyReferenceModuleSettings = {
@@ -919,7 +925,7 @@ export type MetadataAttributeOutput = {
 export enum MetadataDisplayType {
   Date = 'date',
   Number = 'number',
-  String = 'string'
+  String = 'string',
 }
 
 export type MetadataOutput = {
@@ -994,122 +1000,100 @@ export type Mutation = {
   updateProfile: Profile;
 };
 
-
 export type MutationAttachFileArgs = {
   request: AttachRequest;
 };
-
 
 export type MutationAuthenticateArgs = {
   request: SignedAuthChallenge;
 };
 
-
 export type MutationClaimArgs = {
   request: ClaimHandleRequest;
 };
-
 
 export type MutationCreateBurnProfileTypedDataArgs = {
   options?: InputMaybe<TypedDataOptions>;
   request: BurnProfileRequest;
 };
 
-
 export type MutationCreateCollectTypedDataArgs = {
   options?: InputMaybe<TypedDataOptions>;
   request: CreateCollectRequest;
 };
-
 
 export type MutationCreateCommentTypedDataArgs = {
   options?: InputMaybe<TypedDataOptions>;
   request: CreatePublicCommentRequest;
 };
 
-
 export type MutationCreateFollowTypedDataArgs = {
   options?: InputMaybe<TypedDataOptions>;
   request: FollowRequest;
 };
-
 
 export type MutationCreateMirrorTypedDataArgs = {
   options?: InputMaybe<TypedDataOptions>;
   request: CreateMirrorRequest;
 };
 
-
 export type MutationCreatePostTypedDataArgs = {
   options?: InputMaybe<TypedDataOptions>;
   request: CreatePublicPostRequest;
 };
 
-
 export type MutationCreateProfileArgs = {
   request: CreateProfileRequest;
 };
-
 
 export type MutationCreateSetDefaultProfileTypedDataArgs = {
   options?: InputMaybe<TypedDataOptions>;
   request: CreateSetDefaultProfileRequest;
 };
 
-
 export type MutationCreateSetDispatcherTypedDataArgs = {
   options?: InputMaybe<TypedDataOptions>;
   request: SetDispatcherRequest;
 };
-
 
 export type MutationCreateSetFollowModuleTypedDataArgs = {
   options?: InputMaybe<TypedDataOptions>;
   request: CreateSetFollowModuleRequest;
 };
 
-
 export type MutationCreateSetFollowNftUriTypedDataArgs = {
   options?: InputMaybe<TypedDataOptions>;
   request: CreateSetFollowNftUriRequest;
 };
-
 
 export type MutationCreateSetProfileImageUriTypedDataArgs = {
   options?: InputMaybe<TypedDataOptions>;
   request: UpdateProfileImageRequest;
 };
 
-
 export type MutationCreateSetProfileMetadataTypedDataArgs = {
   request: CreatePublicSetProfileMetadataUriRequest;
 };
-
 
 export type MutationCreateToggleFollowTypedDataArgs = {
   request: CreateToggleFollowRequest;
 };
 
-
 export type MutationCreateUnfollowTypedDataArgs = {
   request: UnfollowRequest;
 };
-
 
 export type MutationHidePublicationArgs = {
   request: HidePublicationRequest;
 };
 
-
 export type MutationRefreshArgs = {
   request: RefreshRequest;
 };
 
-
 export type MutationReportPublicationArgs = {
   request: ReportPublicationRequest;
 };
-
 
 export type MutationUpdateProfileArgs = {
   request: UpdateProfileRequest;
@@ -1217,7 +1201,12 @@ export type NftOwnershipChallengeResult = {
   timeout: Scalars['TimestampScalar'];
 };
 
-export type Notification = NewCollectNotification | NewCommentNotification | NewFollowerNotification | NewMentionNotification | NewMirrorNotification;
+export type Notification =
+  | NewCollectNotification
+  | NewCommentNotification
+  | NewFollowerNotification
+  | NewMentionNotification
+  | NewMirrorNotification;
 
 export type NotificationRequest = {
   cursor?: InputMaybe<Scalars['Cursor']>;
@@ -1355,7 +1344,7 @@ export type ProfileRevenueResult = {
 export enum ProfileRevenueTypes {
   Comment = 'COMMENT',
   Mirror = 'MIRROR',
-  Post = 'POST'
+  Post = 'POST',
 }
 
 export type ProfileSearchResult = {
@@ -1387,7 +1376,7 @@ export type PublicationMetadataStatus = {
 export enum PublicationMetadataStatusType {
   MetadataValidationFailed = 'METADATA_VALIDATION_FAILED',
   Pending = 'PENDING',
-  Success = 'SUCCESS'
+  Success = 'SUCCESS',
 }
 
 export type PublicationQueryRequest = {
@@ -1397,23 +1386,23 @@ export type PublicationQueryRequest = {
 
 export enum PublicationReportingFraudSubreason {
   Impersonation = 'IMPERSONATION',
-  Scam = 'SCAM'
+  Scam = 'SCAM',
 }
 
 export enum PublicationReportingIllegalSubreason {
   AnimalAbuse = 'ANIMAL_ABUSE',
-  HumanAbuse = 'HUMAN_ABUSE'
+  HumanAbuse = 'HUMAN_ABUSE',
 }
 
 export enum PublicationReportingReason {
   Fraud = 'FRAUD',
   Illegal = 'ILLEGAL',
-  Sensitive = 'SENSITIVE'
+  Sensitive = 'SENSITIVE',
 }
 
 export enum PublicationReportingSensitiveSubreason {
   Nsfw = 'NSFW',
-  Offensive = 'OFFENSIVE'
+  Offensive = 'OFFENSIVE',
 }
 
 export type PublicationRevenue = {
@@ -1439,7 +1428,7 @@ export type PublicationSearchResultItem = Comment | Post;
 export enum PublicationSortCriteria {
   Latest = 'LATEST',
   TopCollected = 'TOP_COLLECTED',
-  TopCommented = 'TOP_COMMENTED'
+  TopCommented = 'TOP_COMMENTED',
 }
 
 export type PublicationStats = {
@@ -1452,7 +1441,7 @@ export type PublicationStats = {
 export enum PublicationTypes {
   Comment = 'COMMENT',
   Mirror = 'MIRROR',
-  Post = 'POST'
+  Post = 'POST',
 }
 
 export type PublicationsQueryRequest = {
@@ -1502,131 +1491,105 @@ export type Query = {
   whoCollectedPublication: PaginatedWhoCollectedResult;
 };
 
-
 export type QueryApprovedModuleAllowanceAmountArgs = {
   request: ApprovedModuleAllowanceAmountRequest;
 };
-
 
 export type QueryChallengeArgs = {
   request: ChallengeRequest;
 };
 
-
 export type QueryDefaultProfileArgs = {
   request: DefaultProfileRequest;
 };
-
 
 export type QueryDoesFollowArgs = {
   request: DoesFollowRequest;
 };
 
-
 export type QueryExplorePublicationsArgs = {
   request: ExplorePublicationRequest;
 };
-
 
 export type QueryFollowerNftOwnedTokenIdsArgs = {
   request: FollowerNftOwnedTokenIdsRequest;
 };
 
-
 export type QueryFollowersArgs = {
   request: FollowersRequest;
 };
-
 
 export type QueryFollowingArgs = {
   request: FollowingRequest;
 };
 
-
 export type QueryGenerateModuleCurrencyApprovalDataArgs = {
   request: GenerateModuleCurrencyApprovalDataRequest;
 };
-
 
 export type QueryGlobalProtocolStatsArgs = {
   request?: InputMaybe<GlobalProtocolStatsRequest>;
 };
 
-
 export type QueryHasCollectedArgs = {
   request: HasCollectedRequest;
 };
-
 
 export type QueryHasMirroredArgs = {
   request: HasMirroredRequest;
 };
 
-
 export type QueryHasTxHashBeenIndexedArgs = {
   request: HasTxHashBeenIndexedRequest;
 };
-
 
 export type QueryNftOwnershipChallengeArgs = {
   request: NftOwnershipChallengeRequest;
 };
 
-
 export type QueryNftsArgs = {
   request: NfTsRequest;
 };
-
 
 export type QueryNotificationsArgs = {
   request: NotificationRequest;
 };
 
-
 export type QueryPendingApprovalFollowsArgs = {
   request: PendingApprovalFollowsRequest;
 };
-
 
 export type QueryProfileRevenueArgs = {
   request: ProfileRevenueQueryRequest;
 };
 
-
 export type QueryProfilesArgs = {
   request: ProfileQueryRequest;
 };
-
 
 export type QueryPublicationArgs = {
   request: PublicationQueryRequest;
 };
 
-
 export type QueryPublicationRevenueArgs = {
   request: PublicationRevenueQueryRequest;
 };
-
 
 export type QueryPublicationsArgs = {
   request: PublicationsQueryRequest;
 };
 
-
 export type QuerySearchArgs = {
   request: SearchQueryRequest;
 };
-
 
 export type QueryTimelineArgs = {
   request: TimelineRequest;
 };
 
-
 export type QueryVerifyArgs = {
   request: VerifyRequest;
 };
-
 
 export type QueryWhoCollectedPublicationArgs = {
   request: WhoCollectedPublicationRequest;
@@ -1639,7 +1602,7 @@ export type ReferenceModuleParams = {
 };
 
 export enum ReferenceModules {
-  FollowerOnlyReferenceModule = 'FollowerOnlyReferenceModule'
+  FollowerOnlyReferenceModule = 'FollowerOnlyReferenceModule',
 }
 
 export type RefreshRequest = {
@@ -1655,7 +1618,7 @@ export enum RelayErrorReasons {
   Expired = 'EXPIRED',
   HandleTaken = 'HANDLE_TAKEN',
   Rejected = 'REJECTED',
-  WrongWalletSigned = 'WRONG_WALLET_SIGNED'
+  WrongWalletSigned = 'WRONG_WALLET_SIGNED',
 }
 
 export type RelayResult = RelayError | RelayerResult;
@@ -1702,7 +1665,7 @@ export type SearchQueryRequest = {
 
 export enum SearchRequestTypes {
   Profile = 'PROFILE',
-  Publication = 'PUBLICATION'
+  Publication = 'PUBLICATION',
 }
 
 export type SearchResult = ProfileSearchResult | PublicationSearchResult;
@@ -1782,7 +1745,7 @@ export type TransactionError = {
 };
 
 export enum TransactionErrorReasons {
-  Reverted = 'REVERTED'
+  Reverted = 'REVERTED',
 }
 
 export type TransactionIndexedResult = {
@@ -1862,7824 +1825,7824 @@ export type WhoCollectedPublicationRequest = {
 
 import { IntrospectionQuery } from 'graphql';
 export default {
-  "__schema": {
-    "queryType": {
-      "name": "Query"
+  __schema: {
+    queryType: {
+      name: 'Query',
     },
-    "mutationType": {
-      "name": "Mutation"
+    mutationType: {
+      name: 'Mutation',
     },
-    "subscriptionType": null,
-    "types": [
+    subscriptionType: null,
+    types: [
       {
-        "kind": "OBJECT",
-        "name": "ApprovedAllowanceAmount",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'ApprovedAllowanceAmount',
+        fields: [
           {
-            "name": "allowance",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'allowance',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contractAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "currency",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'currency',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "module",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'module',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "AttachResults",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AttachResults',
+        fields: [
           {
-            "name": "key",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'key',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "signedUrl",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'signedUrl',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Attribute",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Attribute',
+        fields: [
           {
-            "name": "displayType",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'displayType',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "key",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'key',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "traitType",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'traitType',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "AuthChallengeResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AuthChallengeResult',
+        fields: [
           {
-            "name": "text",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'text',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "AuthenticationResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AuthenticationResult',
+        fields: [
           {
-            "name": "accessToken",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'accessToken',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "refreshToken",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'refreshToken',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "ClaimableHandles",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'ClaimableHandles',
+        fields: [
           {
-            "name": "canClaimFreeTextHandle",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'canClaimFreeTextHandle',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "reservedHandles",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "ReservedClaimableHandle",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'reservedHandles',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'ReservedClaimableHandle',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "UNION",
-        "name": "CollectModule",
-        "possibleTypes": [
+        kind: 'UNION',
+        name: 'CollectModule',
+        possibleTypes: [
           {
-            "kind": "OBJECT",
-            "name": "FeeCollectModuleSettings"
+            kind: 'OBJECT',
+            name: 'FeeCollectModuleSettings',
           },
           {
-            "kind": "OBJECT",
-            "name": "FreeCollectModuleSettings"
+            kind: 'OBJECT',
+            name: 'FreeCollectModuleSettings',
           },
           {
-            "kind": "OBJECT",
-            "name": "LimitedFeeCollectModuleSettings"
+            kind: 'OBJECT',
+            name: 'LimitedFeeCollectModuleSettings',
           },
           {
-            "kind": "OBJECT",
-            "name": "LimitedTimedFeeCollectModuleSettings"
+            kind: 'OBJECT',
+            name: 'LimitedTimedFeeCollectModuleSettings',
           },
           {
-            "kind": "OBJECT",
-            "name": "RevertCollectModuleSettings"
+            kind: 'OBJECT',
+            name: 'RevertCollectModuleSettings',
           },
           {
-            "kind": "OBJECT",
-            "name": "TimedFeeCollectModuleSettings"
-          }
-        ]
+            kind: 'OBJECT',
+            name: 'TimedFeeCollectModuleSettings',
+          },
+        ],
       },
       {
-        "kind": "OBJECT",
-        "name": "Comment",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Comment',
+        fields: [
           {
-            "name": "appId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'appId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "collectModule",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "CollectModule",
-                "ofType": null
-              }
+            name: 'collectModule',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'CollectModule',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "collectNftAddress",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'collectNftAddress',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "collectedBy",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Wallet",
-              "ofType": null
+            name: 'collectedBy',
+            type: {
+              kind: 'OBJECT',
+              name: 'Wallet',
+              ofType: null,
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "commentOn",
-            "type": {
-              "kind": "UNION",
-              "name": "Publication",
-              "ofType": null
+            name: 'commentOn',
+            type: {
+              kind: 'UNION',
+              name: 'Publication',
+              ofType: null,
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'createdAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "firstComment",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Comment",
-              "ofType": null
+            name: 'firstComment',
+            type: {
+              kind: 'OBJECT',
+              name: 'Comment',
+              ofType: null,
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "mainPost",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "MainPostReference",
-                "ofType": null
-              }
+            name: 'mainPost',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'MainPostReference',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "metadata",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "MetadataOutput",
-                "ofType": null
-              }
+            name: 'metadata',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'MetadataOutput',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "onChainContentURI",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'onChainContentURI',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profile",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Profile",
-                "ofType": null
-              }
+            name: 'profile',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Profile',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "referenceModule",
-            "type": {
-              "kind": "UNION",
-              "name": "ReferenceModule",
-              "ofType": null
+            name: 'referenceModule',
+            type: {
+              kind: 'UNION',
+              name: 'ReferenceModule',
+              ofType: null,
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "stats",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PublicationStats",
-                "ofType": null
-              }
+            name: 'stats',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PublicationStats',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateBurnEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateBurnEIP712TypedData',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateBurnEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateBurnEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateBurnEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateBurnEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateBurnEIP712TypedDataTypes",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateBurnEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "BurnWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'BurnWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateBurnEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateBurnEIP712TypedDataValue',
+        fields: [
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "tokenId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'tokenId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateBurnProfileBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateBurnProfileBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateBurnEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateBurnEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateCollectBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateCollectBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateCollectEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateCollectEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateCollectEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateCollectEIP712TypedData',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateCollectEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateCollectEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateCollectEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateCollectEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateCollectEIP712TypedDataTypes",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateCollectEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "CollectWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'CollectWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateCollectEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateCollectEIP712TypedDataValue',
+        fields: [
           {
-            "name": "data",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'data',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pubId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'pubId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateCommentBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateCommentBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateCommentEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateCommentEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateCommentEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateCommentEIP712TypedData',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateCommentEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateCommentEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateCommentEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateCommentEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateCommentEIP712TypedDataTypes",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateCommentEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "CommentWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'CommentWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateCommentEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateCommentEIP712TypedDataValue',
+        fields: [
           {
-            "name": "collectModule",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'collectModule',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "collectModuleData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'collectModuleData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contentURI",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contentURI',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileIdPointed",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileIdPointed',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pubIdPointed",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'pubIdPointed',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "referenceModule",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'referenceModule',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "referenceModuleData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'referenceModuleData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateFollowBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateFollowBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateFollowEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateFollowEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateFollowEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateFollowEIP712TypedData',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateFollowEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateFollowEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateFollowEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateFollowEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateFollowEIP712TypedDataTypes",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateFollowEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "FollowWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'FollowWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateFollowEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateFollowEIP712TypedDataValue',
+        fields: [
           {
-            "name": "datas",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
+            name: 'datas',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileIds",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
+            name: 'profileIds',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateMirrorBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateMirrorBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateMirrorEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateMirrorEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateMirrorEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateMirrorEIP712TypedData',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateMirrorEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateMirrorEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateMirrorEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateMirrorEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateMirrorEIP712TypedDataTypes",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateMirrorEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "MirrorWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'MirrorWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateMirrorEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateMirrorEIP712TypedDataValue',
+        fields: [
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileIdPointed",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileIdPointed',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pubIdPointed",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'pubIdPointed',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "referenceModule",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'referenceModule',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "referenceModuleData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'referenceModuleData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreatePostBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreatePostBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreatePostEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreatePostEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreatePostEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreatePostEIP712TypedData',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreatePostEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreatePostEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreatePostEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreatePostEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreatePostEIP712TypedDataTypes",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreatePostEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "PostWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'PostWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreatePostEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreatePostEIP712TypedDataValue',
+        fields: [
           {
-            "name": "collectModule",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'collectModule',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "collectModuleData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'collectModuleData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contentURI",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contentURI',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "referenceModule",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'referenceModule',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "referenceModuleData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'referenceModuleData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetDispatcherBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetDispatcherBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetDispatcherEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetDispatcherEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetDispatcherEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetDispatcherEIP712TypedData',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetDispatcherEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetDispatcherEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetDispatcherEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetDispatcherEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetDispatcherEIP712TypedDataTypes",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetDispatcherEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "SetDispatcherWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'SetDispatcherWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetDispatcherEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetDispatcherEIP712TypedDataValue',
+        fields: [
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "dispatcher",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'dispatcher',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetFollowModuleBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetFollowModuleBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetFollowModuleEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetFollowModuleEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetFollowModuleEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetFollowModuleEIP712TypedData',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetFollowModuleEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetFollowModuleEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetFollowModuleEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetFollowModuleEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetFollowModuleEIP712TypedDataTypes",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetFollowModuleEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "SetFollowModuleWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'SetFollowModuleWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetFollowModuleEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetFollowModuleEIP712TypedDataValue',
+        fields: [
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "followModule",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'followModule',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "followModuleData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'followModuleData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetFollowNFTUriBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetFollowNFTUriBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetFollowNFTUriEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetFollowNFTUriEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetFollowNFTUriEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetFollowNFTUriEIP712TypedData',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetFollowNFTUriEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetFollowNFTUriEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetFollowNFTUriEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetFollowNFTUriEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetFollowNFTUriEIP712TypedDataTypes",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetFollowNFTUriEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "SetFollowNFTURIWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'SetFollowNFTURIWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetFollowNFTUriEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetFollowNFTUriEIP712TypedDataValue',
+        fields: [
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "followNFTURI",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'followNFTURI',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetProfileImageUriBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetProfileImageUriBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetProfileImageUriEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetProfileImageUriEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetProfileImageUriEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetProfileImageUriEIP712TypedData',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetProfileImageUriEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetProfileImageUriEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetProfileImageUriEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetProfileImageUriEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetProfileImageUriEIP712TypedDataTypes",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetProfileImageUriEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "SetProfileImageURIWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'SetProfileImageURIWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetProfileImageUriEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetProfileImageUriEIP712TypedDataValue',
+        fields: [
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "imageURI",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'imageURI',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetProfileMetadataURIBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetProfileMetadataURIBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetProfileMetadataURIEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetProfileMetadataURIEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetProfileMetadataURIEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetProfileMetadataURIEIP712TypedData',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetProfileMetadataURIEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetProfileMetadataURIEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetProfileMetadataURIEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetProfileMetadataURIEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetProfileMetadataURIEIP712TypedDataTypes",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetProfileMetadataURIEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "SetProfileMetadataURIWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'SetProfileMetadataURIWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateSetProfileMetadataURIEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateSetProfileMetadataURIEIP712TypedDataValue',
+        fields: [
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "metadata",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'metadata',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateToggleFollowBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateToggleFollowBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateToggleFollowEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateToggleFollowEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateToggleFollowEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateToggleFollowEIP712TypedData',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateToggleFollowEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateToggleFollowEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateToggleFollowEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateToggleFollowEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateToggleFollowEIP712TypedDataTypes",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateToggleFollowEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "ToggleFollowWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'ToggleFollowWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateToggleFollowEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateToggleFollowEIP712TypedDataValue',
+        fields: [
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "enables",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
+            name: 'enables',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileIds",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
+            name: 'profileIds',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "CreateUnfollowBroadcastItemResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CreateUnfollowBroadcastItemResult',
+        fields: [
           {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateBurnEIP712TypedData",
-                "ofType": null
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateBurnEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Dispatcher",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Dispatcher',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'address',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "canUseRelay",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'canUseRelay',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "DoesFollowResponse",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'DoesFollowResponse',
+        fields: [
           {
-            "name": "followerAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'followerAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "follows",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'follows',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "EIP712TypedDataDomain",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'EIP712TypedDataDomain',
+        fields: [
           {
-            "name": "chainId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'chainId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "name",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'name',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "verifyingContract",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'verifyingContract',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "version",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'version',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "EIP712TypedDataField",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'EIP712TypedDataField',
+        fields: [
           {
-            "name": "name",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'name',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "EnabledModule",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'EnabledModule',
+        fields: [
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contractAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "inputParams",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "ModuleInfo",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'inputParams',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'ModuleInfo',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "moduleName",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'moduleName',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "redeemParams",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "ModuleInfo",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'redeemParams',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'ModuleInfo',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "returnDataParms",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "ModuleInfo",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'returnDataParms',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'ModuleInfo',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "EnabledModules",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'EnabledModules',
+        fields: [
           {
-            "name": "collectModules",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EnabledModule",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'collectModules',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EnabledModule',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "followModules",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EnabledModule",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'followModules',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EnabledModule',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "referenceModules",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EnabledModule",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'referenceModules',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EnabledModule',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Erc20",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Erc20',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'address',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "decimals",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'decimals',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "name",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'name',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "symbol",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'symbol',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Erc20Amount",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Erc20Amount',
+        fields: [
           {
-            "name": "asset",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Erc20",
-                "ofType": null
-              }
+            name: 'asset',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Erc20',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "ExplorePublicationResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'ExplorePublicationResult',
+        fields: [
           {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "UNION",
-                    "name": "Publication",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'UNION',
+                    name: 'Publication',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "FeeCollectModuleSettings",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'FeeCollectModuleSettings',
+        fields: [
           {
-            "name": "amount",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ModuleFeeAmount",
-                "ofType": null
-              }
+            name: 'amount',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'ModuleFeeAmount',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contractAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "followerOnly",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'followerOnly',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "recipient",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'recipient',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "referralFee",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'referralFee',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "FeeFollowModuleSettings",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'FeeFollowModuleSettings',
+        fields: [
           {
-            "name": "amount",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ModuleFeeAmount",
-                "ofType": null
-              }
+            name: 'amount',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'ModuleFeeAmount',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contractAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "recipient",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'recipient',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "UNION",
-        "name": "FollowModule",
-        "possibleTypes": [
+        kind: 'UNION',
+        name: 'FollowModule',
+        possibleTypes: [
           {
-            "kind": "OBJECT",
-            "name": "FeeFollowModuleSettings"
-          }
-        ]
+            kind: 'OBJECT',
+            name: 'FeeFollowModuleSettings',
+          },
+        ],
       },
       {
-        "kind": "OBJECT",
-        "name": "FollowOnlyReferenceModuleSettings",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'FollowOnlyReferenceModuleSettings',
+        fields: [
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contractAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Follower",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Follower',
+        fields: [
           {
-            "name": "totalAmountOfTimesFollowed",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'totalAmountOfTimesFollowed',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "wallet",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Wallet",
-                "ofType": null
-              }
+            name: 'wallet',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Wallet',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "FollowerNftOwnedTokenIds",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'FollowerNftOwnedTokenIds',
+        fields: [
           {
-            "name": "followerNftAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'followerNftAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "tokensIds",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
+            name: 'tokensIds',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Following",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Following',
+        fields: [
           {
-            "name": "profile",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Profile",
-                "ofType": null
-              }
+            name: 'profile',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Profile',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "totalAmountOfTimesFollowing",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'totalAmountOfTimesFollowing',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "FreeCollectModuleSettings",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'FreeCollectModuleSettings',
+        fields: [
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contractAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "followerOnly",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'followerOnly',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "GenerateModuleCurrencyApproval",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'GenerateModuleCurrencyApproval',
+        fields: [
           {
-            "name": "data",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'data',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "from",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'from',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "to",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'to',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "GlobalProtocolStats",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'GlobalProtocolStats',
+        fields: [
           {
-            "name": "totalBurntProfiles",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'totalBurntProfiles',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "totalCollects",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'totalCollects',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "totalComments",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'totalComments',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "totalFollows",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'totalFollows',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "totalMirrors",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'totalMirrors',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "totalPosts",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'totalPosts',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "totalProfiles",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'totalProfiles',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "totalRevenue",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Erc20Amount",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'totalRevenue',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Erc20Amount',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "HasCollectedItem",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HasCollectedItem',
+        fields: [
           {
-            "name": "collected",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'collected',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "collectedTimes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'collectedTimes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "publicationId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'publicationId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "HasCollectedResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HasCollectedResult',
+        fields: [
           {
-            "name": "results",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "HasCollectedItem",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'results',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'HasCollectedItem',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "walletAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'walletAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "HasMirroredItem",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HasMirroredItem',
+        fields: [
           {
-            "name": "mirrored",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'mirrored',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "publicationId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'publicationId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "HasMirroredResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HasMirroredResult',
+        fields: [
           {
-            "name": "profileId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'profileId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "results",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "HasMirroredItem",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'results',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'HasMirroredItem',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "LimitedFeeCollectModuleSettings",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'LimitedFeeCollectModuleSettings',
+        fields: [
           {
-            "name": "amount",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ModuleFeeAmount",
-                "ofType": null
-              }
+            name: 'amount',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'ModuleFeeAmount',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "collectLimit",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'collectLimit',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contractAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "followerOnly",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'followerOnly',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "recipient",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'recipient',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "referralFee",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'referralFee',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "LimitedTimedFeeCollectModuleSettings",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'LimitedTimedFeeCollectModuleSettings',
+        fields: [
           {
-            "name": "amount",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ModuleFeeAmount",
-                "ofType": null
-              }
+            name: 'amount',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'ModuleFeeAmount',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "collectLimit",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'collectLimit',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contractAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "endTimestamp",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'endTimestamp',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "followerOnly",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'followerOnly',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "recipient",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'recipient',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "referralFee",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'referralFee',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Log",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Log',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'address',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "blockHash",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'blockHash',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "blockNumber",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'blockNumber',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "data",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'data',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "logIndex",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'logIndex',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "removed",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'removed',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "topics",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
+            name: 'topics',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "transactionHash",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'transactionHash',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "transactionIndex",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'transactionIndex',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "UNION",
-        "name": "MainPostReference",
-        "possibleTypes": [
+        kind: 'UNION',
+        name: 'MainPostReference',
+        possibleTypes: [
           {
-            "kind": "OBJECT",
-            "name": "Mirror"
+            kind: 'OBJECT',
+            name: 'Mirror',
           },
           {
-            "kind": "OBJECT",
-            "name": "Post"
-          }
-        ]
+            kind: 'OBJECT',
+            name: 'Post',
+          },
+        ],
       },
       {
-        "kind": "OBJECT",
-        "name": "Media",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Media',
+        fields: [
           {
-            "name": "height",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'height',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "mimeType",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'mimeType',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "size",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'size',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "url",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'url',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "width",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'width',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "MediaSet",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'MediaSet',
+        fields: [
           {
-            "name": "medium",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Media",
-              "ofType": null
+            name: 'medium',
+            type: {
+              kind: 'OBJECT',
+              name: 'Media',
+              ofType: null,
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "original",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Media",
-                "ofType": null
-              }
+            name: 'original',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Media',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "small",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Media",
-              "ofType": null
+            name: 'small',
+            type: {
+              kind: 'OBJECT',
+              name: 'Media',
+              ofType: null,
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "UNION",
-        "name": "MentionPublication",
-        "possibleTypes": [
+        kind: 'UNION',
+        name: 'MentionPublication',
+        possibleTypes: [
           {
-            "kind": "OBJECT",
-            "name": "Comment"
+            kind: 'OBJECT',
+            name: 'Comment',
           },
           {
-            "kind": "OBJECT",
-            "name": "Post"
-          }
-        ]
+            kind: 'OBJECT',
+            name: 'Post',
+          },
+        ],
       },
       {
-        "kind": "OBJECT",
-        "name": "MetadataAttributeOutput",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'MetadataAttributeOutput',
+        fields: [
           {
-            "name": "displayType",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'displayType',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "traitType",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'traitType',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'value',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "MetadataOutput",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'MetadataOutput',
+        fields: [
           {
-            "name": "attributes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "MetadataAttributeOutput",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'attributes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'MetadataAttributeOutput',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "content",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'content',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "cover",
-            "type": {
-              "kind": "OBJECT",
-              "name": "MediaSet",
-              "ofType": null
+            name: 'cover',
+            type: {
+              kind: 'OBJECT',
+              name: 'MediaSet',
+              ofType: null,
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "description",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'description',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "image",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'image',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "media",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "MediaSet",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'media',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'MediaSet',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "name",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'name',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Mirror",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Mirror',
+        fields: [
           {
-            "name": "appId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'appId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "collectModule",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "CollectModule",
-                "ofType": null
-              }
+            name: 'collectModule',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'CollectModule',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "collectNftAddress",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'collectNftAddress',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'createdAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "metadata",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "MetadataOutput",
-                "ofType": null
-              }
+            name: 'metadata',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'MetadataOutput',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "mirrorOf",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "MirrorablePublication",
-                "ofType": null
-              }
+            name: 'mirrorOf',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'MirrorablePublication',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "onChainContentURI",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'onChainContentURI',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profile",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Profile",
-                "ofType": null
-              }
+            name: 'profile',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Profile',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "referenceModule",
-            "type": {
-              "kind": "UNION",
-              "name": "ReferenceModule",
-              "ofType": null
+            name: 'referenceModule',
+            type: {
+              kind: 'UNION',
+              name: 'ReferenceModule',
+              ofType: null,
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "stats",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PublicationStats",
-                "ofType": null
-              }
+            name: 'stats',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PublicationStats',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "UNION",
-        "name": "MirrorablePublication",
-        "possibleTypes": [
+        kind: 'UNION',
+        name: 'MirrorablePublication',
+        possibleTypes: [
           {
-            "kind": "OBJECT",
-            "name": "Comment"
+            kind: 'OBJECT',
+            name: 'Comment',
           },
           {
-            "kind": "OBJECT",
-            "name": "Post"
-          }
-        ]
+            kind: 'OBJECT',
+            name: 'Post',
+          },
+        ],
       },
       {
-        "kind": "OBJECT",
-        "name": "ModuleFeeAmount",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'ModuleFeeAmount',
+        fields: [
           {
-            "name": "asset",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Erc20",
-                "ofType": null
-              }
+            name: 'asset',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Erc20',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "ModuleInfo",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'ModuleInfo',
+        fields: [
           {
-            "name": "name",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'name',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Mutation",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Mutation',
+        fields: [
           {
-            "name": "attachFile",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "AttachResults",
-                "ofType": null
-              }
+            name: 'attachFile',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'AttachResults',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "authenticate",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "AuthenticationResult",
-                "ofType": null
-              }
+            name: 'authenticate',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'AuthenticationResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "claim",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "RelayResult",
-                "ofType": null
-              }
+            name: 'claim',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'RelayResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createBurnProfileTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateBurnProfileBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createBurnProfileTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateBurnProfileBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "options",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
+                name: 'options',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any',
+                },
               },
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createCollectTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateCollectBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createCollectTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateCollectBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "options",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
+                name: 'options',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any',
+                },
               },
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createCommentTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateCommentBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createCommentTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateCommentBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "options",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
+                name: 'options',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any',
+                },
               },
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createFollowTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateFollowBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createFollowTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateFollowBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "options",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
+                name: 'options',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any',
+                },
               },
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createMirrorTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateMirrorBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createMirrorTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateMirrorBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "options",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
+                name: 'options',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any',
+                },
               },
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createPostTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreatePostBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createPostTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreatePostBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "options",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
+                name: 'options',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any',
+                },
               },
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createProfile",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "RelayResult",
-                "ofType": null
-              }
+            name: 'createProfile',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'RelayResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createSetDefaultProfileTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "SetDefaultProfileBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createSetDefaultProfileTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'SetDefaultProfileBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "options",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
+                name: 'options',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any',
+                },
               },
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createSetDispatcherTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetDispatcherBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createSetDispatcherTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetDispatcherBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "options",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
+                name: 'options',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any',
+                },
               },
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createSetFollowModuleTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetFollowModuleBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createSetFollowModuleTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetFollowModuleBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "options",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
+                name: 'options',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any',
+                },
               },
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createSetFollowNFTUriTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetFollowNFTUriBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createSetFollowNFTUriTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetFollowNFTUriBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "options",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
+                name: 'options',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any',
+                },
               },
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createSetProfileImageURITypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetProfileImageUriBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createSetProfileImageURITypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetProfileImageUriBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "options",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
+                name: 'options',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any',
+                },
               },
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createSetProfileMetadataTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateSetProfileMetadataURIBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createSetProfileMetadataTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateSetProfileMetadataURIBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createToggleFollowTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateToggleFollowBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createToggleFollowTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateToggleFollowBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "createUnfollowTypedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CreateUnfollowBroadcastItemResult",
-                "ofType": null
-              }
+            name: 'createUnfollowTypedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CreateUnfollowBroadcastItemResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "hidePublication",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'hidePublication',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "refresh",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "AuthenticationResult",
-                "ofType": null
-              }
+            name: 'refresh',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'AuthenticationResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "reportPublication",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'reportPublication',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "updateProfile",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Profile",
-                "ofType": null
-              }
+            name: 'updateProfile',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Profile',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          }
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "NFT",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'NFT',
+        fields: [
           {
-            "name": "chainId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'chainId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "collectionName",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'collectionName',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contentURI",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contentURI',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contractAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contractName",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contractName',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "description",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'description',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "ercType",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'ercType',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "name",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'name',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "originalContent",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "NFTContent",
-                "ofType": null
-              }
+            name: 'originalContent',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'NFTContent',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "owners",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Owner",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'owners',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Owner',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "symbol",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'symbol',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "tokenId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'tokenId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "NFTContent",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'NFTContent',
+        fields: [
           {
-            "name": "metaType",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'metaType',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "uri",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'uri',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "NFTsResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'NFTsResult',
+        fields: [
           {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "NFT",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'NFT',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "NewCollectNotification",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'NewCollectNotification',
+        fields: [
           {
-            "name": "collectedPublication",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "Publication",
-                "ofType": null
-              }
+            name: 'collectedPublication',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'Publication',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'createdAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "wallet",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Wallet",
-                "ofType": null
-              }
+            name: 'wallet',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Wallet',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "NewCommentNotification",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'NewCommentNotification',
+        fields: [
           {
-            "name": "comment",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Comment",
-                "ofType": null
-              }
+            name: 'comment',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Comment',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'createdAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profile",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Profile",
-                "ofType": null
-              }
+            name: 'profile',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Profile',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "NewFollowerNotification",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'NewFollowerNotification',
+        fields: [
           {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'createdAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "isFollowedByMe",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'isFollowedByMe',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "wallet",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Wallet",
-                "ofType": null
-              }
+            name: 'wallet',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Wallet',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "NewMentionNotification",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'NewMentionNotification',
+        fields: [
           {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'createdAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "mentionPublication",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "MentionPublication",
-                "ofType": null
-              }
+            name: 'mentionPublication',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'MentionPublication',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "NewMirrorNotification",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'NewMirrorNotification',
+        fields: [
           {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'createdAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profile",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Profile",
-                "ofType": null
-              }
+            name: 'profile',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Profile',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "publication",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "MirrorablePublication",
-                "ofType": null
-              }
+            name: 'publication',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'MirrorablePublication',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "NftImage",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'NftImage',
+        fields: [
           {
-            "name": "chainId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'chainId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contractAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "tokenId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'tokenId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "uri",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'uri',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "verified",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'verified',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "NftOwnershipChallengeResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'NftOwnershipChallengeResult',
+        fields: [
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "text",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'text',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "timeout",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'timeout',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "UNION",
-        "name": "Notification",
-        "possibleTypes": [
+        kind: 'UNION',
+        name: 'Notification',
+        possibleTypes: [
           {
-            "kind": "OBJECT",
-            "name": "NewCollectNotification"
+            kind: 'OBJECT',
+            name: 'NewCollectNotification',
           },
           {
-            "kind": "OBJECT",
-            "name": "NewCommentNotification"
+            kind: 'OBJECT',
+            name: 'NewCommentNotification',
           },
           {
-            "kind": "OBJECT",
-            "name": "NewFollowerNotification"
+            kind: 'OBJECT',
+            name: 'NewFollowerNotification',
           },
           {
-            "kind": "OBJECT",
-            "name": "NewMentionNotification"
+            kind: 'OBJECT',
+            name: 'NewMentionNotification',
           },
           {
-            "kind": "OBJECT",
-            "name": "NewMirrorNotification"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Owner",
-        "fields": [
-          {
-            "name": "address",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
+            kind: 'OBJECT',
+            name: 'NewMirrorNotification',
           },
-          {
-            "name": "amount",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
       },
       {
-        "kind": "OBJECT",
-        "name": "PaginatedFollowersResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Owner',
+        fields: [
           {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Follower",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'address',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
+            name: 'amount',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "PaginatedFollowingResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'PaginatedFollowersResult',
+        fields: [
           {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Following",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Follower',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "PaginatedNotificationResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'PaginatedFollowingResult',
+        fields: [
           {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "UNION",
-                    "name": "Notification",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Following',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "PaginatedProfileResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'PaginatedNotificationResult',
+        fields: [
           {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Profile",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'UNION',
+                    name: 'Notification',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "PaginatedPublicationResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'PaginatedProfileResult',
+        fields: [
           {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "UNION",
-                    "name": "Publication",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Profile',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "PaginatedResultInfo",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'PaginatedPublicationResult',
+        fields: [
           {
-            "name": "next",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'UNION',
+                    name: 'Publication',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "prev",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
-          {
-            "name": "totalCount",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "PaginatedTimelineResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'PaginatedResultInfo',
+        fields: [
           {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "UNION",
-                    "name": "Publication",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'next',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
+            name: 'prev',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
-          }
+            args: [],
+          },
+          {
+            name: 'totalCount',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "PaginatedWhoCollectedResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'PaginatedTimelineResult',
+        fields: [
           {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Wallet",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'UNION',
+                    name: 'Publication',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "PendingApproveFollowsResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'PaginatedWhoCollectedResult',
+        fields: [
           {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Profile",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Wallet',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Post",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'PendingApproveFollowsResult',
+        fields: [
           {
-            "name": "appId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Profile',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "collectModule",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "CollectModule",
-                "ofType": null
-              }
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
-          {
-            "name": "collectNftAddress",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "collectedBy",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Wallet",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "metadata",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "MetadataOutput",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "onChainContentURI",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "profile",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Profile",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "referenceModule",
-            "type": {
-              "kind": "UNION",
-              "name": "ReferenceModule",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "stats",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PublicationStats",
-                "ofType": null
-              }
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Profile",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Post',
+        fields: [
           {
-            "name": "attributes",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Attribute",
-                  "ofType": null
-                }
-              }
+            name: 'appId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "bio",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'collectModule',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'CollectModule',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "coverPicture",
-            "type": {
-              "kind": "UNION",
-              "name": "ProfileMedia",
-              "ofType": null
+            name: 'collectNftAddress',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "depatcher",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Dispatcher",
-              "ofType": null
+            name: 'collectedBy',
+            type: {
+              kind: 'OBJECT',
+              name: 'Wallet',
+              ofType: null,
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "followModule",
-            "type": {
-              "kind": "UNION",
-              "name": "FollowModule",
-              "ofType": null
+            name: 'createdAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "handle",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'metadata',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'MetadataOutput',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "isDefault",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'onChainContentURI',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "location",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'profile',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Profile',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "metadata",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'referenceModule',
+            type: {
+              kind: 'UNION',
+              name: 'ReferenceModule',
+              ofType: null,
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "name",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'stats',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PublicationStats',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
-          {
-            "name": "ownedBy",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "picture",
-            "type": {
-              "kind": "UNION",
-              "name": "ProfileMedia",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "stats",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ProfileStats",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "twitter",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "website",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "UNION",
-        "name": "ProfileMedia",
-        "possibleTypes": [
+        kind: 'OBJECT',
+        name: 'Profile',
+        fields: [
           {
-            "kind": "OBJECT",
-            "name": "MediaSet"
+            name: 'attributes',
+            type: {
+              kind: 'LIST',
+              ofType: {
+                kind: 'NON_NULL',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'Attribute',
+                  ofType: null,
+                },
+              },
+            },
+            args: [],
           },
           {
-            "kind": "OBJECT",
-            "name": "NftImage"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "ProfileRevenueResult",
-        "fields": [
-          {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "PublicationRevenue",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'bio',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
+            name: 'coverPicture',
+            type: {
+              kind: 'UNION',
+              name: 'ProfileMedia',
+              ofType: null,
             },
-            "args": []
-          }
+            args: [],
+          },
+          {
+            name: 'depatcher',
+            type: {
+              kind: 'OBJECT',
+              name: 'Dispatcher',
+              ofType: null,
+            },
+            args: [],
+          },
+          {
+            name: 'followModule',
+            type: {
+              kind: 'UNION',
+              name: 'FollowModule',
+              ofType: null,
+            },
+            args: [],
+          },
+          {
+            name: 'handle',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'isDefault',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'location',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
+            },
+            args: [],
+          },
+          {
+            name: 'metadata',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
+            },
+            args: [],
+          },
+          {
+            name: 'name',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
+            },
+            args: [],
+          },
+          {
+            name: 'ownedBy',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'picture',
+            type: {
+              kind: 'UNION',
+              name: 'ProfileMedia',
+              ofType: null,
+            },
+            args: [],
+          },
+          {
+            name: 'stats',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'ProfileStats',
+                ofType: null,
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'twitter',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
+            },
+            args: [],
+          },
+          {
+            name: 'website',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
+            },
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "ProfileSearchResult",
-        "fields": [
+        kind: 'UNION',
+        name: 'ProfileMedia',
+        possibleTypes: [
           {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Profile",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
+            kind: 'OBJECT',
+            name: 'MediaSet',
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
-            },
-            "args": []
+            kind: 'OBJECT',
+            name: 'NftImage',
           },
-          {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
       },
       {
-        "kind": "OBJECT",
-        "name": "ProfileStats",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'ProfileRevenueResult',
+        fields: [
           {
-            "name": "totalCollects",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'PublicationRevenue',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "totalComments",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
-          {
-            "name": "totalFollowers",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "totalFollowing",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "totalMirrors",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "totalPosts",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "totalPublications",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "UNION",
-        "name": "Publication",
-        "possibleTypes": [
+        kind: 'OBJECT',
+        name: 'ProfileSearchResult',
+        fields: [
           {
-            "kind": "OBJECT",
-            "name": "Comment"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "Mirror"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "Post"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "PublicationMetadataStatus",
-        "fields": [
-          {
-            "name": "reason",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Profile',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "status",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
+          {
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "PublicationRevenue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'ProfileStats',
+        fields: [
           {
-            "name": "earnings",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Erc20Amount",
-                "ofType": null
-              }
+            name: 'totalCollects',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "protocolFee",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'totalComments',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "publication",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "Publication",
-                "ofType": null
-              }
+            name: 'totalFollowers',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
+          {
+            name: 'totalFollowing',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'totalMirrors',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'totalPosts',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'totalPublications',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "PublicationSearchResult",
-        "fields": [
+        kind: 'UNION',
+        name: 'Publication',
+        possibleTypes: [
           {
-            "name": "items",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "UNION",
-                    "name": "PublicationSearchResultItem",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
+            kind: 'OBJECT',
+            name: 'Comment',
           },
           {
-            "name": "pageInfo",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedResultInfo",
-                "ofType": null
-              }
-            },
-            "args": []
+            kind: 'OBJECT',
+            name: 'Mirror',
           },
           {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
+            kind: 'OBJECT',
+            name: 'Post',
+          },
         ],
-        "interfaces": []
       },
       {
-        "kind": "UNION",
-        "name": "PublicationSearchResultItem",
-        "possibleTypes": [
+        kind: 'OBJECT',
+        name: 'PublicationMetadataStatus',
+        fields: [
           {
-            "kind": "OBJECT",
-            "name": "Comment"
+            name: 'reason',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
+            },
+            args: [],
           },
           {
-            "kind": "OBJECT",
-            "name": "Post"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "PublicationStats",
-        "fields": [
-          {
-            "name": "totalAmountOfCollects",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'status',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
-          {
-            "name": "totalAmountOfComments",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "totalAmountOfMirrors",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Query",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'PublicationRevenue',
+        fields: [
           {
-            "name": "approvedModuleAllowanceAmount",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "ApprovedAllowanceAmount",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'earnings',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Erc20Amount',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [],
+          },
+          {
+            name: 'protocolFee',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'publication',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'Publication',
+                ofType: null,
+              },
+            },
+            args: [],
+          },
+        ],
+        interfaces: [],
+      },
+      {
+        kind: 'OBJECT',
+        name: 'PublicationSearchResult',
+        fields: [
+          {
+            name: 'items',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'UNION',
+                    name: 'PublicationSearchResultItem',
+                    ofType: null,
+                  },
+                },
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'pageInfo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedResultInfo',
+                ofType: null,
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+        ],
+        interfaces: [],
+      },
+      {
+        kind: 'UNION',
+        name: 'PublicationSearchResultItem',
+        possibleTypes: [
+          {
+            kind: 'OBJECT',
+            name: 'Comment',
+          },
+          {
+            kind: 'OBJECT',
+            name: 'Post',
+          },
+        ],
+      },
+      {
+        kind: 'OBJECT',
+        name: 'PublicationStats',
+        fields: [
+          {
+            name: 'totalAmountOfCollects',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'totalAmountOfComments',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'totalAmountOfMirrors',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+        ],
+        interfaces: [],
+      },
+      {
+        kind: 'OBJECT',
+        name: 'Query',
+        fields: [
+          {
+            name: 'approvedModuleAllowanceAmount',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'ApprovedAllowanceAmount',
+                    ofType: null,
+                  },
+                },
+              },
+            },
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "challenge",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "AuthChallengeResult",
-                "ofType": null
-              }
+            name: 'challenge',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'AuthChallengeResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "claimableHandles",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ClaimableHandles",
-                "ofType": null
-              }
+            name: 'claimableHandles',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'ClaimableHandles',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "defaultProfile",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Profile",
-              "ofType": null
+            name: 'defaultProfile',
+            type: {
+              kind: 'OBJECT',
+              name: 'Profile',
+              ofType: null,
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "doesFollow",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "DoesFollowResponse",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'doesFollow',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'DoesFollowResponse',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "enabledModuleCurrencies",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Erc20",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'enabledModuleCurrencies',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Erc20',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "enabledModules",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EnabledModules",
-                "ofType": null
-              }
+            name: 'enabledModules',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EnabledModules',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "explorePublications",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ExplorePublicationResult",
-                "ofType": null
-              }
+            name: 'explorePublications',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'ExplorePublicationResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "followerNftOwnedTokenIds",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "FollowerNftOwnedTokenIds",
-                "ofType": null
-              }
+            name: 'followerNftOwnedTokenIds',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'FollowerNftOwnedTokenIds',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "followers",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedFollowersResult",
-                "ofType": null
-              }
+            name: 'followers',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedFollowersResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "following",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedFollowingResult",
-                "ofType": null
-              }
+            name: 'following',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedFollowingResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "generateModuleCurrencyApprovalData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "GenerateModuleCurrencyApproval",
-                "ofType": null
-              }
+            name: 'generateModuleCurrencyApprovalData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'GenerateModuleCurrencyApproval',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "globalProtocolStats",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "GlobalProtocolStats",
-                "ofType": null
-              }
+            name: 'globalProtocolStats',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'GlobalProtocolStats',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any',
+                },
+              },
+            ],
           },
           {
-            "name": "hasCollected",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "HasCollectedResult",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'hasCollected',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'HasCollectedResult',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "hasMirrored",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "HasMirroredResult",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'hasMirrored',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'HasMirroredResult',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "hasTxHashBeenIndexed",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "TransactionResult",
-                "ofType": null
-              }
+            name: 'hasTxHashBeenIndexed',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'TransactionResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "nftOwnershipChallenge",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "NftOwnershipChallengeResult",
-                "ofType": null
-              }
+            name: 'nftOwnershipChallenge',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'NftOwnershipChallengeResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "nfts",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "NFTsResult",
-                "ofType": null
-              }
+            name: 'nfts',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'NFTsResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "notifications",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedNotificationResult",
-                "ofType": null
-              }
+            name: 'notifications',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedNotificationResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "pendingApprovalFollows",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PendingApproveFollowsResult",
-                "ofType": null
-              }
+            name: 'pendingApprovalFollows',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PendingApproveFollowsResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "ping",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'ping',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileRevenue",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ProfileRevenueResult",
-                "ofType": null
-              }
+            name: 'profileRevenue',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'ProfileRevenueResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "profiles",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedProfileResult",
-                "ofType": null
-              }
+            name: 'profiles',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedProfileResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "publication",
-            "type": {
-              "kind": "UNION",
-              "name": "Publication",
-              "ofType": null
+            name: 'publication',
+            type: {
+              kind: 'UNION',
+              name: 'Publication',
+              ofType: null,
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "publicationRevenue",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PublicationRevenue",
-                "ofType": null
-              }
+            name: 'publicationRevenue',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PublicationRevenue',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "publications",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedPublicationResult",
-                "ofType": null
-              }
+            name: 'publications',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedPublicationResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "recommendedProfiles",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Profile",
-                    "ofType": null
-                  }
-                }
-              }
+            name: 'recommendedProfiles',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Profile',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "search",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "SearchResult",
-                "ofType": null
-              }
+            name: 'search',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'UNION',
+                name: 'SearchResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "timeline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedTimelineResult",
-                "ofType": null
-              }
+            name: 'timeline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedTimelineResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "userSigNonces",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "UserSigNonces",
-                "ofType": null
-              }
+            name: 'userSigNonces',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'UserSigNonces',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "verify",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'verify',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
           },
           {
-            "name": "whoCollectedPublication",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginatedWhoCollectedResult",
-                "ofType": null
-              }
+            name: 'whoCollectedPublication',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'PaginatedWhoCollectedResult',
+                ofType: null,
+              },
             },
-            "args": [
+            args: [
               {
-                "name": "request",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          }
+                name: 'request',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any',
+                  },
+                },
+              },
+            ],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "UNION",
-        "name": "ReferenceModule",
-        "possibleTypes": [
+        kind: 'UNION',
+        name: 'ReferenceModule',
+        possibleTypes: [
           {
-            "kind": "OBJECT",
-            "name": "FollowOnlyReferenceModuleSettings"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "RelayError",
-        "fields": [
-          {
-            "name": "reason",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
+            kind: 'OBJECT',
+            name: 'FollowOnlyReferenceModuleSettings',
+          },
         ],
-        "interfaces": []
       },
       {
-        "kind": "UNION",
-        "name": "RelayResult",
-        "possibleTypes": [
+        kind: 'OBJECT',
+        name: 'RelayError',
+        fields: [
           {
-            "kind": "OBJECT",
-            "name": "RelayError"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "RelayerResult"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "RelayerResult",
-        "fields": [
-          {
-            "name": "txHash",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'reason',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "ReservedClaimableHandle",
-        "fields": [
+        kind: 'UNION',
+        name: 'RelayResult',
+        possibleTypes: [
           {
-            "name": "expiry",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
+            kind: 'OBJECT',
+            name: 'RelayError',
           },
           {
-            "name": "handle",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
+            kind: 'OBJECT',
+            name: 'RelayerResult',
           },
-          {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "source",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
       },
       {
-        "kind": "OBJECT",
-        "name": "RevertCollectModuleSettings",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'RelayerResult',
+        fields: [
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'txHash',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
-          {
-            "name": "followerOnly",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "UNION",
-        "name": "SearchResult",
-        "possibleTypes": [
+        kind: 'OBJECT',
+        name: 'ReservedClaimableHandle',
+        fields: [
           {
-            "kind": "OBJECT",
-            "name": "ProfileSearchResult"
+            name: 'expiry',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
           },
           {
-            "kind": "OBJECT",
-            "name": "PublicationSearchResult"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "SetDefaultProfileBroadcastItemResult",
-        "fields": [
-          {
-            "name": "expiresAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'handle',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "typedData",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "SetDefaultProfileEIP712TypedData",
-                "ofType": null
-              }
+            name: 'source',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "SetDefaultProfileEIP712TypedData",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'RevertCollectModuleSettings',
+        fields: [
           {
-            "name": "domain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EIP712TypedDataDomain",
-                "ofType": null
-              }
+            name: 'contractAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "types",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "SetDefaultProfileEIP712TypedDataTypes",
-                "ofType": null
-              }
+            name: 'followerOnly',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "SetDefaultProfileEIP712TypedDataValue",
-                "ofType": null
-              }
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "SetDefaultProfileEIP712TypedDataTypes",
-        "fields": [
+        kind: 'UNION',
+        name: 'SearchResult',
+        possibleTypes: [
           {
-            "name": "SetDefaultProfileWithSig",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EIP712TypedDataField",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          }
+            kind: 'OBJECT',
+            name: 'ProfileSearchResult',
+          },
+          {
+            kind: 'OBJECT',
+            name: 'PublicationSearchResult',
+          },
         ],
-        "interfaces": []
       },
       {
-        "kind": "OBJECT",
-        "name": "SetDefaultProfileEIP712TypedDataValue",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'SetDefaultProfileBroadcastItemResult',
+        fields: [
           {
-            "name": "deadline",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'expiresAt',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "nonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'id',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "profileId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'typedData',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'SetDefaultProfileEIP712TypedData',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
-          {
-            "name": "wallet",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "TimedFeeCollectModuleSettings",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'SetDefaultProfileEIP712TypedData',
+        fields: [
           {
-            "name": "amount",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ModuleFeeAmount",
-                "ofType": null
-              }
+            name: 'domain',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'EIP712TypedDataDomain',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'types',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'SetDefaultProfileEIP712TypedDataTypes',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "endTimestamp",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'value',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'SetDefaultProfileEIP712TypedDataValue',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
-          {
-            "name": "followerOnly",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "recipient",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "referralFee",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "TransactionError",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'SetDefaultProfileEIP712TypedDataTypes',
+        fields: [
           {
-            "name": "reason",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'SetDefaultProfileWithSig',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'EIP712TypedDataField',
+                    ofType: null,
+                  },
+                },
+              },
             },
-            "args": []
+            args: [],
           },
-          {
-            "name": "txReceipt",
-            "type": {
-              "kind": "OBJECT",
-              "name": "TransactionReceipt",
-              "ofType": null
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "TransactionIndexedResult",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'SetDefaultProfileEIP712TypedDataValue',
+        fields: [
           {
-            "name": "indexed",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'deadline',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "metadataStatus",
-            "type": {
-              "kind": "OBJECT",
-              "name": "PublicationMetadataStatus",
-              "ofType": null
+            name: 'nonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "txReceipt",
-            "type": {
-              "kind": "OBJECT",
-              "name": "TransactionReceipt",
-              "ofType": null
+            name: 'profileId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
-          }
+            args: [],
+          },
+          {
+            name: 'wallet',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "TransactionReceipt",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TimedFeeCollectModuleSettings',
+        fields: [
           {
-            "name": "blockHash",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'amount',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'ModuleFeeAmount',
+                ofType: null,
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "blockNumber",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'contractAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "byzantium",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'endTimestamp',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "confirmations",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'followerOnly',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "contractAddress",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'recipient',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "cumulativeGasUsed",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'referralFee',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "effectiveGasPrice",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
-          {
-            "name": "from",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "gasUsed",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "logs",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Log",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "logsBloom",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "root",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "status",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "to",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "transactionHash",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "transactionIndex",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "UNION",
-        "name": "TransactionResult",
-        "possibleTypes": [
+        kind: 'OBJECT',
+        name: 'TransactionError',
+        fields: [
           {
-            "kind": "OBJECT",
-            "name": "TransactionError"
+            name: 'reason',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
           },
           {
-            "kind": "OBJECT",
-            "name": "TransactionIndexedResult"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "UserSigNonces",
-        "fields": [
-          {
-            "name": "lensHubOnChainSigNonce",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'txReceipt',
+            type: {
+              kind: 'OBJECT',
+              name: 'TransactionReceipt',
+              ofType: null,
             },
-            "args": []
-          }
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "OBJECT",
-        "name": "Wallet",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TransactionIndexedResult',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+            name: 'indexed',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
             },
-            "args": []
+            args: [],
           },
           {
-            "name": "defaultProfile",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Profile",
-              "ofType": null
+            name: 'metadataStatus',
+            type: {
+              kind: 'OBJECT',
+              name: 'PublicationMetadataStatus',
+              ofType: null,
             },
-            "args": []
-          }
+            args: [],
+          },
+          {
+            name: 'txReceipt',
+            type: {
+              kind: 'OBJECT',
+              name: 'TransactionReceipt',
+              ofType: null,
+            },
+            args: [],
+          },
         ],
-        "interfaces": []
+        interfaces: [],
       },
       {
-        "kind": "SCALAR",
-        "name": "Any"
-      }
+        kind: 'OBJECT',
+        name: 'TransactionReceipt',
+        fields: [
+          {
+            name: 'blockHash',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'blockNumber',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'byzantium',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'confirmations',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'contractAddress',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
+            },
+            args: [],
+          },
+          {
+            name: 'cumulativeGasUsed',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'effectiveGasPrice',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'from',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'gasUsed',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'logs',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Log',
+                    ofType: null,
+                  },
+                },
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'logsBloom',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'root',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
+            },
+            args: [],
+          },
+          {
+            name: 'status',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'to',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any',
+            },
+            args: [],
+          },
+          {
+            name: 'transactionHash',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'transactionIndex',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'type',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+        ],
+        interfaces: [],
+      },
+      {
+        kind: 'UNION',
+        name: 'TransactionResult',
+        possibleTypes: [
+          {
+            kind: 'OBJECT',
+            name: 'TransactionError',
+          },
+          {
+            kind: 'OBJECT',
+            name: 'TransactionIndexedResult',
+          },
+        ],
+      },
+      {
+        kind: 'OBJECT',
+        name: 'UserSigNonces',
+        fields: [
+          {
+            name: 'lensHubOnChainSigNonce',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+        ],
+        interfaces: [],
+      },
+      {
+        kind: 'OBJECT',
+        name: 'Wallet',
+        fields: [
+          {
+            name: 'address',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any',
+              },
+            },
+            args: [],
+          },
+          {
+            name: 'defaultProfile',
+            type: {
+              kind: 'OBJECT',
+              name: 'Profile',
+              ofType: null,
+            },
+            args: [],
+          },
+        ],
+        interfaces: [],
+      },
+      {
+        kind: 'SCALAR',
+        name: 'Any',
+      },
     ],
-    "directives": []
-  }
+    directives: [],
+  },
 } as unknown as IntrospectionQuery;

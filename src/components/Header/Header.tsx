@@ -27,20 +27,24 @@ import {
   ChainContainer,
   ConnectWallet,
   ConnectWalletPopup,
-  DesktopHeaderWrapper, DiscordWrapper, Divider,
+  DesktopHeaderWrapper,
+  DiscordWrapper,
+  Divider,
   DropDownItem,
   Error,
   HeaderWrapperInner,
   HeaderWrapperOuter,
   HEADER_HEIGHT_IN_PX,
-  LeftWrapper, LinkWrapper, MenuButton,
+  LeftWrapper,
+  LinkWrapper,
+  MenuButton,
   MenuContainer,
   MobileHeaderWrapper,
   RightWrapper,
   StyledSpan,
-  Wrapper
+  Wrapper,
 } from './Style';
-import * as lens from '../../api/lens'
+import * as lens from '../../api/lens';
 import { toast } from 'react-toastify';
 interface HeaderStore extends State {
   showProfileDropDown: boolean;
@@ -270,15 +274,15 @@ const Header: React.FC<HeaderProps> = () => {
   useEffect(() => {
     const getCreatorData = async () => {
       if (account) {
-        toast.loading('Logining into Lens 🌿')
-        const accessToken = await lens.getAccess(account)
-        toast.dismiss()
+        toast.loading('Logining into Lens 🌿');
+        const accessToken = await lens.getAccess(account);
+        toast.dismiss();
         if (!accessToken) {
-          toast.error('Login failed')
-          return
+          toast.error('Login failed');
+          return;
         }
-        toast.success('Login success')
-        setLensAccess('🌿')
+        toast.success('Login success');
+        setLensAccess('🌿');
       }
     };
     getCreatorData();

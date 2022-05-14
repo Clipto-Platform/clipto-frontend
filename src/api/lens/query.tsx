@@ -2,7 +2,7 @@ export const queryChallenge = `query Challenge($address: EthereumAddress!) {
   challenge(request: { address: $address }) {
     text
   }
-}`
+}`;
 
 export const queryAuth = `mutation Authenticate($address: EthereumAddress!, $signature: Signature!) {
   authenticate(request: {
@@ -12,7 +12,7 @@ export const queryAuth = `mutation Authenticate($address: EthereumAddress!, $sig
     accessToken
     refreshToken
   }
-}`
+}`;
 
 export const mutationProfile = `mutation($request: CreateProfileRequest!) { 
   createProfile(request: $request) {
@@ -24,7 +24,7 @@ export const mutationProfile = `mutation($request: CreateProfileRequest!) {
     }
           __typename
   }
-}`
+}`;
 
 export const queryProfile = `query Profiles($address: EthereumAddress!) {
   profiles(request: { ownedBy: [$address], limit: 10 }) {
@@ -106,7 +106,7 @@ export const queryProfile = `query Profiles($address: EthereumAddress!) {
       totalCount
     }
   }
-}`
+}`;
 
 export const mutationFollow = `
   mutation CreateFollowTypedData ($profile: ProfileId!){
@@ -142,7 +142,7 @@ export const mutationFollow = `
       }
     }
   }
-`
+`;
 
 export const mutationUnfollow = `
   mutation($profile: ProfileId!) { 
@@ -172,7 +172,7 @@ export const mutationUnfollow = `
       }
     }
   }
-`
+`;
 
 export const queryFollowing = `
 query($request: FollowingRequest!) {
@@ -277,7 +277,7 @@ query($request: FollowingRequest!) {
      }
       }
 }
-`
+`;
 
 export const queryDoesFollow = `
   query DoesFollow ($address: EthereumAddress!, $profileId: ProfileId!) {
@@ -294,7 +294,7 @@ export const queryDoesFollow = `
       follows
     }
   }
-`
+`;
 
 export const queryTxWait = `
 query HasTxHashBeenIndexed ($txHash: TxHash!){
@@ -370,7 +370,7 @@ query HasTxHashBeenIndexed ($txHash: TxHash!){
     __typename
   }
 }
-`
+`;
 
 export const queryVerify = `
 query Query ($accessToken: Jwt!) {
@@ -378,4 +378,4 @@ query Query ($accessToken: Jwt!) {
     accessToken:$accessToken
   })
 }
-`
+`;

@@ -16,11 +16,7 @@ import { CreatorCards } from '../../components/CreatorCards/CreatorCards';
 
 import { PageWrapper } from '../../components/layout/Common';
 import Slides from '../../components/Slides/Slides';
-import {
-  BookNow,
-  BookNowButton,
-  HeroTitle, LeftContentWrapper
-} from '../../components/Slides/Style';
+import { BookNow, BookNowButton, HeroTitle, LeftContentWrapper } from '../../components/Slides/Style';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
 import config from '../../config/config';
 import { UserProfile } from '../../hooks/useProfile';

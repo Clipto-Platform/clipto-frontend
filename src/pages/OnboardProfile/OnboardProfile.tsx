@@ -29,7 +29,7 @@ const OnboardProfilePage = () => {
   const [hasAccount, setHasAccount] = useState<boolean>(false); //state of if the user is a creator or not
   const [userProfileDB, setUserProfileDB] = useState<EntityCreator>();
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [lensProfiles, setLensProfiles] = useState<Array<{id: string, handle: string}>>([])
+  const [lensProfiles, setLensProfiles] = useState<Array<{ id: string; handle: string }>>([]);
 
   const updateUserProfile = async (creatorData: CreatorData) => {
     // console.log(userProfileDB); return;
@@ -75,11 +75,12 @@ const OnboardProfilePage = () => {
       }
     }
   };
-  const getProfiles = (account : any) => lens.getProfile(account).then(res => {
-    if (res && res.data) {
-      setLensProfiles(res.data.profiles.items.map((item: any) => ({id: item.id, handle: item.handle})))
-    }
-  })
+  const getProfiles = (account: any) =>
+    lens.getProfile(account).then((res) => {
+      if (res && res.data) {
+        setLensProfiles(res.data.profiles.items.map((item: any) => ({ id: item.id, handle: item.handle })));
+      }
+    });
   useEffect(() => {
     if (account) {
       api
@@ -87,7 +88,7 @@ const OnboardProfilePage = () => {
         .then((res) => {
           if (res.data && res.data.creator) {
             const creator = res.data.creator;
-            console.log(creator)
+            console.log(creator);
             setHasAccount(true);
             setUserProfileDB(creator);
           }
@@ -101,7 +102,7 @@ const OnboardProfilePage = () => {
             setLoaded(true);
           }
         });
-        getProfiles(account)
+      getProfiles(account);
     }
   }, [account]);
 
@@ -147,7 +148,7 @@ const OnboardProfilePage = () => {
                     demo1: userProfile.demos[0] || userProfileDB?.demos[0] || '',
                     demo2: userProfile.demos[1] || userProfileDB?.demos[1] || '',
                     demo3: userProfile.demos[2] || userProfileDB?.demos[2] || '',
-                    lensHandle: userProfile.lensHandle || ''
+                    lensHandle: userProfile.lensHandle || '',
                   }}
                   onSubmit={async (values) => {
                     setLoading(true);
@@ -340,40 +341,59 @@ const OnboardProfilePage = () => {
                           />
                           <FeeDescription />
                         </div>
-                        <div style={{ marginBottom: 12}}>
-                          <Dropdown formLabel="Connect Lens Profile" onChange={async (e) => {
-                            if (e.target.value === 'Create new Lens Profile 🌿') {
-                              if (account) {
-                                const lensHandle = userProfile.twitterHandle || userProfileDB?.twitterHandle || `clipto-${Math.floor(Math.random() * 99999999999999)}`
-                                const accessRes = await lens.getAccess(account)
-                                if (!accessRes) return;
-                                const access = accessRes.data.authenticate.accessToken
-                                toast.loading('Creating profile')
-                                const profileRes = await lens.createProfile({
-                                  handle: lensHandle + 'afafff1'
-                                }, 
-                                  access
-                                )
-                                const profileResVal = profileRes && profileRes.data.createProfile && profileRes.data.createProfile.reason ||
-                                profileRes && profileRes.data.createProfile && profileRes.data.createProfile
-                                console.log(profileRes)
-                                if (profileResVal == 'HANDLE_TAKEN') {
-                                  toast.dismiss()
-                                  toast.error('Handle is taken')
-                                } else {
-                                  await lens.pollUntilIndexed(profileRes.data.createProfile.txHash, access)
-                                  toast.dismiss()
-                                  toast.success('Lens profile created')
-                                }
-                                if(profileRes && profileRes.data.createProfile && !profileRes.data.createProfile.reason) {
-                                  getProfiles(account)
+                        <div style={{ marginBottom: 12 }}>
+                          <Dropdown
+                            formLabel="Connect Lens Profile"
+                            onChange={async (e) => {
+                              if (e.target.value === 'Create new Lens Profile 🌿') {
+                                if (account) {
+                                  const lensHandle =
+                                    userProfile.twitterHandle ||
+                                    userProfileDB?.twitterHandle ||
+                                    `clipto-${Math.floor(Math.random() * 99999999999999)}`;
+                                  const accessRes = await lens.getAccess(account);
+                                  if (!accessRes) return;
+                                  const access = accessRes.data.authenticate.accessToken;
+                                  toast.loading('Creating profile');
+                                  const profileRes = await lens.createProfile(
+                                    {
+                                      handle: lensHandle + 'afafff1',
+                                    },
+                                    access,
+                                  );
+                                  const profileResVal =
+                                    (profileRes &&
+                                      profileRes.data.createProfile &&
+                                      profileRes.data.createProfile.reason) ||
+                                    (profileRes && profileRes.data.createProfile && profileRes.data.createProfile);
+                                  console.log(profileRes);
+                                  if (profileResVal == 'HANDLE_TAKEN') {
+                                    toast.dismiss();
+                                    toast.error('Handle is taken');
+                                  } else {
+                                    await lens.pollUntilIndexed(profileRes.data.createProfile.txHash, access);
+                                    toast.dismiss();
+                                    toast.success('Lens profile created');
+                                  }
+                                  if (
+                                    profileRes &&
+                                    profileRes.data.createProfile &&
+                                    !profileRes.data.createProfile.reason
+                                  ) {
+                                    getProfiles(account);
+                                  }
                                 }
                               }
-                            }
-                            handleChange('lensHandle')(e)
-                          }} name="lens">
+                              handleChange('lensHandle')(e);
+                            }}
+                            name="lens"
+                          >
                             {/* Creates an array of existing lens profiles and gives user to create a new lens profile */}
-                            {[{id:'', handle: ''}, {id:'', handle: 'Create new Lens Profile 🌿'}, ...(lensProfiles || [])].map(({id, handle}, i) => {
+                            {[
+                              { id: '', handle: '' },
+                              { id: '', handle: 'Create new Lens Profile 🌿' },
+                              ...(lensProfiles || []),
+                            ].map(({ id, handle }, i) => {
                               //console.log(userProfileDB)
                               if ((userProfileDB?.lensHandle || userProfile.lensHandle) === handle) {
                                 return <Option key={i} selected value={handle} />;
