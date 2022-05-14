@@ -1,4 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
+import { OverlayContainer } from '@react-aria/overlays';
 import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -18,8 +19,29 @@ import { useProfile } from '../../hooks/useProfile';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
+import { ModalDialog } from '../../components/Dialog'
+import create, { State } from 'zustand';
+import { immer } from '../../utils/zustand';
+
+interface HeaderStore extends State {
+  showDialog: boolean;
+  setShowDialog: (show: boolean) => void;
+}
+
+const useHeaderStore = create<HeaderStore>(
+  immer((set) => ({
+    showDialog: false,
+    setShowDialog: (show: boolean) => {
+      set((draft) => {
+        draft.showDialog = show;
+      });
+    },
+  })),
+);
+
 
 const OnboardProfilePage = () => {
+  const CREATE_LENS_TEXT = 'Create new Lens Profile 🌿'
   const userProfile = useProfile();
   const navigate = useNavigate();
   const { FeeDescription } = useFee();
@@ -30,9 +52,50 @@ const OnboardProfilePage = () => {
   const [userProfileDB, setUserProfileDB] = useState<EntityCreator>();
   const [loaded, setLoaded] = useState<boolean>(false);
   const [lensProfiles, setLensProfiles] = useState<Array<{ id: string; handle: string }>>([]);
+  const showLensDialog = useHeaderStore((s) => s.showDialog);
+  const setShowLensDialog = useHeaderStore((s) => s.setShowDialog);
+  const [createLens, setCreateLens] = useState(false)
+  const createLensProfile = async (lensHandle : string) => {
+    if (!account) {
+      toast.error('No account detected!')
+      return {error: 'No account detected'};
+    }
+    const accessRes = await lens.getAccess(account);
+    if (!accessRes) return;
+    const access = accessRes.data.authenticate.accessToken;
+    toast.loading('Creating lens profile');
+    const profileRes = await lens.createProfile(
+      {
+        handle: lensHandle,
+      },
+      access,
+    );
+    const profileResVal =
+      (profileRes &&
+        profileRes.data.createProfile &&
+        profileRes.data.createProfile.reason) ||
+      (profileRes && profileRes.data.createProfile && profileRes.data.createProfile);
+    if (profileResVal == 'HANDLE_TAKEN') {
+      toast.dismiss();
+      toast.error('Handle is taken');
+      return profileRes
+    }
+    await lens.pollUntilIndexed(profileRes.data.createProfile.txHash, access);
+    toast.dismiss();
+    toast.success('Lens profile created');
+
+    if (
+      profileRes &&
+      profileRes.data.createProfile &&
+      !profileRes.data.createProfile.reason
+    ) {
+      getProfiles(account);
+    }
+    return profileRes
+  }
+
 
   const updateUserProfile = async (creatorData: CreatorData) => {
-    // console.log(userProfileDB); return;
     try {
       const txResult = await exchangeContractV1.updateCreator(JSON.stringify(creatorData));
       toast.loading('Profile updating, waiting for confirmation!');
@@ -80,7 +143,10 @@ const OnboardProfilePage = () => {
       if (res && res.data) {
         setLensProfiles(res.data.profiles.items.map((item: any) => ({ id: item.id, handle: item.handle })));
       }
-    });
+  });
+
+
+
   useEffect(() => {
     if (account) {
       api
@@ -88,7 +154,6 @@ const OnboardProfilePage = () => {
         .then((res) => {
           if (res.data && res.data.creator) {
             const creator = res.data.creator;
-            console.log(creator);
             setHasAccount(true);
             setUserProfileDB(creator);
           }
@@ -148,11 +213,14 @@ const OnboardProfilePage = () => {
                     demo1: userProfile.demos[0] || userProfileDB?.demos[0] || '',
                     demo2: userProfile.demos[1] || userProfileDB?.demos[1] || '',
                     demo3: userProfile.demos[2] || userProfileDB?.demos[2] || '',
-                    lensHandle: userProfile.lensHandle || '',
+                    lensHandle: userProfile.lensHandle || userProfileDB?.lensHandle || '',
                   }}
                   onSubmit={async (values) => {
                     setLoading(true);
-
+                    if (createLens) {
+                      await createLensProfile(values.lensHandle)
+                    } 
+                    
                     const demos = [];
                     values.demo1 && demos.push(values.demo1);
                     values.demo2 && demos.push(values.demo2);
@@ -171,9 +239,9 @@ const OnboardProfilePage = () => {
                     hasAccount ? await updateUserProfile(creatorData) : await createUserProfile(creatorData);
                     setLoading(false);
                   }}
-                  validate={(values) => {
+                  validate={async (values) => {
                     const errors: any = {};
-                    const { bio, userName, profilePicture, deliveryTime, price, tweetUrl, address } = values;
+                    const { bio, userName, profilePicture, deliveryTime, price, tweetUrl, address, lensHandle } = values;
                     const demo1 = values['demo1'];
                     const demo2 = values['demo2'];
                     const demo3 = values['demo3'];
@@ -254,6 +322,24 @@ const OnboardProfilePage = () => {
                     } catch (error) {
                       errors.address = 'Please enter a valid address.';
                     }
+
+                    //lens validation
+                    if (createLens) {console.log('test')
+                      const getProfileByHandleRes = await lens.getProfileByHandle(lensHandle == CREATE_LENS_TEXT ? userProfileDB?.twitterHandle || userProfile.twitterHandle || values.userName : lensHandle)
+                      console.log(getProfileByHandleRes)
+                      if (!getProfileByHandleRes.data) {
+                        errors.lensHandle = 'Unable to validate handle'
+                      }
+                      if (getProfileByHandleRes.error) {
+                        errors.lensHandle = getProfileByHandleRes.error.message 
+                        return errors;
+                      }
+                      if (getProfileByHandleRes.data.profiles.items.length > 0) {
+                        errors.lensHandle = 'profile handle taken'
+                        setShowLensDialog(true)
+                        return errors;
+                      }
+                    }
                     return errors;
                   }}
                   validateOnBlur={false}
@@ -262,6 +348,47 @@ const OnboardProfilePage = () => {
                   {({ handleChange, handleBlur, handleSubmit, values, errors, touched, validateForm }) => {
                     return (
                       <>
+                        <OverlayContainer>
+                          {showLensDialog && <ModalDialog
+                            containerStyles={{
+                              border: '1px solid #b3b3b3',
+                              padding: '24px',
+                            }}
+                            isOpen
+                            onClose={() => setShowLensDialog(false)}
+                            isDismissable
+                          >
+                            <div style={{ marginBottom: 48 }}>
+                              <TextField
+                                label="Lens Handle"
+                                description="Your lens handle is taken, select another one."
+                                placeholder={userProfile.lensHandle}
+                                value={userProfile.lensHandle}
+                                errorMessage={errors.lensHandle}
+                                onChange={handleChange('lensHandle')}
+                              />
+                              <PrimaryButton
+                                style={{ marginBottom: '16px' }}
+                                onPress={async () => {
+                                  setLoading(true);
+                                  const errors = await validateForm();
+                                  if (Object.keys(errors).length != 0) {
+                                    console.error(errors)
+                                    toast.error('Please fix the errors.');
+                                  } else {
+                                    setShowLensDialog(false)
+                                    handleSubmit();
+                                  }
+                                  setLoading(false);
+                                }}
+                                
+                                isDisabled={loading}
+                              >
+                                {hasAccount ? 'Update profile' : 'Set up profile'}
+                              </PrimaryButton>
+                            </div>
+                          </ModalDialog>}
+                        </OverlayContainer>
                         {hasAccount && (
                           <div style={{ marginBottom: 48 }}>
                             <TextField
@@ -345,44 +472,10 @@ const OnboardProfilePage = () => {
                           <Dropdown
                             formLabel="Connect Lens Profile"
                             onChange={async (e) => {
-                              if (e.target.value === 'Create new Lens Profile 🌿') {
-                                if (account) {
-                                  const lensHandle =
-                                    userProfile.twitterHandle ||
-                                    userProfileDB?.twitterHandle ||
-                                    `clipto-${Math.floor(Math.random() * 99999999999999)}`;
-                                  const accessRes = await lens.getAccess(account);
-                                  if (!accessRes) return;
-                                  const access = accessRes.data.authenticate.accessToken;
-                                  toast.loading('Creating profile');
-                                  const profileRes = await lens.createProfile(
-                                    {
-                                      handle: lensHandle + 'afafff1',
-                                    },
-                                    access,
-                                  );
-                                  const profileResVal =
-                                    (profileRes &&
-                                      profileRes.data.createProfile &&
-                                      profileRes.data.createProfile.reason) ||
-                                    (profileRes && profileRes.data.createProfile && profileRes.data.createProfile);
-                                  console.log(profileRes);
-                                  if (profileResVal == 'HANDLE_TAKEN') {
-                                    toast.dismiss();
-                                    toast.error('Handle is taken');
-                                  } else {
-                                    await lens.pollUntilIndexed(profileRes.data.createProfile.txHash, access);
-                                    toast.dismiss();
-                                    toast.success('Lens profile created');
-                                  }
-                                  if (
-                                    profileRes &&
-                                    profileRes.data.createProfile &&
-                                    !profileRes.data.createProfile.reason
-                                  ) {
-                                    getProfiles(account);
-                                  }
-                                }
+                              if (e.target.value === CREATE_LENS_TEXT) {
+                                setCreateLens(true)
+                              } else {
+                                setCreateLens(false)
                               }
                               handleChange('lensHandle')(e);
                             }}
@@ -391,10 +484,9 @@ const OnboardProfilePage = () => {
                             {/* Creates an array of existing lens profiles and gives user to create a new lens profile */}
                             {[
                               { id: '', handle: '' },
-                              { id: '', handle: 'Create new Lens Profile 🌿' },
+                              { id: '', handle: CREATE_LENS_TEXT },
                               ...(lensProfiles || []),
                             ].map(({ id, handle }, i) => {
-                              //console.log(userProfileDB)
                               if ((userProfileDB?.lensHandle || userProfile.lensHandle) === handle) {
                                 return <Option key={i} selected value={handle} />;
                               }
@@ -440,6 +532,7 @@ const OnboardProfilePage = () => {
                           onPress={async () => {
                             setLoading(true);
                             const errors = await validateForm();
+                            console.log(errors)
                             if (Object.keys(errors).length != 0) {
                               toast.error('Please fix the errors.');
                             } else {
@@ -465,3 +558,5 @@ const OnboardProfilePage = () => {
 };
 
 export { OnboardProfilePage };
+
+

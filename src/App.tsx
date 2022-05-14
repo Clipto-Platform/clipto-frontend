@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, Zoom } from 'react-toastify';
 import { ThemeProvider } from 'styled-components';
 import { BottomBar } from './components/BottomBar/BottomBar';
 import { Header } from './components/Header/Header';
@@ -31,7 +31,19 @@ function App() {
     <GraphQLProvider value={graphInstance}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <ThemeProvider theme={theme}>
-          <ToastContainer />
+          <ToastContainer 
+            position='bottom-center'
+            theme='dark'
+            limit={1}
+            newestOnTop={false}
+            closeOnClick
+            autoClose={5000}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            transition={Zoom}
+            hideProgressBar={true}
+          />
           <BrowserRouter>
             <Header />
             <Routes>

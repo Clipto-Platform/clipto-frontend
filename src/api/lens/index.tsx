@@ -13,6 +13,7 @@ import {
   queryDoesFollow,
   queryFollowing,
   queryProfile,
+  queryProfileByHandle,
   queryTxWait,
   queryVerify,
 } from './query';
@@ -22,12 +23,12 @@ declare var window: any; //this removes window.ethereum type error
 
 export const graphInstance = createClient({
   // for performance reasons
-  url: config.lensUrl,
+  url: config.lens.url,
   requestPolicy: 'cache-and-network',
 });
 
 export const graphInstanceDisabledCache = createClient({
-  url: config.lensUrl,
+  url: config.lens.url,
   requestPolicy: 'network-only', //defaults to no-cache option: https://formidable.com/open-source/urql/docs/basics/document-caching/
 });
 
@@ -63,6 +64,13 @@ export const createProfile = async (createProfileRequest: CreateProfileRequest, 
 export const getProfile = async (address: string) => {
   return graphInstance.query(queryProfile, { address }).toPromise();
 };
+/**
+ * 
+ * @param handle This should not have an appended .test or .lens!
+ */
+export const getProfileByHandle = async (handle : string) => {
+  return graphInstance.query(queryProfileByHandle, { handle: config.lens.getHandleToSearch(handle) }).toPromise();
+}
 
 // This code will assume you are using MetaMask.
 // It will also assume that you have already done all the connecting to metamask
@@ -78,9 +86,10 @@ export const signText = (text: string) => {
 
 //gets access and request tokens
 export const getAccess = async (address: string) => {
+  let localAddress = localStorage.getItem('lensAddress'); //needs for when user switches accounts
   let localAccess = localStorage.getItem('lensAccessToken'); // Note - this should be refactored to be in the state and in a hook inside
   //This is a major security flaw! ^^ Vulnerable to XSS
-  if (localAccess) {
+  if (localAccess && localAddress === address) {
     const isAccessValid = await verify(localAccess);
     if (isAccessValid && isAccessValid.data.verify) {
       return {
@@ -103,6 +112,7 @@ export const getAccess = async (address: string) => {
   !authResponse && console.error('Unable to login in');
   if (authResponse && authResponse.data) {
     localStorage.setItem('lensAccessToken', authResponse.data.authenticate.accessToken);
+    localStorage.setItem('lensAddress', address);
   }
   return authResponse;
 };

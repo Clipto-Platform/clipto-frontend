@@ -108,6 +108,16 @@ export const queryProfile = `query Profiles($address: EthereumAddress!) {
   }
 }`;
 
+export const queryProfileByHandle = `
+query Profiles ($handle: Handle!){
+  profiles(request: { handles: [$handle], limit: 1 }) {
+    items {
+      id
+    }
+  }
+}
+`
+
 export const mutationFollow = `
   mutation CreateFollowTypedData ($profile: ProfileId!){
     createFollowTypedData(request:{

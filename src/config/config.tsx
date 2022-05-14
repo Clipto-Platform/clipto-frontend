@@ -25,12 +25,17 @@ const configTest = {
     WETH: '0x714550c2c1ea08688607d86ed8eef4f5e4f22323',
     USDC: '0xe11a86849d99f524cac3e7a0ec1241828e332c62', // not official
   },
-  lensContract: '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82',
 
   rpcUrl: 'https://polygon-mumbai.g.alchemy.com/v2/VMBpFqjMYv2w-MWnc9df92w3R2TpMvSG',
   graphApi: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-tstnet',
   apiUrl: 'https://testapi.clipto.io',
-  lensUrl: 'https://api-mumbai.lens.dev/',
+
+  lens: {
+    url: 'https://api-mumbai.lens.dev/',
+    contract: '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82',
+    getHandleToSearch: (handle: string) => `${handle}.test` //this is to be used when querying if a lensHandle exists. When you create a profile, a postfix is automatically attached
+  },
+
   getContractExplorer: (address: string) => `https://mumbai.polygonscan.com/address/${address}`,
   getTokenExplorer: (address: string) => `https://mumbai.polygonscan.com/token/${address}`,
   getOpenSeaExplorer: (address: string, tokenId: number) =>
@@ -51,12 +56,18 @@ const configProd = {
     WETH: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
     USDC: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
   },
-  lensContract: '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82', //REPLACE WITH PROD CONTRACT
+  lensContract: '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82', 
 
   rpcUrl: 'https://polygon-mainnet.g.alchemy.com/v2/Wk4fc10DkXi2lhLq30tw_eSHPuzUyRnV',
   graphApi: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-mainnet',
   apiUrl: 'https://api.clipto.io',
-  lensUrl: 'https://api-mumbai.lens.dev/', //REPLACE WITH PROD CONTRACT
+  lensUrl: 'https://api-mumbai.lens.dev/', 
+
+  lens: {
+    url: 'https://api-mumbai.lens.dev/', //REPLACE WITH PROD CONTRACT
+    contract: '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82', //REPLACE WITH PROD CONTRACT
+    getHandleToSearch: (handle: string) => `${handle}.lens` //this is to be used when querying if a lensHandle exists. When you create a profile, a postfix is automatically attached
+  },
 
   getContractExplorer: (address: string) => `https://polygonscan.com/address/${address}`,
   getTokenExplorer: (address: string) => `https://polygonscan.com/token/${address}`,

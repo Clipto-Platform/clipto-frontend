@@ -6,7 +6,7 @@ import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
 
 export const getLensHub = (library: Web3Provider) => {
-  return new ethers.Contract(config.lensContract, LENS_HUB_ABI, getSigner(library));
+  return new ethers.Contract(config.lens.contract, LENS_HUB_ABI, getSigner(library));
 };
 
 export const getFollowNftContract = (typedData: any, library: Web3Provider) =>

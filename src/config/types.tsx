@@ -14,12 +14,16 @@ export interface Config {
     WETH: string;
     USDC: string;
   };
-  lensContract: string;
-
+  
   rpcUrl: string;
   graphApi: string;
   apiUrl: string;
-  lensUrl: string;
+
+  lens: {
+    contract: string;
+    url: string;
+    getHandleToSearch: (v: string) => string
+  }
 
   minDeliveryTime: number;
 

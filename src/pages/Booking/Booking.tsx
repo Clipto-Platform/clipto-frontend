@@ -178,7 +178,19 @@ const BookingPage = () => {
                       <PrimaryButton
                         size="small"
                         width="small"
-                        style={{ margin: 10, marginLeft: 0, maxWidth: 100, background: '#5F21E2', color: 'white' }}
+                        style={doesFollow ? { 
+                          margin: 10, 
+                          marginLeft: 0, 
+                          maxWidth: 100, 
+                          background: '#2E2E2E', 
+                          color: 'white' 
+                        } : {
+                          margin: 10, 
+                          marginLeft: 0, 
+                          maxWidth: 100, 
+                          background: '#5F21E2', 
+                          color: 'white'
+                          }}
                         onPress={async (e) => {
                           toast.loading(doesFollow ? 'Awaiting unfollow confirmation' : 'Awaiting follow confirmation');
                           const accessToken = await lens.getAccess(account);
@@ -201,7 +213,7 @@ const BookingPage = () => {
                           toast.success('Transaction is finished');
                         }}
                       >
-                        {doesFollow ? 'Unfollow' : 'Follow'}
+                        {doesFollow ? 'Following' : 'Follow'}
                       </PrimaryButton>
                     )}
                   </div>
