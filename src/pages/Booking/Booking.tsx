@@ -162,9 +162,9 @@ const BookingPage = () => {
               <BookingCard>
                 <FlexRow style={{ marginBottom: 12 }}>
                   <div>
+                    <AvatarComponent style={{marginBottom: 5}} url={creator.profilePicture} size="medium" twitterHandle={creator.twitterHandle} />
                     <Label style={{ marginBottom: 8 }}>{creator.userName}</Label>
                     <Description>
-                      Twitter:{' '}
                       <a
                         href={`https://twitter.com/${creator.twitterHandle}`}
                         target="_blank"
@@ -173,7 +173,19 @@ const BookingPage = () => {
                         @{creator.twitterHandle}
                       </a>{' '}
                     </Description>
+                    {creator.lensHandle && <Description>
+                      <a
+                        href={`https://lenster.xyz/u/${creator.lensHandle}`}
+                        target="_blank"
+                        style={{ color: '#EDE641' }}
+                      >
+                        🌿: @{creator.lensHandle}
+                      </a>{' '}
+                    </Description>}
                     <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
+                  </div>
+                  <div>
+                    
                     {data && library && data.profiles && data.profiles.items && data.profiles.items.length != 0 && (
                       <PrimaryButton
                         size="small"
@@ -192,7 +204,7 @@ const BookingPage = () => {
                           color: 'white'
                           }}
                         onPress={async (e) => {
-                          toast.loading(doesFollow ? 'Awaiting unfollow confirmation' : 'Awaiting follow confirmation');
+                          toast.loading(doesFollow ? 'Are you sure you want to lose your follow NFT?' : 'Awaiting follow confirmation');
                           const accessToken = await lens.getAccess(account);
                           if (!accessToken) return;
                           const access = accessToken.data.authenticate.accessToken;
@@ -216,9 +228,6 @@ const BookingPage = () => {
                         {doesFollow ? 'Following' : 'Follow'}
                       </PrimaryButton>
                     )}
-                  </div>
-                  <div>
-                    <AvatarComponent url={creator.profilePicture} size="medium" twitterHandle={creator.twitterHandle} />
                   </div>
                 </FlexRow>
                 <FlexRow style={{ marginBottom: 24 }}>
@@ -319,7 +328,7 @@ const BookingPage = () => {
                       </div>
 
                       <div style={{ marginBottom: 40 }}>
-                        <Dropdown formLabel="Select payment type" onChange={handleSelect}>
+                        <Dropdown name="token" formLabel="Select payment type" onChange={handleSelect}>
                           {config.erc20TokenNames.map((tok, i) => {
                             if (i == 0) {
                               <Option key={i} selected value={tok} />;

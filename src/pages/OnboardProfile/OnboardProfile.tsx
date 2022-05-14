@@ -55,6 +55,7 @@ const OnboardProfilePage = () => {
   const showLensDialog = useHeaderStore((s) => s.showDialog);
   const setShowLensDialog = useHeaderStore((s) => s.setShowDialog);
   const [createLens, setCreateLens] = useState(false)
+
   const createLensProfile = async (lensHandle : string) => {
     if (!account) {
       toast.error('No account detected!')
@@ -69,9 +70,9 @@ const OnboardProfilePage = () => {
         handle: lensHandle,
       },
       access,
-    );
+    ); console.log(profileRes)
     const profileResVal =
-      (profileRes &&
+      (profileRes && profileRes.data &&
         profileRes.data.createProfile &&
         profileRes.data.createProfile.reason) ||
       (profileRes && profileRes.data.createProfile && profileRes.data.createProfile);
@@ -97,8 +98,8 @@ const OnboardProfilePage = () => {
 
   const updateUserProfile = async (creatorData: CreatorData) => {
     try {
-      const txResult = await exchangeContractV1.updateCreator(JSON.stringify(creatorData));
       toast.loading('Profile updating, waiting for confirmation!');
+      const txResult = await exchangeContractV1.updateCreator(JSON.stringify(creatorData));
       await txResult.wait();
 
       toast.dismiss();
@@ -154,6 +155,7 @@ const OnboardProfilePage = () => {
         .then((res) => {
           if (res.data && res.data.creator) {
             const creator = res.data.creator;
+            console.log(creator)
             setHasAccount(true);
             setUserProfileDB(creator);
           }
@@ -234,7 +236,7 @@ const OnboardProfilePage = () => {
                       demos: demos,
                       price: parseFloat(values.price),
                       profilePicture: values.profilePicture,
-                      lensHandle: values.lensHandle,
+                      lensHandle: config.lens.getHandleToSearch(values.lensHandle),
                     };
                     hasAccount ? await updateUserProfile(creatorData) : await createUserProfile(creatorData);
                     setLoading(false);

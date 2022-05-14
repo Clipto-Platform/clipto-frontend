@@ -386,7 +386,7 @@ const Header: React.FC<HeaderProps> = () => {
                       style={{ position: 'relative' }}
                     >
                       <StyledSpan style={{ marginRight: 16 }}>
-                        {userEnsName ?? getShortenedAddress(account, 6, 4)} 🌿
+                        {userEnsName ?? getShortenedAddress(account, 6, 4)}
                       </StyledSpan>
                       <AvatarComponent
                         address={account}

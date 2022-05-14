@@ -27,7 +27,7 @@ export const mutationProfile = `mutation($request: CreateProfileRequest!) {
 }`;
 
 export const queryProfile = `query Profiles($address: EthereumAddress!) {
-  profiles(request: { ownedBy: [$address], limit: 10 }) {
+  profiles(request: { ownedBy: [$address] }) {
     items {
       id
       name

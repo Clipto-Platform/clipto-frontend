@@ -8,6 +8,7 @@ import * as lens from '../../api/lens';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { toast } from 'react-toastify';
+import Loader from 'react-spinners/ClipLoader';
 
 const ExplorePage = () => {
   const limit: number = 20;
@@ -16,6 +17,7 @@ const ExplorePage = () => {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const { account } = useWeb3React<Web3Provider>();
   const [following, setFollowing] = useState<Array<EntityCreator>>([]); // this is who the loginned in user is following on lens
+  const [loaded, setLoaded] = useState<boolean>(false);
   useEffect(() => {
     api.creators(page, limit).then((res) => {
       if (res.data) {
@@ -45,12 +47,13 @@ const ExplorePage = () => {
       api.creatorsByLens(lensHandleOfFollow).then((res) => {
         if (!res.data) return;
         setFollowing(res.data?.creators);
+        setLoaded(true)
       });
     });
   }, [account]);
   return (
     <>
-      <PageWrapper>
+      {loaded ? <PageWrapper>
         {following.length > 0 && (
           <UserDisplay
             title="Your Favorites"
@@ -63,7 +66,11 @@ const ExplorePage = () => {
           />
         )}
         <UserDisplay title="Explore the community" users={users} handleScroll={handleScroll} hasMore={hasMore} />
-      </PageWrapper>
+      </PageWrapper> : <PageWrapper>
+        <div style={{ width: '100%', textAlign: 'center', marginTop: 300 }}>
+          <Loader color="#fff" />
+        </div>
+      </PageWrapper> }
     </>
   );
 };
