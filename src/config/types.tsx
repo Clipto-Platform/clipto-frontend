@@ -14,10 +14,12 @@ export interface Config {
     WETH: string;
     USDC: string;
   };
-
+  lensContract: string;
+  
   rpcUrl: string;
   graphApi: string;
   apiUrl: string;
+  lensUrl: string;
 
   minDeliveryTime: number;
 

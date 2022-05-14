@@ -81,6 +81,7 @@ export const useProfile = create<UserProfile>(
     price: undefined,
     tweetUrl: undefined,
     address: undefined,
+    lensHandle: undefined,
     setBio: (bio: string) => {
       set((draft) => {
         draft.bio = bio;
@@ -124,6 +125,11 @@ export const useProfile = create<UserProfile>(
     setAddress: (address: string) => {
       set((draft) => {
         draft.address = address;
+      });
+    },
+    setLensHandle: (lensHandle: string) => {
+      set((draft) => {
+        draft.lensHandle = lensHandle;
       });
     },
   })),

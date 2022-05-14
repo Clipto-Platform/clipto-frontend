@@ -29,7 +29,6 @@ import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
 import { BookingFormValues } from './types';
-import { ERC20_CONTRACTS } from '../../config/config';
 import { ERC20__factory } from '../../contracts';
 import axios from 'axios';
 import * as lens from '../../api/lens'
@@ -79,24 +78,17 @@ const BookingPage = () => {
   }, [loaded, token]);
 
   useEffect(() => {
-    console.log('data')
-    console.log(data)
     if (account && data && data.profiles && data.profiles.items.length != 0) {
       console.log('aaae')
       lens.isFollowing(account, data.profiles.items[0].id).then(res => {
         console.log(res)
         if (res) {
-          console.log('hhhhe')
           setDoesFollow(res.data.doesFollow[0].follows)
         }
       })
     }
-  }, [account, data, toggle])
+  }, [account, data, toggle,error])
 
-  const getErc20Contract = () => {
-    const provider = getProviderOrSigner(library, account ? account : undefined);
-    return ERC20__factory.connect(ERC20_CONTRACTS[token], provider);
-  };
 
   const handleSelect = (e: any) => {
     setToken(e.target.value);
@@ -197,6 +189,11 @@ const BookingPage = () => {
                         await lens.follow(data?.profiles.items[0].id, access, library)
                       toast.dismiss()
                       toast.loading('Waiting for transaction to complete')
+                      console.log(txHash)
+                      if (!txHash) {
+                        console.error('no txHash detected!')
+                        return;
+                      }
                       const f = await lens.pollUntilIndexed(txHash, access)
                       console.log(f)
                       setToggle(!toggle) //todo(jonathanng) - this is trashcan code!
@@ -204,7 +201,7 @@ const BookingPage = () => {
                       toast.success('Transaction is finished')
                       }}
                     >
-                      {doesFollow ? "Follow" : "Unfollow"} 
+                      {doesFollow ? "Unfollow" : "Follow"} 
                     </PrimaryButton>}
                   </div>
                   <div>

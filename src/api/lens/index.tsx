@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import { createClient } from "urql";
-import { LENS_URI } from "../../config/config";
+import config from "../../config/config";
 import { getFollowNftContract, getLensHub } from './contract';
 import { getAddressFromSigner, signedTypeData, splitSignature } from './ethers-service';
 import { mutationFollow, mutationProfile, mutationUnfollow, queryAuth, queryChallenge, queryDoesFollow, queryFollowing, queryProfile, queryTxWait, queryVerify } from './query';
@@ -10,12 +10,12 @@ import { CreateProfileRequest } from './types';
 declare var window: any //this removes window.ethereum type error
 
 export const graphInstance = createClient({ // for performance reasons
-  url: LENS_URI,
+  url: config.lensUrl,
   requestPolicy: 'cache-and-network' 
 });
 
 export const graphInstanceDisabledCache = createClient({
-  url: LENS_URI,
+  url: config.lensUrl,
   requestPolicy: 'network-only' //defaults to no-cache option: https://formidable.com/open-source/urql/docs/basics/document-caching/
 })
 
@@ -123,8 +123,11 @@ export const follow = async (handle : string, accessToken : string, library : We
   if (!result) throw 'result is undefined'
   try {
     const typedData = result.data.createFollowTypedData.typedData;
+    console.log(result.data.createFollowTypedData)
     const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value, library);
-    const { v, r, s } = splitSignature(signature);
+    console.log('signature:', signature);
+    const { v, r, s } = splitSignature(signature); 
+    console.log({v,r,s})
     const tx = await getLensHub(library).followWithSig({
       follower: await getAddressFromSigner(library),
       profileIds: typedData.value.profileIds,
@@ -136,13 +139,13 @@ export const follow = async (handle : string, accessToken : string, library : We
         deadline: typedData.value.deadline,
       },
     });
-    console.log(tx.hash);
+    console.log(tx);
     return tx.hash
     // you can look at how to know when its been indexed here: 
     //   - https://docs.lens.dev/docs/has-transaction-been-indexed
   } catch (e) {
     console.error(e)
-    console.error('Make sure you are on the correct network!')
+    console.error('Make sure you are on the correct network or may ')
   }
 }
 
@@ -180,11 +183,10 @@ export const unfollow = async (handle : string, accessToken : string, library : 
 
 // todo - untested
 // todo - get list of your current follows
-export const getFollowNFTs = async (address : string, profileId: string) => {
+export const getFollowNFTs = async (address : string) => {
   return graphInstance.query(queryFollowing, {
     request: {
-      address,
-      profileId
+      address
     }
   }).toPromise()
 

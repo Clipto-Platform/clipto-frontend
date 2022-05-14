@@ -32,6 +32,7 @@ const OnboardProfilePage = () => {
   const [lensProfiles, setLensProfiles] = useState<Array<{id: string, handle: string}>>([])
 
   const updateUserProfile = async (creatorData: CreatorData) => {
+    // console.log(userProfileDB); return;
     try {
       const txResult = await exchangeContractV1.updateCreator(JSON.stringify(creatorData));
       toast.loading('Profile updating, waiting for confirmation!');
@@ -74,7 +75,11 @@ const OnboardProfilePage = () => {
       }
     }
   };
-
+  const getProfiles = (account : any) => lens.getProfile(account).then(res => {
+    if (res && res.data) {
+      setLensProfiles(res.data.profiles.items.map((item: any) => ({id: item.id, handle: item.handle})))
+    }
+  })
   useEffect(() => {
     if (account) {
       api
@@ -82,6 +87,7 @@ const OnboardProfilePage = () => {
         .then((res) => {
           if (res.data && res.data.creator) {
             const creator = res.data.creator;
+            console.log(creator)
             setHasAccount(true);
             setUserProfileDB(creator);
           }
@@ -95,11 +101,7 @@ const OnboardProfilePage = () => {
             setLoaded(true);
           }
         });
-      lens.getProfile(account).then(res => {
-        if (res && res.data) {
-          setLensProfiles(res.data.profiles.items.map((item: any) => ({id: item.id, handle: item.handle})))
-        }
-      })
+        getProfiles(account)
     }
   }, [account]);
 
@@ -342,19 +344,29 @@ const OnboardProfilePage = () => {
                           <Dropdown formLabel="Connect Lens Profile" onChange={async (e) => {
                             if (e.target.value === 'Create new Lens Profile 🌿') {
                               if (account) {
-                                const lensHandle = '0xjonomnom1'
+                                const lensHandle = userProfile.twitterHandle || userProfileDB?.twitterHandle || `clipto-${Math.floor(Math.random() * 99999999999999)}`
                                 const accessRes = await lens.getAccess(account)
                                 if (!accessRes) return;
+                                const access = accessRes.data.authenticate.accessToken
+                                toast.loading('Creating profile')
                                 const profileRes = await lens.createProfile({
-                                  handle: '0xjonomnom1'
+                                  handle: lensHandle + 'afafff1'
                                 }, 
-                                  accessRes.data.authenticate.accessToken
+                                  access
                                 )
-                                console.log(profileRes && profileRes.data.createProfile && profileRes.data.createProfile.reason ||
-                                  profileRes && profileRes.data.createProfile && profileRes.data.createProfile
-                                )
+                                const profileResVal = profileRes && profileRes.data.createProfile && profileRes.data.createProfile.reason ||
+                                profileRes && profileRes.data.createProfile && profileRes.data.createProfile
+                                console.log(profileRes)
+                                if (profileResVal == 'HANDLE_TAKEN') {
+                                  toast.dismiss()
+                                  toast.error('Handle is taken')
+                                } else {
+                                  await lens.pollUntilIndexed(profileRes.data.createProfile.txHash, access)
+                                  toast.dismiss()
+                                  toast.success('Lens profile created')
+                                }
                                 if(profileRes && profileRes.data.createProfile && !profileRes.data.createProfile.reason) {
-                                  setLensProfiles([...lensProfiles, {id: '', handle:lensHandle}])
+                                  getProfiles(account)
                                 }
                               }
                             }
@@ -362,10 +374,11 @@ const OnboardProfilePage = () => {
                           }} name="lens">
                             {/* Creates an array of existing lens profiles and gives user to create a new lens profile */}
                             {[{id:'', handle: ''}, {id:'', handle: 'Create new Lens Profile 🌿'}, ...(lensProfiles || [])].map(({id, handle}, i) => {
-                              if (userProfile.lensHandle === handle) {
-                                <Option key={i} selected value={handle} />;
+                              //console.log(userProfileDB)
+                              if ((userProfileDB?.lensHandle || userProfile.lensHandle) === handle) {
+                                return <Option key={i} selected value={handle} />;
                               }
-                              return <Option key={i} value={handle} />;
+                              return <Option key={i} value={handle} label={handle} />;
                             })}
                           </Dropdown>
                         </div>
@@ -373,6 +386,7 @@ const OnboardProfilePage = () => {
                           <TextField
                             onChange={handleChange('demo1')}
                             label="Tweets"
+                            aria-label="demo1"
                             description="Add links for demo videos that will display on your bookings page"
                             placeholder="Demo tweet video link 1"
                             value={values.demo1}
@@ -383,6 +397,7 @@ const OnboardProfilePage = () => {
                         <div style={{ marginBottom: 12 }}>
                           <TextField
                             onChange={handleChange('demo2')}
+                            aria-label="demo2"
                             placeholder="Demo tweet video link 2"
                             value={values.demo2}
                             onBlur={handleBlur}
@@ -392,6 +407,7 @@ const OnboardProfilePage = () => {
                         <div style={{ marginBottom: 12 }}>
                           <TextField
                             onChange={handleChange('demo3')}
+                            aria-label="demo3"
                             placeholder="Demo tweet video link 3"
                             value={values.demo3}
                             onBlur={handleBlur}

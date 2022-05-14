@@ -32,9 +32,6 @@ export const queryProfile = `query Profiles($address: EthereumAddress!) {
       id
       name
       bio
-      location
-      website
-      twitter
       stats {
         ... on ProfileStats {
           totalFollowers
@@ -73,7 +70,7 @@ export const queryProfile = `query Profiles($address: EthereumAddress!) {
         __typename
       }
       ownedBy
-      depatcher {
+      dispatcher {
         address
         canUseRelay
       }
@@ -110,7 +107,6 @@ export const queryProfile = `query Profiles($address: EthereumAddress!) {
     }
   }
 }`
-
 
 export const mutationFollow = `
   mutation CreateFollowTypedData ($profile: ProfileId!){
@@ -186,9 +182,6 @@ query($request: FollowingRequest!) {
             id
             name
             bio
-            location
-            website
-            twitter
             handle
             picture {
               ... on NftImage {
@@ -247,7 +240,7 @@ query($request: FollowingRequest!) {
               }
             }
             ownedBy
-            depatcher {
+            dispatcher {
               address
               canUseRelay
             }
