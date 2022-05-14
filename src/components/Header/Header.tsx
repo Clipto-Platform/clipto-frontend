@@ -274,7 +274,7 @@ const Header: React.FC<HeaderProps> = () => {
   useEffect(() => {
     const getCreatorData = async () => {
       if (account) {
-        toast.loading('Logining into Lens 🌿');
+        toast.loading('Signing in');
         const accessToken = await lens.getAccess(account);
         toast.dismiss();
         if (!accessToken) {
