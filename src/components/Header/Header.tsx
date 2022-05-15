@@ -271,8 +271,9 @@ const Header: React.FC<HeaderProps> = () => {
     getCreatorData();
   }, [account]);
 
-  useEffect(() => {
-    const getCreatorData = async () => {
+  const getLensCreatorData = async () => {
+    try {
+      console.log(account)
       if (account) {
         toast.loading('Signing in');
         const accessToken = await lens.getAccess(account);
@@ -284,12 +285,15 @@ const Header: React.FC<HeaderProps> = () => {
         toast.success('Login success');
         setLensAccess('🌿');
       }
-    };
-    getCreatorData();
-  }, [account]);
+    } catch (e : any) {
+      toast.dismiss();
+      toast.error(e.message);
+    }
+  };
 
   useEffect(() => {
     if (checkLogin && account) {
+      // getLensCreatorData()
       dispatch({ type: 'login', payload: { user: account } });
     }
   }, [checkLogin]);

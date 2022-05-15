@@ -217,6 +217,7 @@ const OnboardProfilePage = () => {
                     demo3: userProfile.demos[2] || userProfileDB?.demos[2] || '',
                     lensHandle: userProfile.lensHandle || userProfileDB?.lensHandle || '',
                   }}
+
                   onSubmit={async (values) => {
                     setLoading(true);
                     if (createLens) {
@@ -327,7 +328,7 @@ const OnboardProfilePage = () => {
 
                     //lens validation
                     if (createLens) {console.log('test')
-                      const getProfileByHandleRes = await lens.getProfileByHandle(lensHandle == CREATE_LENS_TEXT ? userProfileDB?.twitterHandle || userProfile.twitterHandle || values.userName : lensHandle)
+                      const getProfileByHandleRes = await lens.getProfileByHandle(config.lens.getHandleToSearch(lensHandle == CREATE_LENS_TEXT ? userProfileDB?.twitterHandle || userProfile.twitterHandle || values.userName : lensHandle))
                       console.log(getProfileByHandleRes)
                       if (!getProfileByHandleRes.data) {
                         errors.lensHandle = 'Unable to validate handle'

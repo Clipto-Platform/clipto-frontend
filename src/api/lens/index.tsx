@@ -5,6 +5,7 @@ import config from '../../config/config';
 import { getFollowNftContract, getLensHub } from './contract';
 import { getAddressFromSigner, signedTypeData, splitSignature } from './ethers-service';
 import {
+  mutationCreatePostTypedData,
   mutationFollow,
   mutationProfile,
   mutationUnfollow,
@@ -66,10 +67,11 @@ export const getProfile = async (address: string) => {
 };
 /**
  * 
- * @param handle This should not have an appended .test or .lens!
+ * @param handle If you don't have ".test" or ".lens" appended to the end of `handle`, pass `handle` as `config.lens.getHandleToSearch(handle)`
  */
 export const getProfileByHandle = async (handle : string) => {
-  return graphInstance.query(queryProfileByHandle, { handle: config.lens.getHandleToSearch(handle) }).toPromise();
+  console.log(handle)
+  return graphInstance.query(queryProfileByHandle, { handle: handle }).toPromise();
 }
 
 // This code will assume you are using MetaMask.
@@ -315,3 +317,8 @@ export const pollUntilIndexed = async (txHash: string, accessToken: string) => {
 // todo - get publications
 
 // todo - create publication
+export const postRequest = ({}, accessToken: string) => {
+  return graphInstance.mutation(mutationCreatePostTypedData, {
+    
+  })
+}

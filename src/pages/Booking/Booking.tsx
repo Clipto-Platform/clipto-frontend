@@ -79,13 +79,16 @@ const BookingPage = () => {
 
   useEffect(() => {
     if (account && creator && creator.lensHandle) {
-      console.log('aaae');
-      lens.isFollowing(account, creator.lensHandle).then((res) => {
-        console.log(res);
-        if (res) {
-          setDoesFollow(res.data.doesFollow[0].follows);
-        }
-      });
+      lens.getProfileByHandle(creator.lensHandle).then(res => {
+        console.log(account)
+        console.log(res.data.profiles.items[0].id)
+        lens.isFollowing(account, res.data.profiles.items[0].id).then((res) => {
+          console.log(res)
+          if (res) {
+            setDoesFollow(res.data.doesFollow[0].follows);
+          }
+        });
+      })
     }
   }, [account, data, toggle, error, creator]);
 
