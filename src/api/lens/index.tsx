@@ -70,7 +70,6 @@ export const getProfile = async (address: string) => {
  * @param handle If you don't have ".test" or ".lens" appended to the end of `handle`, pass `handle` as `config.lens.getHandleToSearch(handle)`
  */
 export const getProfileByHandle = async (handle : string) => {
-  console.log(handle)
   return graphInstance.query(queryProfileByHandle, { handle: handle }).toPromise();
 }
 
