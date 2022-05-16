@@ -51,12 +51,7 @@ const BookingPage = () => {
   const [price, setPrice] = useState<number>(0);
   const [doesFollow, setDoesFollow] = useState<boolean>(false);
   const [toggle, setToggle] = useState<boolean>(true);
-  const [{ data, fetching, error }, executeQuery] = useQuery({
-    query: queryProfile,
-    variables: {
-      address: creatorId,
-    },
-  });
+  const [creatorLensId, setCreatorLensId] = useState<string>();
   useEffect(() => {
     setUser(getUser);
   }, [getUser]);
@@ -81,7 +76,7 @@ const BookingPage = () => {
     if (account && creator && creator.lensHandle) {
       lens.getProfileByHandle(creator.lensHandle).then(res => {
         console.log(account)
-        console.log(res.data.profiles.items[0].id)
+        setCreatorLensId(res.data.profiles.items[0].id)
         lens.isFollowing(account, res.data.profiles.items[0].id).then((res) => {
           console.log(res)
           if (res) {
@@ -90,7 +85,7 @@ const BookingPage = () => {
         });
       })
     }
-  }, [account, data, toggle, error, creator]);
+  }, [account, toggle, creator]);
 
   const handleSelect = (e: any) => {
     setToken(e.target.value);
@@ -189,7 +184,7 @@ const BookingPage = () => {
                   </div>
                   <div>
                     
-                    {data && library && data.profiles && data.profiles.items && data.profiles.items.length != 0 && (
+                    {library && creatorLensId && (
                       <PrimaryButton
                         size="small"
                         width="small"
@@ -209,11 +204,11 @@ const BookingPage = () => {
                         onPress={async (e) => {
                           toast.loading(doesFollow ? 'Are you sure you want to lose your follow NFT?' : 'Awaiting follow confirmation');
                           const accessToken = await lens.getAccess(account);
-                          if (!accessToken) return;
+                          if (!accessToken || !creatorLensId) return;
                           const access = accessToken.data.authenticate.accessToken;
                           const txHash = doesFollow
-                            ? await lens.unfollow(data?.profiles.items[0].id, access, library)
-                            : await lens.follow(data?.profiles.items[0].id, access, library);
+                            ? await lens.unfollow(creatorLensId, access, library)
+                            : await lens.follow(creatorLensId, access, library);
                           toast.dismiss();
                           toast.loading('Waiting for transaction to complete');
                           console.log(txHash);
