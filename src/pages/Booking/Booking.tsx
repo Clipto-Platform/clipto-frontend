@@ -51,7 +51,6 @@ const BookingPage = () => {
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [businessTwitter, setBusinessTwitter] = useState<string>('');
   const [invalidTwitter, setInvalidTwitter] = useState<string>('');
-  const [selectedBusinessOptionPrice, setSelectedBusinessOptionPrice] = useState<number>(0);
 
   useEffect(() => {
     setUser(getUser);
@@ -229,7 +228,14 @@ const BookingPage = () => {
                     businessEmail: '',
                     businessTwitter: '',
                     businessInfo: '',
-                    businessRequestType: '',
+                    businessRequestType: creator.customServices.map((elm: any) => {
+                      elm = JSON.parse(elm);
+                      return `${elm.description}: ${elm.time} - ${elm.price} MATIC`;
+                    })[0],
+                    selectedBusinessOptionPrice: creator.customServices.map((elm: any) => {
+                      elm = JSON.parse(elm);
+                      return elm.price;
+                    })[0],
                   }}
                   validate={({
                     deadline,
@@ -240,9 +246,9 @@ const BookingPage = () => {
                     businessTwitter,
                     businessInfo,
                     businessRequestType,
+                    selectedBusinessOptionPrice,
                   }) => {
                     const errors: any = {};
-                    console.log(businessRequestType);
                     try {
                       Number.parse(parseFloat(amount));
                       if (parseFloat(amount) < convertToFloat(creator.price)) {
@@ -254,11 +260,12 @@ const BookingPage = () => {
                       if (parseFloat(amount) > 700) {
                         errors.amount = `Amount must be less than 700 Matic`;
                       }
+                      console.log(businessRequestType, selectedBusinessOptionPrice);
                       if (
                         uses === UsesOptions.business &&
                         parseFloat(amount) < convertToFloat(selectedBusinessOptionPrice)
                       ) {
-                        errors.amount = `Amount must be less than ${selectedBusinessOptionPrice} Matic`;
+                        errors.amount = `Amount must be greater than ${selectedBusinessOptionPrice} Matic`;
                       }
                     } catch {
                       errors.amount = `Please enter a number.`;
@@ -291,7 +298,7 @@ const BookingPage = () => {
                     setLoading(false);
                   }}
                 >
-                  {({ initialValues, handleChange, handleSubmit, errors, validateForm, setFieldValue }) => (
+                  {({ initialValues, handleChange, handleSubmit, errors, validateForm, setFieldValue, values }) => (
                     <>
                       <div style={{ margin: '0 0 15px 2px' }}>Choose an option</div>
                       <PurchaseOption
@@ -320,7 +327,7 @@ const BookingPage = () => {
                           <FlexRow style={{ marginBottom: 7 }}>
                             <Label>Business use</Label>
                             <Label style={{ fontSize: 14 }}>
-                              {formatETH(convertToFloat(creator.businessPrice))} {config.chainSymbol}+
+                              {formatETH(convertToFloat(values.selectedBusinessOptionPrice))} {config.chainSymbol}+
                             </Label>
                           </FlexRow>
                           <Description>Engaging video content for your company, customers, or employees</Description>
@@ -337,9 +344,9 @@ const BookingPage = () => {
                                       name="businessOption"
                                       defaultChecked={index === 0}
                                       value={`${elm.description}: ${elm.time} - ${elm.price} MATIC`}
-                                      onChange={() => {
-                                        setSelectedBusinessOptionPrice(elm.price);
-                                        return handleChange('businessRequestType');
+                                      onChange={(e: any) => {
+                                        setFieldValue('selectedBusinessOptionPrice', elm.price);
+                                        setFieldValue('businessRequestType', e.target.value);
                                       }}
                                     />
                                     <label style={{ marginLeft: 10, cursor: 'pointer' }} htmlFor={index.toString()}>
@@ -402,7 +409,6 @@ const BookingPage = () => {
                               isLoader={isLoader && !isTwitterAccount && !invalidTwitter}
                               onChange={(e: any) => {
                                 setBusinessTwitter(e);
-                                // handleChange('businessTwitter');
                                 setFieldValue('businessTwitter', e);
                               }}
                               errorMessage={errors.businessTwitter || invalidTwitter}

@@ -7,6 +7,7 @@ export interface BookingFormValues {
   businessTwitter?: string;
   businessInfo?: string;
   businessRequestType?: string;
+  selectedBusinessOptionPrice?: string;
 }
 
 export enum UsesOptions {
