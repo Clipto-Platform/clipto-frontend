@@ -51,6 +51,7 @@ const BookingPage = () => {
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [businessTwitter, setBusinessTwitter] = useState<string>('');
   const [invalidTwitter, setInvalidTwitter] = useState<string>('');
+  const [selectedBusinessOptionPrice, setSelectedBusinessOptionPrice] = useState<number>(0);
 
   useEffect(() => {
     setUser(getUser);
@@ -146,32 +147,34 @@ const BookingPage = () => {
         requestData.businessEmail = values.businessEmail;
         requestData.businessTwitter = values.businessTwitter;
         requestData.businessInfo = values.businessInfo;
+        requestData.businessRequestType = values.businessRequestType;
       }
+      console.log(requestData);
 
       let transaction;
-      if (token !== 'MATIC') {
-        await addAllowance(values.amount);
+      // if (token !== 'MATIC') {
+      //   await addAllowance(values.amount);
 
-        transaction = await exchangeContractV1.newRequest(
-          creatorId as string,
-          account as string,
-          config.erc20Contracts[token],
-          parseUnits(values.amount),
-          JSON.stringify(requestData),
-        );
-      } else {
-        transaction = await exchangeContractV1.nativeNewRequest(
-          creatorId as string,
-          account as string,
-          JSON.stringify(requestData),
-          {
-            value: ethers.utils.parseEther(values.amount),
-          },
-        );
-      }
+      //   transaction = await exchangeContractV1.newRequest(
+      //     creatorId as string,
+      //     account as string,
+      //     config.erc20Contracts[token],
+      //     parseUnits(values.amount),
+      //     JSON.stringify(requestData),
+      //   );
+      // } else {
+      //   transaction = await exchangeContractV1.nativeNewRequest(
+      //     creatorId as string,
+      //     account as string,
+      //     JSON.stringify(requestData),
+      //     {
+      //       value: ethers.utils.parseEther(values.amount),
+      //     },
+      //   );
+      // }
 
-      await waitForTransaction(transaction);
-      await waitForIndexing(transaction.hash);
+      // await waitForTransaction(transaction);
+      // await waitForIndexing(transaction.hash);
 
       toast.dismiss();
       toast.success('Booking completed, your Order has been created.');
@@ -226,6 +229,7 @@ const BookingPage = () => {
                     businessEmail: '',
                     businessTwitter: '',
                     businessInfo: '',
+                    businessRequestType: '',
                   }}
                   validate={({
                     deadline,
@@ -235,8 +239,10 @@ const BookingPage = () => {
                     businessEmail,
                     businessTwitter,
                     businessInfo,
+                    businessRequestType,
                   }) => {
                     const errors: any = {};
+                    console.log(businessRequestType);
                     try {
                       Number.parse(parseFloat(amount));
                       if (parseFloat(amount) < convertToFloat(creator.price)) {
@@ -247,6 +253,12 @@ const BookingPage = () => {
                       }
                       if (parseFloat(amount) > 700) {
                         errors.amount = `Amount must be less than 700 Matic`;
+                      }
+                      if (
+                        uses === UsesOptions.business &&
+                        parseFloat(amount) < convertToFloat(selectedBusinessOptionPrice)
+                      ) {
+                        errors.amount = `Amount must be less than ${selectedBusinessOptionPrice} Matic`;
                       }
                     } catch {
                       errors.amount = `Please enter a number.`;
@@ -308,10 +320,38 @@ const BookingPage = () => {
                           <FlexRow style={{ marginBottom: 7 }}>
                             <Label>Business use</Label>
                             <Label style={{ fontSize: 14 }}>
-                              {formatETH(convertToFloat(creator.price))} {config.chainSymbol}+
+                              {formatETH(convertToFloat(creator.businessPrice))} {config.chainSymbol}+
                             </Label>
                           </FlexRow>
                           <Description>Engaging video content for your company, customers, or employees</Description>
+                          {uses === UsesOptions.business ? (
+                            <div style={{ marginTop: 18 }}>
+                              {creator.customServices.map((elm: any, index) => {
+                                elm = JSON.parse(elm);
+                                return (
+                                  <div style={{ margin: '5px 0' }} key={index}>
+                                    <input
+                                      style={{ accentColor: 'rgba(237, 230, 65, 1)' }}
+                                      type="radio"
+                                      id={index.toString()}
+                                      name="businessOption"
+                                      defaultChecked={index === 0}
+                                      value={`${elm.description}: ${elm.time} - ${elm.price} MATIC`}
+                                      onChange={() => {
+                                        setSelectedBusinessOptionPrice(elm.price);
+                                        return handleChange('businessRequestType');
+                                      }}
+                                    />
+                                    <label style={{ marginLeft: 10, cursor: 'pointer' }} htmlFor={index.toString()}>
+                                      {`${elm.description}: ${elm.time} - ${elm.price} MATIC`}
+                                    </label>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            ''
+                          )}
                         </PurchaseOption>
                       ) : (
                         ''

@@ -18,6 +18,8 @@ import { isCreatorOnChain } from '../../web3/request';
 import { OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
 import Toggle from 'react-toggle';
 import './ToggleStyle.css';
+import { Description } from '../../styles/typography';
+import { BsX } from 'react-icons/bs';
 
 const OnboardProfilePage = () => {
   const userProfile = useProfile();
@@ -32,12 +34,44 @@ const OnboardProfilePage = () => {
   const [userProfileDB, setUserProfileDB] = useState<EntityCreator>();
   const [loaded, setLoaded] = useState<boolean>(false);
   const [isBusiness, setIsBusiness] = useState<boolean>(false);
+  const [customServicesData, setCustomServicesData] = useState<any>([
+    {
+      description: 'Standard video',
+      time: 'Up to 1 min',
+      price: '300',
+      placeholderDesc: 'Standard video',
+      placeHolderTime: 'Up to 1 min',
+    },
+    { description: '', time: '', price: '', placeholderDesc: 'Twitter video', placeHolderTime: 'Under 1 min' },
+    { description: '', time: '', price: '', placeholderDesc: 'How-to video', placeHolderTime: 'Up to 30 sec' },
+  ]);
 
   const waitForIndexing = async (txHash: string) => {
     toast.dismiss();
     toast.loading('Indexing your data, will be done soon');
     await api.indexCreator(txHash);
     toast.dismiss();
+  };
+
+  const addFormFields = () => {
+    setCustomServicesData([
+      ...customServicesData,
+      { description: '', time: '', price: '', placeholderDesc: 'How-to video', placeHolderTime: 'Up to 30 sec' },
+    ]);
+  };
+
+  const removeFormFields = (i: any) => {
+    let newFormValues = [...customServicesData];
+    newFormValues.splice(i, 1);
+    setCustomServicesData(newFormValues);
+  };
+
+  const handleChangeCustomForm = (i: any, name: string, value: string) => {
+    const newFormValues = [...customServicesData];
+    if (name === 'description') newFormValues[i].description = value;
+    if (name === 'time') newFormValues[i].time = value;
+    if (name === 'price') newFormValues[i].price = value;
+    setCustomServicesData(newFormValues);
   };
 
   const updateUserProfile = async (creatorData: CreatorData) => {
@@ -93,7 +127,10 @@ const OnboardProfilePage = () => {
         .then((res) => {
           if (res.data && res.data.creator) {
             const creator = res.data.creator;
-
+            if (creator.businessPrice > 0) setIsBusiness(true);
+            if (!!creator.customServices && creator.customServices.length) {
+              setCustomServicesData(creator.customServices.map((it) => JSON.parse(it)));
+            }
             setHasAccount(true);
             setUserProfileDB(creator);
           }
@@ -139,6 +176,7 @@ const OnboardProfilePage = () => {
                     demo3: userProfile.demos[2] || userProfileDB?.demos[2] || '',
                     businessPrice: userProfile.businessPrice || userProfileDB?.businessPrice || 0,
                     isBusiness: isBusiness,
+                    customServices: [],
                   }}
                   onSubmit={async (values) => {
                     setLoading(true);
@@ -157,6 +195,13 @@ const OnboardProfilePage = () => {
                       price: parseFloat(values.price),
                       profilePicture: values.profilePicture,
                       businessPrice: isBusiness ? values.businessPrice : 0,
+                      customServices: customServicesData.map((it: any) => {
+                        return JSON.stringify({
+                          description: it.description,
+                          time: it.time,
+                          price: it.price,
+                        });
+                      }),
                     };
                     hasAccount ? await updateUserProfile(creatorData) : await createUserProfile(creatorData);
                     setLoading(false);
@@ -347,13 +392,70 @@ const OnboardProfilePage = () => {
                           <FeeDescription />
                         </div>
 
-                        <div style={{ marginBottom: 48 }}>
+                        <div style={{ marginBottom: 48, display: 'flex', alignItems: 'center' }}>
                           <Toggle
-                            defaultChecked={values.businessPrice > 0 ? true : false}
+                            defaultChecked={isBusiness}
                             icons={false}
                             onChange={(e: any) => setIsBusiness(e.target.checked)}
                           />
-                          <span>Open to receive booking requests</span>
+                          <span style={{ paddingLeft: '10px' }}>Open to receive booking requests</span>
+                        </div>
+
+                        <div style={{ fontWeight: 'bold' }}>Custom Services</div>
+                        <Description style={{ marginTop: 7 }}>
+                          Add in custom services (Service + Time+ Price)
+                        </Description>
+                        <div style={{ marginBottom: 48 }}>
+                          {customServicesData.map((elm: any, index: any) => (
+                            <div style={{ display: 'flex' }} key={index}>
+                              <TextField
+                                placeholder={elm.placeholderDesc}
+                                inputStyles={{ width: 265, marginRight: 15 }}
+                                value={elm.description || ''}
+                                onChange={(e) => handleChangeCustomForm(index, 'description', e)}
+                              />
+                              <TextField
+                                placeholder={elm.placeHolderTime}
+                                inputStyles={{ width: 145, marginRight: 15 }}
+                                value={elm.time || ''}
+                                onChange={(e) => handleChangeCustomForm(index, 'time', e)}
+                              />
+                              <TextField
+                                endText="MATIC"
+                                type="number"
+                                inputStyles={{ width: 220 }}
+                                value={
+                                  index === 0 && values.businessPrice > 0 && !values.customServices
+                                    ? values.businessPrice
+                                    : elm.price || ''
+                                }
+                                onChange={(e) => handleChangeCustomForm(index, 'price', e)}
+                              />
+                              <div
+                                style={{
+                                  marginTop: 25,
+                                  marginLeft: 20,
+                                  color: 'rgba(179, 179, 179, 1)',
+                                  fontWeight: 'normal',
+                                }}
+                              >
+                                <BsX size={30} style={{ cursor: 'pointer' }} onClick={() => removeFormFields(index)} />
+                              </div>
+                            </div>
+                          ))}
+                          <div style={{ marginTop: 15 }}>
+                            <a
+                              onClick={() => addFormFields()}
+                              target="_blank"
+                              style={{
+                                color: '#EDE641',
+                                textDecoration: 'underline',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              + Add
+                            </a>{' '}
+                          </div>
                         </div>
 
                         <div style={{ marginBottom: 12 }}>

@@ -6,6 +6,7 @@ export interface BookingFormValues {
   businessEmail?: string;
   businessTwitter?: string;
   businessInfo?: string;
+  businessRequestType?: string;
 }
 
 export enum UsesOptions {
