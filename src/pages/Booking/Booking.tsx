@@ -247,7 +247,7 @@ const BookingPage = () => {
                       elm = JSON.parse(elm);
                       return `${elm.description}: ${elm.time} - ${elm.price} MATIC`;
                     })[0],
-                    selectedBusinessOptionPrice: businessPrice.toString(),
+                    selectedBusinessOptionPrice: businessPrice && businessPrice.toString(),
                   }}
                   validate={({
                     deadline,
