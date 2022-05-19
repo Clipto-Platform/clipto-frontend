@@ -16,25 +16,72 @@ import { useProfile } from '../../hooks/useProfile';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
+import Toggle from 'react-toggle';
+import './ToggleStyle.css';
+import { Description } from '../../styles/typography';
+import { BsX } from 'react-icons/bs';
 
 const OnboardProfilePage = () => {
   const userProfile = useProfile();
   const navigate = useNavigate();
+
+  const exchangeContractV1 = useExchangeContractV1(true);
   const { FeeDescription } = useFee();
   const { account, library } = useWeb3React<Web3Provider>();
-  const exchangeContractV1 = useExchangeContractV1(true);
+
   const [loading, setLoading] = useState(false); //state of form button
   const [hasAccount, setHasAccount] = useState<boolean>(false); //state of if the user is a creator or not
   const [userProfileDB, setUserProfileDB] = useState<EntityCreator>();
   const [loaded, setLoaded] = useState<boolean>(false);
+  const [isBusiness, setIsBusiness] = useState<boolean>(false);
+  const [customServicesData, setCustomServicesData] = useState<any>([
+    {
+      description: 'Standard video',
+      time: 'Up to 1 min',
+      price: '300',
+      placeholderDesc: 'Standard video',
+      placeHolderTime: 'Up to 1 min',
+    },
+    { description: '', time: '', price: '', placeholderDesc: 'Twitter video', placeHolderTime: 'Under 1 min' },
+    { description: '', time: '', price: '', placeholderDesc: 'How-to video', placeHolderTime: 'Up to 30 sec' },
+  ]);
+
+  const waitForIndexing = async (txHash: string) => {
+    toast.dismiss();
+    toast.loading('Indexing your data, will be done soon');
+    await api.indexCreator(txHash);
+    toast.dismiss();
+  };
+
+  const addFormFields = () => {
+    setCustomServicesData([
+      ...customServicesData,
+      { description: '', time: '', price: '', placeholderDesc: 'How-to video', placeHolderTime: 'Up to 30 sec' },
+    ]);
+  };
+
+  const removeFormFields = (i: any) => {
+    let newFormValues = [...customServicesData];
+    newFormValues.splice(i, 1);
+    setCustomServicesData(newFormValues);
+  };
+
+  const handleChangeCustomForm = (i: any, name: string, value: string) => {
+    const newFormValues = [...customServicesData];
+    if (name === 'description') newFormValues[i].description = value;
+    if (name === 'time') newFormValues[i].time = value;
+    if (name === 'price') newFormValues[i].price = value;
+    setCustomServicesData(newFormValues);
+  };
 
   const updateUserProfile = async (creatorData: CreatorData) => {
     try {
       const txResult = await exchangeContractV1.updateCreator(JSON.stringify(creatorData));
       toast.loading('Profile updating, waiting for confirmation!');
-      await txResult.wait();
 
-      toast.dismiss();
+      await txResult.wait();
+      await waitForIndexing(txResult.hash);
+
       toast.success('Changes will be reflected soon!');
       navigate(`/creator/${account}`);
     } catch (err: any) {
@@ -56,11 +103,12 @@ const OnboardProfilePage = () => {
       try {
         const txResult = await exchangeContractV1.registerCreator(creatorData.userName, JSON.stringify(creatorData));
         toast.loading('Profile created, waiting for confirmation!');
-        await txResult.wait();
 
-        toast.dismiss();
+        await txResult.wait();
+        await waitForIndexing(txResult.hash);
+
         toast.success('Your account will be reflected here soon!');
-        navigate(`/explore`);
+        navigate(`/creator/${account}`);
       } catch (err: any) {
         toast.dismiss();
         if (err.message) {
@@ -79,7 +127,10 @@ const OnboardProfilePage = () => {
         .then((res) => {
           if (res.data && res.data.creator) {
             const creator = res.data.creator;
-
+            if (creator.businessPrice > 0) setIsBusiness(true);
+            if (!!creator.customServices && creator.customServices.length) {
+              setCustomServicesData(creator.customServices.map((it) => JSON.parse(it)));
+            }
             setHasAccount(true);
             setUserProfileDB(creator);
           }
@@ -95,21 +146,6 @@ const OnboardProfilePage = () => {
         });
     }
   }, [account]);
-
-  useEffect(() => {
-    if (userProfileDB) {
-      api.getTwitterData([userProfileDB.twitterHandle]).then((response) => {
-        if (response.data && response.data.data.length > 0) {
-          const image = response.data.data[0].profile_image_url.replace('normal', '400x400');
-          userProfile.setProfilePicture(image);
-          setUserProfileDB({
-            ...userProfileDB,
-            profilePicture: image,
-          });
-        }
-      });
-    }
-  }, [userProfileDB]);
 
   return (
     <>
@@ -138,6 +174,9 @@ const OnboardProfilePage = () => {
                     demo1: userProfile.demos[0] || userProfileDB?.demos[0] || '',
                     demo2: userProfile.demos[1] || userProfileDB?.demos[1] || '',
                     demo3: userProfile.demos[2] || userProfileDB?.demos[2] || '',
+                    businessPrice: userProfile.businessPrice || userProfileDB?.businessPrice || 0,
+                    isBusiness: isBusiness,
+                    customServices: [],
                   }}
                   onSubmit={async (values) => {
                     setLoading(true);
@@ -155,6 +194,14 @@ const OnboardProfilePage = () => {
                       demos: demos,
                       price: parseFloat(values.price),
                       profilePicture: values.profilePicture,
+                      businessPrice: isBusiness ? values.businessPrice : 0,
+                      customServices: customServicesData.map((it: any) => {
+                        return JSON.stringify({
+                          description: it.description,
+                          time: it.time,
+                          price: it.price,
+                        });
+                      }),
                     };
                     hasAccount ? await updateUserProfile(creatorData) : await createUserProfile(creatorData);
                     setLoading(false);
@@ -315,7 +362,7 @@ const OnboardProfilePage = () => {
                           />
                         </div>
 
-                        <div style={{ marginBottom: 48 }}>
+                        <div style={{ marginBottom: 24 }}>
                           <TextField
                             onChange={handleChange('price')}
                             label="Minimum amount to charge for bookings"
@@ -328,6 +375,91 @@ const OnboardProfilePage = () => {
                             errorMessage={errors.price}
                           />
                           <FeeDescription />
+                        </div>
+
+                        <div style={{ marginBottom: 24 }}>
+                          <TextField
+                            onChange={handleChange('businessPrice')}
+                            label="Minimum amount to charge for business bookings"
+                            description={`Fans will be able to pay this in ${config.chainSymbol}`}
+                            placeholder="0.5"
+                            value={values.businessPrice.toString()}
+                            type="number"
+                            endText={config.chainSymbol}
+                            onBlur={handleBlur}
+                            errorMessage={errors.businessPrice}
+                          />
+                          <FeeDescription />
+                        </div>
+
+                        <div style={{ marginBottom: 48, display: 'flex', alignItems: 'center' }}>
+                          <Toggle
+                            defaultChecked={isBusiness}
+                            icons={false}
+                            onChange={(e: any) => setIsBusiness(e.target.checked)}
+                          />
+                          <span style={{ paddingLeft: '10px' }}>Open to receive booking requests</span>
+                        </div>
+
+                        <div style={{ fontWeight: 'bold' }}>Custom Services</div>
+                        <Description style={{ marginTop: 7 }}>
+                          Add in custom services (Service + Time+ Price)
+                        </Description>
+                        <div style={{ marginBottom: 48 }}>
+                          {customServicesData.map((elm: any, index: any) => (
+                            <div style={{ display: 'flex' }} key={index}>
+                              <TextField
+                                placeholder={elm.placeholderDesc}
+                                inputStyles={{ width: 265, marginRight: 15 }}
+                                value={elm.description || ''}
+                                onChange={(e) => handleChangeCustomForm(index, 'description', e)}
+                              />
+                              <TextField
+                                placeholder={elm.placeHolderTime}
+                                inputStyles={{ width: 145, marginRight: 15 }}
+                                value={elm.time || ''}
+                                onChange={(e) => handleChangeCustomForm(index, 'time', e)}
+                              />
+                              <TextField
+                                endText="MATIC"
+                                type="number"
+                                inputStyles={{ width: 220 }}
+                                value={index === 0 && values.businessPrice ? values.businessPrice : elm.price}
+                                onChange={(e) => handleChangeCustomForm(index, 'price', e)}
+                              />
+                              {index ? (
+                                <div
+                                  style={{
+                                    marginTop: 25,
+                                    marginLeft: 20,
+                                    color: 'rgba(179, 179, 179, 1)',
+                                    fontWeight: 'normal',
+                                  }}
+                                >
+                                  <BsX
+                                    size={30}
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => removeFormFields(index)}
+                                  />
+                                </div>
+                              ) : (
+                                ''
+                              )}
+                            </div>
+                          ))}
+                          <div style={{ marginTop: 15 }}>
+                            <a
+                              onClick={() => addFormFields()}
+                              target="_blank"
+                              style={{
+                                color: '#EDE641',
+                                textDecoration: 'underline',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              + Add
+                            </a>{' '}
+                          </div>
                         </div>
 
                         <div style={{ marginBottom: 12 }}>
