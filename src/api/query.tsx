@@ -36,6 +36,7 @@ query GetRequestById (
       businessEmail
       businessTwitter
       businessInfo
+      businessRequestType
       refunded
       erc20
       version
@@ -102,6 +103,7 @@ query GetCreatorById (
     block
     timestamp
     businessPrice
+    customServices
   }
 }
 `;
@@ -149,6 +151,7 @@ query GetCreatorRequests (
     businessEmail
     businessTwitter
     businessInfo
+    businessRequestType
     refunded
     erc20
     version
@@ -206,6 +209,7 @@ query GetUserRequests (
     businessEmail
     businessTwitter
     businessInfo
+    businessRequestType
     refunded
     erc20
     version

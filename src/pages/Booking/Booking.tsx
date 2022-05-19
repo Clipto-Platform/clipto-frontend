@@ -51,6 +51,8 @@ const BookingPage = () => {
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [businessTwitter, setBusinessTwitter] = useState<string>('');
   const [invalidTwitter, setInvalidTwitter] = useState<string>('');
+  const [businessPrice, setBusinessPrice] = useState<number>(0);
+  const [businessIndex, setBusinessIndex] = useState<number>(0);
 
   useEffect(() => {
     setUser(getUser);
@@ -66,11 +68,23 @@ const BookingPage = () => {
 
   useEffect(() => {
     if (loaded && creator) {
-      exchangeRates(token, creator.price).then((convertedPrice) => {
+      setBusinessPrice(
+        creator.customServices.map((elm: any) => {
+          elm = JSON.parse(elm);
+          return elm.price;
+        })[businessIndex],
+      );
+    }
+  }, [loaded, businessIndex, businessPrice]);
+
+  useEffect(() => {
+    if (loaded && creator) {
+      const updatedPrice = uses === UsesOptions.business ? businessPrice : creator.price;
+      exchangeRates(token, updatedPrice).then((convertedPrice) => {
         setPrice(parseFloat(convertedPrice));
       });
     }
-  }, [loaded, token]);
+  }, [loaded, token, businessPrice, uses]);
 
   useEffect(() => {
     setIsTwitterAccount(false);
@@ -146,6 +160,7 @@ const BookingPage = () => {
         requestData.businessEmail = values.businessEmail;
         requestData.businessTwitter = values.businessTwitter;
         requestData.businessInfo = values.businessInfo;
+        requestData.businessRequestType = values.businessRequestType;
       }
 
       let transaction;
@@ -226,6 +241,11 @@ const BookingPage = () => {
                     businessEmail: '',
                     businessTwitter: '',
                     businessInfo: '',
+                    businessRequestType: creator.customServices.map((elm: any) => {
+                      elm = JSON.parse(elm);
+                      return `${elm.description}: ${elm.time} - ${elm.price} MATIC`;
+                    })[0],
+                    selectedBusinessOptionPrice: businessPrice && businessPrice.toString(),
                   }}
                   validate={({
                     deadline,
@@ -235,6 +255,8 @@ const BookingPage = () => {
                     businessEmail,
                     businessTwitter,
                     businessInfo,
+                    businessRequestType,
+                    selectedBusinessOptionPrice,
                   }) => {
                     const errors: any = {};
                     try {
@@ -242,11 +264,21 @@ const BookingPage = () => {
                       if (parseFloat(amount) < convertToFloat(creator.price)) {
                         errors.amount = `Amount must be greater than ${creator.price}`;
                       }
-                      if (uses === UsesOptions.business && parseFloat(amount) < convertToFloat(creator.businessPrice)) {
-                        errors.amount = `Amount must be greater than ${creator.businessPrice}`;
+                      if (
+                        uses === UsesOptions.business &&
+                        parseFloat(amount) < convertToFloat(selectedBusinessOptionPrice)
+                      ) {
+                        errors.amount = `Amount must be greater than ${selectedBusinessOptionPrice}`;
                       }
                       if (parseFloat(amount) > 700) {
                         errors.amount = `Amount must be less than 700 Matic`;
+                      }
+                      console.log(businessRequestType, selectedBusinessOptionPrice);
+                      if (
+                        uses === UsesOptions.business &&
+                        parseFloat(amount) < convertToFloat(selectedBusinessOptionPrice)
+                      ) {
+                        errors.amount = `Amount must be greater than ${selectedBusinessOptionPrice} Matic`;
                       }
                     } catch {
                       errors.amount = `Please enter a number.`;
@@ -279,7 +311,7 @@ const BookingPage = () => {
                     setLoading(false);
                   }}
                 >
-                  {({ initialValues, handleChange, handleSubmit, errors, validateForm, setFieldValue }) => (
+                  {({ initialValues, handleChange, handleSubmit, errors, validateForm, setFieldValue, values }) => (
                     <>
                       <div style={{ margin: '0 0 15px 2px' }}>Choose an option</div>
                       <PurchaseOption
@@ -287,7 +319,10 @@ const BookingPage = () => {
                           marginBottom: 20,
                           border: `${uses === UsesOptions.personal ? '1px solid yellow' : '1px solid #2A2A2A'}`,
                         }}
-                        onClick={() => setUses(UsesOptions.personal)}
+                        onClick={() => {
+                          setBusinessIndex(0);
+                          setUses(UsesOptions.personal);
+                        }}
                       >
                         <FlexRow style={{ marginBottom: 7 }}>
                           <Label>Personal use</Label>
@@ -308,10 +343,39 @@ const BookingPage = () => {
                           <FlexRow style={{ marginBottom: 7 }}>
                             <Label>Business use</Label>
                             <Label style={{ fontSize: 14 }}>
-                              {formatETH(convertToFloat(creator.price))} {config.chainSymbol}+
+                              {formatETH(convertToFloat(businessPrice))} {config.chainSymbol}+
                             </Label>
                           </FlexRow>
                           <Description>Engaging video content for your company, customers, or employees</Description>
+                          {uses === UsesOptions.business ? (
+                            <div style={{ marginTop: 18 }}>
+                              {creator.customServices.map((elm: any, index) => {
+                                elm = JSON.parse(elm);
+                                return (
+                                  <div style={{ margin: '5px 0' }} key={index}>
+                                    <input
+                                      style={{ accentColor: 'rgba(237, 230, 65, 1)' }}
+                                      type="radio"
+                                      id={index.toString()}
+                                      name="businessOption"
+                                      defaultChecked={index === 0}
+                                      value={`${elm.description}: ${elm.time} - ${elm.price} MATIC`}
+                                      onChange={(e: any) => {
+                                        setBusinessIndex(index);
+                                        // setFieldValue('selectedBusinessOptionPrice', elm.price);
+                                        setFieldValue('businessRequestType', e.target.value);
+                                      }}
+                                    />
+                                    <label style={{ marginLeft: 10, cursor: 'pointer' }} htmlFor={index.toString()}>
+                                      {`${elm.description}: ${elm.time} - ${elm.price} MATIC`}
+                                    </label>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            ''
+                          )}
                         </PurchaseOption>
                       ) : (
                         ''
@@ -362,7 +426,6 @@ const BookingPage = () => {
                               isLoader={isLoader && !isTwitterAccount && !invalidTwitter}
                               onChange={(e: any) => {
                                 setBusinessTwitter(e);
-                                // handleChange('businessTwitter');
                                 setFieldValue('businessTwitter', e);
                               }}
                               errorMessage={errors.businessTwitter || invalidTwitter}
@@ -427,6 +490,8 @@ const BookingPage = () => {
                           placeholder={
                             price && price != 0
                               ? removeTrailingZero(price.toFixed(7)) + '+'
+                              : uses === UsesOptions.business
+                              ? `${businessPrice} +`
                               : formatETH(convertToFloat(creator.price)) + '+'
                           }
                           onChange={handleChange('amount')}
