@@ -162,8 +162,6 @@ const BookingPage = () => {
         requestData.businessInfo = values.businessInfo;
         requestData.businessRequestType = values.businessRequestType;
       }
-      console.log(requestData);
-      console.log(values.amount);
 
       let transaction;
       if (token !== 'MATIC') {
