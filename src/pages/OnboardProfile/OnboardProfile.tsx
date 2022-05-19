@@ -424,23 +424,27 @@ const OnboardProfilePage = () => {
                                 endText="MATIC"
                                 type="number"
                                 inputStyles={{ width: 220 }}
-                                value={
-                                  index === 0 && values.businessPrice > 0 && !values.customServices
-                                    ? values.businessPrice
-                                    : elm.price || ''
-                                }
+                                value={index === 0 && values.businessPrice ? values.businessPrice : elm.price}
                                 onChange={(e) => handleChangeCustomForm(index, 'price', e)}
                               />
-                              <div
-                                style={{
-                                  marginTop: 25,
-                                  marginLeft: 20,
-                                  color: 'rgba(179, 179, 179, 1)',
-                                  fontWeight: 'normal',
-                                }}
-                              >
-                                <BsX size={30} style={{ cursor: 'pointer' }} onClick={() => removeFormFields(index)} />
-                              </div>
+                              {index ? (
+                                <div
+                                  style={{
+                                    marginTop: 25,
+                                    marginLeft: 20,
+                                    color: 'rgba(179, 179, 179, 1)',
+                                    fontWeight: 'normal',
+                                  }}
+                                >
+                                  <BsX
+                                    size={30}
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => removeFormFields(index)}
+                                  />
+                                </div>
+                              ) : (
+                                ''
+                              )}
                             </div>
                           ))}
                           <div style={{ marginTop: 15 }}>

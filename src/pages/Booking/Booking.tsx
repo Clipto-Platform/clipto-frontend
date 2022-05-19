@@ -51,6 +51,8 @@ const BookingPage = () => {
   const [isLoader, setIsLoader] = useState<boolean>(false);
   const [businessTwitter, setBusinessTwitter] = useState<string>('');
   const [invalidTwitter, setInvalidTwitter] = useState<string>('');
+  const [businessPrice, setBusinessPrice] = useState<number>(0);
+  const [businessIndex, setBusinessIndex] = useState<number>(0);
 
   useEffect(() => {
     setUser(getUser);
@@ -66,11 +68,23 @@ const BookingPage = () => {
 
   useEffect(() => {
     if (loaded && creator) {
-      exchangeRates(token, creator.price).then((convertedPrice) => {
+      setBusinessPrice(
+        creator.customServices.map((elm: any) => {
+          elm = JSON.parse(elm);
+          return elm.price;
+        })[businessIndex],
+      );
+    }
+  }, [loaded, businessIndex, businessPrice]);
+
+  useEffect(() => {
+    if (loaded && creator) {
+      const updatedPrice = uses === UsesOptions.business ? businessPrice : creator.price;
+      exchangeRates(token, updatedPrice).then((convertedPrice) => {
         setPrice(parseFloat(convertedPrice));
       });
     }
-  }, [loaded, token]);
+  }, [loaded, token, businessPrice, uses]);
 
   useEffect(() => {
     setIsTwitterAccount(false);
@@ -149,31 +163,32 @@ const BookingPage = () => {
         requestData.businessRequestType = values.businessRequestType;
       }
       console.log(requestData);
+      console.log(values.amount);
 
       let transaction;
-      // if (token !== 'MATIC') {
-      //   await addAllowance(values.amount);
+      if (token !== 'MATIC') {
+        await addAllowance(values.amount);
 
-      //   transaction = await exchangeContractV1.newRequest(
-      //     creatorId as string,
-      //     account as string,
-      //     config.erc20Contracts[token],
-      //     parseUnits(values.amount),
-      //     JSON.stringify(requestData),
-      //   );
-      // } else {
-      //   transaction = await exchangeContractV1.nativeNewRequest(
-      //     creatorId as string,
-      //     account as string,
-      //     JSON.stringify(requestData),
-      //     {
-      //       value: ethers.utils.parseEther(values.amount),
-      //     },
-      //   );
-      // }
+        transaction = await exchangeContractV1.newRequest(
+          creatorId as string,
+          account as string,
+          config.erc20Contracts[token],
+          parseUnits(values.amount),
+          JSON.stringify(requestData),
+        );
+      } else {
+        transaction = await exchangeContractV1.nativeNewRequest(
+          creatorId as string,
+          account as string,
+          JSON.stringify(requestData),
+          {
+            value: ethers.utils.parseEther(values.amount),
+          },
+        );
+      }
 
-      // await waitForTransaction(transaction);
-      // await waitForIndexing(transaction.hash);
+      await waitForTransaction(transaction);
+      await waitForIndexing(transaction.hash);
 
       toast.dismiss();
       toast.success('Booking completed, your Order has been created.');
@@ -232,10 +247,7 @@ const BookingPage = () => {
                       elm = JSON.parse(elm);
                       return `${elm.description}: ${elm.time} - ${elm.price} MATIC`;
                     })[0],
-                    selectedBusinessOptionPrice: creator.customServices.map((elm: any) => {
-                      elm = JSON.parse(elm);
-                      return elm.price;
-                    })[0],
+                    selectedBusinessOptionPrice: businessPrice.toString(),
                   }}
                   validate={({
                     deadline,
@@ -254,8 +266,11 @@ const BookingPage = () => {
                       if (parseFloat(amount) < convertToFloat(creator.price)) {
                         errors.amount = `Amount must be greater than ${creator.price}`;
                       }
-                      if (uses === UsesOptions.business && parseFloat(amount) < convertToFloat(creator.businessPrice)) {
-                        errors.amount = `Amount must be greater than ${creator.businessPrice}`;
+                      if (
+                        uses === UsesOptions.business &&
+                        parseFloat(amount) < convertToFloat(selectedBusinessOptionPrice)
+                      ) {
+                        errors.amount = `Amount must be greater than ${selectedBusinessOptionPrice}`;
                       }
                       if (parseFloat(amount) > 700) {
                         errors.amount = `Amount must be less than 700 Matic`;
@@ -306,7 +321,10 @@ const BookingPage = () => {
                           marginBottom: 20,
                           border: `${uses === UsesOptions.personal ? '1px solid yellow' : '1px solid #2A2A2A'}`,
                         }}
-                        onClick={() => setUses(UsesOptions.personal)}
+                        onClick={() => {
+                          setBusinessIndex(0);
+                          setUses(UsesOptions.personal);
+                        }}
                       >
                         <FlexRow style={{ marginBottom: 7 }}>
                           <Label>Personal use</Label>
@@ -327,7 +345,7 @@ const BookingPage = () => {
                           <FlexRow style={{ marginBottom: 7 }}>
                             <Label>Business use</Label>
                             <Label style={{ fontSize: 14 }}>
-                              {formatETH(convertToFloat(values.selectedBusinessOptionPrice))} {config.chainSymbol}+
+                              {formatETH(convertToFloat(businessPrice))} {config.chainSymbol}+
                             </Label>
                           </FlexRow>
                           <Description>Engaging video content for your company, customers, or employees</Description>
@@ -345,7 +363,8 @@ const BookingPage = () => {
                                       defaultChecked={index === 0}
                                       value={`${elm.description}: ${elm.time} - ${elm.price} MATIC`}
                                       onChange={(e: any) => {
-                                        setFieldValue('selectedBusinessOptionPrice', elm.price);
+                                        setBusinessIndex(index);
+                                        // setFieldValue('selectedBusinessOptionPrice', elm.price);
                                         setFieldValue('businessRequestType', e.target.value);
                                       }}
                                     />
@@ -473,6 +492,8 @@ const BookingPage = () => {
                           placeholder={
                             price && price != 0
                               ? removeTrailingZero(price.toFixed(7)) + '+'
+                              : uses === UsesOptions.business
+                              ? `${businessPrice} +`
                               : formatETH(convertToFloat(creator.price)) + '+'
                           }
                           onChange={handleChange('amount')}
