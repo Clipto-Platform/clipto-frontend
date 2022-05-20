@@ -149,10 +149,12 @@ const OnboardProfilePage = () => {
 
 
   useEffect(() => {
+    console.log(account)
     if (account) {
       api
         .creatorById(account)
         .then((res) => {
+          console.log(res)
           if (res.data && res.data.creator) {
             const creator = res.data.creator;
             console.log(creator)
@@ -325,9 +327,8 @@ const OnboardProfilePage = () => {
                     } catch (error) {
                       errors.address = 'Please enter a valid address.';
                     }
-
                     //lens validation
-                    if (createLens) {console.log('test')
+                    if (createLens) {
                       const getProfileByHandleRes = await lens.getProfileByHandle(config.lens.getHandleToSearch(lensHandle == CREATE_LENS_TEXT ? userProfileDB?.twitterHandle || userProfile.twitterHandle || values.userName : lensHandle))
                       console.log(getProfileByHandleRes)
                       if (!getProfileByHandleRes.data) {
@@ -472,7 +473,7 @@ const OnboardProfilePage = () => {
                           <FeeDescription />
                         </div>
                         <div style={{ marginBottom: 12 }}>
-                          <Dropdown
+                          {lensProfiles && lensProfiles.length > 0 && <Dropdown
                             formLabel="Connect Lens Profile"
                             onChange={async (e) => {
                               if (e.target.value === CREATE_LENS_TEXT) {
@@ -486,8 +487,8 @@ const OnboardProfilePage = () => {
                           >
                             {/* Creates an array of existing lens profiles and gives user to create a new lens profile */}
                             {[
-                              { id: '', handle: '' },
-                              { id: '', handle: CREATE_LENS_TEXT },
+                              // { id: '', handle: '' },
+                              // { id: '', handle: CREATE_LENS_TEXT }, //uncomment to have some shitty create a lens profile code that doesn't work now
                               ...(lensProfiles || []),
                             ].map(({ id, handle }, i) => {
                               if ((userProfileDB?.lensHandle || userProfile.lensHandle) === handle) {
@@ -495,7 +496,7 @@ const OnboardProfilePage = () => {
                               }
                               return <Option key={i} value={handle} label={handle} />;
                             })}
-                          </Dropdown>
+                          </Dropdown>}
                         </div>
                         <div style={{ marginBottom: 12 }}>
                           <TextField

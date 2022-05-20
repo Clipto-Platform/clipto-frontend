@@ -73,6 +73,7 @@ const BookingPage = () => {
   }, [loaded, token]);
 
   useEffect(() => {
+    console.log(creator)
     if (account && creator && creator.lensHandle) {
       lens.getProfileByHandle(creator.lensHandle).then(res => {
         console.log(account)

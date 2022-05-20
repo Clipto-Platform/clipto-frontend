@@ -115,7 +115,7 @@ query GetCreatorById (
     twitterHandle
     bio
     deliveryTime
-    lensHandle
+
     demos
     profilePicture
     userName

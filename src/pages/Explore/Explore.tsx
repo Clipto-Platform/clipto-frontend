@@ -45,9 +45,9 @@ const ExplorePage = () => {
         (one: { profile: { handle: string } }) => one.profile.handle,
       );
       api.creatorsByLens(lensHandleOfFollow).then((res) => {
+        setLoaded(true)
         if (!res.data) return;
         setFollowing(res.data?.creators);
-        setLoaded(true)
       });
     });
   }, [account]);

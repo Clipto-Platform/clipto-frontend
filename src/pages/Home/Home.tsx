@@ -42,12 +42,18 @@ const featuredListTest: string[] = [
 const HomePage = () => {
   let [creators, setCreators] = useState<EntityCreator[]>([]);
   const [creator, setCreator] = useState<Partial<UserProfile> | null>();
-  const { account } = useWeb3React<Web3Provider>();
+  const { account,library } = useWeb3React<Web3Provider>();
   const user = useSelector((state: any) => state.user);
   const theme = useTheme();
-
   const warning = (msg: string) => toast.warn(msg);
-
+  // useEffect(async () => {
+  //   if (!account || !library) return;
+  //   const access = await lens.getAccess(account)
+  //   if (!access) return;
+  //   if (!access.data) return;
+  //   console.log(access.data.authenticate.accessToken)
+  //   lens.follow("0x08", access.data.authenticate.accessToken, library).catch(console.log)
+  // }, [account])
   useEffect(() => {
     const getCreatorData = async () => {
       if (account) {

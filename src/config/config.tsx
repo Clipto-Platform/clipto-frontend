@@ -1,5 +1,7 @@
 import { Config } from './types';
 
+export const RELAY_ON = false 
+
 const configCommon = {
   minDeliveryTime: 3,
 
@@ -56,16 +58,14 @@ const configProd = {
     WETH: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
     USDC: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
   },
-  lensContract: '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82', 
 
   rpcUrl: 'https://polygon-mainnet.g.alchemy.com/v2/Wk4fc10DkXi2lhLq30tw_eSHPuzUyRnV',
   graphApi: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-mainnet',
   apiUrl: 'https://api.clipto.io',
-  lensUrl: 'https://api-mumbai.lens.dev/', 
 
   lens: {
-    url: 'https://api-mumbai.lens.dev/', //REPLACE WITH PROD CONTRACT
-    contract: '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82', //REPLACE WITH PROD CONTRACT
+    url: 'https://api.lens.dev',
+    contract: '0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d', 
     getHandleToSearch: (handle: string) => `${handle}.lens` //this is to be used when querying if a lensHandle exists. When you create a profile, a postfix is automatically attached
   },
 

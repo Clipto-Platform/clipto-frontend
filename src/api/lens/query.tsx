@@ -124,7 +124,7 @@ export const mutationFollow = `
       follow: [
         {
           profile: $profile,
-          followModule: null
+          followModule: {profileFollowModule: {profileId: "0x1052"}}
         }
       ]
     }) {
@@ -431,6 +431,23 @@ mutation CreatePostTypedData {
         referenceModuleInitData
       }
     }
+  }
+}
+`
+
+
+export const mutationBroadcast = `
+mutation Broadcast($request: BroadcastRequest!) {
+  broadcast(request: $request) {
+    ... on RelayerResult {
+      txHash
+      __typename
+    }
+    ... on RelayError {
+      reason
+      __typename
+    }
+    __typename
   }
 }
 `

@@ -1,10 +1,11 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import { createClient } from 'urql';
-import config from '../../config/config';
+import config, { RELAY_ON } from '../../config/config';
 import { getFollowNftContract, getLensHub } from './contract';
 import { getAddressFromSigner, signedTypeData, splitSignature } from './ethers-service';
 import {
+  mutationBroadcast,
   mutationCreatePostTypedData,
   mutationFollow,
   mutationProfile,
@@ -138,12 +139,12 @@ export const signUp = async (address: string) => {
 };
 
 //Need to check what type of follow module - (don't want to have to pay for a fee)
-export const follow = async (handle: string, accessToken: string, library: Web3Provider) => {
+export const follow = async (profileId: string, accessToken: string, library: Web3Provider) => {
   const result = await graphInstance
     .mutation(
       mutationFollow,
       {
-        profile: handle,
+        profile: profileId,
       },
       {
         fetchOptions: {
@@ -156,25 +157,34 @@ export const follow = async (handle: string, accessToken: string, library: Web3P
     .toPromise();
   if (!result) throw 'result is undefined';
   try {
+    console.log(result)
     const typedData = result.data.createFollowTypedData.typedData;
     console.log(result.data.createFollowTypedData);
     const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value, library);
     console.log('signature:', signature);
     const { v, r, s } = splitSignature(signature);
     console.log({ v, r, s });
-    const tx = await getLensHub(library).followWithSig({
-      follower: await getAddressFromSigner(library),
-      profileIds: typedData.value.profileIds,
-      datas: typedData.value.datas,
-      sig: {
-        v,
-        r,
-        s,
-        deadline: typedData.value.deadline,
-      },
-    });
-    console.log(tx);
-    return tx.hash;
+    if (RELAY_ON) {
+      const broadcastRes = await broadcast({
+        id: result.data.createFollowTypedData.id,
+        signature: signature
+      }, accessToken)
+      console.log(broadcastRes)
+    } else {
+      const tx = await getLensHub(library).followWithSig({
+        follower: await getAddressFromSigner(library),
+        profileIds: typedData.value.profileIds,
+        datas: typedData.value.datas,
+        sig: {
+          v,
+          r,
+          s,
+          deadline: typedData.value.deadline,
+        },
+      });
+      console.log(tx);
+      return tx.hash;
+    }
     // you can look at how to know when its been indexed here:
     //   - https://docs.lens.dev/docs/has-transaction-been-indexed
   } catch (e) {
@@ -319,5 +329,18 @@ export const pollUntilIndexed = async (txHash: string, accessToken: string) => {
 export const postRequest = ({}, accessToken: string) => {
   return graphInstance.mutation(mutationCreatePostTypedData, {
     
-  })
+  }).toPromise()
+}
+
+//gasless!
+export const broadcast = (request : {id : string, signature: string}, accessToken : string) => {
+  return graphInstance.mutation(mutationBroadcast, {
+    request
+  }, {
+    fetchOptions: {
+      headers: {
+        'x-access-token': accessToken,
+      },
+    },
+  }).toPromise()
 }
