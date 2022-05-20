@@ -263,18 +263,16 @@ const BookingPage = () => {
                     try {
                       Number.parse(parseFloat(amount));
                       if (uses === UsesOptions.personal && parseFloat(amount) < convertToFloat(creator.price)) {
-                        errors.amount = `Amount must be greater than ${creator.price}`;
+                        errors.amount = `Amount must be greater than ${price}`;
                       }
-                      console.log('business', uses, amount, businessPrice);
-                      if (uses === UsesOptions.business && parseFloat(amount) < convertToFloat(businessPrice)) {
-                        errors.amount = `Amount must be greater than ${businessPrice}`;
+                      if (uses === UsesOptions.business && parseFloat(amount) < convertToFloat(price)) {
+                        errors.amount = `Amount must be greater than ${price}`;
                       }
                       if (parseFloat(amount) > 700) {
                         errors.amount = `Amount must be less than 700 `;
                       }
-                      console.log(businessRequestType, businessPrice);
-                      if (uses === UsesOptions.business && parseFloat(amount) < convertToFloat(businessPrice)) {
-                        errors.amount = `Amount must be greater than ${businessPrice} `;
+                      if (uses === UsesOptions.business && parseFloat(amount) < convertToFloat(price)) {
+                        errors.amount = `Amount must be greater than ${price} `;
                       }
                     } catch {
                       errors.amount = `Please enter a number.`;
