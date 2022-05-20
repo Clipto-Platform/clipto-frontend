@@ -4,6 +4,7 @@ export interface Config {
   chainId: number;
   chainName: string;
   chainSymbol: string;
+  defaultToken: string;
 
   exchangeAddress: string;
   exchangeAddressV1: string;

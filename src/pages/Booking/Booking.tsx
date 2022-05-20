@@ -44,7 +44,7 @@ const BookingPage = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState();
-  const [token, setToken] = useState<ERCTokenType>('MATIC');
+  const [token, setToken] = useState<ERCTokenType>('USDC');
   const [price, setPrice] = useState<number>(0);
   const [uses, setUses] = useState<UsesOptions>(UsesOptions.personal);
   const [isTwitterAccount, setIsTwitterAccount] = useState<boolean>(false);
@@ -107,7 +107,7 @@ const BookingPage = () => {
           }
         } catch (e) {
           setIsTwitterAccount(false);
-          if (uses === UsesOptions.business) setInvalidTwitter('Invalid twitter handle.');
+          if (uses === UsesOptions.business) setInvalidTwitter('Invalid twitter handle, try to removing @ sign.');
         }
       }, 3000);
     } else {
@@ -246,9 +246,9 @@ const BookingPage = () => {
                       creator.customServices &&
                       creator.customServices.map((elm: any) => {
                         elm = JSON.parse(elm);
-                        return `${elm.description}: ${elm.time} - ${elm.price} MATIC`;
+                        return `${elm.description}: ${elm.time} - ${elm.price} USDC`;
                       })[0],
-                    selectedBusinessOptionPrice: businessPrice,
+                    selectedBusinessOptionPrice: businessPrice && businessPrice.toString(),
                   }}
                   validate={({
                     deadline,
@@ -330,7 +330,7 @@ const BookingPage = () => {
                         <FlexRow style={{ marginBottom: 7 }}>
                           <Label>Personal use</Label>
                           <Label style={{ fontSize: 14 }}>
-                            {formatETH(convertToFloat(creator.price))} {config.chainSymbol}+
+                            {formatETH(convertToFloat(creator.price))} {config.defaultToken}+
                           </Label>
                         </FlexRow>
                         <Description>Personalized video for you or someone else</Description>
@@ -346,7 +346,7 @@ const BookingPage = () => {
                           <FlexRow style={{ marginBottom: 7 }}>
                             <Label>Business use</Label>
                             <Label style={{ fontSize: 14 }}>
-                              {formatETH(convertToFloat(businessPrice))} {config.chainSymbol}+
+                              {formatETH(convertToFloat(businessPrice))} {config.defaultToken}+
                             </Label>
                           </FlexRow>
                           <Description>Engaging video content for your company, customers, or employees</Description>
@@ -362,7 +362,7 @@ const BookingPage = () => {
                                       id={index.toString()}
                                       name="businessOption"
                                       defaultChecked={index === 0}
-                                      value={`${elm.description}: ${elm.time} - ${elm.price} MATIC`}
+                                      value={`${elm.description}: ${elm.time} - ${elm.price} USDC`}
                                       onChange={(e: any) => {
                                         setBusinessIndex(index);
                                         // setFieldValue('selectedBusinessOptionPrice', elm.price);
@@ -370,7 +370,7 @@ const BookingPage = () => {
                                       }}
                                     />
                                     <label style={{ marginLeft: 10, cursor: 'pointer' }} htmlFor={index.toString()}>
-                                      {`${elm.description}: ${elm.time} - ${elm.price} MATIC`}
+                                      {`${elm.description}: ${elm.time} - ${elm.price} USDC`}
                                     </label>
                                   </div>
                                 );
@@ -424,7 +424,7 @@ const BookingPage = () => {
                           <div style={{ marginBottom: 40 }}>
                             <TextField
                               label="Twitter"
-                              placeholder="@jimmy"
+                              placeholder="jimmy"
                               isSuccess={isTwitterAccount}
                               isLoader={isLoader && !isTwitterAccount && !invalidTwitter}
                               onChange={(e: any) => {
