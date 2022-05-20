@@ -187,11 +187,12 @@ const BookingPage = () => {
       }
 
       await waitForTransaction(transaction);
-      await waitForIndexing(transaction.hash);
 
       toast.dismiss();
       toast.success('Booking completed, your Order has been created.');
       navigate('/orders');
+
+      await waitForIndexing(transaction.hash);
     } catch (e) {
       toast.dismiss();
       toast.error(`The transaction failed. Make sure you have enough ${token} for gas.`);
