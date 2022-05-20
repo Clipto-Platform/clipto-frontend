@@ -76,7 +76,7 @@ const BookingPage = () => {
           })[businessIndex],
       );
     }
-  }, [loaded, businessIndex, businessPrice]);
+  }, [loaded, businessIndex]);
 
   useEffect(() => {
     if (loaded && creator) {
@@ -248,7 +248,6 @@ const BookingPage = () => {
                         elm = JSON.parse(elm);
                         return `${elm.description}: ${elm.time} - ${elm.price} USDC`;
                       })[0],
-                    selectedBusinessOptionPrice: businessPrice && businessPrice.toString(),
                   }}
                   validate={({
                     deadline,
@@ -259,29 +258,23 @@ const BookingPage = () => {
                     businessTwitter,
                     businessInfo,
                     businessRequestType,
-                    selectedBusinessOptionPrice,
                   }) => {
                     const errors: any = {};
                     try {
                       Number.parse(parseFloat(amount));
-                      if (parseFloat(amount) < convertToFloat(creator.price)) {
+                      if (uses === UsesOptions.personal && parseFloat(amount) < convertToFloat(creator.price)) {
                         errors.amount = `Amount must be greater than ${creator.price}`;
                       }
-                      if (
-                        uses === UsesOptions.business &&
-                        parseFloat(amount) < convertToFloat(selectedBusinessOptionPrice)
-                      ) {
-                        errors.amount = `Amount must be greater than ${selectedBusinessOptionPrice}`;
+                      console.log('business', uses, amount, businessPrice);
+                      if (uses === UsesOptions.business && parseFloat(amount) < convertToFloat(businessPrice)) {
+                        errors.amount = `Amount must be greater than ${businessPrice}`;
                       }
                       if (parseFloat(amount) > 700) {
-                        errors.amount = `Amount must be less than 700 Matic`;
+                        errors.amount = `Amount must be less than 700 `;
                       }
-                      console.log(businessRequestType, selectedBusinessOptionPrice);
-                      if (
-                        uses === UsesOptions.business &&
-                        parseFloat(amount) < convertToFloat(selectedBusinessOptionPrice)
-                      ) {
-                        errors.amount = `Amount must be greater than ${selectedBusinessOptionPrice} Matic`;
+                      console.log(businessRequestType, businessPrice);
+                      if (uses === UsesOptions.business && parseFloat(amount) < convertToFloat(businessPrice)) {
+                        errors.amount = `Amount must be greater than ${businessPrice} `;
                       }
                     } catch {
                       errors.amount = `Please enter a number.`;
