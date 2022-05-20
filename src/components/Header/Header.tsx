@@ -9,6 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
 import * as api from '../../api';
+import { EntityCreator } from '../../api/types';
 import menu from '../../assets/svgs/hamburger.svg';
 import config from '../../config/config';
 import { useEagerConnect } from '../../hooks/useEagerConnect';
@@ -27,18 +28,22 @@ import {
   ChainContainer,
   ConnectWallet,
   ConnectWalletPopup,
-  DesktopHeaderWrapper, DiscordWrapper, Divider,
+  DesktopHeaderWrapper,
+  DiscordWrapper,
+  Divider,
   DropDownItem,
   Error,
   HeaderWrapperInner,
   HeaderWrapperOuter,
   HEADER_HEIGHT_IN_PX,
-  LeftWrapper, LinkWrapper, MenuButton,
+  LeftWrapper,
+  LinkWrapper,
+  MenuButton,
   MenuContainer,
   MobileHeaderWrapper,
   RightWrapper,
   StyledSpan,
-  Wrapper
+  Wrapper,
 } from './Style';
 
 interface HeaderStore extends State {
@@ -171,7 +176,7 @@ const Header: React.FC<HeaderProps> = () => {
   const hasTriedEagerConnect = useEagerConnect();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loggedInProfile, setLoggedInProfile] = useState<Partial<UserProfile> | null>();
+  const [loggedInProfile, setLoggedInProfile] = useState<EntityCreator | null>();
 
   const user = useSelector((state: any) => state.user);
   const dispatch = useDispatch();

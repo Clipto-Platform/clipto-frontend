@@ -26,7 +26,7 @@ export interface CreatorData {
   price: number;
   demos: string[];
   businessPrice: number;
-  customServices: [];
+  customServices: string[];
 }
 
 export interface EntityCreator extends CreatorData {

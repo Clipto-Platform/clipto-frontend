@@ -5,10 +5,10 @@ export interface OrderCardProps {
   txHash?: string;
   key: string;
   isReceived: boolean;
-  isBusiness: boolean;
+  isBusiness?: boolean;
   businessName?: string;
   businessEmail?: string;
   businessTwitter?: string;
   businessInfo?: string;
-  displayBusiness: boolean;
+  displayBusiness?: boolean;
 }

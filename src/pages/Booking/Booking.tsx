@@ -69,10 +69,11 @@ const BookingPage = () => {
   useEffect(() => {
     if (loaded && creator) {
       setBusinessPrice(
-        creator.customServices.map((elm: any) => {
-          elm = JSON.parse(elm);
-          return elm.price;
-        })[businessIndex],
+        creator.customServices &&
+          creator.customServices.map((elm: any) => {
+            elm = JSON.parse(elm);
+            return elm.price;
+          })[businessIndex],
       );
     }
   }, [loaded, businessIndex, businessPrice]);
@@ -241,11 +242,13 @@ const BookingPage = () => {
                     businessEmail: '',
                     businessTwitter: '',
                     businessInfo: '',
-                    businessRequestType: creator.customServices.map((elm: any) => {
-                      elm = JSON.parse(elm);
-                      return `${elm.description}: ${elm.time} - ${elm.price} MATIC`;
-                    })[0],
-                    selectedBusinessOptionPrice: businessPrice && businessPrice.toString(),
+                    businessRequestType:
+                      creator.customServices &&
+                      creator.customServices.map((elm: any) => {
+                        elm = JSON.parse(elm);
+                        return `${elm.description}: ${elm.time} - ${elm.price} MATIC`;
+                      })[0],
+                    selectedBusinessOptionPrice: businessPrice,
                   }}
                   validate={({
                     deadline,

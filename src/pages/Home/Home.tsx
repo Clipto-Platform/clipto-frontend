@@ -15,11 +15,7 @@ import background3M from '../../assets/images/homepage/page3/background3M.png';
 import { CreatorCards } from '../../components/CreatorCards/CreatorCards';
 import { PageWrapper } from '../../components/layout/Common';
 import Slides from '../../components/Slides/Slides';
-import {
-  BookNow,
-  BookNowButton,
-  HeroTitle, LeftContentWrapper
-} from '../../components/Slides/Style';
+import { BookNow, BookNowButton, HeroTitle, LeftContentWrapper } from '../../components/Slides/Style';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
 import config from '../../config/config';
 import { UserProfile } from '../../hooks/useProfile';
@@ -41,7 +37,7 @@ const featuredListTest: string[] = [
 const HomePage = () => {
   let [creators, setCreators] = useState<EntityCreator[]>([]);
 
-  const [creator, setCreator] = useState<Partial<UserProfile> | null>();
+  const [creator, setCreator] = useState<EntityCreator | null>();
   const { account } = useWeb3React<Web3Provider>();
   const user = useSelector((state: any) => state.user);
   const theme = useTheme();
