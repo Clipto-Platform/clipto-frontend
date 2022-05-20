@@ -16,10 +16,11 @@ import { PageContentWrapper, PageWrapper } from '../../components/layout/Common'
 import { NFTDetails } from '../../components/NFTDetails';
 import { NFTHistory } from '../../components/NFTHistory';
 import { OrderCard } from '../../components/OrderCard/OrderCard';
+import { SecondaryLabel } from '../../components/OrderCard/Style';
 import { TextField } from '../../components/TextField';
 import { Video } from '../../components/Video';
 import { useExchangeContract, useExchangeContractV1 } from '../../hooks/useContracts';
-import { Description, Label } from '../../styles/typography';
+import { Description, Label, Text } from '../../styles/typography';
 import { getNFTDetails, getNFTHistory } from '../../web3/nft';
 import { signMessage } from '../../web3/request';
 import {
@@ -160,6 +161,12 @@ const SelectedOrderPage = () => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'video/*,.mkv,.flv' });
 
+  const waitForIndexing = async (txHash: string) => {
+    toast.loading('Indexing your request, will be done soon');
+    await api.indexRequest(txHash);
+    toast.dismiss();
+  };
+
   const extractEvent = async (receipt: ContractReceipt, request: EntityRequest) => {
     const events = receipt.events;
     const filtered = events?.find((event) => event.event === 'DeliveredRequest');
@@ -188,6 +195,7 @@ const SelectedOrderPage = () => {
       const receipt = await transaction.wait();
 
       await extractEvent(receipt, request);
+      await waitForIndexing(transaction.hash);
 
       toast.success('Successfully completed order! Order status will be reflected shortly.');
     } catch (e) {
@@ -321,7 +329,16 @@ const SelectedOrderPage = () => {
             )}
 
             {(request?.delivered || clipDetails) && <Video src={clipDetails} />}
-            {request && <OrderCard request={request!} key={request.id} isReceived={false} />}
+
+            {request && (
+              <OrderCard
+                request={request!}
+                key={request.id}
+                displayBusiness={true}
+                isReceived={false}
+                isBusiness={false}
+              />
+            )}
             {!request && <Label>Could not find request</Label>}
             {nftDetails && <NFTDetails details={nftDetails} />}
             {history && <NFTHistory history={history} />}

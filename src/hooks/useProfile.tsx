@@ -13,6 +13,8 @@ export type CreateUserDto = {
   tweetUrl: string | undefined;
   address: string | undefined;
   lensHandle: string | undefined;
+  businessPrice: number;
+  customServices: [string];
 };
 
 export interface CreateUserDtoFull {
@@ -82,6 +84,8 @@ export const useProfile = create<UserProfile>(
     tweetUrl: undefined,
     address: undefined,
     lensHandle: undefined,
+    businessPrice: 0,
+    customServices: undefined,
     setBio: (bio: string) => {
       set((draft) => {
         draft.bio = bio;

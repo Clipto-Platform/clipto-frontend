@@ -31,6 +31,12 @@ query GetRequestById (
       description
       deadline
       delivered
+      isBusiness
+      businessName
+      businessEmail
+      businessTwitter
+      businessInfo
+      businessRequestType
       refunded
       erc20
       version
@@ -123,6 +129,8 @@ query GetCreatorById (
     txHash
     block
     timestamp
+    businessPrice
+    customServices
   }
 }
 `;
@@ -165,6 +173,12 @@ query GetCreatorRequests (
     description
     deadline
     delivered
+    isBusiness
+    businessName
+    businessEmail
+    businessTwitter
+    businessInfo
+    businessRequestType
     refunded
     erc20
     version
@@ -217,6 +231,12 @@ query GetUserRequests (
     description
     deadline
     delivered
+    isBusiness
+    businessName
+    businessEmail
+    businessTwitter
+    businessInfo
+    businessRequestType
     refunded
     erc20
     version
@@ -287,6 +307,34 @@ query GetNFTHistory(
       id
     }
     timestamp
+  }
+}
+`;
+
+export const queryGetRequestByHash = `
+query GetRequestByTxHash(
+  $txHash: String!
+) {
+  requests (
+    where: {
+      txHash: $txHash
+    }
+  ) {
+    id
+  }
+}
+`;
+
+export const queryGetCreatorByHash = `
+query GetCreatorByTxHash(
+  $txHash: String!
+) {
+  creators (
+    where: {
+      txHash: $txHash
+    }
+  ) {
+    id
   }
 }
 `;

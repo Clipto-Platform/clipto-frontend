@@ -14,7 +14,7 @@ const graphInstance = createClient({
   url: config.graphApi,
 });
 
-export const exchnageRates = async (token: string, price: number) => {
+export const exchangeRates = async (token: string, price: number) => {
   if (token == 'WMATIC') {
     token = 'MATIC';
   } else if (token == 'WETH') {
@@ -159,4 +159,39 @@ export const getNFTHistory = async (
       tokenId: parseInt(tokenId.toString()),
     })
     .toPromise();
+};
+
+export const indexRequest = async (txHash: string) => {
+  return await new Promise((resolve) => {
+    const intervalId = setInterval(async () => {
+      const response = await graphInstance
+        .query(query.queryGetRequestByHash, {
+          txHash: txHash,
+        })
+        .toPromise();
+
+      if (response.data && response.data.requests && response.data.requests.length > 0) {
+        resolve(intervalId);
+        clearInterval(intervalId);
+      }
+    }, 500);
+  });
+};
+
+export const indexCreator = async (txHash: string) => {
+  return await new Promise((resolve) => {
+    const intervalId = setInterval(async () => {
+      const response = await graphInstance
+        .query(query.queryGetCreatorByHash, {
+          txHash: txHash,
+        })
+        .toPromise();
+
+      console.log(response.data.creators);
+      if (response.data && response.data.creators && response.data.creators.length > 0) {
+        resolve(intervalId);
+        clearInterval(intervalId);
+      }
+    }, 500);
+  });
 };

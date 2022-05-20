@@ -20,6 +20,7 @@ import { OrderCardProps } from './types';
 
 const OrderCard: React.FC<OrderCardProps> = (props) => {
   const { isReceived, request } = props;
+  const displayBusiness = request.isBusiness && props.displayBusiness;
   const userAddress = props.isReceived ? props.request.requester : props.request.creator.address;
   const status = request.delivered ? (isReceived ? 'Received' : 'Paid') : 'Bid';
 
@@ -73,7 +74,47 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
       <HR />
       <OrderCardBodyContainer>
         <div style={{ marginBottom: 0 }}>
-          <SecondaryLabel style={{ marginBottom: 8 }}>Instructions</SecondaryLabel>
+          {displayBusiness && props.request.businessName?.length ? (
+            <div style={{ margin: '10px 0' }}>
+              <SecondaryLabel style={{ marginBottom: 8, marginTop: 8 }}>Business Name</SecondaryLabel>
+              <Text style={{ color: '#ffffff' }}>{props.request.businessName}</Text>
+            </div>
+          ) : (
+            ''
+          )}
+          {displayBusiness && props.request.businessEmail?.length ? (
+            <div style={{ margin: '10px 0' }}>
+              <SecondaryLabel style={{ marginBottom: 8, marginTop: 8 }}>Business Email</SecondaryLabel>
+              <Text style={{ color: '#ffffff' }}>{props.request.businessEmail}</Text>
+            </div>
+          ) : (
+            ''
+          )}
+          {displayBusiness && props.request.businessTwitter?.length ? (
+            <>
+              <SecondaryLabel style={{ marginBottom: 8, marginTop: 8 }}>Business Twiter</SecondaryLabel>
+              <Text style={{ color: '#ffffff' }}>
+                <a
+                  href={`https://twitter.com/${props.request.businessTwitter}`}
+                  target="_blank"
+                  style={{ color: '#EDE641' }}
+                >
+                  @{props.request.businessTwitter}
+                </a>
+              </Text>
+            </>
+          ) : (
+            ''
+          )}
+          {displayBusiness && props.request.businessInfo?.length ? (
+            <>
+              <SecondaryLabel style={{ marginBottom: 8, marginTop: 8 }}>About Business</SecondaryLabel>
+              <Text style={{ color: '#ffffff' }}>{props.request.businessInfo}</Text>
+            </>
+          ) : (
+            ''
+          )}
+          <SecondaryLabel style={{ marginBottom: 8, marginTop: 10 }}>Instructions</SecondaryLabel>
           <Text style={{ color: '#ffffff' }}>{request.description}</Text>
         </div>
         <Row style={{ flex: 1 }}>{props.children}</Row>
