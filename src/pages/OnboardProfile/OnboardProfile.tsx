@@ -48,9 +48,9 @@ const OnboardProfilePage = () => {
 
   const waitForIndexing = async (txHash: string) => {
     toast.dismiss();
-    toast.loading('Indexing your data, will be done soon');
+    // toast.loading('Indexing your data, will be done soon');
     await api.indexCreator(txHash);
-    toast.dismiss();
+    // toast.dismiss();
   };
 
   const addFormFields = () => {

@@ -162,9 +162,9 @@ const SelectedOrderPage = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'video/*,.mkv,.flv' });
 
   const waitForIndexing = async (txHash: string) => {
-    toast.loading('Indexing your request, will be done soon');
+    // toast.loading('Indexing your request, will be done soon');
     await api.indexRequest(txHash);
-    toast.dismiss();
+    // toast.dismiss();
   };
 
   const extractEvent = async (receipt: ContractReceipt, request: EntityRequest) => {

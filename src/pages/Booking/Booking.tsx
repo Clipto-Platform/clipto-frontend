@@ -129,9 +129,9 @@ const BookingPage = () => {
   };
 
   const waitForIndexing = async (txHash: string) => {
-    toast.loading('Indexing your request, will be done soon');
+    // toast.loading('Indexing your request, will be done soon');
     await indexRequest(txHash);
-    toast.dismiss();
+    // toast.dismiss();
   };
 
   const addAllowance = async (amount: string) => {
