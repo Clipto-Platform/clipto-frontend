@@ -120,6 +120,7 @@ const Slides = (props: any) => {
             index={index}
             backgroundM={props.backgroundM}
             backgroundD={props.backgroundD}
+            style={index === 2 ? { backgroundSize: '100%' } : {}}
           >
             <OpacityGradient />
             <HeaderSpacer />

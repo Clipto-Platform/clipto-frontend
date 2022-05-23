@@ -31,7 +31,6 @@ export const BackgroundWrapper = styled.div<BackgroundWrapperProps>`
   overflow: hidden;
   @media screen and (max-width: 601px) {
     background-position: center center;
-    background-size: 100%;
     background-repeat: no-repeat;
     background-image: url(${(props) => props.backgroundM[props.index]});
   }
