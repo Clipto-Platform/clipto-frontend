@@ -388,7 +388,10 @@ const OnboardProfilePage = () => {
 
                         <div style={{ marginBottom: 24 }}>
                           <TextField
-                            onChange={handleChange('businessPrice')}
+                            onChange={(e) => {
+                              handleChangeCustomForm(0, 'price', e);
+                              setFieldValue('businessPrice', e);
+                            }}
                             label="Minimum amount to charge for business bookings"
                             description={`Fans will be able to pay this in ${config.defaultToken}`}
                             placeholder="0.5"
@@ -396,6 +399,7 @@ const OnboardProfilePage = () => {
                             type="number"
                             endText={config.defaultToken}
                             onBlur={handleBlur}
+                            onKeyDown={(e) => ['e', 'E', '+', '-'].includes(e.key) && e.preventDefault()}
                             errorMessage={errors.businessPrice}
                           />
                           <FeeDescription />
@@ -433,6 +437,7 @@ const OnboardProfilePage = () => {
                                 endText={config.defaultToken}
                                 type="number"
                                 inputStyles={{ width: 220 }}
+                                onKeyDown={(e) => ['e', 'E', '+', '-'].includes(e.key) && e.preventDefault()}
                                 value={index === 0 ? values.businessPrice : elm.price}
                                 onChange={(e) => {
                                   if (index === 0) setFieldValue('businessPrice', e);
