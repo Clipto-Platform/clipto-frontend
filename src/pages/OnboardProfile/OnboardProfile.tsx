@@ -411,7 +411,7 @@ const OnboardProfilePage = () => {
                             icons={false}
                             onChange={(e: any) => setIsBusiness(e.target.checked)}
                           />
-                          <span style={{ paddingLeft: '10px' }}>Open to receive booking requests</span>
+                          <span style={{ paddingLeft: '10px' }}>Open to receive business booking requests</span>
                         </div>
 
                         <div style={{ fontWeight: 'bold' }}>Custom Services</div>
