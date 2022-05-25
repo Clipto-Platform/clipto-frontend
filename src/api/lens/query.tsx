@@ -124,7 +124,7 @@ export const mutationFollow = `
       follow: [
         {
           profile: $profile,
-          followModule: {profileFollowModule: {profileId: "0x1052"}}
+          # followModule: {profileFollowModule: {profileId: $profile}}
         }
       ]
     }) {

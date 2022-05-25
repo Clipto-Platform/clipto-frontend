@@ -280,7 +280,7 @@ const OnboardProfilePage = () => {
                       demos: demos,
                       price: parseFloat(values.price),
                       profilePicture: values.profilePicture,
-                      lensHandle: config.lens.getHandleToSearch(values.lensHandle),
+                      lensHandle: values.lensHandle,
                       businessPrice: isBusiness ? values.businessPrice : 0,
                       customServices: customServicesData.map((it: any) => {
                         return JSON.stringify({
@@ -524,6 +524,7 @@ const OnboardProfilePage = () => {
                         <div style={{ marginBottom: 12 }}>
                           {lensProfiles && lensProfiles.length > 0 && <Dropdown
                             formLabel="Connect Lens Profile"
+                            
                             onChange={async (e) => {
                               if (e.target.value === CREATE_LENS_TEXT) {
                                 setCreateLens(true)

@@ -9,7 +9,7 @@ export function Dropdown(props: {
   formLabel: string;
 }) {
   return (
-    <DropdownWrapper onChange={props.onChange}>
+    <DropdownWrapper onChange={props.onChange} defaultValue={'sdf'}>
       <StyledLabel htmlFor={props.name}>{props.formLabel}</StyledLabel>
       <StyledSelectDiv>
         <StyledSelect id={props.name} name={props.name}>

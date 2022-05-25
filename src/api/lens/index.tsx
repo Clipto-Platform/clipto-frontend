@@ -1,5 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
+import { MdOutlineDirectionsBoatFilled } from 'react-icons/md';
 import { createClient } from 'urql';
 import config, { RELAY_ON } from '../../config/config';
 import { getFollowNftContract, getLensHub } from './contract';
@@ -140,6 +141,8 @@ export const signUp = async (address: string) => {
 
 //Need to check what type of follow module - (don't want to have to pay for a fee)
 export const follow = async (profileId: string, accessToken: string, library: Web3Provider) => {
+  console.log(profileId)
+  console.log(accessToken)
   const result = await graphInstance
     .mutation(
       mutationFollow,
