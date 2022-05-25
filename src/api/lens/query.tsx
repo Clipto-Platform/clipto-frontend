@@ -113,6 +113,7 @@ query Profiles ($handle: Handle!){
   profiles(request: { handles: [$handle], limit: 1 }) {
     items {
       id
+      ownedBy
     }
   }
 }

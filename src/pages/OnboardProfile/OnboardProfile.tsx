@@ -18,14 +18,10 @@ import { useFee } from '../../hooks/useFee';
 import { useProfile } from '../../hooks/useProfile';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
-<<<<<<< HEAD
-import { OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
+import { OnboardProfile, OnboardTitle, ProfileDetailsContainer, CustomServices } from './Style';
 import { ModalDialog } from '../../components/Dialog'
 import create, { State } from 'zustand';
 import { immer } from '../../utils/zustand';
-=======
-import { OnboardProfile, OnboardTitle, ProfileDetailsContainer, CustomServices } from './Style';
->>>>>>> test
 import Toggle from 'react-toggle';
 import './ToggleStyle.css';
 import { Description } from '../../styles/typography';

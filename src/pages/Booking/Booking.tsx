@@ -131,8 +131,14 @@ const BookingPage = () => {
     console.log(creator)
     if (account && creator && creator.lensHandle) {
       lens.getProfileByHandle(creator.lensHandle).then(res => {
-        console.log(account)
-        setCreatorLensId(res.data.profiles.items[0].id)
+        const profile = res.data.profiles.items[0]
+        if (profile.ownedBy.toUpperCase() === creator.address.toUpperCase()) { // lens profile must be owned by creator to display it to user
+          //Maybe consider moving this code to the redux
+          setCreatorLensId(profile.id) 
+        } else {
+          throw new Error('Validation lens error')
+        }
+
         lens.isFollowing(account, res.data.profiles.items[0].id).then((res) => {
           console.log(res)
           if (res) {
@@ -279,25 +285,35 @@ const BookingPage = () => {
                           color: 'white'
                           }}
                         onPress={async (e) => {
-                          toast.loading(doesFollow ? 'Are you sure you want to lose your follow NFT?' : 'Awaiting follow confirmation');
-                          const accessToken = await lens.getAccess(account);
-                          if (!accessToken || !creatorLensId) return;
-                          const access = accessToken.data.authenticate.accessToken;
-                          const txHash = doesFollow
-                            ? await lens.unfollow(creatorLensId, access, library)
-                            : await lens.follow(creatorLensId, access, library);
+                          try {
+                            toast.loading('Signing into Lens')
+                            const accessToken = await lens.getAccess(account);
+                            toast.dismiss()
+                            toast.loading(doesFollow ? 'Are you sure you want to lose your follow NFT?' : 'Awaiting follow confirmation');
+                            if (!accessToken || !creatorLensId) return;
+                            const access = accessToken.data.authenticate.accessToken;
+                            const txHash = doesFollow
+                                ? await lens.unfollow(creatorLensId, access, library)
+                                : await lens.follow(creatorLensId, access, library);
+
+                            
+                            toast.dismiss();
+                            toast.loading('Waiting for transaction to complete');
+                            console.log(txHash);
+                            if (!txHash) {
+                              console.error('no txHash detected!');
+                              return;
+                            }
+                            const f = await lens.pollUntilIndexed(txHash, access);
+                            console.log(f);
+                            setToggle(!toggle); //todo(jonathanng) - this is trashcan code!
+                            toast.dismiss();
+                            toast.success('Transaction is finished');
+                        } catch (e: any) {
                           toast.dismiss();
-                          toast.loading('Waiting for transaction to complete');
-                          console.log(txHash);
-                          if (!txHash) {
-                            console.error('no txHash detected!');
-                            return;
-                          }
-                          const f = await lens.pollUntilIndexed(txHash, access);
-                          console.log(f);
-                          setToggle(!toggle); //todo(jonathanng) - this is trashcan code!
-                          toast.dismiss();
-                          toast.success('Transaction is finished');
+                          toast.error((e && e.message) || 'Error.')
+                          return;
+                        }
                         }}
                       >
                         {doesFollow ? 'Following' : 'Follow'}
@@ -306,7 +322,7 @@ const BookingPage = () => {
                   </div>
                 </FlexRow>
                 <FlexRow style={{ marginBottom: 24 }}>
-                  <Description>{creator.bio}</Description>
+                  <Description style={{color: 'white'}}>{creator.bio}</Description>
                 </FlexRow>
 
                 <HR style={{ marginBottom: 36 }} />

@@ -86,8 +86,6 @@ export const useProfile = create<UserProfile>(
     tweetUrl: undefined,
     address: undefined,
     lensHandle: undefined,
-    businessPrice: 0,
-    customServices: undefined,
     setBio: (bio: string) => {
       set((draft) => {
         draft.bio = bio;
