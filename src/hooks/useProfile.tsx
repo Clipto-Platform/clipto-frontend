@@ -80,6 +80,8 @@ export const useProfile = create<UserProfile>(
     profilePicture: undefined,
     deliveryTime: undefined,
     demos: [],
+    businessPrice: 0,
+    customServices: [''],
     price: undefined,
     tweetUrl: undefined,
     address: undefined,

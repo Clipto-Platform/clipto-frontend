@@ -18,10 +18,14 @@ import { useFee } from '../../hooks/useFee';
 import { useProfile } from '../../hooks/useProfile';
 import { Address, Number, TweetUrl, Url } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
+<<<<<<< HEAD
 import { OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
 import { ModalDialog } from '../../components/Dialog'
 import create, { State } from 'zustand';
 import { immer } from '../../utils/zustand';
+=======
+import { OnboardProfile, OnboardTitle, ProfileDetailsContainer, CustomServices } from './Style';
+>>>>>>> test
 import Toggle from 'react-toggle';
 import './ToggleStyle.css';
 import { Description } from '../../styles/typography';
@@ -117,9 +121,9 @@ const OnboardProfilePage = () => {
 
   const waitForIndexing = async (txHash: string) => {
     toast.dismiss();
-    toast.loading('Indexing your data, will be done soon');
+    // toast.loading('Indexing your data, will be done soon');
     await api.indexCreator(txHash);
-    toast.dismiss();
+    // toast.dismiss();
   };
 
   const addFormFields = () => {
@@ -398,7 +402,16 @@ const OnboardProfilePage = () => {
                   validateOnBlur={false}
                   validateOnChange={false}
                 >
-                  {({ handleChange, handleBlur, handleSubmit, values, errors, touched, validateForm }) => {
+                  {({
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    values,
+                    errors,
+                    touched,
+                    validateForm,
+                    setFieldValue,
+                  }) => {
                     return (
                       <>
                         <OverlayContainer>
@@ -511,11 +524,11 @@ const OnboardProfilePage = () => {
                           <TextField
                             onChange={handleChange('price')}
                             label="Minimum amount to charge for bookings"
-                            description={`Fans will be able to pay this in ${config.chainSymbol}`}
+                            description={`Fans will be able to pay this in ${config.defaultToken}`}
                             placeholder="0.5"
                             value={values.price}
                             type="number"
-                            endText={config.chainSymbol}
+                            endText={config.defaultToken}
                             onBlur={handleBlur}
                             errorMessage={errors.price}
                           />
@@ -553,11 +566,11 @@ const OnboardProfilePage = () => {
                           <TextField
                             onChange={handleChange('businessPrice')}
                             label="Minimum amount to charge for business bookings"
-                            description={`Fans will be able to pay this in ${config.chainSymbol}`}
+                            description={`Fans will be able to pay this in ${config.defaultToken}`}
                             placeholder="0.5"
                             value={values.businessPrice.toString()}
                             type="number"
-                            endText={config.chainSymbol}
+                            endText={config.defaultToken}
                             onBlur={handleBlur}
                             errorMessage={errors.businessPrice}
                           />
@@ -577,7 +590,7 @@ const OnboardProfilePage = () => {
                         <Description style={{ marginTop: 7 }}>
                           Add in custom services (Service + Time+ Price)
                         </Description>
-                        <div style={{ marginBottom: 48 }}>
+                        <CustomServices>
                           {customServicesData.map((elm: any, index: any) => (
                             <div style={{ display: 'flex' }} key={index}>
                               <TextField
@@ -593,11 +606,14 @@ const OnboardProfilePage = () => {
                                 onChange={(e) => handleChangeCustomForm(index, 'time', e)}
                               />
                               <TextField
-                                endText="MATIC"
+                                endText={config.defaultToken}
                                 type="number"
                                 inputStyles={{ width: 220 }}
-                                value={index === 0 && values.businessPrice ? values.businessPrice : elm.price}
-                                onChange={(e) => handleChangeCustomForm(index, 'price', e)}
+                                value={index === 0 ? values.businessPrice : elm.price}
+                                onChange={(e) => {
+                                  if (index === 0) setFieldValue('businessPrice', e);
+                                  handleChangeCustomForm(index, 'price', e);
+                                }}
                               />
                               {index ? (
                                 <div
@@ -632,7 +648,7 @@ const OnboardProfilePage = () => {
                               + Add
                             </a>{' '}
                           </div>
-                        </div>
+                        </CustomServices>
 
                         <div style={{ marginBottom: 12 }}>
                           <TextField

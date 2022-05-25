@@ -25,7 +25,7 @@ export const exchangeRates = async (token: string, price: number) => {
       currency: token,
     },
   });
-  const convertedPrice = (price / parseFloat(rates.data.data.rates['MATIC'])).toFixed(7);
+  const convertedPrice = (price / parseFloat(rates.data.data.rates['USDC'])).toFixed(7);
   return convertedPrice;
 };
 

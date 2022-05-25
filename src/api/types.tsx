@@ -27,7 +27,7 @@ export interface CreatorData {
   demos: string[];
   lensHandle?: string;
   businessPrice: number;
-  customServices: [];
+  customServices: string[];
 }
 
 export interface EntityCreator extends CreatorData {

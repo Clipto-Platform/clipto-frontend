@@ -50,7 +50,7 @@ const BookingPage = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState();
-  const [token, setToken] = useState<ERCTokenType>('MATIC');
+  const [token, setToken] = useState<ERCTokenType>('USDC');
   const [price, setPrice] = useState<number>(0);
   const [doesFollow, setDoesFollow] = useState<boolean>(false);
   const [toggle, setToggle] = useState<boolean>(true);
@@ -78,13 +78,14 @@ const BookingPage = () => {
   useEffect(() => {
     if (loaded && creator) {
       setBusinessPrice(
-        creator.customServices.map((elm: any) => {
-          elm = JSON.parse(elm);
-          return elm.price;
-        })[businessIndex],
+        creator.customServices &&
+          creator.customServices.map((elm: any) => {
+            elm = JSON.parse(elm);
+            return elm.price;
+          })[businessIndex],
       );
     }
-  }, [loaded, businessIndex, businessPrice]);
+  }, [loaded, businessIndex]);
 
   useEffect(() => {
     if (loaded && creator) {
@@ -115,7 +116,7 @@ const BookingPage = () => {
           }
         } catch (e) {
           setIsTwitterAccount(false);
-          if (uses === UsesOptions.business) setInvalidTwitter('Invalid twitter handle.');
+          if (uses === UsesOptions.business) setInvalidTwitter('Invalid twitter handle, try to removing @ sign.');
         }
       }, 3000);
     } else {
@@ -153,9 +154,9 @@ const BookingPage = () => {
   };
 
   const waitForIndexing = async (txHash: string) => {
-    toast.loading('Indexing your request, will be done soon');
+    // toast.loading('Indexing your request, will be done soon');
     await indexRequest(txHash);
-    toast.dismiss();
+    // toast.dismiss();
   };
 
   const addAllowance = async (amount: string) => {
@@ -211,11 +212,12 @@ const BookingPage = () => {
       }
 
       await waitForTransaction(transaction);
-      await waitForIndexing(transaction.hash);
 
       toast.dismiss();
       toast.success('Booking completed, your Order has been created.');
       navigate('/orders');
+
+      await waitForIndexing(transaction.hash);
     } catch (e) {
       toast.dismiss();
       toast.error(`The transaction failed. Make sure you have enough ${token} for gas.`);
@@ -317,11 +319,12 @@ const BookingPage = () => {
                     businessEmail: '',
                     businessTwitter: '',
                     businessInfo: '',
-                    businessRequestType: creator.customServices.map((elm: any) => {
-                      elm = JSON.parse(elm);
-                      return `${elm.description}: ${elm.time} - ${elm.price} MATIC`;
-                    })[0],
-                    selectedBusinessOptionPrice: businessPrice && businessPrice.toString(),
+                    businessRequestType:
+                      creator.customServices &&
+                      creator.customServices.map((elm: any) => {
+                        elm = JSON.parse(elm);
+                        return `${elm.description}: ${elm.time} - ${elm.price} USDC`;
+                      })[0],
                   }}
                   validate={({
                     deadline,
@@ -332,29 +335,21 @@ const BookingPage = () => {
                     businessTwitter,
                     businessInfo,
                     businessRequestType,
-                    selectedBusinessOptionPrice,
                   }) => {
                     const errors: any = {};
                     try {
                       Number.parse(parseFloat(amount));
-                      if (parseFloat(amount) < convertToFloat(creator.price)) {
-                        errors.amount = `Amount must be greater than ${creator.price}`;
+                      if (uses === UsesOptions.personal && parseFloat(amount) < convertToFloat(creator.price)) {
+                        errors.amount = `Amount must be greater than ${price}`;
                       }
-                      if (
-                        uses === UsesOptions.business &&
-                        parseFloat(amount) < convertToFloat(selectedBusinessOptionPrice)
-                      ) {
-                        errors.amount = `Amount must be greater than ${selectedBusinessOptionPrice}`;
+                      if (uses === UsesOptions.business && parseFloat(amount) < convertToFloat(price)) {
+                        errors.amount = `Amount must be greater than ${price}`;
                       }
                       if (parseFloat(amount) > 700) {
-                        errors.amount = `Amount must be less than 700 Matic`;
+                        errors.amount = `Amount must be less than 700 `;
                       }
-                      console.log(businessRequestType, selectedBusinessOptionPrice);
-                      if (
-                        uses === UsesOptions.business &&
-                        parseFloat(amount) < convertToFloat(selectedBusinessOptionPrice)
-                      ) {
-                        errors.amount = `Amount must be greater than ${selectedBusinessOptionPrice} Matic`;
+                      if (uses === UsesOptions.business && parseFloat(amount) < convertToFloat(price)) {
+                        errors.amount = `Amount must be greater than ${price} `;
                       }
                     } catch {
                       errors.amount = `Please enter a number.`;
@@ -403,7 +398,7 @@ const BookingPage = () => {
                         <FlexRow style={{ marginBottom: 7 }}>
                           <Label>Personal use</Label>
                           <Label style={{ fontSize: 14 }}>
-                            {formatETH(convertToFloat(creator.price))} {config.chainSymbol}+
+                            {formatETH(convertToFloat(creator.price))} {config.defaultToken}+
                           </Label>
                         </FlexRow>
                         <Description>Personalized video for you or someone else</Description>
@@ -419,7 +414,7 @@ const BookingPage = () => {
                           <FlexRow style={{ marginBottom: 7 }}>
                             <Label>Business use</Label>
                             <Label style={{ fontSize: 14 }}>
-                              {formatETH(convertToFloat(businessPrice))} {config.chainSymbol}+
+                              {formatETH(convertToFloat(businessPrice))} {config.defaultToken}+
                             </Label>
                           </FlexRow>
                           <Description>Engaging video content for your company, customers, or employees</Description>
@@ -435,7 +430,7 @@ const BookingPage = () => {
                                       id={index.toString()}
                                       name="businessOption"
                                       defaultChecked={index === 0}
-                                      value={`${elm.description}: ${elm.time} - ${elm.price} MATIC`}
+                                      value={`${elm.description}: ${elm.time} - ${elm.price} USDC`}
                                       onChange={(e: any) => {
                                         setBusinessIndex(index);
                                         // setFieldValue('selectedBusinessOptionPrice', elm.price);
@@ -443,7 +438,7 @@ const BookingPage = () => {
                                       }}
                                     />
                                     <label style={{ marginLeft: 10, cursor: 'pointer' }} htmlFor={index.toString()}>
-                                      {`${elm.description}: ${elm.time} - ${elm.price} MATIC`}
+                                      {`${elm.description}: ${elm.time} - ${elm.price} USDC`}
                                     </label>
                                   </div>
                                 );
@@ -497,7 +492,7 @@ const BookingPage = () => {
                           <div style={{ marginBottom: 40 }}>
                             <TextField
                               label="Twitter"
-                              placeholder="@jimmy"
+                              placeholder="jimmy"
                               isSuccess={isTwitterAccount}
                               isLoader={isLoader && !isTwitterAccount && !invalidTwitter}
                               onChange={(e: any) => {
