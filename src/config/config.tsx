@@ -1,11 +1,11 @@
 import { Config } from './types';
 
-export const RELAY_ON = false 
+export const RELAY_ON = false //broadcast api for free gas on lens
 
 const configCommon = {
   minDeliveryTime: 3,
 
-  email: 'admin@clipto.io',
+  email: undefined, //'admin@clipto.io',
   discord: 'https://discord.com/invite/fpVMmerNZm',
   twitter: 'https://twitter.com/CliptoDAO',
   documentation: 'https://docs.clipto.io/',

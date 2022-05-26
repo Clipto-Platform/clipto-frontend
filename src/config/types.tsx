@@ -28,7 +28,7 @@ export interface Config {
 
   minDeliveryTime: number;
 
-  email: string;
+  email: string | undefined;
   discord: string;
   twitter: string;
   documentation: string;

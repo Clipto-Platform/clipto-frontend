@@ -103,7 +103,7 @@ const OnboardProfilePage = () => {
       profileRes.data.createProfile &&
       !profileRes.data.createProfile.reason
     ) {
-      getProfiles(account);
+      await getProfiles(account);
     }
     return profileRes
   }
@@ -294,6 +294,7 @@ const OnboardProfilePage = () => {
                       });
                     }),
                   };
+                  console.log('asdfasdf')
                   hasAccount ? await updateUserProfile(creatorData) : await createUserProfile(creatorData);
                   setLoading(false);
                 }}
@@ -393,7 +394,6 @@ const OnboardProfilePage = () => {
                     }
                     if (getProfileByHandleRes.data.profiles.items.length > 0) {
                       errors.lensHandle = 'profile handle taken'
-                      setShowLensDialog(true)
                       return errors;
                     }
                     const res = await createLensProfile(aggLensHandle)
@@ -442,11 +442,13 @@ const OnboardProfilePage = () => {
                               onPress={async () => {
                                 setLoading(true);
                                 const errors = await validateForm();
-                                if (Object.keys(errors).length != 0) {
-                                  console.error(errors)
+                                console.log(errors)
+                                if (Object.keys(errors).length == 1 && errors.lensHandle == 'profile handle taken') {
+                                  setShowLensDialog(false)
+                                } else if (Object.keys(errors).length > 0) {
                                   toast.error('Please fix the errors.');
                                 } else {
-                                  setShowLensDialog(false)
+                                  console.log('submitting')
                                   handleSubmit();
                                 }
                                 setLoading(false);
@@ -694,7 +696,9 @@ const OnboardProfilePage = () => {
                           setLoading(true);
                           const errors = await validateForm();
                           console.log(errors)
-                          if (Object.keys(errors).length != 0) {
+                          if (Object.keys(errors).length == 1 && errors.lensHandle == 'profile handle taken') {
+                            setShowLensDialog(true)
+                          } else if (Object.keys(errors).length > 0) {
                             toast.error('Please fix the errors.');
                           } else {
                             handleSubmit();
