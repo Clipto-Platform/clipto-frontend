@@ -195,14 +195,20 @@ const OnboardProfilePage = () => {
                       price: parseFloat(values.price),
                       profilePicture: values.profilePicture,
                       businessPrice: isBusiness ? values.businessPrice : 0,
-                      customServices: customServicesData.map((it: any) => {
-                        return JSON.stringify({
-                          description: it.description,
-                          time: it.time,
-                          price: it.price,
-                        });
-                      }),
+                      customServices: customServicesData
+                        .filter(
+                          (cs: any) =>
+                            cs.description.length && cs.time && cs.time.length && cs.price && cs.price.length,
+                        )
+                        .map((it: any) => {
+                          return JSON.stringify({
+                            description: it.description,
+                            time: it.time,
+                            price: it.price,
+                          });
+                        }),
                     };
+                    console.log(creatorData.customServices);
                     hasAccount ? await updateUserProfile(creatorData) : await createUserProfile(creatorData);
                     setLoading(false);
                   }}
