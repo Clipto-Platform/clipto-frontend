@@ -81,15 +81,14 @@ export const getProfileByHandle = async (handle: string) => {
 // this is purely here to show you how the public API hooks together
 // todo - figure out how to use the context provider
 
-export const signText = (text: string) => {
-  const { account, library } = useWeb3React<Web3Provider>();
+export const signText = (text: string, library: Web3Provider) => {
   const signer = library!.getSigner();
 
   return signer.signMessage(text);
 };
 
 //gets access and request tokens
-export const getAccess = async (address: string) => {
+export const getAccess = async (address: string, library: Web3Provider) => {
   let localAddress = localStorage.getItem('lensAddress'); //needs for when user switches accounts
   let localAccess = localStorage.getItem('lensAccessToken'); // Note - this should be refactored to be in the state and in a hook inside
   //This is a major security flaw! ^^ Vulnerable to XSS
@@ -108,7 +107,7 @@ export const getAccess = async (address: string) => {
   }
   const challengeResponse = await generateChallenge(address);
   // sign the text with the wallet
-  const signature = challengeResponse && (await signText(challengeResponse.data.challenge.text));
+  const signature = challengeResponse && (await signText(challengeResponse.data.challenge.text, library));
   const authResponse = signature && (await authenticate(address, signature));
   !authResponse && console.error('Unable to login in');
   if (authResponse && authResponse.data) {
@@ -119,11 +118,11 @@ export const getAccess = async (address: string) => {
 };
 
 //sign the address to a new lens account if address has zero lens accounts
-export const signUp = async (address: string) => {
+export const signUp = async (address: string, library: Web3Provider) => {
   const profileResponse = await getProfile(address);
   if (profileResponse && profileResponse.data.profiles.items.length === 0) {
     try {
-      const accessResponse = await getAccess(address);
+      const accessResponse = await getAccess(address, library);
       if (accessResponse && accessResponse.data) {
         const { accessToken, refreshToken } = accessResponse.data.authenticate;
         return createProfile({ handle: 'a' }, accessToken);

@@ -296,7 +296,7 @@ const BookingPage = () => {
                         onPress={async (e) => {
                           try {
                             toast.loading('Signing into Lens');
-                            const accessToken = await lens.getAccess(account);
+                            const accessToken = await lens.getAccess(account, library as Web3Provider);
                             toast.dismiss();
                             toast.loading(
                               doesFollow
