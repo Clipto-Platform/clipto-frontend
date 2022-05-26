@@ -47,7 +47,7 @@ export const RightPanel: React.FC<RightPanelProps> = (props) => {
   return (
     <>
       {!loaded && <RightPanelLoading style={{ width: '100%' }} />}
-      {loaded && !creator && <Label>Error loading creator</Label>}
+      {loaded && !creator && <Label>Error loading creator. Try reloading the page</Label>}
       {loaded && creator && props.children(creator, account || '')}
     </>
   );

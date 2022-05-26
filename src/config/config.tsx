@@ -1,9 +1,11 @@
 import { Config } from './types';
 
+export const RELAY_ON = false //broadcast api for free gas on lens
+
 const configCommon = {
   minDeliveryTime: 3,
 
-  email: 'admin@clipto.io',
+  email: undefined, //'admin@clipto.io',
   discord: 'https://discord.com/invite/fpVMmerNZm',
   twitter: 'https://twitter.com/CliptoDAO',
   documentation: 'https://docs.clipto.io/',
@@ -31,6 +33,12 @@ const configTest = {
   graphApi: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-tstnet',
   apiUrl: 'https://testapi.clipto.io',
 
+  lens: {
+    url: 'https://api-mumbai.lens.dev/',
+    contract: '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82',
+    getHandleToSearch: (handle: string) => `${handle}.test` //this is to be used when querying if a lensHandle exists. When you create a profile, a postfix is automatically attached
+  },
+
   getContractExplorer: (address: string) => `https://mumbai.polygonscan.com/address/${address}`,
   getTokenExplorer: (address: string) => `https://mumbai.polygonscan.com/token/${address}`,
   getOpenSeaExplorer: (address: string, tokenId: number) =>
@@ -56,6 +64,12 @@ const configProd = {
   rpcUrl: 'https://polygon-mainnet.g.alchemy.com/v2/Wk4fc10DkXi2lhLq30tw_eSHPuzUyRnV',
   graphApi: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-mainnet',
   apiUrl: 'https://api.clipto.io',
+
+  lens: {
+    url: 'https://api.lens.dev',
+    contract: '0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d', 
+    getHandleToSearch: (handle: string) => `${handle}.lens` //this is to be used when querying if a lensHandle exists. When you create a profile, a postfix is automatically attached
+  },
 
   getContractExplorer: (address: string) => `https://polygonscan.com/address/${address}`,
   getTokenExplorer: (address: string) => `https://polygonscan.com/token/${address}`,
