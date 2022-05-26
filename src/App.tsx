@@ -31,9 +31,9 @@ function App() {
     <GraphQLProvider value={graphInstance}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <ThemeProvider theme={theme}>
-          <ToastContainer 
-            position='bottom-center'
-            theme='dark'
+          <ToastContainer
+            position="bottom-center"
+            theme="dark"
             limit={1}
             newestOnTop={false}
             closeOnClick

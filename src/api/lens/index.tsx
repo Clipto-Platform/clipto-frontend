@@ -1,4 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
+import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import { MdOutlineDirectionsBoatFilled } from 'react-icons/md';
 import { createClient } from 'urql';
@@ -79,10 +80,10 @@ export const getProfileByHandle = async (handle: string) => {
 // It will also assume that you have already done all the connecting to metamask
 // this is purely here to show you how the public API hooks together
 // todo - figure out how to use the context provider
-export const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
 
 export const signText = (text: string) => {
-  const signer = ethersProvider.getSigner();
+  const { account, library } = useWeb3React<Web3Provider>();
+  const signer = library!.getSigner();
 
   return signer.signMessage(text);
 };
