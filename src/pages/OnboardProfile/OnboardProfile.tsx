@@ -147,10 +147,11 @@ const OnboardProfilePage = () => {
       const txResult = await exchangeContractV1.updateCreator(JSON.stringify(creatorData));
 
       await txResult.wait();
-      await waitForIndexing(txResult.hash);
+      // await waitForIndexing(txResult.hash);
 
       toast.success('Changes will be reflected soon!');
       navigate(`/creator/${account}`);
+      toast.dismiss();
     } catch (err: any) {
       toast.dismiss();
       toast.error(err.message);
@@ -577,7 +578,10 @@ const OnboardProfilePage = () => {
 
                       <div style={{ marginBottom: 24 }}>
                         <TextField
-                          onChange={handleChange('businessPrice')}
+                          onChange={(e) => {
+                            setFieldValue('businessPrice', e);
+                            handleChangeCustomForm(0, 'price', e);
+                          }}
                           label="Minimum amount to charge for business bookings"
                           description={`Fans will be able to pay this in ${config.defaultToken}`}
                           placeholder="0.5"
