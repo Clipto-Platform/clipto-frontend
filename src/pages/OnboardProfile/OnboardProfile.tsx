@@ -203,7 +203,13 @@ const OnboardProfilePage = () => {
               const creator = res.data.creator;
               if (creator.businessPrice > 0) setIsBusiness(true);
               if (!!creator.customServices && creator.customServices.length) {
-                setCustomServicesData(creator.customServices.map((it) => JSON.parse(it)));
+                setCustomServicesData(
+                  creator.customServices
+                    .map((it) => JSON.parse(it))
+                    .filter(
+                      (cs: any) => cs.description.length && cs.time && cs.time.length && cs.price && cs.price.length,
+                    ),
+                );
               }
               setHasAccount(true);
               setUserProfileDB(creator);
@@ -221,7 +227,12 @@ const OnboardProfilePage = () => {
     }
   }, [account]);
 
-  if (!loaded) return <Loader color="#fff" />;
+  if (!loaded)
+    return (
+      <div style={{ textAlign: 'center', position: 'relative', top: '50vh', height: '100vh' }}>
+        <Loader color="#fff" />
+      </div>
+    );
   return (
     <>
       <PageWrapper>
