@@ -81,6 +81,32 @@ query GetAllCreators (
 }
 `;
 
+export const queryGetCreatorsByLensHandle = `
+query GetAllCreators ($lensHandles: [String]!) {
+  creators(
+    orderBy: id,
+    where: {lensHandle_in: $lensHandles}
+    orderDirection: asc
+  ){
+    id
+    address
+    metadataURI
+    nftTokenAddress
+    twitterHandle
+    bio
+    deliveryTime
+    lensHandle
+    demos
+    profilePicture
+    userName
+    price
+    txHash
+    block
+    timestamp
+  }
+}
+`;
+
 export const queryGetCreatorById = `
 query GetCreatorById (
   $id: String!,
@@ -95,6 +121,7 @@ query GetCreatorById (
     twitterHandle
     bio
     deliveryTime
+    lensHandle
     demos
     profilePicture
     userName

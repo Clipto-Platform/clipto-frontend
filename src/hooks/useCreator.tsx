@@ -8,6 +8,7 @@ export const useCreator = (creatorId: string | undefined | null) => {
   useEffect(() => {
     const getCreatorData = async () => {
       const response = await api.creatorById(creatorId || '');
+      console.log(response)
       if (response.data) {
         setCreator(response.data.creator);
         setLoaded(true);

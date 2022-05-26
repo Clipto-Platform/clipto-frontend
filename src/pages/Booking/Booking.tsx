@@ -19,7 +19,7 @@ import { PageContentWrapper, PageWrapper } from '../../components/layout/Common'
 import { TextField } from '../../components/TextField';
 import config from '../../config/config';
 import { ERCTokenType } from '../../config/types';
-import { getErc20Contract, useExchangeContractV1 } from '../../hooks/useContracts';
+import { getErc20Contract, getProviderOrSigner, useExchangeContractV1 } from '../../hooks/useContracts';
 import { useCreator } from '../../hooks/useCreator';
 import { useFee } from '../../hooks/useFee';
 import { Description, Label } from '../../styles/typography';
@@ -28,6 +28,12 @@ import { convertToFloat, convertToInt, formatETH, removeTrailingZero } from '../
 import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
+import { ERC20__factory } from '../../contracts';
+import axios from 'axios';
+import * as lens from '../../api/lens';
+import { useQuery } from 'urql';
+import { queryProfile } from '../../api/lens/query';
+import { ProfileSearchResult } from '../../generated/graphql';
 import { BookingFormValues, UsesOptions } from './types';
 import { getTwitterData } from '../../api';
 
@@ -46,6 +52,9 @@ const BookingPage = () => {
   const [user, setUser] = useState();
   const [token, setToken] = useState<ERCTokenType>('USDC');
   const [price, setPrice] = useState<number>(0);
+  const [doesFollow, setDoesFollow] = useState<boolean>(false);
+  const [toggle, setToggle] = useState<boolean>(true);
+  const [creatorLensId, setCreatorLensId] = useState<string>();
   const [uses, setUses] = useState<UsesOptions>(UsesOptions.personal);
   const [isTwitterAccount, setIsTwitterAccount] = useState<boolean>(false);
   const [isLoader, setIsLoader] = useState<boolean>(false);
@@ -117,6 +126,28 @@ const BookingPage = () => {
     }
     return () => clearTimeout(timer);
   }, [businessTwitter]);
+
+  useEffect(() => {
+    console.log(creator)
+    if (account && creator && creator.lensHandle) {
+      lens.getProfileByHandle(creator.lensHandle).then(res => {
+        const profile = res.data.profiles.items[0]
+        if (profile.ownedBy.toUpperCase() === creator.address.toUpperCase()) { // lens profile must be owned by creator to display it to user - Please talk with jonathan before deleting this
+          //Maybe consider moving this code to the redux
+          setCreatorLensId(profile.id) 
+        } else {
+          throw new Error('Validation lens error')
+        }
+
+        lens.isFollowing(account, res.data.profiles.items[0].id).then((res) => {
+          console.log(res)
+          if (res) {
+            setDoesFollow(res.data.doesFollow[0].follows);
+          }
+        });
+      })
+    }
+  }, [account, toggle, creator]);
 
   const handleSelect = (e: any) => {
     setToken(e.target.value);
@@ -212,9 +243,9 @@ const BookingPage = () => {
               <BookingCard>
                 <FlexRow style={{ marginBottom: 12 }}>
                   <div>
+                    <AvatarComponent style={{marginBottom: 5}} url={creator.profilePicture} size="medium" twitterHandle={creator.twitterHandle} />
                     <Label style={{ marginBottom: 8 }}>{creator.userName}</Label>
                     <Description>
-                      Twitter:{' '}
                       <a
                         href={`https://twitter.com/${creator.twitterHandle}`}
                         target="_blank"
@@ -223,14 +254,75 @@ const BookingPage = () => {
                         @{creator.twitterHandle}
                       </a>{' '}
                     </Description>
+                    {creator.lensHandle && <Description>
+                      <a
+                        href={`https://lenster.xyz/u/${creator.lensHandle}`}
+                        target="_blank"
+                        style={{ color: '#EDE641' }}
+                      >
+                        🌿: @{creator.lensHandle}
+                      </a>{' '}
+                    </Description>}
                     <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
                   </div>
                   <div>
-                    <AvatarComponent url={creator.profilePicture} size="medium" twitterHandle={creator.twitterHandle} />
+                    
+                    {library && creatorLensId && (
+                      <PrimaryButton
+                        size="small"
+                        width="small"
+                        style={doesFollow ? { 
+                          margin: 10, 
+                          marginLeft: 0, 
+                          maxWidth: 100, 
+                          background: '#2E2E2E', 
+                          color: 'white' 
+                        } : {
+                          margin: 10, 
+                          marginLeft: 0, 
+                          maxWidth: 100, 
+                          background: '#5F21E2', 
+                          color: 'white'
+                          }}
+                        onPress={async (e) => {
+                          try {
+                            toast.loading('Signing into Lens')
+                            const accessToken = await lens.getAccess(account);
+                            toast.dismiss()
+                            toast.loading(doesFollow ? 'Are you sure you want to lose your follow NFT?' : 'Awaiting follow confirmation');
+                            if (!accessToken || !creatorLensId) return;
+                            const access = accessToken.data.authenticate.accessToken;
+                            const txHash = doesFollow
+                                ? await lens.unfollow(creatorLensId, access, library)
+                                : await lens.follow(creatorLensId, access, library);
+
+                            
+                            toast.dismiss();
+                            toast.loading('Waiting for transaction to complete');
+                            console.log(txHash);
+                            if (!txHash) {
+                              console.error('no txHash detected!');
+                              return;
+                            }
+                            const f = await lens.pollUntilIndexed(txHash, access);
+                            console.log(f);
+                            setToggle(!toggle); //todo(jonathanng) - this is trashcan code!
+                            toast.dismiss();
+                            toast.success('Transaction is finished');
+                        } catch (e: any) {
+                          toast.dismiss();
+                          toast.error((e && e.message) || 'Error.')
+                          return;
+                        }
+                        }}
+                      >
+                        {doesFollow ? 'Following' : 'Follow'}
+                      </PrimaryButton>
+                    )}
                   </div>
                 </FlexRow>
                 <FlexRow style={{ marginBottom: 24 }}>
-                  <Description>{creator.bio}</Description>
+                  <Description style={{color: 'white'}}>{creator.bio}</Description>
                 </FlexRow>
 
                 <HR style={{ marginBottom: 36 }} />
@@ -300,7 +392,7 @@ const BookingPage = () => {
                   }}
                   validateOnBlur={false}
                   validateOnChange={false}
-                  onSubmit={async (values) => {
+                  onSubmit={async (values : any) => {
                     setLoading(true);
                     await makeBooking(values);
                     setLoading(false);
@@ -463,7 +555,7 @@ const BookingPage = () => {
                       </div>
 
                       <div style={{ marginBottom: 40 }}>
-                        <Dropdown formLabel="Select payment type" onChange={handleSelect}>
+                        <Dropdown name="token" formLabel="Select payment type" onChange={handleSelect}>
                           {config.erc20TokenNames.map((tok, i) => {
                             if (i == 0) {
                               <Option key={i} selected value={tok} />;

@@ -18,13 +18,14 @@ export interface TweetData {
 
 // types for v2 arch
 export interface CreatorData {
-  twitterHandle: string;
+  twitterHandle: string; // possible vulnerability - user can put at twitterHandle
   bio: string;
   deliveryTime: number;
   profilePicture: string;
   userName: string;
   price: number;
   demos: string[];
+  lensHandle?: string;
   businessPrice: number;
   customServices: string[];
 }

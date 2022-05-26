@@ -15,12 +15,17 @@ import background3M from '../../assets/images/homepage/page3/background3M.png';
 import bountyBG01D from '../../assets/images/homepage/page1/bountyBG01D.png';
 import bountyBG01M from '../../assets/images/homepage/page1/bountyBG01M.png';
 import { CreatorCards } from '../../components/CreatorCards/CreatorCards';
+
 import { PageWrapper } from '../../components/layout/Common';
 import Slides from '../../components/Slides/Slides';
 import { BookNow, BookNowButton, HeroTitle, LeftContentWrapper } from '../../components/Slides/Style';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
 import config from '../../config/config';
 import { UserProfile } from '../../hooks/useProfile';
+import * as lens from '../../api/lens';
+import { useQuery } from 'urql';
+import { queryDoesFollow } from '../../api/lens/query';
+import { DoesFollow, DoesFollowResponse } from '../../generated/graphql';
 
 const featuredList: string[] = [
   '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8', // Gabriel Haines.eth
@@ -43,9 +48,15 @@ const HomePage = () => {
   const { account } = useWeb3React<Web3Provider>();
   const user = useSelector((state: any) => state.user);
   const theme = useTheme();
-
   const warning = (msg: string) => toast.warn(msg);
-
+  // useEffect(async () => {
+  //   if (!account || !library) return;
+  //   const access = await lens.getAccess(account)
+  //   if (!access) return;
+  //   if (!access.data) return;
+  //   console.log(access.data.authenticate.accessToken)
+  //   lens.follow("0x08", access.data.authenticate.accessToken, library).catch(console.log)
+  // }, [account])
   useEffect(() => {
     const getCreatorData = async () => {
       if (account) {

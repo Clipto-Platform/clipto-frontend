@@ -1,0 +1,2358 @@
+type Query {
+  challenge(request: ChallengeRequest!): AuthChallengeResult!
+  verify(request: VerifyRequest!): Boolean!
+  explorePublications(
+    request: ExplorePublicationRequest!
+  ): ExplorePublicationResult!
+  pendingApprovalFollows(
+    request: PendingApprovalFollowsRequest!
+  ): PendingApproveFollowsResult!
+  doesFollow(request: DoesFollowRequest!): [DoesFollowResponse!]!
+  following(request: FollowingRequest!): PaginatedFollowingResult!
+  followers(request: FollowersRequest!): PaginatedFollowersResult!
+  followerNftOwnedTokenIds(
+    request: FollowerNftOwnedTokenIdsRequest!
+  ): FollowerNftOwnedTokenIds!
+  ping: String!
+  hasTxHashBeenIndexed(
+    request: HasTxHashBeenIndexedRequest!
+  ): TransactionResult!
+  enabledModuleCurrencies: [Erc20!]!
+  approvedModuleAllowanceAmount(
+    request: ApprovedModuleAllowanceAmountRequest!
+  ): [ApprovedAllowanceAmount!]!
+  generateModuleCurrencyApprovalData(
+    request: GenerateModuleCurrencyApprovalDataRequest!
+  ): GenerateModuleCurrencyApproval!
+  enabledModules: EnabledModules!
+  nfts(request: NFTsRequest!): NFTsResult!
+  nftOwnershipChallenge(
+    request: NftOwnershipChallengeRequest!
+  ): NftOwnershipChallengeResult!
+  notifications(request: NotificationRequest!): PaginatedNotificationResult!
+  profiles(request: ProfileQueryRequest!): PaginatedProfileResult!
+  recommendedProfiles: [Profile!]!
+  defaultProfile(request: DefaultProfileRequest!): Profile
+  globalProtocolStats(request: GlobalProtocolStatsRequest): GlobalProtocolStats!
+  publications(request: PublicationsQueryRequest!): PaginatedPublicationResult!
+  publication(request: PublicationQueryRequest!): Publication
+  hasMirrored(request: HasMirroredRequest!): [HasMirroredResult!]!
+  hasCollected(request: HasCollectedRequest!): [HasCollectedResult!]!
+  whoCollectedPublication(
+    request: WhoCollectedPublicationRequest!
+  ): PaginatedWhoCollectedResult!
+  search(request: SearchQueryRequest!): SearchResult!
+  timeline(request: TimelineRequest!): PaginatedTimelineResult!
+  userSigNonces: UserSigNonces!
+  claimableHandles: ClaimableHandles!
+  profileRevenue(request: ProfileRevenueQueryRequest!): ProfileRevenueResult!
+  publicationRevenue(
+    request: PublicationRevenueQueryRequest!
+  ): PublicationRevenue!
+}
+
+# The auth challenge result
+type AuthChallengeResult {
+  # The text to sign
+  text: String!
+}
+
+# The challenge request
+input ChallengeRequest {
+  # The ethereum address you want to login with
+  address: EthereumAddress!
+}
+
+# Ethereum address custom scalar type
+scalar EthereumAddress
+
+# The access request
+input VerifyRequest {
+  # The access token
+  accessToken: Jwt!
+}
+
+# jwt custom scalar type
+scalar Jwt
+
+# The paginated publication result
+type ExplorePublicationResult {
+  items: [Publication!]!
+  pageInfo: PaginatedResultInfo!
+}
+
+union Publication = Post | Comment | Mirror
+
+# The social post
+type Post {
+  # The internal publication id
+  id: InternalPublicationId!
+
+  # The profile ref
+  profile: Profile!
+
+  # The publication stats
+  stats: PublicationStats!
+
+  # The metadata for the post
+  metadata: MetadataOutput!
+
+  # The on chain content uri could be `ipfs://` or `https`
+  onChainContentURI: String!
+
+  # The date the post was created on
+  createdAt: DateTime!
+
+  # The collect module
+  collectModule: CollectModule!
+
+  # The reference module
+  referenceModule: ReferenceModule
+
+  # ID of the source
+  appId: Sources
+
+  # The contract address for the collect nft.. if its null it means nobody collected yet as it lazy deployed
+  collectNftAddress: ContractAddress
+
+  # Who collected it, this is used for timeline results and like this for better caching for the client
+  collectedBy: Wallet
+}
+
+# Internal publication id custom scalar type
+scalar InternalPublicationId
+
+# The Profile
+type Profile {
+  # The profile id
+  id: ProfileId!
+
+  # Name of the profile
+  name: String
+
+  # Bio of the profile
+  bio: String
+
+  # Location set on profile
+  location: String
+
+  # Website set on profile
+  website: Url
+
+  # Twitter url set on profile
+  twitter: String
+
+  # Metadata url
+  metadata: Url
+
+  # The profile handle
+  handle: Handle!
+
+  # The picture for the profile
+  picture: ProfileMedia
+
+  # The cover picture for the profile
+  coverPicture: ProfileMedia
+
+  # Who owns the profile
+  ownedBy: EthereumAddress!
+
+  # The dispatcher
+  depatcher: Dispatcher
+
+  # Profile stats
+  stats: ProfileStats!
+
+  # The follow module
+  followModule: FollowModule
+
+  # Is the profile default
+  isDefault: Boolean!
+
+  # Optionals param to add extra attributes on the metadata
+  attributes: [Attribute!]
+}
+
+# ProfileId custom scalar type
+scalar ProfileId
+
+# Url scalar type
+scalar Url
+
+# handle custom scalar type
+scalar Handle
+
+union ProfileMedia = NftImage | MediaSet
+
+# The NFT image
+type NftImage {
+  # The contract address
+  contractAddress: ContractAddress!
+
+  # The token id of the nft
+  tokenId: String!
+
+  # The token image nft
+  uri: Url!
+
+  # The token image nft
+  chainId: Int!
+
+  # If the NFT is verified
+  verified: Boolean!
+}
+
+# Contract address custom scalar type
+scalar ContractAddress
+
+# The Media Set
+type MediaSet {
+  # Original media
+  original: Media!
+
+  # Small media - will always be null on the public API
+  small: Media
+
+  # Medium media - will always be null on the public API
+  medium: Media
+}
+
+# The Media url
+type Media {
+  # The token image nft
+  url: Url!
+
+  # Width - will always be null on the public API
+  width: Int
+
+  # Height - will always be null on the public API
+  height: Int
+
+  # Size - will always be null on the public API
+  size: Int
+
+  # The image/audio/video mime type for the publication
+  mimeType: MimeType
+}
+
+# mimetype custom scalar type
+scalar MimeType
+
+# The dispatcher
+type Dispatcher {
+  # The dispatcher address
+  address: EthereumAddress!
+
+  # If the dispatcher can use the relay
+  canUseRelay: Boolean!
+}
+
+# The Profile Stats
+type ProfileStats {
+  # Total follower count
+  totalFollowers: Int!
+
+  # Total following count (remember the wallet follows not profile so will be same for every profile they own)
+  totalFollowing: Int!
+
+  # Total post count
+  totalPosts: Int!
+
+  # Total comment count
+  totalComments: Int!
+
+  # Total mirror count
+  totalMirrors: Int!
+
+  # Total publication count
+  totalPublications: Int!
+
+  # Total collects count
+  totalCollects: Int!
+}
+
+union FollowModule = FeeFollowModuleSettings
+
+type FeeFollowModuleSettings {
+  # The follow modules enum
+  type: FollowModules!
+  contractAddress: ContractAddress!
+
+  # The collect module amount info
+  amount: ModuleFeeAmount!
+
+  # The collect module recipient address
+  recipient: EthereumAddress!
+}
+
+# The follow module types
+enum FollowModules {
+  FeeFollowModule
+}
+
+type ModuleFeeAmount {
+  # The erc20 token info
+  asset: Erc20!
+
+  # Floating point number as string (e.g. 42.009837). It could have the entire precision of the Asset or be truncated to the last significant decimal.
+  value: String!
+}
+
+# The erc20 type
+type Erc20 {
+  # Name of the symbol
+  name: String!
+
+  # Symbol for the token
+  symbol: String!
+
+  # Decimal places for the token
+  decimals: Int!
+
+  # The erc20 address
+  address: ContractAddress!
+}
+
+# The Profile
+type Attribute {
+  # The display type
+  displayType: MetadataDisplayType
+
+  # The trait type - can be anything its the name it will render so include spaces
+  traitType: String
+
+  # identifier of this attribute, we will update by this id
+  key: String!
+
+  # Value attribute
+  value: String!
+}
+
+# The metadata display types
+enum MetadataDisplayType {
+  number
+  string
+  date
+}
+
+# The publication stats
+type PublicationStats {
+  # The total amount of mirrors
+  totalAmountOfMirrors: Int!
+
+  # The total amount of collects
+  totalAmountOfCollects: Int!
+
+  # The total amount of comments
+  totalAmountOfComments: Int!
+}
+
+# The metadata output
+type MetadataOutput {
+  # The metadata name
+  name: String
+
+  # This is the metadata description
+  description: Markdown
+
+  # This is the metadata content for the publication, should be markdown
+  content: Markdown
+
+  # This is the image attached to the metadata and the property used to show the NFT!
+  image: Url
+
+  # The image cover for video/music publications
+  cover: MediaSet
+
+  # The images/audios/videos for the publication
+  media: [MediaSet!]!
+
+  # The attributes
+  attributes: [MetadataAttributeOutput!]!
+}
+
+# Markdown scalar type
+scalar Markdown
+
+# The metadata attribute output
+type MetadataAttributeOutput {
+  # The display type
+  displayType: MetadataDisplayType
+
+  # The trait type - can be anything its the name it will render so include spaces
+  traitType: String
+
+  # The value
+  value: String
+}
+
+# The javascript `Date` as string. Type represents date and time as the ISO Date string.
+scalar DateTime
+
+union CollectModule =
+    FreeCollectModuleSettings
+  | FeeCollectModuleSettings
+  | LimitedFeeCollectModuleSettings
+  | LimitedTimedFeeCollectModuleSettings
+  | RevertCollectModuleSettings
+  | TimedFeeCollectModuleSettings
+
+type FreeCollectModuleSettings {
+  # The collect modules enum
+  type: CollectModules!
+  contractAddress: ContractAddress!
+
+  # Follower only
+  followerOnly: Boolean!
+}
+
+# The collect module types
+enum CollectModules {
+  LimitedFeeCollectModule
+  FeeCollectModule
+  LimitedTimedFeeCollectModule
+  TimedFeeCollectModule
+  RevertCollectModule
+  FreeCollectModule
+}
+
+type FeeCollectModuleSettings {
+  # The collect modules enum
+  type: CollectModules!
+  contractAddress: ContractAddress!
+
+  # The collect module amount info
+  amount: ModuleFeeAmount!
+
+  # The collect module recipient address
+  recipient: EthereumAddress!
+
+  # The collect module referral fee
+  referralFee: Float!
+
+  # Follower only
+  followerOnly: Boolean!
+}
+
+type LimitedFeeCollectModuleSettings {
+  # The collect modules enum
+  type: CollectModules!
+  contractAddress: ContractAddress!
+
+  # The collect module limit
+  collectLimit: String!
+
+  # The collect module amount info
+  amount: ModuleFeeAmount!
+
+  # The collect module recipient address
+  recipient: EthereumAddress!
+
+  # The collect module referral fee
+  referralFee: Float!
+
+  # Follower only
+  followerOnly: Boolean!
+}
+
+type LimitedTimedFeeCollectModuleSettings {
+  # The collect modules enum
+  type: CollectModules!
+  contractAddress: ContractAddress!
+
+  # The collect module limit
+  collectLimit: String!
+
+  # The collect module amount info
+  amount: ModuleFeeAmount!
+
+  # The collect module recipient address
+  recipient: EthereumAddress!
+
+  # The collect module referral fee
+  referralFee: Float!
+
+  # Follower only
+  followerOnly: Boolean!
+
+  # The collect module end timestamp
+  endTimestamp: DateTime!
+}
+
+type RevertCollectModuleSettings {
+  # The collect modules enum
+  type: CollectModules!
+  contractAddress: ContractAddress!
+
+  # Follower only
+  followerOnly: Boolean!
+}
+
+type TimedFeeCollectModuleSettings {
+  # The collect modules enum
+  type: CollectModules!
+  contractAddress: ContractAddress!
+
+  # The collect module amount info
+  amount: ModuleFeeAmount!
+
+  # The collect module recipient address
+  recipient: EthereumAddress!
+
+  # The collect module referral fee
+  referralFee: Float!
+
+  # Follower only
+  followerOnly: Boolean!
+
+  # The collect module end timestamp
+  endTimestamp: DateTime!
+}
+
+union ReferenceModule = FollowOnlyReferenceModuleSettings
+
+type FollowOnlyReferenceModuleSettings {
+  # The reference modules enum
+  type: ReferenceModules!
+  contractAddress: ContractAddress!
+}
+
+# The reference module types
+enum ReferenceModules {
+  FollowerOnlyReferenceModule
+}
+
+# Sources custom scalar type
+scalar Sources
+
+type Wallet {
+  address: EthereumAddress!
+
+  # The default profile for the wallet for now it is just their first profile, this will be the default profile they picked soon enough
+  defaultProfile: Profile
+}
+
+# The social comment
+type Comment {
+  # The internal publication id
+  id: InternalPublicationId!
+
+  # The profile ref
+  profile: Profile!
+
+  # The publication stats
+  stats: PublicationStats!
+
+  # The metadata for the post
+  metadata: MetadataOutput!
+
+  # The on chain content uri could be `ipfs://` or `https`
+  onChainContentURI: String!
+
+  # The date the post was created on
+  createdAt: DateTime!
+
+  # The collect module
+  collectModule: CollectModule!
+
+  # The reference module
+  referenceModule: ReferenceModule
+
+  # ID of the source
+  appId: Sources
+
+  # The contract address for the collect nft.. if its null it means nobody collected yet as it lazy deployed
+  collectNftAddress: ContractAddress
+
+  # The top level post/mirror this comment lives on
+  mainPost: MainPostReference!
+
+  # Which comment this points to if its null the pointer too deep so do another query to find it out
+  commentOn: Publication
+
+  # This will bring back the first comment of a comment and only be defined if using `publication` query and `commentOf`
+  firstComment: Comment
+
+  # Who collected it, this is used for timeline results and like this for better caching for the client
+  collectedBy: Wallet
+}
+
+union MainPostReference = Post | Mirror
+
+# The social mirror
+type Mirror {
+  # The internal publication id
+  id: InternalPublicationId!
+
+  # The profile ref
+  profile: Profile!
+
+  # The publication stats
+  stats: PublicationStats!
+
+  # The metadata for the post
+  metadata: MetadataOutput!
+
+  # The on chain content uri could be `ipfs://` or `https`
+  onChainContentURI: String!
+
+  # The date the post was created on
+  createdAt: DateTime!
+
+  # The collect module
+  collectModule: CollectModule!
+
+  # The reference module
+  referenceModule: ReferenceModule
+
+  # ID of the source
+  appId: Sources
+
+  # The contract address for the collect nft.. if its null it means nobody collected yet as it lazy deployed
+  collectNftAddress: ContractAddress
+
+  # The mirror publication
+  mirrorOf: MirrorablePublication!
+}
+
+union MirrorablePublication = Post | Comment
+
+# The paginated result info
+type PaginatedResultInfo {
+  # Cursor to query the actual results
+  prev: Cursor
+
+  # Cursor to query next results
+  next: Cursor
+
+  # The total number of entities the pagination iterates over. e.g. For a query that requests all nfts with more than 10 likes, this field gives the total amount of nfts with more than 10 likes, not the total amount of nfts
+  totalCount: Int!
+}
+
+# Cursor custom scalar type
+scalar Cursor
+
+input ExplorePublicationRequest {
+  limit: LimitScalar
+  cursor: Cursor
+  timestamp: TimestampScalar
+  sortCriteria: PublicationSortCriteria!
+
+  # The App Id
+  sources: [Sources!] = []
+
+  # The publication types you want to query
+  publicationTypes: [PublicationTypes!]
+
+  # If you want the randomizer off (default on)
+  noRandomize: Boolean
+
+  # If you wish to exclude any results for profile ids
+  excludeProfileIds: [ProfileId!]
+}
+
+# limit custom scalar type
+scalar LimitScalar
+
+# timestamp date custom scalar type
+scalar TimestampScalar
+
+# Publication sort criteria
+enum PublicationSortCriteria {
+  TOP_COMMENTED
+  TOP_COLLECTED
+  LATEST
+}
+
+# The publication types
+enum PublicationTypes {
+  POST
+  COMMENT
+  MIRROR
+}
+
+# The paginated follow result
+type PendingApproveFollowsResult {
+  items: [Profile!]!
+  pageInfo: PaginatedResultInfo!
+}
+
+input PendingApprovalFollowsRequest {
+  limit: LimitScalar
+  cursor: Cursor
+}
+
+# The does follow response
+type DoesFollowResponse {
+  # The follower address remember wallets follow profiles
+  followerAddress: EthereumAddress!
+
+  # The profile id
+  profileId: ProfileId!
+
+  # If the user does follow
+  follows: Boolean!
+}
+
+input DoesFollowRequest {
+  # The follower infos
+  followInfos: [DoesFollow!]!
+}
+
+input DoesFollow {
+  # The follower address remember wallets follow profiles
+  followerAddress: EthereumAddress!
+
+  # The profile id
+  profileId: ProfileId!
+}
+
+type PaginatedFollowingResult {
+  items: [Following!]!
+  pageInfo: PaginatedResultInfo!
+}
+
+type Following {
+  profile: Profile!
+  totalAmountOfTimesFollowing: Int!
+}
+
+input FollowingRequest {
+  limit: LimitScalar
+  cursor: Cursor
+  address: EthereumAddress!
+}
+
+# The paginated followers result
+type PaginatedFollowersResult {
+  items: [Follower!]!
+  pageInfo: PaginatedResultInfo!
+}
+
+type Follower {
+  wallet: Wallet!
+  totalAmountOfTimesFollowed: Int!
+}
+
+input FollowersRequest {
+  limit: LimitScalar
+  cursor: Cursor
+  profileId: ProfileId!
+}
+
+type FollowerNftOwnedTokenIds {
+  followerNftAddress: ContractAddress!
+  tokensIds: [String!]!
+}
+
+input FollowerNftOwnedTokenIdsRequest {
+  address: EthereumAddress!
+  profileId: ProfileId!
+}
+
+union TransactionResult = TransactionIndexedResult | TransactionError
+
+type TransactionIndexedResult {
+  indexed: Boolean!
+  txReceipt: TransactionReceipt
+
+  # Publications can be indexed but the ipfs link for example not findable for x time. This allows you to work that out for publications. If its not a publication tx then it always be null.
+  metadataStatus: PublicationMetadataStatus
+}
+
+type TransactionReceipt {
+  to: EthereumAddress
+  from: EthereumAddress!
+  contractAddress: ContractAddress
+  transactionIndex: Int!
+  root: String
+  gasUsed: String!
+  logsBloom: String!
+  blockHash: String!
+  transactionHash: TxHash!
+  logs: [Log!]!
+  blockNumber: Int!
+  confirmations: Int!
+  cumulativeGasUsed: String!
+  effectiveGasPrice: String!
+  byzantium: Boolean!
+  type: Int!
+  status: Int!
+}
+
+# The tx has
+scalar TxHash
+
+type Log {
+  blockNumber: Int!
+  blockHash: String!
+  transactionIndex: Int!
+  removed: Boolean!
+  address: ContractAddress!
+  data: String!
+  topics: [String!]!
+  transactionHash: TxHash!
+  logIndex: Int!
+}
+
+type PublicationMetadataStatus {
+  status: PublicationMetadataStatusType!
+
+  # If metadata validation failed it will put a reason why here
+  reason: String
+}
+
+# publication metadata status type
+enum PublicationMetadataStatusType {
+  PENDING
+  METADATA_VALIDATION_FAILED
+  SUCCESS
+}
+
+type TransactionError {
+  reason: TransactionErrorReasons!
+  txReceipt: TransactionReceipt
+}
+
+# Transaction error reason
+enum TransactionErrorReasons {
+  REVERTED
+}
+
+input HasTxHashBeenIndexedRequest {
+  txHash: TxHash!
+}
+
+type ApprovedAllowanceAmount {
+  currency: ContractAddress!
+  module: String!
+  contractAddress: ContractAddress!
+  allowance: String!
+}
+
+input ApprovedModuleAllowanceAmountRequest {
+  # The contract addresses for the module approved currencies you want to find information on about the user
+  currencies: [ContractAddress!]!
+  collectModules: [CollectModules!]!
+  followModules: [FollowModules!]!
+  referenceModules: [ReferenceModules!]!
+}
+
+type GenerateModuleCurrencyApproval {
+  to: ContractAddress!
+  from: EthereumAddress!
+  data: BlockchainData!
+}
+
+# Blockchain data scalar type
+scalar BlockchainData
+
+input GenerateModuleCurrencyApprovalDataRequest {
+  currency: ContractAddress!
+
+  # Floating point number as string (e.g. 42.009837). The server will move its decimal places for you
+  value: String!
+  collectModule: CollectModules
+  followModule: FollowModules
+  referenceModule: ReferenceModules
+}
+
+# The enabled modules
+type EnabledModules {
+  collectModules: [EnabledModule!]!
+  followModules: [EnabledModule!]!
+  referenceModules: [EnabledModule!]!
+}
+
+type EnabledModule {
+  moduleName: String!
+  contractAddress: ContractAddress!
+  inputParams: [ModuleInfo!]!
+  redeemParams: [ModuleInfo!]!
+  returnDataParms: [ModuleInfo!]!
+}
+
+type ModuleInfo {
+  name: String!
+  type: String!
+}
+
+# Paginated nft results
+type NFTsResult {
+  items: [NFT!]!
+  pageInfo: PaginatedResultInfo!
+}
+
+# The nft type
+type NFT {
+  # aka us CryptoKitties
+  contractName: String!
+
+  # aka 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+  contractAddress: ContractAddress!
+
+  # aka RARI
+  symbol: String!
+
+  # aka "13"
+  tokenId: String!
+
+  # aka { address: 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e, amount:"2" }
+  owners: [Owner!]!
+
+  # aka "Beard Coffee"
+  name: String!
+
+  # aka "Hey cutie! I m Beard Coffee. ....
+  description: String!
+
+  # aka "https://api.criptokitt..."
+  contentURI: String!
+
+  # aka "{ uri:"https://ipfs....", metaType:"image/png" }"
+  originalContent: NFTContent!
+
+  # aka "1"
+  chainId: ChainId!
+
+  # aka "CryptoKitties"
+  collectionName: String!
+
+  # aka "ERC721"
+  ercType: String!
+}
+
+# The nft type
+type Owner {
+  # number of tokens owner
+  amount: Float!
+
+  # aka 0x057Ec652A4F150f7FF94f089A38008f49a0DF88e
+  address: EthereumAddress!
+}
+
+# The NFT content uri
+type NFTContent {
+  # The token uri  nft
+  uri: String!
+
+  # The meta type content
+  metaType: String!
+}
+
+# ChainId custom scalar type
+scalar ChainId
+
+input NFTsRequest {
+  limit: LimitScalar
+  cursor: Cursor
+
+  # Filter by owner address
+  ownerAddress: EthereumAddress!
+
+  # Filter by contract address
+  contractAddress: ContractAddress
+
+  # Chain Ids
+  chainIds: [ChainId!]!
+}
+
+# NFT ownership challenge result
+type NftOwnershipChallengeResult {
+  # Id of the nft ownership challenge
+  id: NftOwnershipId!
+  text: String!
+
+  # Timeout of the validation
+  timeout: TimestampScalar!
+}
+
+# Nft ownership id type
+scalar NftOwnershipId
+
+input NftOwnershipChallengeRequest {
+  # The wallet address which owns the NFT
+  ethereumAddress: EthereumAddress!
+  nfts: [NftOwnershipChallenge!]!
+}
+
+input NftOwnershipChallenge {
+  # ContractAddress for nft
+  contractAddress: ContractAddress!
+
+  # Token id for NFT
+  tokenId: String!
+
+  # Chain Id
+  chainId: ChainId!
+}
+
+# The paginated notification result
+type PaginatedNotificationResult {
+  items: [Notification!]!
+  pageInfo: PaginatedResultInfo!
+}
+
+union Notification =
+    NewFollowerNotification
+  | NewCollectNotification
+  | NewCommentNotification
+  | NewMirrorNotification
+  | NewMentionNotification
+
+type NewFollowerNotification {
+  wallet: Wallet!
+  isFollowedByMe: Boolean!
+  createdAt: DateTime!
+}
+
+type NewCollectNotification {
+  wallet: Wallet!
+  collectedPublication: Publication!
+  createdAt: DateTime!
+}
+
+type NewCommentNotification {
+  # The profile
+  profile: Profile!
+  comment: Comment!
+  createdAt: DateTime!
+}
+
+type NewMirrorNotification {
+  # The profile
+  profile: Profile!
+  publication: MirrorablePublication!
+  createdAt: DateTime!
+}
+
+type NewMentionNotification {
+  mentionPublication: MentionPublication!
+  createdAt: DateTime!
+}
+
+union MentionPublication = Post | Comment
+
+input NotificationRequest {
+  limit: LimitScalar
+  cursor: Cursor
+
+  # The profile id
+  profileId: ProfileId
+
+  # The App Id
+  sources: [Sources!] = []
+}
+
+# The paginated profile result
+type PaginatedProfileResult {
+  items: [Profile!]!
+  pageInfo: PaginatedResultInfo!
+}
+
+input ProfileQueryRequest {
+  limit: LimitScalar
+  cursor: Cursor
+
+  # The profile ids
+  profileIds: [ProfileId!]
+
+  # The ethereum addresses
+  ownedBy: [EthereumAddress!]
+
+  # The handles for the profile
+  handles: [Handle!]
+
+  # The mirrored publication id
+  whoMirroredPublicationId: InternalPublicationId
+}
+
+input DefaultProfileRequest {
+  ethereumAddress: EthereumAddress!
+}
+
+type GlobalProtocolStats {
+  totalProfiles: Int!
+  totalBurntProfiles: Int!
+  totalPosts: Int!
+  totalMirrors: Int!
+  totalComments: Int!
+  totalCollects: Int!
+  totalFollows: Int!
+  totalRevenue: [Erc20Amount!]!
+}
+
+type Erc20Amount {
+  # The erc20 token info
+  asset: Erc20!
+
+  # Floating point number as string (e.g. 42.009837). It could have the entire precision of the Asset or be truncated to the last significant decimal.
+  value: String!
+}
+
+input GlobalProtocolStatsRequest {
+  # Unix time from timestamp - if not supplied it will go from 0 timestamp
+  fromTimestamp: UnixTimestamp
+
+  # Unix time to timestamp - if not supplied it go to the present timestamp
+  toTimestamp: UnixTimestamp
+
+  # The App Id
+  sources: [Sources!]
+}
+
+# UnixTimestamp custom scalar type
+scalar UnixTimestamp
+
+# The paginated publication result
+type PaginatedPublicationResult {
+  items: [Publication!]!
+  pageInfo: PaginatedResultInfo!
+}
+
+input PublicationsQueryRequest {
+  limit: LimitScalar
+  cursor: Cursor
+
+  # Profile id
+  profileId: ProfileId
+
+  # The publication types you want to query
+  publicationTypes: [PublicationTypes!]
+
+  # The publication id you wish to get comments for
+  commentsOf: InternalPublicationId
+
+  # The App Id
+  sources: [Sources!] = []
+
+  # The ethereum address
+  collectedBy: EthereumAddress
+
+  # The publication id
+  publicationIds: [InternalPublicationId!]
+}
+
+input PublicationQueryRequest {
+  # The publication id
+  publicationId: InternalPublicationId
+
+  # The tx hash
+  txHash: TxHash
+}
+
+type HasMirroredResult {
+  # Profile id
+  profileId: ProfileId!
+  results: [HasMirroredItem!]!
+}
+
+type HasMirroredItem {
+  mirrored: Boolean!
+  publicationId: InternalPublicationId!
+}
+
+input HasMirroredRequest {
+  profilesRequest: [HasMirroredProfileRequest!]!
+}
+
+input HasMirroredProfileRequest {
+  # Profile id
+  profileId: ProfileId!
+
+  # Internal publication ids
+  publicationIds: [InternalPublicationId!]!
+}
+
+type HasCollectedResult {
+  # Wallet address
+  walletAddress: EthereumAddress!
+  results: [HasCollectedItem!]!
+}
+
+type HasCollectedItem {
+  collected: Boolean!
+  collectedTimes: Int!
+  publicationId: InternalPublicationId!
+}
+
+input HasCollectedRequest {
+  collectRequests: [HasCollectedPublicationRequest!]!
+}
+
+input HasCollectedPublicationRequest {
+  # Wallet address
+  walletAddress: EthereumAddress!
+
+  # Internal publication ids
+  publicationIds: [InternalPublicationId!]!
+}
+
+# The paginated wallet result
+type PaginatedWhoCollectedResult {
+  items: [Wallet!]!
+  pageInfo: PaginatedResultInfo!
+}
+
+input WhoCollectedPublicationRequest {
+  limit: LimitScalar
+  cursor: Cursor
+
+  # Internal publication id
+  publicationId: InternalPublicationId!
+}
+
+union SearchResult = PublicationSearchResult | ProfileSearchResult
+
+# Publication search results
+type PublicationSearchResult {
+  items: [PublicationSearchResultItem!]!
+  pageInfo: PaginatedResultInfo!
+  type: SearchRequestTypes!
+}
+
+union PublicationSearchResultItem = Post | Comment
+
+# Search request types
+enum SearchRequestTypes {
+  PUBLICATION
+  PROFILE
+}
+
+# Profile search results
+type ProfileSearchResult {
+  items: [Profile!]!
+  pageInfo: PaginatedResultInfo!
+  type: SearchRequestTypes!
+}
+
+input SearchQueryRequest {
+  limit: LimitScalar
+  cursor: Cursor
+
+  # The search term
+  query: Search!
+  type: SearchRequestTypes!
+
+  # The App Id
+  sources: [Sources!] = []
+}
+
+# Query search
+scalar Search
+
+# The paginated timeline result
+type PaginatedTimelineResult {
+  items: [Publication!]!
+  pageInfo: PaginatedResultInfo!
+}
+
+input TimelineRequest {
+  limit: LimitScalar
+  cursor: Cursor
+
+  # The profile id
+  profileId: ProfileId!
+
+  # The App Id
+  sources: [Sources!] = []
+}
+
+type UserSigNonces {
+  lensHubOnChainSigNonce: Nonce!
+}
+
+# Nonce custom scalar type
+scalar Nonce
+
+type ClaimableHandles {
+  reservedHandles: [ReservedClaimableHandle!]!
+  canClaimFreeTextHandle: Boolean!
+}
+
+type ReservedClaimableHandle {
+  id: HandleClaimIdScalar!
+  handle: Handle!
+  source: String!
+  expiry: DateTime!
+}
+
+# handle claim id custom scalar type
+scalar HandleClaimIdScalar
+
+# The paginated revenue result
+type ProfileRevenueResult {
+  items: [PublicationRevenue!]!
+  pageInfo: PaginatedResultInfo!
+}
+
+# The social comment
+type PublicationRevenue {
+  publication: Publication!
+  earnings: Erc20Amount!
+
+  # Protocol treasury fee %
+  protocolFee: Float!
+}
+
+input ProfileRevenueQueryRequest {
+  limit: LimitScalar
+  cursor: Cursor
+
+  # The profile id
+  profileId: ProfileId!
+
+  # The App Id
+  sources: [Sources!] = []
+
+  # The revenue types
+  types: [ProfileRevenueTypes!] = [COMMENT, MIRROR, POST]
+}
+
+# profile revenue request types
+enum ProfileRevenueTypes {
+  POST
+  COMMENT
+  MIRROR
+}
+
+input PublicationRevenueQueryRequest {
+  # The publication id
+  publicationId: InternalPublicationId!
+}
+
+type Mutation {
+  attachFile(request: AttachRequest!): AttachResults!
+  authenticate(request: SignedAuthChallenge!): AuthenticationResult!
+  refresh(request: RefreshRequest!): AuthenticationResult!
+  createSetDispatcherTypedData(
+    options: TypedDataOptions
+    request: SetDispatcherRequest!
+  ): CreateSetDispatcherBroadcastItemResult!
+  createFollowTypedData(
+    options: TypedDataOptions
+    request: FollowRequest!
+  ): CreateFollowBroadcastItemResult!
+  createUnfollowTypedData(
+    request: UnfollowRequest!
+  ): CreateUnfollowBroadcastItemResult!
+  createSetFollowModuleTypedData(
+    options: TypedDataOptions
+    request: CreateSetFollowModuleRequest!
+  ): CreateSetFollowModuleBroadcastItemResult!
+  createSetFollowNFTUriTypedData(
+    options: TypedDataOptions
+    request: CreateSetFollowNFTUriRequest!
+  ): CreateSetFollowNFTUriBroadcastItemResult!
+  createToggleFollowTypedData(
+    request: CreateToggleFollowRequest!
+  ): CreateToggleFollowBroadcastItemResult!
+  createCollectTypedData(
+    options: TypedDataOptions
+    request: CreateCollectRequest!
+  ): CreateCollectBroadcastItemResult!
+  createSetDefaultProfileTypedData(
+    options: TypedDataOptions
+    request: CreateSetDefaultProfileRequest!
+  ): SetDefaultProfileBroadcastItemResult!
+  createProfile(request: CreateProfileRequest!): RelayResult!
+  createSetProfileImageURITypedData(
+    options: TypedDataOptions
+    request: UpdateProfileImageRequest!
+  ): CreateSetProfileImageUriBroadcastItemResult!
+  updateProfile(request: UpdateProfileRequest!): Profile!
+    @deprecated(reason: "Use createSetProfileMetadataTypedData instead ")
+  createBurnProfileTypedData(
+    options: TypedDataOptions
+    request: BurnProfileRequest!
+  ): CreateBurnProfileBroadcastItemResult!
+  createPostTypedData(
+    options: TypedDataOptions
+    request: CreatePublicPostRequest!
+  ): CreatePostBroadcastItemResult!
+  createCommentTypedData(
+    options: TypedDataOptions
+    request: CreatePublicCommentRequest!
+  ): CreateCommentBroadcastItemResult!
+  createMirrorTypedData(
+    options: TypedDataOptions
+    request: CreateMirrorRequest!
+  ): CreateMirrorBroadcastItemResult!
+  hidePublication(request: HidePublicationRequest!): Void
+  claim(request: ClaimHandleRequest!): RelayResult!
+  createSetProfileMetadataTypedData(
+    request: CreatePublicSetProfileMetadataURIRequest!
+  ): CreateSetProfileMetadataURIBroadcastItemResult!
+  reportPublication(request: ReportPublicationRequest!): Void
+}
+
+# The response to upload the attached file
+type AttachResults {
+  # Signed url to push the file
+  signedUrl: String!
+
+  # Name of the file once is uploaded
+  key: String!
+}
+
+input AttachRequest {
+  # mimetype of the file to push
+  mimeType: MimeType!
+}
+
+# The authentication result
+type AuthenticationResult {
+  # The access token
+  accessToken: Jwt!
+
+  # The refresh token
+  refreshToken: Jwt!
+}
+
+# The signed auth challenge
+input SignedAuthChallenge {
+  # The ethereum address you signed the signature with
+  address: EthereumAddress!
+
+  # The signature
+  signature: Signature!
+}
+
+# Relayer signature
+scalar Signature
+
+# The refresh request
+input RefreshRequest {
+  # The refresh token
+  refreshToken: Jwt!
+}
+
+# The broadcast item
+type CreateSetDispatcherBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreateSetDispatcherEIP712TypedData!
+}
+
+# Broadcast scalar id type
+scalar BroadcastId
+
+# The set dispatcher eip 712 typed data
+type CreateSetDispatcherEIP712TypedData {
+  # The types
+  types: CreateSetDispatcherEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: CreateSetDispatcherEIP712TypedDataValue!
+}
+
+# The set dispatcher eip 712 typed data types
+type CreateSetDispatcherEIP712TypedDataTypes {
+  SetDispatcherWithSig: [EIP712TypedDataField!]!
+}
+
+# The eip 712 typed data field
+type EIP712TypedDataField {
+  # The name of the typed data field
+  name: String!
+
+  # The type of the typed data field
+  type: String!
+}
+
+# The eip 712 typed data domain
+type EIP712TypedDataDomain {
+  # The name of the typed data domain
+  name: String!
+
+  # The chainId
+  chainId: ChainId!
+
+  # The version
+  version: String!
+
+  # The verifying contract
+  verifyingContract: ContractAddress!
+}
+
+# The set dispatcher eip 712 typed data value
+type CreateSetDispatcherEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  profileId: ProfileId!
+  dispatcher: EthereumAddress!
+}
+
+input TypedDataOptions {
+  # If you wish to override the nonce for the sig if you want to do some clever stuff in the client
+  overrideSigNonce: Nonce!
+}
+
+input SetDispatcherRequest {
+  # The profile id
+  profileId: ProfileId!
+
+  # The dispatcher address - they can post, comment, mirror, set follow module, change your profile picture on your behalf.
+  dispatcher: EthereumAddress
+
+  # If you want to enable or disable it
+  enable: Boolean
+}
+
+# The broadcast item
+type CreateFollowBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreateFollowEIP712TypedData!
+}
+
+# The create follow eip 712 typed data
+type CreateFollowEIP712TypedData {
+  # The types
+  types: CreateFollowEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: CreateFollowEIP712TypedDataValue!
+}
+
+# The create follow eip 712 typed data types
+type CreateFollowEIP712TypedDataTypes {
+  FollowWithSig: [EIP712TypedDataField!]!
+}
+
+# The create follow eip 712 typed data value
+type CreateFollowEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  profileIds: [ProfileId!]!
+  datas: [BlockchainData!]!
+}
+
+input FollowRequest {
+  follow: [Follow!]!
+}
+
+input Follow {
+  profile: ProfileId!
+  followModule: FollowModuleRedeemParams
+}
+
+input FollowModuleRedeemParams {
+  # The follower fee follower module
+  feeFollowModule: FeeFollowModuleRedeemParams
+}
+
+input FeeFollowModuleRedeemParams {
+  # The expected amount to pay
+  amount: ModuleFeeAmountParams!
+}
+
+input ModuleFeeAmountParams {
+  # The currency address
+  currency: ContractAddress!
+
+  # Floating point number as string (e.g. 42.009837). It could have the entire precision of the Asset or be truncated to the last significant decimal.
+  value: String!
+}
+
+# The broadcast item
+type CreateUnfollowBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreateBurnEIP712TypedData!
+}
+
+# The create burn eip 712 typed data
+type CreateBurnEIP712TypedData {
+  # The types
+  types: CreateBurnEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: CreateBurnEIP712TypedDataValue!
+}
+
+# The create burn eip 712 typed data types
+type CreateBurnEIP712TypedDataTypes {
+  BurnWithSig: [EIP712TypedDataField!]!
+}
+
+# The create burn eip 712 typed data value
+type CreateBurnEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  tokenId: String!
+}
+
+input UnfollowRequest {
+  profile: ProfileId!
+}
+
+# The broadcast item
+type CreateSetFollowModuleBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreateSetFollowModuleEIP712TypedData!
+}
+
+# The set follow module eip 712 typed data
+type CreateSetFollowModuleEIP712TypedData {
+  # The types
+  types: CreateSetFollowModuleEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: CreateSetFollowModuleEIP712TypedDataValue!
+}
+
+# The set follow module eip 712 typed data types
+type CreateSetFollowModuleEIP712TypedDataTypes {
+  SetFollowModuleWithSig: [EIP712TypedDataField!]!
+}
+
+# The set follow module eip 712 typed data value
+type CreateSetFollowModuleEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  profileId: ProfileId!
+  followModule: ContractAddress!
+  followModuleData: FollowModuleData!
+}
+
+# follow module data scalar type
+scalar FollowModuleData
+
+input CreateSetFollowModuleRequest {
+  profileId: ProfileId!
+
+  # The follow module info
+  followModule: FollowModuleParams!
+}
+
+input FollowModuleParams {
+  # The follower fee follower module
+  feeFollowModule: FeeFollowModuleParams
+
+  # The empty follow module
+  emptyFollowModule: Boolean
+}
+
+input FeeFollowModuleParams {
+  # The follow module amount info
+  amount: ModuleFeeAmountParams!
+
+  # The follow module recipient address
+  recipient: EthereumAddress!
+}
+
+# The broadcast item
+type CreateSetFollowNFTUriBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreateSetFollowNFTUriEIP712TypedData!
+}
+
+# The set follow nft uri eip 712 typed data
+type CreateSetFollowNFTUriEIP712TypedData {
+  # The types
+  types: CreateSetFollowNFTUriEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: CreateSetFollowNFTUriEIP712TypedDataValue!
+}
+
+# The set follow nft uri eip 712 typed data types
+type CreateSetFollowNFTUriEIP712TypedDataTypes {
+  SetFollowNFTURIWithSig: [EIP712TypedDataField!]!
+}
+
+# The set follow nft uri eip 712 typed data value
+type CreateSetFollowNFTUriEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  profileId: ProfileId!
+  followNFTURI: Url!
+}
+
+input CreateSetFollowNFTUriRequest {
+  profileId: ProfileId!
+
+  # The follow NFT URI is the NFT metadata your followers will mint when they follow you. This can be updated at all times. If you do not pass in anything it will create a super cool changing NFT which will show the last publication of your profile as the NFT which looks awesome! This means people do not have to worry about writing this logic but still have the ability to customise it for their followers
+  followNFTURI: Url
+}
+
+# The broadcast item
+type CreateToggleFollowBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreateToggleFollowEIP712TypedData!
+}
+
+# The create toggle follows eip 712 typed data
+type CreateToggleFollowEIP712TypedData {
+  # The types
+  types: CreateToggleFollowEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: CreateToggleFollowEIP712TypedDataValue!
+}
+
+# The create toggle follows eip 712 typed data types
+type CreateToggleFollowEIP712TypedDataTypes {
+  ToggleFollowWithSig: [EIP712TypedDataField!]!
+}
+
+# The create toggle follow eip 712 typed data value
+type CreateToggleFollowEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  profileIds: [ProfileId!]!
+  enables: [Boolean!]!
+}
+
+input CreateToggleFollowRequest {
+  profileIds: [ProfileId!]!
+  enables: [Boolean!]!
+}
+
+# The broadcast item
+type CreateCollectBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreateCollectEIP712TypedData!
+}
+
+# The collect eip 712 typed data
+type CreateCollectEIP712TypedData {
+  # The types
+  types: CreateCollectEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: CreateCollectEIP712TypedDataValue!
+}
+
+# The collect eip 712 typed data types
+type CreateCollectEIP712TypedDataTypes {
+  CollectWithSig: [EIP712TypedDataField!]!
+}
+
+# The collect eip 712 typed data value
+type CreateCollectEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  profileId: ProfileId!
+  pubId: PublicationId!
+  data: BlockchainData!
+}
+
+# Publication id custom scalar type
+scalar PublicationId
+
+input CreateCollectRequest {
+  publicationId: InternalPublicationId!
+}
+
+# The broadcast item
+type SetDefaultProfileBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: SetDefaultProfileEIP712TypedData!
+}
+
+# The default profile eip 712 typed data
+type SetDefaultProfileEIP712TypedData {
+  # The types
+  types: SetDefaultProfileEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: SetDefaultProfileEIP712TypedDataValue!
+}
+
+# The default profile eip 712 typed data types
+type SetDefaultProfileEIP712TypedDataTypes {
+  SetDefaultProfileWithSig: [EIP712TypedDataField!]!
+}
+
+# The default profile eip 712 typed data value
+type SetDefaultProfileEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  wallet: EthereumAddress!
+  profileId: ProfileId!
+}
+
+input CreateSetDefaultProfileRequest {
+  # Profile id
+  profileId: ProfileId!
+}
+
+union RelayResult = RelayerResult | RelayError
+
+# The relayer result
+type RelayerResult {
+  # The tx hash
+  txHash: TxHash!
+}
+
+type RelayError {
+  reason: RelayErrorReasons!
+}
+
+# Relay error reason
+enum RelayErrorReasons {
+  REJECTED
+  HANDLE_TAKEN
+  EXPIRED
+  WRONG_WALLET_SIGNED
+}
+
+input CreateProfileRequest {
+  handle: CreateHandle!
+
+  # The profile picture uri
+  profilePictureUri: Url
+
+  # The follow module
+  followModule: FollowModuleParams
+
+  # The follow NFT URI is the NFT metadata your followers will mint when they follow you. This can be updated at all times. If you do not pass in anything it will create a super cool changing NFT which will show the last publication of your profile as the NFT which looks awesome! This means people do not have to worry about writing this logic but still have the ability to customise it for their followers
+  followNFTURI: Url
+}
+
+# create handle custom scalar type
+scalar CreateHandle
+
+# The broadcast item
+type CreateSetProfileImageUriBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreateSetProfileImageUriEIP712TypedData!
+}
+
+# The set profile uri eip 712 typed data
+type CreateSetProfileImageUriEIP712TypedData {
+  # The types
+  types: CreateSetProfileImageUriEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: CreateSetProfileImageUriEIP712TypedDataValue!
+}
+
+# The set profile image uri eip 712 typed data types
+type CreateSetProfileImageUriEIP712TypedDataTypes {
+  SetProfileImageURIWithSig: [EIP712TypedDataField!]!
+}
+
+# The set profile uri eip 712 typed data value
+type CreateSetProfileImageUriEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  profileId: ProfileId!
+  imageURI: Url!
+}
+
+input UpdateProfileImageRequest {
+  profileId: ProfileId!
+
+  # The url to the image if offline
+  url: Url
+
+  # The nft data
+  nftData: NFTData
+}
+
+input NFTData {
+  # Id of the nft ownership challenge
+  id: NftOwnershipId!
+
+  # The signature
+  signature: Signature!
+}
+
+input UpdateProfileRequest {
+  profileId: ProfileId!
+
+  # The profile name
+  name: String!
+
+  # The profile bio
+  bio: String
+
+  # The profile location
+  location: String
+
+  # The profile website
+  website: Url
+
+  # The profile twitter url
+  twitterUrl: Url
+
+  # The cover picture for the profile
+  coverPicture: Url
+}
+
+# The broadcast item
+type CreateBurnProfileBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreateBurnEIP712TypedData!
+}
+
+input BurnProfileRequest {
+  profileId: ProfileId!
+}
+
+# The broadcast item
+type CreatePostBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreatePostEIP712TypedData!
+}
+
+# The create post eip 712 typed data
+type CreatePostEIP712TypedData {
+  # The types
+  types: CreatePostEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: CreatePostEIP712TypedDataValue!
+}
+
+# The create post eip 712 typed data types
+type CreatePostEIP712TypedDataTypes {
+  PostWithSig: [EIP712TypedDataField!]!
+}
+
+# The create post eip 712 typed data value
+type CreatePostEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  profileId: ProfileId!
+  contentURI: PublicationUrl!
+  collectModule: ContractAddress!
+  collectModuleData: CollectModuleData!
+  referenceModule: ContractAddress!
+  referenceModuleData: ReferenceModuleData!
+}
+
+# Publication url scalar type
+scalar PublicationUrl
+
+# collect module data scalar type
+scalar CollectModuleData
+
+# reference module data scalar type
+scalar ReferenceModuleData
+
+input CreatePublicPostRequest {
+  # Profile id
+  profileId: ProfileId!
+
+  # The metadata uploaded somewhere passing in the url to reach it
+  contentURI: Url!
+
+  # The collect module
+  collectModule: CollectModuleParams!
+
+  # The reference module
+  referenceModule: ReferenceModuleParams
+}
+
+input CollectModuleParams {
+  # The collect empty collect module
+  freeCollectModule: FreeCollectModuleParams
+
+  # The collect revert collect module
+  revertCollectModule: Boolean
+
+  # The collect fee collect module
+  feeCollectModule: FeeCollectModuleParams
+
+  # The collect limited fee collect module
+  limitedFeeCollectModule: LimitedFeeCollectModuleParams
+
+  # The collect limited timed fee collect module
+  limitedTimedFeeCollectModule: LimitedTimedFeeCollectModuleParams
+
+  # The collect timed fee collect module
+  timedFeeCollectModule: TimedFeeCollectModuleParams
+}
+
+input FreeCollectModuleParams {
+  # Follower only
+  followerOnly: Boolean!
+}
+
+input FeeCollectModuleParams {
+  # The collect module amount info
+  amount: ModuleFeeAmountParams!
+
+  # The collect module recipient address
+  recipient: EthereumAddress!
+
+  # The collect module referral fee
+  referralFee: Float!
+
+  # Follower only
+  followerOnly: Boolean!
+}
+
+input LimitedFeeCollectModuleParams {
+  # The collect module limit
+  collectLimit: String!
+
+  # The collect module amount info
+  amount: ModuleFeeAmountParams!
+
+  # The collect module recipient address
+  recipient: EthereumAddress!
+
+  # The collect module referral fee
+  referralFee: Float!
+
+  # Follower only
+  followerOnly: Boolean!
+}
+
+input LimitedTimedFeeCollectModuleParams {
+  # The collect module limit
+  collectLimit: String!
+
+  # The collect module amount info
+  amount: ModuleFeeAmountParams!
+
+  # The collect module recipient address
+  recipient: EthereumAddress!
+
+  # The collect module referral fee
+  referralFee: Float!
+
+  # Follower only
+  followerOnly: Boolean!
+}
+
+input TimedFeeCollectModuleParams {
+  # The collect module amount info
+  amount: ModuleFeeAmountParams!
+
+  # The collect module recipient address
+  recipient: EthereumAddress!
+
+  # The collect module referral fee
+  referralFee: Float!
+
+  # Follower only
+  followerOnly: Boolean!
+}
+
+input ReferenceModuleParams {
+  # The follower only reference module
+  followerOnlyReferenceModule: Boolean
+}
+
+# The broadcast item
+type CreateCommentBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreateCommentEIP712TypedData!
+}
+
+# The create comment eip 712 typed data
+type CreateCommentEIP712TypedData {
+  # The types
+  types: CreateCommentEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: CreateCommentEIP712TypedDataValue!
+}
+
+# The create comment eip 712 typed data types
+type CreateCommentEIP712TypedDataTypes {
+  CommentWithSig: [EIP712TypedDataField!]!
+}
+
+# The create comment eip 712 typed data value
+type CreateCommentEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  profileId: ProfileId!
+  contentURI: PublicationUrl!
+  profileIdPointed: ProfileId!
+  pubIdPointed: PublicationId!
+  collectModule: ContractAddress!
+  collectModuleData: CollectModuleData!
+  referenceModule: ContractAddress!
+  referenceModuleData: ReferenceModuleData!
+}
+
+input CreatePublicCommentRequest {
+  # Profile id
+  profileId: ProfileId!
+
+  # Publication id of what your comments on remember if this is a comment you commented on it will be that as the id
+  publicationId: InternalPublicationId!
+
+  # The metadata uploaded somewhere passing in the url to reach it
+  contentURI: Url!
+
+  # The collect module
+  collectModule: CollectModuleParams!
+
+  # The reference module
+  referenceModule: ReferenceModuleParams
+}
+
+# The broadcast item
+type CreateMirrorBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreateMirrorEIP712TypedData!
+}
+
+# The mirror eip 712 typed data
+type CreateMirrorEIP712TypedData {
+  # The types
+  types: CreateMirrorEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: CreateMirrorEIP712TypedDataValue!
+}
+
+# The mirror eip 712 typed data types
+type CreateMirrorEIP712TypedDataTypes {
+  MirrorWithSig: [EIP712TypedDataField!]!
+}
+
+# The mirror eip 712 typed data value
+type CreateMirrorEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  profileId: ProfileId!
+  profileIdPointed: ProfileId!
+  pubIdPointed: PublicationId!
+  referenceModule: ContractAddress!
+  referenceModuleData: ReferenceModuleData!
+}
+
+input CreateMirrorRequest {
+  # Profile id
+  profileId: ProfileId!
+
+  # Publication id of what you want to mirror on remember if this is a comment it will be that as the id
+  publicationId: InternalPublicationId!
+
+  # The reference module info
+  referenceModule: ReferenceModuleParams
+}
+
+# Represents NULL values
+scalar Void
+
+input HidePublicationRequest {
+  # Publication id
+  publicationId: InternalPublicationId!
+}
+
+input ClaimHandleRequest {
+  id: HandleClaimIdScalar
+  freeTextHandle: CreateHandle
+
+  # The follow module
+  followModule: FollowModuleParams
+}
+
+# The broadcast item
+type CreateSetProfileMetadataURIBroadcastItemResult {
+  # This broadcast item ID
+  id: BroadcastId!
+
+  # The date the broadcast item expiries
+  expiresAt: DateTime!
+
+  # The typed data
+  typedData: CreateSetProfileMetadataURIEIP712TypedData!
+}
+
+# The set follow nft uri eip 712 typed data
+type CreateSetProfileMetadataURIEIP712TypedData {
+  # The types
+  types: CreateSetProfileMetadataURIEIP712TypedDataTypes!
+
+  # The typed data domain
+  domain: EIP712TypedDataDomain!
+
+  # The values
+  value: CreateSetProfileMetadataURIEIP712TypedDataValue!
+}
+
+# The set follow nft uri eip 712 typed data types
+type CreateSetProfileMetadataURIEIP712TypedDataTypes {
+  SetProfileMetadataURIWithSig: [EIP712TypedDataField!]!
+}
+
+# The set follow nft uri eip 712 typed data value
+type CreateSetProfileMetadataURIEIP712TypedDataValue {
+  nonce: Nonce!
+  deadline: UnixTimestamp!
+  profileId: ProfileId!
+  metadata: Url!
+}
+
+input CreatePublicSetProfileMetadataURIRequest {
+  # Profile id
+  profileId: ProfileId!
+
+  # The metadata uploaded somewhere passing in the url to reach it
+  metadata: Url!
+}
+
+input ReportPublicationRequest {
+  publicationId: InternalPublicationId!
+  reason: ReportingReasonInputParams!
+  additionalComments: String
+}
+
+input ReportingReasonInputParams {
+  sensitiveReason: SensitiveReasonInputParams
+  illegalReason: IllegalReasonInputParams
+  fraudReason: FraudReasonInputParams
+}
+
+input SensitiveReasonInputParams {
+  reason: PublicationReportingReason!
+  subreason: PublicationReportingSensitiveSubreason!
+}
+
+# Publication reporting reason
+enum PublicationReportingReason {
+  SENSITIVE
+  ILLEGAL
+  FRAUD
+}
+
+# Publication reporting sensitive subreason
+enum PublicationReportingSensitiveSubreason {
+  NSFW
+  OFFENSIVE
+}
+
+input IllegalReasonInputParams {
+  reason: PublicationReportingReason!
+  subreason: PublicationReportingIllegalSubreason!
+}
+
+# Publication reporting illegal subreason
+enum PublicationReportingIllegalSubreason {
+  ANIMAL_ABUSE
+  HUMAN_ABUSE
+}
+
+input FraudReasonInputParams {
+  reason: PublicationReportingReason!
+  subreason: PublicationReportingFraudSubreason!
+}
+
+# Publication reporting fraud subreason
+enum PublicationReportingFraudSubreason {
+  SCAM
+  IMPERSONATION
+}
