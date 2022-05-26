@@ -68,12 +68,12 @@ export const getProfile = async (address: string) => {
   return graphInstance.query(queryProfile, { address }).toPromise();
 };
 /**
- * 
+ *
  * @param handle If you don't have ".test" or ".lens" appended to the end of `handle`, pass `handle` as `config.lens.getHandleToSearch(handle)`
  */
-export const getProfileByHandle = async (handle : string) => {
+export const getProfileByHandle = async (handle: string) => {
   return graphInstance.query(queryProfileByHandle, { handle: handle }).toPromise();
-}
+};
 
 // This code will assume you are using MetaMask.
 // It will also assume that you have already done all the connecting to metamask
@@ -106,12 +106,9 @@ export const getAccess = async (address: string) => {
     }
   }
   const challengeResponse = await generateChallenge(address);
-  console.log(challengeResponse);
   // sign the text with the wallet
   const signature = challengeResponse && (await signText(challengeResponse.data.challenge.text));
-  console.log(signature);
   const authResponse = signature && (await authenticate(address, signature));
-  console.log(authResponse);
   !authResponse && console.error('Unable to login in');
   if (authResponse && authResponse.data) {
     localStorage.setItem('lensAccessToken', authResponse.data.authenticate.accessToken);
@@ -124,7 +121,6 @@ export const getAccess = async (address: string) => {
 export const signUp = async (address: string) => {
   const profileResponse = await getProfile(address);
   if (profileResponse && profileResponse.data.profiles.items.length === 0) {
-    console.log('should create account');
     try {
       const accessResponse = await getAccess(address);
       if (accessResponse && accessResponse.data) {
@@ -136,13 +132,10 @@ export const signUp = async (address: string) => {
     }
     return;
   }
-  console.log('shouldnt create account');
 };
 
 //Need to check what type of follow module - (don't want to have to pay for a fee)
 export const follow = async (profileId: string, accessToken: string, library: Web3Provider) => {
-  console.log(profileId)
-  console.log(accessToken)
   const result = await graphInstance
     .mutation(
       mutationFollow,
@@ -160,19 +153,17 @@ export const follow = async (profileId: string, accessToken: string, library: We
     .toPromise();
   if (!result) throw 'result is undefined';
   try {
-    console.log(result)
     const typedData = result.data.createFollowTypedData.typedData;
-    console.log(result.data.createFollowTypedData);
     const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value, library);
-    console.log('signature:', signature);
     const { v, r, s } = splitSignature(signature);
-    console.log({ v, r, s });
     if (RELAY_ON) {
-      const broadcastRes = await broadcast({
-        id: result.data.createFollowTypedData.id,
-        signature: signature
-      }, accessToken)
-      console.log(broadcastRes)
+      const broadcastRes = await broadcast(
+        {
+          id: result.data.createFollowTypedData.id,
+          signature: signature,
+        },
+        accessToken,
+      );
     } else {
       const tx = await getLensHub(library).followWithSig({
         follower: await getAddressFromSigner(library),
@@ -185,7 +176,6 @@ export const follow = async (profileId: string, accessToken: string, library: We
           deadline: typedData.value.deadline,
         },
       });
-      console.log(tx);
       return tx.hash;
     }
     // you can look at how to know when its been indexed here:
@@ -213,7 +203,6 @@ export const unfollow = async (handle: string, accessToken: string, library: Web
     )
     .toPromise();
   if (!result) return;
-  console.log(result);
   const typedData = result.data.createUnfollowTypedData.typedData;
   const followNftContract = getFollowNftContract(typedData, library);
   const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value, library);
@@ -227,7 +216,6 @@ export const unfollow = async (handle: string, accessToken: string, library: Web
   };
 
   const tx = await followNftContract.burnWithSig(typedData.value.tokenId, sig);
-  console.log(tx.hash);
   return tx.hash;
   // you can look at how to know when its been indexed here:
   //   - https://docs.lens.dev/docs/has-transaction-been-indexed
@@ -296,7 +284,6 @@ export const txWait = async (txHash: string, accessToken: string) => {
 export const pollUntilIndexed = async (txHash: string, accessToken: string) => {
   while (true) {
     const result = await txWait(txHash, accessToken);
-    console.log(result);
     const response = result.data.hasTxHashBeenIndexed;
     if (response.__typename === 'TransactionIndexedResult') {
       if (response.metadataStatus) {
@@ -330,20 +317,24 @@ export const pollUntilIndexed = async (txHash: string, accessToken: string) => {
 
 // todo - create publication
 export const postRequest = ({}, accessToken: string) => {
-  return graphInstance.mutation(mutationCreatePostTypedData, {
-    
-  }).toPromise()
-}
+  return graphInstance.mutation(mutationCreatePostTypedData, {}).toPromise();
+};
 
 //gasless!
-export const broadcast = (request : {id : string, signature: string}, accessToken : string) => {
-  return graphInstance.mutation(mutationBroadcast, {
-    request
-  }, {
-    fetchOptions: {
-      headers: {
-        'x-access-token': accessToken,
+export const broadcast = (request: { id: string; signature: string }, accessToken: string) => {
+  return graphInstance
+    .mutation(
+      mutationBroadcast,
+      {
+        request,
       },
-    },
-  }).toPromise()
-}
+      {
+        fetchOptions: {
+          headers: {
+            'x-access-token': accessToken,
+          },
+        },
+      },
+    )
+    .toPromise();
+};

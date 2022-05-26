@@ -187,7 +187,6 @@ export const indexCreator = async (txHash: string) => {
         })
         .toPromise();
 
-      console.log(response.data.creators);
       if (response.data && response.data.creators && response.data.creators.length > 0) {
         resolve(intervalId);
         clearInterval(intervalId);

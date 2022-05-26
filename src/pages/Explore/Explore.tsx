@@ -36,7 +36,6 @@ const ExplorePage = () => {
   useEffect(() => {
     if (!account) return;
     lens.getFollowNFTs(account).then((res) => {
-      console.log(res);
       if (res.error && !res.data) {
         toast.error('Unable to find who you follow');
         return;
@@ -45,7 +44,7 @@ const ExplorePage = () => {
         (one: { profile: { handle: string } }) => one.profile.handle,
       );
       api.creatorsByLens(lensHandleOfFollow).then((res) => {
-        setLoaded(true)
+        setLoaded(true);
         if (!res.data) return;
         setFollowing(res.data?.creators);
       });
@@ -53,24 +52,28 @@ const ExplorePage = () => {
   }, [account]);
   return (
     <>
-      {loaded ? <PageWrapper>
-        {following.length > 0 && (
-          <UserDisplay
-            title="Your Favorites"
-            users={following}
-            handleScroll={() => {}}
-            hasMore={false}
-            style={{
-              marginBottom: -100,
-            }}
-          />
-        )}
-        <UserDisplay title="Explore the community" users={users} handleScroll={handleScroll} hasMore={hasMore} />
-      </PageWrapper> : <PageWrapper>
-        <div style={{ width: '100%', textAlign: 'center', marginTop: 300 }}>
-          <Loader color="#fff" />
-        </div>
-      </PageWrapper> }
+      {loaded ? (
+        <PageWrapper>
+          {following.length > 0 && (
+            <UserDisplay
+              title="Your Favorites"
+              users={following}
+              handleScroll={() => {}}
+              hasMore={false}
+              style={{
+                marginBottom: -100,
+              }}
+            />
+          )}
+          <UserDisplay title="Explore the community" users={users} handleScroll={handleScroll} hasMore={hasMore} />
+        </PageWrapper>
+      ) : (
+        <PageWrapper>
+          <div style={{ width: '100%', textAlign: 'center', marginTop: 300 }}>
+            <Loader color="#fff" />
+          </div>
+        </PageWrapper>
+      )}
     </>
   );
 };

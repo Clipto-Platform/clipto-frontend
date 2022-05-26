@@ -274,7 +274,6 @@ const Header: React.FC<HeaderProps> = () => {
 
   const getLensCreatorData = async () => {
     try {
-      console.log(account)
       if (account) {
         toast.loading('Signing in');
         const accessToken = await lens.getAccess(account);
@@ -286,7 +285,7 @@ const Header: React.FC<HeaderProps> = () => {
         toast.success('Login success');
         setLensAccess('🌿');
       }
-    } catch (e : any) {
+    } catch (e: any) {
       toast.dismiss();
       toast.error(e.message);
     }

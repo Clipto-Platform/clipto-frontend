@@ -300,7 +300,6 @@ const OnboardProfilePage = () => {
                         });
                       }),
                   };
-                  console.log('asdfasdf');
                   hasAccount ? await updateUserProfile(creatorData) : await createUserProfile(creatorData);
                   setLoading(false);
                 }}
@@ -451,7 +450,6 @@ const OnboardProfilePage = () => {
                                   } else if (Object.keys(errors).length > 0) {
                                     toast.error('Please fix the errors.');
                                   } else {
-                                    console.log('submitting');
                                     handleSubmit();
                                   }
                                   setLoading(false);

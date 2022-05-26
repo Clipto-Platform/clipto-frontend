@@ -128,24 +128,23 @@ const BookingPage = () => {
   }, [businessTwitter]);
 
   useEffect(() => {
-    console.log(creator)
     if (account && creator && creator.lensHandle) {
-      lens.getProfileByHandle(creator.lensHandle).then(res => {
-        const profile = res.data.profiles.items[0]
-        if (profile.ownedBy.toUpperCase() === creator.address.toUpperCase()) { // lens profile must be owned by creator to display it to user - Please talk with jonathan before deleting this
+      lens.getProfileByHandle(creator.lensHandle).then((res) => {
+        const profile = res.data.profiles.items[0];
+        if (profile.ownedBy.toUpperCase() === creator.address.toUpperCase()) {
+          // lens profile must be owned by creator to display it to user - Please talk with jonathan before deleting this
           //Maybe consider moving this code to the redux
-          setCreatorLensId(profile.id) 
+          setCreatorLensId(profile.id);
         } else {
-          throw new Error('Validation lens error')
+          throw new Error('Validation lens error');
         }
 
         lens.isFollowing(account, res.data.profiles.items[0].id).then((res) => {
-          console.log(res)
           if (res) {
             setDoesFollow(res.data.doesFollow[0].follows);
           }
         });
-      })
+      });
     }
   }, [account, toggle, creator]);
 
@@ -243,7 +242,12 @@ const BookingPage = () => {
               <BookingCard>
                 <FlexRow style={{ marginBottom: 12 }}>
                   <div>
-                    <AvatarComponent style={{marginBottom: 5}} url={creator.profilePicture} size="medium" twitterHandle={creator.twitterHandle} />
+                    <AvatarComponent
+                      style={{ marginBottom: 5 }}
+                      url={creator.profilePicture}
+                      size="medium"
+                      twitterHandle={creator.twitterHandle}
+                    />
                     <Label style={{ marginBottom: 8 }}>{creator.userName}</Label>
                     <Description>
                       <a
@@ -254,66 +258,72 @@ const BookingPage = () => {
                         @{creator.twitterHandle}
                       </a>{' '}
                     </Description>
-                    {creator.lensHandle && <Description>
-                      <a
-                        href={`https://lenster.xyz/u/${creator.lensHandle}`}
-                        target="_blank"
-                        style={{ color: '#EDE641' }}
-                      >
-                        🌿: @{creator.lensHandle}
-                      </a>{' '}
-                    </Description>}
+                    {creator.lensHandle && (
+                      <Description>
+                        <a
+                          href={`https://lenster.xyz/u/${creator.lensHandle}`}
+                          target="_blank"
+                          style={{ color: '#EDE641' }}
+                        >
+                          🌿: @{creator.lensHandle}
+                        </a>{' '}
+                      </Description>
+                    )}
                     <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
                   </div>
                   <div>
-                    
                     {library && creatorLensId && (
                       <PrimaryButton
                         size="small"
                         width="small"
-                        style={doesFollow ? { 
-                          margin: 10, 
-                          marginLeft: 0, 
-                          maxWidth: 100, 
-                          background: '#2E2E2E', 
-                          color: 'white' 
-                        } : {
-                          margin: 10, 
-                          marginLeft: 0, 
-                          maxWidth: 100, 
-                          background: '#5F21E2', 
-                          color: 'white'
-                          }}
+                        style={
+                          doesFollow
+                            ? {
+                                margin: 10,
+                                marginLeft: 0,
+                                maxWidth: 100,
+                                background: '#2E2E2E',
+                                color: 'white',
+                              }
+                            : {
+                                margin: 10,
+                                marginLeft: 0,
+                                maxWidth: 100,
+                                background: '#5F21E2',
+                                color: 'white',
+                              }
+                        }
                         onPress={async (e) => {
                           try {
-                            toast.loading('Signing into Lens')
+                            toast.loading('Signing into Lens');
                             const accessToken = await lens.getAccess(account);
-                            toast.dismiss()
-                            toast.loading(doesFollow ? 'Are you sure you want to lose your follow NFT?' : 'Awaiting follow confirmation');
+                            toast.dismiss();
+                            toast.loading(
+                              doesFollow
+                                ? 'Are you sure you want to lose your follow NFT?'
+                                : 'Awaiting follow confirmation',
+                            );
                             if (!accessToken || !creatorLensId) return;
                             const access = accessToken.data.authenticate.accessToken;
                             const txHash = doesFollow
-                                ? await lens.unfollow(creatorLensId, access, library)
-                                : await lens.follow(creatorLensId, access, library);
+                              ? await lens.unfollow(creatorLensId, access, library)
+                              : await lens.follow(creatorLensId, access, library);
 
-                            
                             toast.dismiss();
                             toast.loading('Waiting for transaction to complete');
-                            console.log(txHash);
                             if (!txHash) {
                               console.error('no txHash detected!');
                               return;
                             }
                             const f = await lens.pollUntilIndexed(txHash, access);
-                            console.log(f);
                             setToggle(!toggle); //todo(jonathanng) - this is trashcan code!
                             toast.dismiss();
                             toast.success('Transaction is finished');
-                        } catch (e: any) {
-                          toast.dismiss();
-                          toast.error((e && e.message) || 'Error.')
-                          return;
-                        }
+                          } catch (e: any) {
+                            toast.dismiss();
+                            toast.error((e && e.message) || 'Error.');
+                            return;
+                          }
                         }}
                       >
                         {doesFollow ? 'Following' : 'Follow'}
@@ -322,7 +332,7 @@ const BookingPage = () => {
                   </div>
                 </FlexRow>
                 <FlexRow style={{ marginBottom: 24 }}>
-                  <Description style={{color: 'white'}}>{creator.bio}</Description>
+                  <Description style={{ color: 'white' }}>{creator.bio}</Description>
                 </FlexRow>
 
                 <HR style={{ marginBottom: 36 }} />
@@ -392,7 +402,7 @@ const BookingPage = () => {
                   }}
                   validateOnBlur={false}
                   validateOnChange={false}
-                  onSubmit={async (values : any) => {
+                  onSubmit={async (values: any) => {
                     setLoading(true);
                     await makeBooking(values);
                     setLoading(false);
