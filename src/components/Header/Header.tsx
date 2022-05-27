@@ -276,7 +276,7 @@ const Header: React.FC<HeaderProps> = () => {
     try {
       if (account) {
         toast.loading('Signing in');
-        const accessToken = await lens.getAccess(account);
+        const accessToken = await lens.getAccess(account, library as Web3Provider);
         toast.dismiss();
         if (!accessToken) {
           toast.error('Login failed');

@@ -166,7 +166,11 @@ const BountyPage = () => {
                   />
                 </FieldWrapper>
                 <FieldWrapper>
-                  <Dropdown formLabel="Select payment type" onChange={(e: any) => setToken(e.target.value)}>
+                  <Dropdown
+                    name="bounty"
+                    formLabel="Select payment type"
+                    onChange={(e: any) => setToken(e.target.value)}
+                  >
                     {config.erc20TokenNames.map((tok, i) => {
                       if (i == 0) {
                         <Option key={i} selected value={tok} />;

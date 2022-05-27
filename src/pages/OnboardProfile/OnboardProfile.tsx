@@ -72,7 +72,7 @@ const OnboardProfilePage = () => {
       toast.error('Temporally disabled account creation');
       return { error: 'Temporally disabled account creation' };
     }
-    const accessRes = await lens.getAccess(account);
+    const accessRes = await lens.getAccess(account, library as Web3Provider);
     if (!accessRes) return;
     const access = accessRes.data.authenticate.accessToken;
     toast.loading('Creating lens profile');
