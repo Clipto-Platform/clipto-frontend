@@ -14,7 +14,7 @@ const graphInstance = createClient({
   url: config.graphApi,
 });
 
-export const exchnageRates = async (token: string, price: number) => {
+export const exchangeRates = async (token: string, price: number) => {
   if (token == 'WMATIC') {
     token = 'MATIC';
   } else if (token == 'WETH') {
@@ -25,7 +25,7 @@ export const exchnageRates = async (token: string, price: number) => {
       currency: token,
     },
   });
-  const convertedPrice = (price / parseFloat(rates.data.data.rates['MATIC'])).toFixed(7);
+  const convertedPrice = (price / parseFloat(rates.data.data.rates['USDC'])).toFixed(7);
   return convertedPrice;
 };
 
@@ -101,6 +101,17 @@ export const creators = async (
     })
     .toPromise();
 };
+
+export const creatorsByLens = async (
+  lensHandles: Array<string>,
+): Promise<OperationResult<{ creators: types.EntityCreator[] }>> => {
+  return graphInstance
+    .query(query.queryGetCreatorsByLensHandle, {
+      lensHandles,
+    })
+    .toPromise();
+};
+
 export const getAllCreatorsUserName = async (): Promise<OperationResult<{ creators: [{ twitterHandle: string }] }>> => {
   return graphInstance.query(query.queryGetCreatorUserName).toPromise();
 };
@@ -148,4 +159,38 @@ export const getNFTHistory = async (
       tokenId: parseInt(tokenId.toString()),
     })
     .toPromise();
+};
+
+export const indexRequest = async (txHash: string) => {
+  return await new Promise((resolve) => {
+    const intervalId = setInterval(async () => {
+      const response = await graphInstance
+        .query(query.queryGetRequestByHash, {
+          txHash: txHash,
+        })
+        .toPromise();
+
+      if (response.data && response.data.requests && response.data.requests.length > 0) {
+        resolve(intervalId);
+        clearInterval(intervalId);
+      }
+    }, 500);
+  });
+};
+
+export const indexCreator = async (txHash: string) => {
+  return await new Promise((resolve) => {
+    const intervalId = setInterval(async () => {
+      const response = await graphInstance
+        .query(query.queryGetCreatorByHash, {
+          txHash: txHash,
+        })
+        .toPromise();
+
+      if (response.data && response.data.creators && response.data.creators.length > 0) {
+        resolve(intervalId);
+        clearInterval(intervalId);
+      }
+    }, 500);
+  });
 };

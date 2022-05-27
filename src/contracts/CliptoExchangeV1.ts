@@ -13,10 +13,10 @@ import {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
-import { Listener, Provider } from "@ethersproject/providers";
-import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
+} from 'ethers';
+import { FunctionFragment, Result, EventFragment } from '@ethersproject/abi';
+import { Listener, Provider } from '@ethersproject/providers';
+import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export type RequestStruct = {
   requester: string;
@@ -26,13 +26,7 @@ export type RequestStruct = {
   fulfilled: boolean;
 };
 
-export type RequestStructOutput = [
-  string,
-  string,
-  string,
-  BigNumber,
-  boolean
-] & {
+export type RequestStructOutput = [string, string, string, BigNumber, boolean] & {
   requester: string;
   nftReceiver: string;
   erc20: string;
@@ -42,160 +36,94 @@ export type RequestStructOutput = [
 
 export interface CliptoExchangeV1Interface extends utils.Interface {
   functions: {
-    "beacon()": FunctionFragment;
-    "creators(address)": FunctionFragment;
-    "deliverRequest(uint256,string)": FunctionFragment;
-    "getCreator(address)": FunctionFragment;
-    "getFeeRate()": FunctionFragment;
-    "getRequest(address,uint256)": FunctionFragment;
-    "initialize(address,address)": FunctionFragment;
-    "migrateCreator(address[],string[])": FunctionFragment;
-    "nativeNewRequest(address,address,string)": FunctionFragment;
-    "newRequest(address,address,address,uint256,string)": FunctionFragment;
-    "owner()": FunctionFragment;
-    "pause()": FunctionFragment;
-    "paused()": FunctionFragment;
-    "refundRequest(address,uint256)": FunctionFragment;
-    "registerCreator(string,string)": FunctionFragment;
-    "requests(address,uint256)": FunctionFragment;
-    "setCliptoMinter(address,address)": FunctionFragment;
-    "setFeeRate(uint256,uint256)": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
-    "unpause()": FunctionFragment;
-    "updateCreator(string)": FunctionFragment;
+    'beacon()': FunctionFragment;
+    'creators(address)': FunctionFragment;
+    'deliverRequest(uint256,string)': FunctionFragment;
+    'getCreator(address)': FunctionFragment;
+    'getFeeRate()': FunctionFragment;
+    'getRequest(address,uint256)': FunctionFragment;
+    'initialize(address,address)': FunctionFragment;
+    'migrateCreator(address[],string[])': FunctionFragment;
+    'nativeNewRequest(address,address,string)': FunctionFragment;
+    'newRequest(address,address,address,uint256,string)': FunctionFragment;
+    'owner()': FunctionFragment;
+    'pause()': FunctionFragment;
+    'paused()': FunctionFragment;
+    'refundRequest(address,uint256)': FunctionFragment;
+    'registerCreator(string,string)': FunctionFragment;
+    'requests(address,uint256)': FunctionFragment;
+    'setCliptoMinter(address,address)': FunctionFragment;
+    'setFeeRate(uint256,uint256)': FunctionFragment;
+    'transferOwnership(address)': FunctionFragment;
+    'unpause()': FunctionFragment;
+    'updateCreator(string)': FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "beacon", values?: undefined): string;
-  encodeFunctionData(functionFragment: "creators", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "deliverRequest",
-    values: [BigNumberish, string]
-  ): string;
-  encodeFunctionData(functionFragment: "getCreator", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "getFeeRate",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getRequest",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "initialize",
-    values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "migrateCreator",
-    values: [string[], string[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "nativeNewRequest",
-    values: [string, string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "newRequest",
-    values: [string, string, string, BigNumberish, string]
-  ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
-  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "refundRequest",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "registerCreator",
-    values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "requests",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setCliptoMinter",
-    values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setFeeRate",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
-  ): string;
-  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "updateCreator",
-    values: [string]
-  ): string;
+  encodeFunctionData(functionFragment: 'beacon', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'creators', values: [string]): string;
+  encodeFunctionData(functionFragment: 'deliverRequest', values: [BigNumberish, string]): string;
+  encodeFunctionData(functionFragment: 'getCreator', values: [string]): string;
+  encodeFunctionData(functionFragment: 'getFeeRate', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'getRequest', values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'initialize', values: [string, string]): string;
+  encodeFunctionData(functionFragment: 'migrateCreator', values: [string[], string[]]): string;
+  encodeFunctionData(functionFragment: 'nativeNewRequest', values: [string, string, string]): string;
+  encodeFunctionData(functionFragment: 'newRequest', values: [string, string, string, BigNumberish, string]): string;
+  encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'pause', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'paused', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'refundRequest', values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'registerCreator', values: [string, string]): string;
+  encodeFunctionData(functionFragment: 'requests', values: [string, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'setCliptoMinter', values: [string, string]): string;
+  encodeFunctionData(functionFragment: 'setFeeRate', values: [BigNumberish, BigNumberish]): string;
+  encodeFunctionData(functionFragment: 'transferOwnership', values: [string]): string;
+  encodeFunctionData(functionFragment: 'unpause', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'updateCreator', values: [string]): string;
 
-  decodeFunctionResult(functionFragment: "beacon", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "creators", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "deliverRequest",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "getCreator", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getFeeRate", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getRequest", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "migrateCreator",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "nativeNewRequest",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "newRequest", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "refundRequest",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "registerCreator",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "requests", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setCliptoMinter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "setFeeRate", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "updateCreator",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: 'beacon', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'creators', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'deliverRequest', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getCreator', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getFeeRate', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'getRequest', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'migrateCreator', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'nativeNewRequest', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'newRequest', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'pause', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'paused', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'refundRequest', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'registerCreator', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'requests', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'setCliptoMinter', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'setFeeRate', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'transferOwnership', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'unpause', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'updateCreator', data: BytesLike): Result;
 
   events: {
-    "CreatorRegistered(address,address,string)": EventFragment;
-    "CreatorUpdated(address,string)": EventFragment;
-    "DeliveredRequest(address,uint256,uint256)": EventFragment;
-    "MigrationCreator(address[])": EventFragment;
-    "NewRequest(address,uint256,string)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
-    "Paused(address)": EventFragment;
-    "RefundedRequest(address,uint256)": EventFragment;
-    "Unpaused(address)": EventFragment;
+    'CreatorRegistered(address,address,string)': EventFragment;
+    'CreatorUpdated(address,string)': EventFragment;
+    'DeliveredRequest(address,uint256,uint256)': EventFragment;
+    'MigrationCreator(address[])': EventFragment;
+    'NewRequest(address,uint256,string)': EventFragment;
+    'OwnershipTransferred(address,address)': EventFragment;
+    'Paused(address)': EventFragment;
+    'RefundedRequest(address,uint256)': EventFragment;
+    'Unpaused(address)': EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "CreatorRegistered"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "CreatorUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "DeliveredRequest"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "MigrationCreator"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "NewRequest"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RefundedRequest"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'CreatorRegistered'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'CreatorUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'DeliveredRequest'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'MigrationCreator'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'NewRequest'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'RefundedRequest'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Unpaused'): EventFragment;
 }
 
 export type CreatorRegisteredEvent = TypedEvent<
@@ -203,13 +131,9 @@ export type CreatorRegisteredEvent = TypedEvent<
   { creator: string; nft: string; jsondata: string }
 >;
 
-export type CreatorRegisteredEventFilter =
-  TypedEventFilter<CreatorRegisteredEvent>;
+export type CreatorRegisteredEventFilter = TypedEventFilter<CreatorRegisteredEvent>;
 
-export type CreatorUpdatedEvent = TypedEvent<
-  [string, string],
-  { creator: string; jsondata: string }
->;
+export type CreatorUpdatedEvent = TypedEvent<[string, string], { creator: string; jsondata: string }>;
 
 export type CreatorUpdatedEventFilter = TypedEventFilter<CreatorUpdatedEvent>;
 
@@ -218,16 +142,11 @@ export type DeliveredRequestEvent = TypedEvent<
   { creator: string; requestId: BigNumber; nftTokenId: BigNumber }
 >;
 
-export type DeliveredRequestEventFilter =
-  TypedEventFilter<DeliveredRequestEvent>;
+export type DeliveredRequestEventFilter = TypedEventFilter<DeliveredRequestEvent>;
 
-export type MigrationCreatorEvent = TypedEvent<
-  [string[]],
-  { creators: string[] }
->;
+export type MigrationCreatorEvent = TypedEvent<[string[]], { creators: string[] }>;
 
-export type MigrationCreatorEventFilter =
-  TypedEventFilter<MigrationCreatorEvent>;
+export type MigrationCreatorEventFilter = TypedEventFilter<MigrationCreatorEvent>;
 
 export type NewRequestEvent = TypedEvent<
   [string, BigNumber, string],
@@ -236,22 +155,15 @@ export type NewRequestEvent = TypedEvent<
 
 export type NewRequestEventFilter = TypedEventFilter<NewRequestEvent>;
 
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  { oldOwner: string; newOwner: string }
->;
+export type OwnershipTransferredEvent = TypedEvent<[string, string], { oldOwner: string; newOwner: string }>;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
+export type OwnershipTransferredEventFilter = TypedEventFilter<OwnershipTransferredEvent>;
 
 export type PausedEvent = TypedEvent<[string], { account: string }>;
 
 export type PausedEventFilter = TypedEventFilter<PausedEvent>;
 
-export type RefundedRequestEvent = TypedEvent<
-  [string, BigNumber],
-  { creator: string; requestId: BigNumber }
->;
+export type RefundedRequestEvent = TypedEvent<[string, BigNumber], { creator: string; requestId: BigNumber }>;
 
 export type RefundedRequestEventFilter = TypedEventFilter<RefundedRequestEvent>;
 
@@ -269,16 +181,12 @@ export interface CliptoExchangeV1 extends BaseContract {
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined
+    toBlock?: string | number | undefined,
   ): Promise<Array<TEvent>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>;
   listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
   removeAllListeners(eventName?: string): this;
   off: OnEvent<this>;
   on: OnEvent<this>;
@@ -293,36 +201,32 @@ export interface CliptoExchangeV1 extends BaseContract {
     deliverRequest(
       _requestId: BigNumberish,
       _tokenURI: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
     getCreator(_creator: string, overrides?: CallOverrides): Promise<[string]>;
 
     getFeeRate(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
 
-    getRequest(
-      _creator: string,
-      _requestId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[RequestStructOutput]>;
+    getRequest(_creator: string, _requestId: BigNumberish, overrides?: CallOverrides): Promise<[RequestStructOutput]>;
 
     initialize(
       _owner: string,
       _beacon: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
     migrateCreator(
       _creatorAddress: string[],
       _creatorNames: string[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
     nativeNewRequest(
       _creator: string,
       _nftReceiver: string,
       _jsonData: string,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
     newRequest(
@@ -331,33 +235,31 @@ export interface CliptoExchangeV1 extends BaseContract {
       _erc20: string,
       _amount: BigNumberish,
       _jsonData: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    pause(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    pause(overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
     paused(overrides?: CallOverrides): Promise<[boolean]>;
 
     refundRequest(
       _creator: string,
       _requestId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
     registerCreator(
       _creatorName: string,
       _jsondata: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
     requests(
       arg0: string,
       arg1: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<
       [string, string, string, BigNumber, boolean] & {
         requester: string;
@@ -371,27 +273,25 @@ export interface CliptoExchangeV1 extends BaseContract {
     setCliptoMinter(
       _cliptoToken: string,
       _minter: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
     setFeeRate(
       feeNumer_: BigNumberish,
       feeDenom_: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
-    unpause(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    unpause(overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
     updateCreator(
       _jsondata: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
   };
 
@@ -402,36 +302,32 @@ export interface CliptoExchangeV1 extends BaseContract {
   deliverRequest(
     _requestId: BigNumberish,
     _tokenURI: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   getCreator(_creator: string, overrides?: CallOverrides): Promise<string>;
 
   getFeeRate(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
 
-  getRequest(
-    _creator: string,
-    _requestId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<RequestStructOutput>;
+  getRequest(_creator: string, _requestId: BigNumberish, overrides?: CallOverrides): Promise<RequestStructOutput>;
 
   initialize(
     _owner: string,
     _beacon: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   migrateCreator(
     _creatorAddress: string[],
     _creatorNames: string[],
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   nativeNewRequest(
     _creator: string,
     _nftReceiver: string,
     _jsonData: string,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    overrides?: PayableOverrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   newRequest(
@@ -440,33 +336,31 @@ export interface CliptoExchangeV1 extends BaseContract {
     _erc20: string,
     _amount: BigNumberish,
     _jsonData: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  pause(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  pause(overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
   paused(overrides?: CallOverrides): Promise<boolean>;
 
   refundRequest(
     _creator: string,
     _requestId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   registerCreator(
     _creatorName: string,
     _jsondata: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   requests(
     arg0: string,
     arg1: BigNumberish,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<
     [string, string, string, BigNumber, boolean] & {
       requester: string;
@@ -480,27 +374,25 @@ export interface CliptoExchangeV1 extends BaseContract {
   setCliptoMinter(
     _cliptoToken: string,
     _minter: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   setFeeRate(
     feeNumer_: BigNumberish,
     feeDenom_: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   transferOwnership(
     newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
-  unpause(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  unpause(overrides?: Overrides & { from?: string | Promise<string> }): Promise<ContractTransaction>;
 
   updateCreator(
     _jsondata: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -508,39 +400,23 @@ export interface CliptoExchangeV1 extends BaseContract {
 
     creators(arg0: string, overrides?: CallOverrides): Promise<string>;
 
-    deliverRequest(
-      _requestId: BigNumberish,
-      _tokenURI: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    deliverRequest(_requestId: BigNumberish, _tokenURI: string, overrides?: CallOverrides): Promise<void>;
 
     getCreator(_creator: string, overrides?: CallOverrides): Promise<string>;
 
     getFeeRate(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
 
-    getRequest(
-      _creator: string,
-      _requestId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<RequestStructOutput>;
+    getRequest(_creator: string, _requestId: BigNumberish, overrides?: CallOverrides): Promise<RequestStructOutput>;
 
-    initialize(
-      _owner: string,
-      _beacon: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    initialize(_owner: string, _beacon: string, overrides?: CallOverrides): Promise<void>;
 
-    migrateCreator(
-      _creatorAddress: string[],
-      _creatorNames: string[],
-      overrides?: CallOverrides
-    ): Promise<void>;
+    migrateCreator(_creatorAddress: string[], _creatorNames: string[], overrides?: CallOverrides): Promise<void>;
 
     nativeNewRequest(
       _creator: string,
       _nftReceiver: string,
       _jsonData: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<void>;
 
     newRequest(
@@ -549,7 +425,7 @@ export interface CliptoExchangeV1 extends BaseContract {
       _erc20: string,
       _amount: BigNumberish,
       _jsonData: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
@@ -558,22 +434,14 @@ export interface CliptoExchangeV1 extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<boolean>;
 
-    refundRequest(
-      _creator: string,
-      _requestId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    refundRequest(_creator: string, _requestId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    registerCreator(
-      _creatorName: string,
-      _jsondata: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    registerCreator(_creatorName: string, _jsondata: string, overrides?: CallOverrides): Promise<void>;
 
     requests(
       arg0: string,
       arg1: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<
       [string, string, string, BigNumber, boolean] & {
         requester: string;
@@ -584,22 +452,11 @@ export interface CliptoExchangeV1 extends BaseContract {
       }
     >;
 
-    setCliptoMinter(
-      _cliptoToken: string,
-      _minter: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setCliptoMinter(_cliptoToken: string, _minter: string, overrides?: CallOverrides): Promise<void>;
 
-    setFeeRate(
-      feeNumer_: BigNumberish,
-      feeDenom_: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    setFeeRate(feeNumer_: BigNumberish, feeDenom_: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    transferOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>;
 
     unpause(overrides?: CallOverrides): Promise<void>;
 
@@ -607,73 +464,46 @@ export interface CliptoExchangeV1 extends BaseContract {
   };
 
   filters: {
-    "CreatorRegistered(address,address,string)"(
+    'CreatorRegistered(address,address,string)'(
       creator?: string | null,
       nft?: string | null,
-      jsondata?: null
+      jsondata?: null,
     ): CreatorRegisteredEventFilter;
-    CreatorRegistered(
-      creator?: string | null,
-      nft?: string | null,
-      jsondata?: null
-    ): CreatorRegisteredEventFilter;
+    CreatorRegistered(creator?: string | null, nft?: string | null, jsondata?: null): CreatorRegisteredEventFilter;
 
-    "CreatorUpdated(address,string)"(
-      creator?: string | null,
-      jsondata?: null
-    ): CreatorUpdatedEventFilter;
-    CreatorUpdated(
-      creator?: string | null,
-      jsondata?: null
-    ): CreatorUpdatedEventFilter;
+    'CreatorUpdated(address,string)'(creator?: string | null, jsondata?: null): CreatorUpdatedEventFilter;
+    CreatorUpdated(creator?: string | null, jsondata?: null): CreatorUpdatedEventFilter;
 
-    "DeliveredRequest(address,uint256,uint256)"(
+    'DeliveredRequest(address,uint256,uint256)'(
       creator?: string | null,
       requestId?: null,
-      nftTokenId?: null
+      nftTokenId?: null,
     ): DeliveredRequestEventFilter;
-    DeliveredRequest(
-      creator?: string | null,
-      requestId?: null,
-      nftTokenId?: null
-    ): DeliveredRequestEventFilter;
+    DeliveredRequest(creator?: string | null, requestId?: null, nftTokenId?: null): DeliveredRequestEventFilter;
 
-    "MigrationCreator(address[])"(creators?: null): MigrationCreatorEventFilter;
+    'MigrationCreator(address[])'(creators?: null): MigrationCreatorEventFilter;
     MigrationCreator(creators?: null): MigrationCreatorEventFilter;
 
-    "NewRequest(address,uint256,string)"(
+    'NewRequest(address,uint256,string)'(
       creator?: string | null,
       requestId?: null,
-      jsondata?: null
+      jsondata?: null,
     ): NewRequestEventFilter;
-    NewRequest(
-      creator?: string | null,
-      requestId?: null,
-      jsondata?: null
-    ): NewRequestEventFilter;
+    NewRequest(creator?: string | null, requestId?: null, jsondata?: null): NewRequestEventFilter;
 
-    "OwnershipTransferred(address,address)"(
+    'OwnershipTransferred(address,address)'(
       oldOwner?: string | null,
-      newOwner?: string | null
+      newOwner?: string | null,
     ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      oldOwner?: string | null,
-      newOwner?: string | null
-    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(oldOwner?: string | null, newOwner?: string | null): OwnershipTransferredEventFilter;
 
-    "Paused(address)"(account?: null): PausedEventFilter;
+    'Paused(address)'(account?: null): PausedEventFilter;
     Paused(account?: null): PausedEventFilter;
 
-    "RefundedRequest(address,uint256)"(
-      creator?: string | null,
-      requestId?: null
-    ): RefundedRequestEventFilter;
-    RefundedRequest(
-      creator?: string | null,
-      requestId?: null
-    ): RefundedRequestEventFilter;
+    'RefundedRequest(address,uint256)'(creator?: string | null, requestId?: null): RefundedRequestEventFilter;
+    RefundedRequest(creator?: string | null, requestId?: null): RefundedRequestEventFilter;
 
-    "Unpaused(address)"(account?: null): UnpausedEventFilter;
+    'Unpaused(address)'(account?: null): UnpausedEventFilter;
     Unpaused(account?: null): UnpausedEventFilter;
   };
 
@@ -685,36 +515,32 @@ export interface CliptoExchangeV1 extends BaseContract {
     deliverRequest(
       _requestId: BigNumberish,
       _tokenURI: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
     getCreator(_creator: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     getFeeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getRequest(
-      _creator: string,
-      _requestId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    getRequest(_creator: string, _requestId: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
       _owner: string,
       _beacon: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
     migrateCreator(
       _creatorAddress: string[],
       _creatorNames: string[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
     nativeNewRequest(
       _creator: string,
       _nftReceiver: string,
       _jsonData: string,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
     newRequest(
@@ -723,106 +549,85 @@ export interface CliptoExchangeV1 extends BaseContract {
       _erc20: string,
       _amount: BigNumberish,
       _jsonData: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    pause(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    pause(overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
     refundRequest(
       _creator: string,
       _requestId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
     registerCreator(
       _creatorName: string,
       _jsondata: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
-    requests(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    requests(arg0: string, arg1: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     setCliptoMinter(
       _cliptoToken: string,
       _minter: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
     setFeeRate(
       feeNumer_: BigNumberish,
       feeDenom_: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
-    unpause(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    unpause(overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
 
-    updateCreator(
-      _jsondata: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    updateCreator(_jsondata: string, overrides?: Overrides & { from?: string | Promise<string> }): Promise<BigNumber>;
   };
 
   populateTransaction: {
     beacon(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    creators(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    creators(arg0: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     deliverRequest(
       _requestId: BigNumberish,
       _tokenURI: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
-    getCreator(
-      _creator: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    getCreator(_creator: string, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getFeeRate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getRequest(
-      _creator: string,
-      _requestId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    getRequest(_creator: string, _requestId: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     initialize(
       _owner: string,
       _beacon: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
     migrateCreator(
       _creatorAddress: string[],
       _creatorNames: string[],
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
     nativeNewRequest(
       _creator: string,
       _nftReceiver: string,
       _jsonData: string,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
     newRequest(
@@ -831,59 +636,51 @@ export interface CliptoExchangeV1 extends BaseContract {
       _erc20: string,
       _amount: BigNumberish,
       _jsonData: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    pause(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    pause(overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     refundRequest(
       _creator: string,
       _requestId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
     registerCreator(
       _creatorName: string,
       _jsondata: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
-    requests(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    requests(arg0: string, arg1: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setCliptoMinter(
       _cliptoToken: string,
       _minter: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
     setFeeRate(
       feeNumer_: BigNumberish,
       feeDenom_: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
-    unpause(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    unpause(overrides?: Overrides & { from?: string | Promise<string> }): Promise<PopulatedTransaction>;
 
     updateCreator(
       _jsondata: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
   };
 }

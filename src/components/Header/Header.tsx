@@ -9,6 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
 import * as api from '../../api';
+import { EntityCreator } from '../../api/types';
 import menu from '../../assets/svgs/hamburger.svg';
 import config from '../../config/config';
 import { useEagerConnect } from '../../hooks/useEagerConnect';
@@ -27,20 +28,25 @@ import {
   ChainContainer,
   ConnectWallet,
   ConnectWalletPopup,
-  DesktopHeaderWrapper, DiscordWrapper, Divider,
+  DesktopHeaderWrapper,
+  DiscordWrapper,
+  Divider,
   DropDownItem,
   Error,
   HeaderWrapperInner,
   HeaderWrapperOuter,
   HEADER_HEIGHT_IN_PX,
-  LeftWrapper, LinkWrapper, MenuButton,
+  LeftWrapper,
+  LinkWrapper,
+  MenuButton,
   MenuContainer,
   MobileHeaderWrapper,
   RightWrapper,
   StyledSpan,
-  Wrapper
+  Wrapper,
 } from './Style';
-
+import * as lens from '../../api/lens';
+import { toast } from 'react-toastify';
 interface HeaderStore extends State {
   showProfileDropDown: boolean;
   showDialog: boolean;
@@ -154,7 +160,7 @@ const MobileHeader = (props: any) => {
 };
 const Header: React.FC<HeaderProps> = () => {
   const [checkLogin, setCheckLogin] = useState<boolean | null>(false);
-  const { activate, account, deactivate, chainId } = useWeb3React<Web3Provider>();
+  const { activate, account, deactivate, chainId, library } = useWeb3React<Web3Provider>();
   const [chainDialog, setChainDialog] = useState<boolean | null>(false);
   const currentChainName = config.chainName;
 
@@ -171,11 +177,11 @@ const Header: React.FC<HeaderProps> = () => {
   const hasTriedEagerConnect = useEagerConnect();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loggedInProfile, setLoggedInProfile] = useState<Partial<UserProfile> | null>();
+  const [loggedInProfile, setLoggedInProfile] = useState<EntityCreator | null>();
 
   const user = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
-
+  const [lensAccess, setLensAccess] = useState(''); // if about to get access token, then lens will be 🌿
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -266,8 +272,28 @@ const Header: React.FC<HeaderProps> = () => {
     getCreatorData();
   }, [account]);
 
+  const getLensCreatorData = async () => {
+    try {
+      if (account) {
+        toast.loading('Signing in');
+        const accessToken = await lens.getAccess(account, library as Web3Provider);
+        toast.dismiss();
+        if (!accessToken) {
+          toast.error('Login failed');
+          return;
+        }
+        toast.success('Login success');
+        setLensAccess('🌿');
+      }
+    } catch (e: any) {
+      toast.dismiss();
+      toast.error(e.message);
+    }
+  };
+
   useEffect(() => {
     if (checkLogin && account) {
+      // getLensCreatorData()
       dispatch({ type: 'login', payload: { user: account } });
     }
   }, [checkLogin]);
