@@ -12,6 +12,8 @@ import background1D from '../../assets/images/homepage/page1/background1D.png';
 import background1M from '../../assets/images/homepage/page1/background1M.png';
 import background3D from '../../assets/images/homepage/page3/background3D.png';
 import background3M from '../../assets/images/homepage/page3/background3M.png';
+import bountyBG01D from '../../assets/images/homepage/page1/bountyBG01D.png';
+import bountyBG01M from '../../assets/images/homepage/page1/bountyBG01M.png';
 import { CreatorCards } from '../../components/CreatorCards/CreatorCards';
 
 import { PageWrapper } from '../../components/layout/Common';
@@ -123,12 +125,25 @@ const HomePage = () => {
         )}
       </div>
     </LeftContentWrapper>,
+    <LeftContentWrapper>
+      <HeroTitle>
+        Request a personalized video from <span style={{ color: theme.yellow, fontWeight: '700' }}>anyone</span>
+      </HeroTitle>
+      <div style={{ display: 'inline-block', width: 'fit-content' }}>
+        <Link to={'/'}>
+          <BookNow color={theme.purple}>Bounty Coming Soon</BookNow>
+        </Link>
+      </div>
+    </LeftContentWrapper>,
   ];
 
   return (
     <>
       <PageWrapper style={{ top: 0 }}>
-        <Slides backgroundD={[background1D, background3D]} backgroundM={[background1M, background3M]}>
+        <Slides
+          backgroundD={[background1D, background3D, bountyBG01D]}
+          backgroundM={[background1M, background3M, bountyBG01M]}
+        >
           {slideContent}
         </Slides>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />
