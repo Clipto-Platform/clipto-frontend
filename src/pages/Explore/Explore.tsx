@@ -56,7 +56,7 @@ const ExplorePage = () => {
         <PageWrapper>
           {following.length > 0 && (
             <UserDisplay
-              title="Your Favorites"
+              title="Accounts you follow"
               users={following}
               handleScroll={() => {}}
               hasMore={false}
