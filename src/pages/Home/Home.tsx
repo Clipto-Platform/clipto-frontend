@@ -12,8 +12,6 @@ import background1D from '../../assets/images/homepage/page1/background1D.png';
 import background1M from '../../assets/images/homepage/page1/background1M.png';
 import background3D from '../../assets/images/homepage/page3/background3D.png';
 import background3M from '../../assets/images/homepage/page3/background3M.png';
-import bountyBG01D from '../../assets/images/homepage/page1/bountyBG01D.png';
-import bountyBG01M from '../../assets/images/homepage/page1/bountyBG01M.png';
 import { CreatorCards } from '../../components/CreatorCards/CreatorCards';
 
 import { PageWrapper } from '../../components/layout/Common';
@@ -31,7 +29,8 @@ const featuredList: string[] = [
   '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8', // Gabriel Haines.eth
   '0x0f32c8fBD8FE29D5EF451Ed9F8a13062C00ED583', // Fedrick
   '0x8d86932d23d3766fe317b0e385fcac24806ba9a3', // Lee Eller
-  '0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f', // bobburnquist
+  //'0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f', // bobburnquist
+  '0x7cACbc75d74740b50Dc68fBF0a573Af80243ca56', // jon
   '0x1c6f1a832e73949c97fe335a98b6a5fc3c9c29e9', // mackrypto
 ];
 const featuredListTest: string[] = [
@@ -124,25 +123,12 @@ const HomePage = () => {
         )}
       </div>
     </LeftContentWrapper>,
-    <LeftContentWrapper>
-      <HeroTitle>
-        Request a personalized video from <span style={{ color: theme.yellow, fontWeight: '700' }}>anyone</span>
-      </HeroTitle>
-      <div style={{ display: 'inline-block', width: 'fit-content' }}>
-        <Link to={'/'}>
-          <BookNow color={theme.purple}>Bounty Coming Soon</BookNow>
-        </Link>
-      </div>
-    </LeftContentWrapper>,
   ];
 
   return (
     <>
       <PageWrapper style={{ top: 0 }}>
-        <Slides
-          backgroundD={[background1D, background3D, bountyBG01D]}
-          backgroundM={[background1M, background3M, bountyBG01M]}
-        >
+        <Slides backgroundD={[background1D, background3D]} backgroundM={[background1M, background3M]}>
           {slideContent}
         </Slides>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />
