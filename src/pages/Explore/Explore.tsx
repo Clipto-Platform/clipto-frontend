@@ -69,9 +69,7 @@ const ExplorePage = () => {
         </PageWrapper>
       ) : (
         <PageWrapper>
-          <div style={{ width: '100%', textAlign: 'center', marginTop: 300 }}>
-            <Loader color="#fff" />
-          </div>
+          <UserDisplay title="Explore the community" users={users} handleScroll={handleScroll} hasMore={hasMore} />
         </PageWrapper>
       )}
     </>
