@@ -250,23 +250,23 @@ const BookingPage = () => {
                       twitterHandle={creator.twitterHandle}
                     />
                     <Label style={{ marginBottom: 8 }}>{creator.userName}</Label>
-                    <Description>
+                    <Description style={{ marginBottom: '5px' }}>
                       <a
                         href={`https://twitter.com/${creator.twitterHandle}`}
                         target="_blank"
                         style={{ color: '#EDE641' }}
                       >
-                        <FaTwitter style={{ color: '#1C9BEF' }} /> @{creator.twitterHandle}
+                        <FaTwitter style={{ color: '#1C9BEF' }} /> &nbsp;@{creator.twitterHandle}
                       </a>{' '}
                     </Description>
                     {creator.lensHandle && (
-                      <Description>
+                      <Description style={{ marginBottom: '5px' }}>
                         <a
                           href={`https://lenster.xyz/u/${creator.lensHandle}`}
                           target="_blank"
                           style={{ color: '#EDE641' }}
                         >
-                          🌿 @{creator.lensHandle}
+                          🌿 &nbsp;@{creator.lensHandle}
                         </a>{' '}
                       </Description>
                     )}
