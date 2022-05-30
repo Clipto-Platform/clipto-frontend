@@ -36,6 +36,7 @@ import { queryProfile } from '../../api/lens/query';
 import { ProfileSearchResult } from '../../generated/graphql';
 import { BookingFormValues, UsesOptions } from './types';
 import { getTwitterData } from '../../api';
+import { FaTwitter } from 'react-icons/fa';
 
 const BookingPage = () => {
   const navigate = useNavigate();
@@ -255,7 +256,7 @@ const BookingPage = () => {
                         target="_blank"
                         style={{ color: '#EDE641' }}
                       >
-                        @{creator.twitterHandle}
+                        <FaTwitter style={{ color: '#1C9BEF' }} /> @{creator.twitterHandle}
                       </a>{' '}
                     </Description>
                     {creator.lensHandle && (
@@ -265,7 +266,7 @@ const BookingPage = () => {
                           target="_blank"
                           style={{ color: '#EDE641' }}
                         >
-                          🌿: @{creator.lensHandle}
+                          🌿 @{creator.lensHandle}
                         </a>{' '}
                       </Description>
                     )}
@@ -288,7 +289,7 @@ const BookingPage = () => {
                             : {
                                 margin: 10,
                                 marginLeft: 0,
-                                maxWidth: 100,
+                                maxWidth: 150,
                                 background: '#5F21E2',
                                 color: 'white',
                               }
@@ -326,7 +327,7 @@ const BookingPage = () => {
                           }
                         }}
                       >
-                        {doesFollow ? 'Following' : 'Follow'}
+                        {doesFollow ? 'Following' : 'Follow on lens'}
                       </PrimaryButton>
                     )}
                   </div>
