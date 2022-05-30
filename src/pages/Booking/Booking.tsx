@@ -242,7 +242,7 @@ const BookingPage = () => {
             {(creator, account) => (
               <BookingCard>
                 <FlexRow style={{ marginBottom: 12 }}>
-                  <div>
+                  <div style={{ width: '75%' }}>
                     <AvatarComponent
                       style={{ marginBottom: 5 }}
                       url={creator.profilePicture}
@@ -292,6 +292,7 @@ const BookingPage = () => {
                                 maxWidth: 150,
                                 background: '#5F21E2',
                                 color: 'white',
+                                lineHeight: '16px',
                               }
                         }
                         onPress={async (e) => {
