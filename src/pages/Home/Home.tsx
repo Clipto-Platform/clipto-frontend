@@ -31,7 +31,8 @@ const featuredList: string[] = [
   '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8', // Gabriel Haines.eth
   '0x0f32c8fBD8FE29D5EF451Ed9F8a13062C00ED583', // Fedrick
   '0x8d86932d23d3766fe317b0e385fcac24806ba9a3', // Lee Eller
-  '0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f', // bobburnquist
+  //'0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f', // bobburnquist
+  '0x7cACbc75d74740b50Dc68fBF0a573Af80243ca56', // jon
   '0x1c6f1a832e73949c97fe335a98b6a5fc3c9c29e9', // mackrypto
 ];
 const featuredListTest: string[] = [
