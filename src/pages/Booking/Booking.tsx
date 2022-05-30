@@ -36,6 +36,7 @@ import { queryProfile } from '../../api/lens/query';
 import { ProfileSearchResult } from '../../generated/graphql';
 import { BookingFormValues, UsesOptions } from './types';
 import { getTwitterData } from '../../api';
+import { FaTwitter } from 'react-icons/fa';
 
 const BookingPage = () => {
   const navigate = useNavigate();
@@ -241,7 +242,7 @@ const BookingPage = () => {
             {(creator, account) => (
               <BookingCard>
                 <FlexRow style={{ marginBottom: 12 }}>
-                  <div>
+                  <div style={{ width: '75%' }}>
                     <AvatarComponent
                       style={{ marginBottom: 5 }}
                       url={creator.profilePicture}
@@ -249,23 +250,23 @@ const BookingPage = () => {
                       twitterHandle={creator.twitterHandle}
                     />
                     <Label style={{ marginBottom: 8 }}>{creator.userName}</Label>
-                    <Description>
+                    <Description style={{ marginBottom: '5px' }}>
                       <a
                         href={`https://twitter.com/${creator.twitterHandle}`}
                         target="_blank"
                         style={{ color: '#EDE641' }}
                       >
-                        @{creator.twitterHandle}
+                        <FaTwitter style={{ color: '#1C9BEF' }} /> &nbsp;@{creator.twitterHandle}
                       </a>{' '}
                     </Description>
                     {creator.lensHandle && (
-                      <Description>
+                      <Description style={{ marginBottom: '5px' }}>
                         <a
                           href={`https://lenster.xyz/u/${creator.lensHandle}`}
                           target="_blank"
                           style={{ color: '#EDE641' }}
                         >
-                          🌿: @{creator.lensHandle}
+                          🌿 &nbsp;@{creator.lensHandle}
                         </a>{' '}
                       </Description>
                     )}
@@ -288,9 +289,10 @@ const BookingPage = () => {
                             : {
                                 margin: 10,
                                 marginLeft: 0,
-                                maxWidth: 100,
+                                maxWidth: 150,
                                 background: '#5F21E2',
                                 color: 'white',
+                                lineHeight: '16px',
                               }
                         }
                         onPress={async (e) => {
@@ -326,7 +328,7 @@ const BookingPage = () => {
                           }
                         }}
                       >
-                        {doesFollow ? 'Following' : 'Follow'}
+                        {doesFollow ? 'Following' : 'Follow on lens'}
                       </PrimaryButton>
                     )}
                   </div>
