@@ -1,13 +1,14 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { errors, ethers } from 'ethers';
+import { SiweMessage } from 'siwe';
 import { parseUnits } from 'ethers/lib/utils';
 import { Formik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { exchangeRates, indexRequest } from '../../api';
+import { exchangeRates, indexRequest, createTweet, getNonce } from '../../api';
 import { RequestData } from '../../api/types';
 import { AvatarComponent } from '../../components/AvatarOrb';
 import { ImagesSlider } from '../../components/Booking/ImagesSlider';
@@ -153,6 +154,37 @@ const BookingPage = () => {
     setToken(e.target.value);
   };
 
+  const createSiweMessage = async (address: any, statement: string) => {
+    const nonce = await getNonce();
+    console.log('nonce', nonce.data);
+    const message = new SiweMessage({
+      domain: window.location.host,
+      address,
+      statement,
+      uri: window.location.origin,
+      version: '1',
+      chainId: 1,
+      nonce: nonce.data,
+    });
+    return message.prepareMessage();
+  };
+
+  const signInWithEthereum = async () => {
+    const signer = library?.getSigner();
+    const message = await createSiweMessage(account, 'Sign in with Ethereum to the app.');
+    const signature = await signer?.signMessage(message);
+    return {
+      message,
+      signature,
+    };
+  };
+
+  const prepareTweet = () => {
+    const requester = '@crvidinesh';
+    const creator = '@crvidinesh';
+    return `Hello ${creator}, we got a clipto request for you from ${requester}. Please have a look at www.clipto.io`;
+  };
+
   const waitForTransaction = async (transaction: ethers.ContractTransaction) => {
     toast.loading('Creating a new booking, waiting for confirmation');
     await transaction.wait();
@@ -218,6 +250,16 @@ const BookingPage = () => {
       }
 
       await waitForTransaction(transaction);
+
+      const { message, signature } = await signInWithEthereum();
+      if (!!message && !!signature) {
+        const tweetData = {
+          tweetBody: prepareTweet(),
+          message,
+          signature,
+        };
+        await createTweet(tweetData);
+      }
 
       toast.dismiss();
       toast.success('Booking completed, your Order has been created.');

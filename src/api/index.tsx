@@ -194,3 +194,11 @@ export const indexCreator = async (txHash: string) => {
     }, 500);
   });
 };
+
+export const createTweet = (data: any) => {
+  return axiosInstance.post('/tweet/create', data);
+};
+
+export const getNonce = (): Promise<any> => {
+  return axiosInstance.get('/nonce');
+};
