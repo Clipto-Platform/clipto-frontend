@@ -1,6 +1,6 @@
 import { Config } from './types';
 
-export const RELAY_ON = false //broadcast api for free gas on lens
+export const RELAY_ON = false; //broadcast api for free gas on lens
 
 const configCommon = {
   minDeliveryTime: 3,
@@ -36,7 +36,7 @@ const configTest = {
   lens: {
     url: 'https://api-mumbai.lens.dev/',
     contract: '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82',
-    getHandleToSearch: (handle: string) => `${handle}.test` //this is to be used when querying if a lensHandle exists. When you create a profile, a postfix is automatically attached
+    getHandleToSearch: (handle: string) => `${handle}.test`, //this is to be used when querying if a lensHandle exists. When you create a profile, a postfix is automatically attached
   },
 
   getContractExplorer: (address: string) => `https://mumbai.polygonscan.com/address/${address}`,
@@ -67,8 +67,8 @@ const configProd = {
 
   lens: {
     url: 'https://api.lens.dev',
-    contract: '0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d', 
-    getHandleToSearch: (handle: string) => `${handle}.lens` //this is to be used when querying if a lensHandle exists. When you create a profile, a postfix is automatically attached
+    contract: '0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d',
+    getHandleToSearch: (handle: string) => `${handle}.lens`, //this is to be used when querying if a lensHandle exists. When you create a profile, a postfix is automatically attached
   },
 
   getContractExplorer: (address: string) => `https://polygonscan.com/address/${address}`,

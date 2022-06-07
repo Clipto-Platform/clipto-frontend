@@ -24,6 +24,14 @@ const ExplorePage = () => {
         const list = res.data.creators;
         const has = list.length !== 0 && list.length % limit === 0;
 
+        //hotfix: remove bobs address
+        for (let i = 0; i < list.length; i++) {
+          if (list[i].twitterHandle == 'bobburnquist') {
+            list[i].address = '0x5fa594b53817d96bcf4ff548be54b1b23579cdac';
+            list[i].id = '0x5fa594b53817d96bcf4ff548be54b1b23579cdac';
+          }
+        }
+
         setHasMore(has);
         setUsers([...users, ...list]);
       }
