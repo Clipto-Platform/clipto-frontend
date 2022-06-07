@@ -29,6 +29,7 @@ const ExplorePage = () => {
           if (list[i].twitterHandle == 'bobburnquist') {
             list[i].address = '0x5fa594b53817d96bcf4ff548be54b1b23579cdac';
             list[i].id = '0x5fa594b53817d96bcf4ff548be54b1b23579cdac';
+            list[i].price = 100;
           }
         }
 
