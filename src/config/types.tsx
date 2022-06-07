@@ -10,12 +10,11 @@ export interface Config {
   exchangeAddressV1: string;
   erc20TokenNames: string[];
   erc20Contracts: {
-    MATIC: string;
-    WMATIC: string;
-    WETH: string;
-    USDC: string;
+    [tokenSymbol: string]: string;
   };
-  
+  erc20Decimals: {
+    [tokenSymbol: string]: number;
+  };
   rpcUrl: string;
   graphApi: string;
   apiUrl: string;
@@ -23,8 +22,8 @@ export interface Config {
   lens: {
     contract: string;
     url: string;
-    getHandleToSearch: (v: string) => string
-  }
+    getHandleToSearch: (v: string) => string;
+  };
 
   minDeliveryTime: number;
 

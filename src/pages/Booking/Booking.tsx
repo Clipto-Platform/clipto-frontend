@@ -167,7 +167,7 @@ const BookingPage = () => {
 
   const addAllowance = async (amount: string) => {
     const ERC20 = getErc20Contract(token, account as string, library as Web3Provider);
-    const tx = await ERC20.approve(config.exchangeAddressV1, parseUnits(amount));
+    const tx = await ERC20.approve(config.exchangeAddressV1, parseUnits(amount, config.erc20Decimals[token]));
 
     toast.loading('Waiting for approval');
     await tx.wait();
@@ -203,7 +203,7 @@ const BookingPage = () => {
           creatorId as string,
           account as string,
           config.erc20Contracts[token],
-          parseUnits(values.amount),
+          parseUnits(values.amount, config.erc20Decimals[token]),
           JSON.stringify(requestData),
         );
       } else {
@@ -328,7 +328,7 @@ const BookingPage = () => {
                           }
                         }}
                       >
-                        {doesFollow ? 'Following' : 'Follow on lens'}
+                        {doesFollow ? 'Following' : 'Follow'}
                       </PrimaryButton>
                     )}
                   </div>
