@@ -167,7 +167,7 @@ const BookingPage = () => {
 
   const addAllowance = async (amount: string) => {
     const ERC20 = getErc20Contract(token, account as string, library as Web3Provider);
-    const tx = await ERC20.approve(config.exchangeAddressV1, parseUnits(amount, config.erc20Decimals[token]));
+    const tx = await ERC20.approve(config.exchangeAddressV1, parseUnits(amount, config.erc20[token].decimals));
 
     toast.loading('Waiting for approval');
     await tx.wait();
@@ -202,8 +202,8 @@ const BookingPage = () => {
         transaction = await exchangeContractV1.newRequest(
           creatorId as string,
           account as string,
-          config.erc20Contracts[token],
-          parseUnits(values.amount, config.erc20Decimals[token]),
+          config.erc20[token].address,
+          parseUnits(values.amount, config.erc20[token].decimals),
           JSON.stringify(requestData),
         );
       } else {

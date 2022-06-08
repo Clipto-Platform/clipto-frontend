@@ -67,7 +67,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
             <Column style={{ textAlign: 'right' }}>
               <SecondaryLabel style={{ marginBottom: 2 }}> {status} </SecondaryLabel>
               <BidAmount>
-                {formatUnits(request.amount, config.erc20Decimals[symbol])} {symbol}
+                {formatUnits(request.amount, config.erc20[symbol].decimals)} {symbol}
               </BidAmount>
             </Column>
           </WideContainer>

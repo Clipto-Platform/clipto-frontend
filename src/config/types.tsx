@@ -1,3 +1,8 @@
+interface Erc20Info {
+  address: string;
+  decimals: number;
+}
+
 export interface Config {
   environment: 'production' | 'test';
 
@@ -8,12 +13,9 @@ export interface Config {
 
   exchangeAddress: string;
   exchangeAddressV1: string;
-  erc20TokenNames: string[];
-  erc20Contracts: {
-    [tokenSymbol: string]: string;
-  };
-  erc20Decimals: {
-    [tokenSymbol: string]: number;
+  erc20TokenNames: string[]; // benefit to having this is that we can enable and disable tokens
+  erc20: {
+    [tokenSymbol: string]: Erc20Info;
   };
   rpcUrl: string;
   graphApi: string;
