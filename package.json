@@ -21,6 +21,8 @@
     "codegen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
+    "@cyberlab/cyberconnect": "^4.4.2",
+    "@cyberlab/social-verifier": "^2.0.1",
     "@ethersproject/abi": "^5.5.0",
     "@ethersproject/providers": "^5.5.1",
     "@formatjs/intl-numberformat": "^7.3.0",
