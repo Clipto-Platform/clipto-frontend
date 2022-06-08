@@ -5,7 +5,7 @@ import type { Web3Provider } from '@ethersproject/providers';
 import { twitterAuthorize, twitterVerify, githubAuthorize, githubVerify } from '@cyberlab/social-verifier';
 import { createClient } from 'urql';
 import config from '../config/config';
-import * as query from '../api/query';
+import * as query from '../api/cyberconnectQuery';
 import * as type from '../api/types';
 
 const graphInstance = createClient({ url: config.cyberConnectGraphApi });
