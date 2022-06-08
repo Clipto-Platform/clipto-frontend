@@ -33,6 +33,7 @@ const configTest = {
   graphApi: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-tstnet',
   apiUrl: 'https://testapi.clipto.io',
 
+  cyberConnectGraphApi: 'https://api.stg.cybertino.io/connect/',
   lens: {
     url: 'https://api-mumbai.lens.dev/',
     contract: '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82',
@@ -65,6 +66,7 @@ const configProd = {
   graphApi: 'https://api.thegraph.com/subgraphs/name/clipto-platform/clipto-subgraph-mainnet',
   apiUrl: 'https://api.clipto.io',
 
+  cyberConnectGraphApi: 'https://api.cybertino.io/connect/',
   lens: {
     url: 'https://api.lens.dev',
     contract: '0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d', 

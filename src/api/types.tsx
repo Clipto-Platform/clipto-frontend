@@ -98,3 +98,81 @@ export interface Transfer {
   };
   timestamp: string;
 }
+
+export type ConnectionType = 'FOLLOW' | 'LIKE' | 'REPORT' | 'WATCH' | 'VOTE';
+
+export interface CyberConnectPageInfo {
+  endCursor: string;
+  hasNextPage: boolean;
+}
+
+export interface CyberConnectIdentity {
+  address: string;
+  domain: string;
+  avatar: string;
+  joinTime: string;
+  twitter: {
+    handle: string;
+    avatar: string;
+    verified: boolean;
+    source: string;
+    followerCount: number;
+  };
+  github: {
+    username: string;
+    userId: string;
+  };
+  followerCount: number;
+  followingCount: number;
+  followings: {
+    pageInfo: CyberConnectPageInfo;
+    list: {
+      address: string;
+      domain: string;
+      avatar: string;
+      namespace: string;
+      type: ConnectionType;
+      verifiable: boolean;
+    }[];
+  };
+  followers: {
+    pageInfo: CyberConnectPageInfo;
+    list: {
+      address: string;
+      domain: string;
+      avatar: string;
+      namespace: string;
+      type: ConnectionType;
+      verifiable: boolean;
+    }[];
+  };
+}
+
+export interface CyberConnectRecommendationsResp {
+  data: {
+    pageInfo: CyberConnectPageInfo;
+    list: {
+      address: string;
+      domain: string;
+      avatar: string;
+      followerCount: number;
+      recommendationReason: string;
+    }[];
+  };
+}
+[];
+
+export interface CyberConnectConnectionResp
+  extends Array<{
+    fromAddr: string;
+    toAddr: string;
+    followStatus: {
+      isFollowing: boolean;
+      isFollowed: boolean;
+    };
+    namespace: string;
+    alias: string;
+    type: ConnectionType;
+    updatedAt: string;
+    createdAt: string;
+  }> {}
