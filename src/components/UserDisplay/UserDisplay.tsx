@@ -56,7 +56,7 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
                           <UserStartingPrice>
                             From{' '}
                             <span style={{ fontWeight: 700 }}>
-                              {formatETH(user.price)} {config.chainSymbol}
+                              {formatETH(user.price)} {config.defaultToken}
                             </span>
                           </UserStartingPrice>
                         </UserCardContainer>

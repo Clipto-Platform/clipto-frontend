@@ -4,6 +4,7 @@ export interface Config {
   chainId: number;
   chainName: string;
   chainSymbol: string;
+  defaultToken: string;
 
   exchangeAddress: string;
   exchangeAddressV1: string;
@@ -14,16 +15,22 @@ export interface Config {
     WETH: string;
     USDC: string;
   };
-
+  
   rpcUrl: string;
   graphApi: string;
   apiUrl: string;
 
   cyberConnectGraphApi: string;
 
+  lens: {
+    contract: string;
+    url: string;
+    getHandleToSearch: (v: string) => string
+  }
+
   minDeliveryTime: number;
 
-  email: string;
+  email: string | undefined;
   discord: string;
   twitter: string;
   documentation: string;

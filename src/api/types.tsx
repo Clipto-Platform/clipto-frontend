@@ -18,13 +18,16 @@ export interface TweetData {
 
 // types for v2 arch
 export interface CreatorData {
-  twitterHandle: string;
+  twitterHandle: string; // possible vulnerability - user can put at twitterHandle
   bio: string;
   deliveryTime: number;
   profilePicture: string;
   userName: string;
   price: number;
   demos: string[];
+  lensHandle?: string;
+  businessPrice: number;
+  customServices: string[];
 }
 
 export interface EntityCreator extends CreatorData {
@@ -40,6 +43,12 @@ export interface EntityCreator extends CreatorData {
 export interface RequestData {
   description: string;
   deadline: number;
+  isBusiness: boolean;
+  businessName?: string;
+  businessEmail?: string;
+  businessTwitter?: string;
+  businessInfo?: string;
+  businessRequestType?: string;
 }
 
 export interface EntityRequest extends RequestData {
@@ -62,6 +71,11 @@ export interface EntityRequest extends RequestData {
   erc20: string;
   createdTimestamp: number;
   updatedTimestamp: number;
+  isBusiness: boolean;
+  businessName?: string;
+  businessEmail?: string;
+  businessTwitter?: string;
+  businessInfo?: string;
 }
 
 export interface MetaData {

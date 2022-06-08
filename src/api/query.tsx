@@ -31,6 +31,12 @@ query GetRequestById (
       description
       deadline
       delivered
+      isBusiness
+      businessName
+      businessEmail
+      businessTwitter
+      businessInfo
+      businessRequestType
       refunded
       erc20
       version
@@ -75,6 +81,32 @@ query GetAllCreators (
 }
 `;
 
+export const queryGetCreatorsByLensHandle = `
+query GetAllCreators ($lensHandles: [String]!) {
+  creators(
+    orderBy: id,
+    where: {lensHandle_in: $lensHandles}
+    orderDirection: asc
+  ){
+    id
+    address
+    metadataURI
+    nftTokenAddress
+    twitterHandle
+    bio
+    deliveryTime
+    lensHandle
+    demos
+    profilePicture
+    userName
+    price
+    txHash
+    block
+    timestamp
+  }
+}
+`;
+
 export const queryGetCreatorById = `
 query GetCreatorById (
   $id: String!,
@@ -89,6 +121,7 @@ query GetCreatorById (
     twitterHandle
     bio
     deliveryTime
+    lensHandle
     demos
     profilePicture
     userName
@@ -96,6 +129,8 @@ query GetCreatorById (
     txHash
     block
     timestamp
+    businessPrice
+    customServices
   }
 }
 `;
@@ -138,6 +173,12 @@ query GetCreatorRequests (
     description
     deadline
     delivered
+    isBusiness
+    businessName
+    businessEmail
+    businessTwitter
+    businessInfo
+    businessRequestType
     refunded
     erc20
     version
@@ -190,6 +231,12 @@ query GetUserRequests (
     description
     deadline
     delivered
+    isBusiness
+    businessName
+    businessEmail
+    businessTwitter
+    businessInfo
+    businessRequestType
     refunded
     erc20
     version
@@ -330,6 +377,19 @@ query Connections($fromAddr: String!, $toAddrList: [String!]!) {
     type
     updatedAt
     createdAt
+      }
+  }
+`;
+export const queryGetRequestByHash = `
+query GetRequestByTxHash(
+  $txHash: String!
+) {
+  requests (
+    where: {
+      txHash: $txHash
+    }
+  ) {
+    id
   }
 }
 `;
@@ -350,6 +410,20 @@ query Recommendations($address: String!, $first: Int, $after: String, $namespace
         recommendationReason
       }
     }
+  }
+}
+`;
+
+export const queryGetCreatorByHash = `
+query GetCreatorByTxHash(
+  $txHash: String!
+) {
+  creators (
+    where: {
+      txHash: $txHash
+    }
+  ) {
+    id
   }
 }
 `;
