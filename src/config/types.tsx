@@ -20,6 +20,8 @@ export interface Config {
   graphApi: string;
   apiUrl: string;
 
+  cyberConnectGraphApi: string;
+
   lens: {
     contract: string;
     url: string;

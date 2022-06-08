@@ -37,6 +37,7 @@ import { ProfileSearchResult } from '../../generated/graphql';
 import { BookingFormValues, UsesOptions } from './types';
 import { getTwitterData } from '../../api';
 import { FaTwitter } from 'react-icons/fa';
+import { useCyberConnect } from '../../hooks/useCyberConnect';
 
 const BookingPage = () => {
   const navigate = useNavigate();
@@ -63,6 +64,8 @@ const BookingPage = () => {
   const [invalidTwitter, setInvalidTwitter] = useState<string>('');
   const [businessPrice, setBusinessPrice] = useState<number>(0);
   const [businessIndex, setBusinessIndex] = useState<number>(0);
+
+  const cyberConnect = useCyberConnect();
 
   useEffect(() => {
     setUser(getUser);
@@ -326,6 +329,13 @@ const BookingPage = () => {
                             toast.error((e && e.message) || 'Error.');
                             return;
                           }
+                          cyberConnect.getFollowStatus(account, [creator.address]).then((res) => {
+                            if (res[0].followStatus.isFollowing && doesFollow) {
+                              cyberConnect.follow(creator.address);
+                            } else if (res[0].followStatus.isFollowing && !doesFollow) {
+                              cyberConnect.unfollow(creator.address);
+                            }
+                          });
                         }}
                       >
                         {doesFollow ? 'Following' : 'Follow on lens'}
