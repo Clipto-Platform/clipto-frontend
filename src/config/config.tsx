@@ -1,6 +1,6 @@
 import { Config } from './types';
 
-export const RELAY_ON = false //broadcast api for free gas on lens
+export const RELAY_ON = true //broadcast api for free gas on lens, must be on port 4783, https://clipto.io
 
 const configCommon = {
   minDeliveryTime: 3,

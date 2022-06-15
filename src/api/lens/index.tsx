@@ -164,6 +164,10 @@ export const follow = async (profileId: string, accessToken: string, library: We
         },
         accessToken,
       );
+      if (broadcastRes.error) {
+        throw broadcastRes.error
+      }
+      return broadcastRes.data.broadcast.txHash
     } else {
       const tx = await getLensHub(library).followWithSig({
         follower: await getAddressFromSigner(library),
@@ -185,7 +189,7 @@ export const follow = async (profileId: string, accessToken: string, library: We
     console.error('Make sure you are on the correct network or may ');
   }
 };
-
+// check for edge cases in the docs
 export const unfollow = async (handle: string, accessToken: string, library: Web3Provider) => {
   const result = await graphInstance
     .mutation(
@@ -207,16 +211,34 @@ export const unfollow = async (handle: string, accessToken: string, library: Web
   const followNftContract = getFollowNftContract(typedData, library);
   const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value, library);
   const { v, r, s } = splitSignature(signature);
-
-  const sig = {
-    v,
-    r,
-    s,
-    deadline: typedData.value.deadline,
-  };
-
-  const tx = await followNftContract.burnWithSig(typedData.value.tokenId, sig);
-  return tx.hash;
+  try {
+    if (RELAY_ON) {
+      const broadcastRes = await broadcast(
+        {
+          id: result.data.createUnfollowTypedData.id,
+          signature: signature,
+        },
+        accessToken,
+      );
+      if (broadcastRes.error) {
+        throw broadcastRes.error
+      }
+      return broadcastRes.data.broadcast.txHash
+    } else {
+      const sig = {
+        v,
+        r,
+        s,
+        deadline: typedData.value.deadline,
+      };
+    
+      const tx = await followNftContract.burnWithSig(typedData.value.tokenId, sig);
+      return tx.hash;
+    }
+  } catch (e) {
+    console.error(e);
+    console.error('Make sure you are on the correct network or may ');
+  }
   // you can look at how to know when its been indexed here:
   //   - https://docs.lens.dev/docs/has-transaction-been-indexed
 };

@@ -112,6 +112,9 @@ export const queryProfileByHandle = `
 query Profiles ($handle: Handle!){
   profiles(request: { handles: [$handle], limit: 1 }) {
     items {
+      followModule {
+        __typename # used to check what type of follow module that they are using
+      }
       id
       ownedBy
     }
