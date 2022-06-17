@@ -121,7 +121,8 @@ const Slides = (props: any) => {
             index={index}
             backgroundM={props.backgroundM}
             backgroundD={props.backgroundD}
-            style={index === 3 ? { backgroundSize: '100%', backgroundRepeat: 'no-repeat' } : {}}
+            //change to 3 when bob is back
+            style={index === 2 ? { backgroundSize: '100%', backgroundRepeat: 'no-repeat' } : {}}
           >
             <OpacityGradient />
             <HeaderSpacer />
