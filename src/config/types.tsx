@@ -1,3 +1,8 @@
+interface Erc20Info {
+  address: string;
+  decimals: number;
+}
+
 export interface Config {
   environment: 'production' | 'test';
 
@@ -8,14 +13,10 @@ export interface Config {
 
   exchangeAddress: string;
   exchangeAddressV1: string;
-  erc20TokenNames: string[];
-  erc20Contracts: {
-    MATIC: string;
-    WMATIC: string;
-    WETH: string;
-    USDC: string;
+  erc20TokenNames: string[]; // benefit to having this is that we can enable and disable tokens
+  erc20: {
+    [tokenSymbol: string]: Erc20Info;
   };
-  
   rpcUrl: string;
   graphApi: string;
   apiUrl: string;
@@ -23,8 +24,8 @@ export interface Config {
   lens: {
     contract: string;
     url: string;
-    getHandleToSearch: (v: string) => string
-  }
+    getHandleToSearch: (v: string) => string;
+  };
 
   minDeliveryTime: number;
 
