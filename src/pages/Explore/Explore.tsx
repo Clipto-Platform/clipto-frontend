@@ -19,10 +19,28 @@ const ExplorePage = () => {
   const [following, setFollowing] = useState<Array<EntityCreator>>([]); // this is who the loginned in user is following on lens
   const [loaded, setLoaded] = useState<boolean>(false);
   useEffect(() => {
-    api.creators(page, limit).then((res) => {
+    api.creators(page, limit).then(async (res) => {
       if (res.data) {
         const list = res.data.creators;
         const has = list.length !== 0 && list.length % limit === 0;
+        //chore - create a hacked address folder or figure out where to put this
+        const twitterToAddressFixes: { [twitterHandle: string]: string } = {
+          bobburnquist: '0x5fa594b53817d96bcf4ff548be54b1b23579cdac',
+        };
+        //hotfix: remove bobs address
+        for (let i = 0; i < list.length; i++) {
+          let fixedAddress = twitterToAddressFixes[list[i].twitterHandle];
+          if (fixedAddress) {
+            let fixedCreator = await api.creatorById(fixedAddress).then(({ data, error }) => {
+              if (error) {
+                console.error('Creator with address 0x5fa594b53817d96bcf4ff548be54b1b23579cdac could not be found');
+              }
+              if (!data) return;
+              return data.creator;
+            });
+            if (fixedCreator) list[i] = fixedCreator;
+          }
+        }
 
         setHasMore(has);
         setUsers([...users, ...list]);
