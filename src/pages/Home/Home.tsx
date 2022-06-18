@@ -10,8 +10,8 @@ import { featuredCreators } from '../../api/index';
 import { EntityCreator } from '../../api/types';
 import background1D from '../../assets/images/homepage/page1/background1D.png';
 import background1M from '../../assets/images/homepage/page1/background1M.png';
-import background2D from '/src/assets/images/homepage/page2/background2D.png';
-import background2M from '/src/assets/images/homepage/page2/background2M.png';
+import background2D from '/src/assets/images/homepage/page2/background2DBob.png';
+import background2M from '/src/assets/images/homepage/page2/background2MBob.png';
 
 import background3D from '../../assets/images/homepage/page3/background3D.png';
 import background3M from '../../assets/images/homepage/page3/background3M.png';
@@ -114,23 +114,6 @@ const HomePage = () => {
         </Link>
       </div>
     </LeftContentWrapper>,
-    <>
-      <LeftContentWrapper>
-        <HeroTitle>
-          Personalized videos from your favorite{' '}
-          <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
-        </HeroTitle>
-        <div style={{ display: 'inline-block', width: 'fit-content' }}>
-          <Link to={'/creator/0x5fa594b53817d96bcf4ff548be54b1b23579cdac'}>
-            <BookNow color={theme.twitterBlue}>Book with Bob</BookNow>
-          </Link>
-        </div>
-      </LeftContentWrapper>
-      <CreatorText>
-        <Name>Bob Burnquist</Name>
-        <Title>Skateboarder</Title>
-      </CreatorText>
-    </>,
     <LeftContentWrapper>
       <HeroTitle>
         Become a creator
@@ -165,13 +148,33 @@ const HomePage = () => {
       </div>
     </LeftContentWrapper>,
   ];
+  //todo for bob
+  /*slideContent.push()
+  <>
+      <LeftContentWrapper>
+        <HeroTitle>
+          Personalized videos from your favorite{' '}
+          <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
+        </HeroTitle>
+        <div style={{ display: 'inline-block', width: 'fit-content' }}>
+          <Link to={'/creator/0x5fa594b53817d96bcf4ff548be54b1b23579cdac'}>
+            <BookNow color={theme.twitterBlue}>Book with Bob</BookNow>
+          </Link>
+        </div>
+      </LeftContentWrapper>
+      <CreatorText>
+        <Name>Bob Burnquist</Name>
+        <Title>Skateboarder</Title>
+      </CreatorText>
+    </>
 
+  */
   return (
     <>
       <PageWrapper style={{ top: 0 }}>
         <Slides
-          backgroundD={[background1D, background2D, background3D, bountyBG01D]}
-          backgroundM={[background1M, background2M, background3M, bountyBG01M]}
+          backgroundD={[background1D, /*background2D,*/ background3D, bountyBG01D]}
+          backgroundM={[background1M, /*background2M,*/ background3M, bountyBG01M]}
         >
           {slideContent}
         </Slides>
