@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { formatUnits } from 'ethers/lib/utils';
+import config from '../../config/config';
 import { theme } from '../../styles/theme';
 import { Label, Text } from '../../styles/typography';
 import { getErcTokenSymbol, getShortenedAddress } from '../../utils/address';
@@ -83,7 +85,7 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
             <Column style={{ textAlign: 'right' }}>
               <SecondaryLabel style={{ marginBottom: 2 }}> {status} </SecondaryLabel>
               <BidAmount>
-                {bigIntToReadable(request.amount)} {symbol}
+                {formatUnits(request.amount, config.erc20[symbol].decimals)} {symbol}
               </BidAmount>
             </Column>
           </WideContainer>
