@@ -9,6 +9,8 @@ import BounceLoader from 'react-spinners/BounceLoader';
 import { toast } from 'react-toastify';
 import { useTheme } from 'styled-components';
 import * as api from '../../api';
+import * as lens from '../../api/lens';
+import { postRequest } from '../../api/lens';
 import { EntityRequest } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
 import { HeaderSpacer } from '../../components/Header/Header';
@@ -20,9 +22,11 @@ import { SecondaryLabel } from '../../components/OrderCard/Style';
 import { TextField } from '../../components/TextField';
 import { Video } from '../../components/Video';
 import { useExchangeContract, useExchangeContractV1 } from '../../hooks/useContracts';
+import { uploadToIPFS } from '../../lib/uploadToIPFS';
 import { Description, Label, Text } from '../../styles/typography';
 import { getNFTDetails, getNFTHistory } from '../../web3/nft';
 import { signMessage } from '../../web3/request';
+import { LensPostButton } from './LensPostButton';
 import {
   BookingCard,
   ComboButtonContainer,
@@ -32,6 +36,8 @@ import {
   UploadStatusContainer,
 } from './Style';
 import { ArweaveResponse, NFTDetailsType, NFTFormError, NFTHistories } from './types';
+// import uploadToIPFS from '../../lib/uploadToIPFS'
+
 
 const SelectedOrderPage = () => {
   const { account, library } = useWeb3React<Web3Provider>();
@@ -340,6 +346,68 @@ const SelectedOrderPage = () => {
               />
             )}
             {!request && <Label>Could not find request</Label>}
+            {true && <LensPostButton onPress={async () => {
+              try {
+                console.log(account)
+                if (!account) return;
+                toast.loading('Signing into Lens');
+                const accessToken = await lens.getAccess(account, library as Web3Provider);
+                toast.dismiss();
+                if (!accessToken) return;
+                const content = {
+                  "version": "1.0.0",
+                  "metadata_id": "6936408776530249488",
+                  "description": "adsf",
+                  "content": "adsf",
+                  "external_url": "https://lenster.xyz/u/jonomnom.lens",
+                  "image": null,
+                  "imageMimeType": null,
+                  "name": "Post by @jonomnom.lens",
+                  "mainContentFocus": "TEXT",
+                  "contentWarning": null,
+                  "attributes": [
+                    {
+                      "traitType": "string",
+                      "key": "type",
+                      "value": "post"
+                    }
+                  ],
+                  "media": [
+                    
+                  ],
+                  "createdOn": "2022-06-17T00:02:28.704Z",
+                  "appId": "Clipto"
+                }
+                // const ipfs = ipfsClient({
+                //   host: 'ipfs.infura.io',
+                //   port: 5001,
+                //   protocol: 'https'
+                // })
+                // um..... Why does cdn work but npm package doesn't :o)
+                // awaiting solution - apparently this is a common issue with vite and 
+
+                uploadToIPFS(content)
+                // const addResult = await uploadToIPFS(content)
+                // console.log(addResult)
+                return;
+                const request = {
+                  profileId: "0x1052",
+                  contentURI: "https://ipfs.infura.io/ipfs/QmTsJdsQcvP6xveEm1bqEUtn8sYZpPUA6y5vZawzysPKkA",
+                  collectModule: {
+                    freeCollectModule: {
+                      followerOnly: false
+                    }
+                  },
+                  referenceModule: {
+                    "followerOnlyReferenceModule": false
+                  }
+                }
+                lens.postRequest(request, accessToken.data.authenticate.accessToken, library as Web3Provider)
+              } catch (e) {
+                console.error(e)
+                toast.error('Something is wrong')
+              }
+            }}/>}
             {nftDetails && <NFTDetails details={nftDetails} />}
             {history && <NFTHistory history={history} />}
           </PageContentWrapper>

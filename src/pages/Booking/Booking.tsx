@@ -129,14 +129,21 @@ const BookingPage = () => {
   }, [businessTwitter]);
 
   useEffect(() => {
-    if (account && creator && creator.lensHandle) {
-      lens.getProfileByHandle(creator.lensHandle).then((res) => {
-        const profile = res.data.profiles.items[0];
-        if (profile.ownedBy.toUpperCase() === creator.address.toUpperCase()) {
-          // lens profile must be owned by creator to display it to user - Please talk with jonathan before deleting this
-          //Maybe consider moving this code to the redux
-          setCreatorLensId(profile.id);
-          setCreatorLensFollowModuleType(profile.followModule && profile.followModule.__typename)
+    if (account && creator) {
+      let lensProfilePromise;
+      if (creator.lensHandle) {
+        lensProfilePromise = lens.getProfileByHandle(creator.lensHandle)
+      } else {
+        // even if a clipto creator didn't set a lensHandle when creating a profile
+        // (this happens when you create a clipto account before lens integration)
+        lensProfilePromise = lens.getProfile(creator.address)
+      }
+      if (lensProfilePromise == null) return;
+      lensProfilePromise.then((res) => {
+        const lensProfile = res.data.profiles.items[0];
+        if (lensProfile.ownedBy.toUpperCase() === creator.address.toUpperCase()) {
+          setCreatorLensId(lensProfile.id);
+          setCreatorLensFollowModuleType(lensProfile.followModule && lensProfile.followModule.__typename)
         } else {
           throw new Error('Validation lens error');
         }

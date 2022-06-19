@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 import { MdOutlineDirectionsBoatFilled } from 'react-icons/md';
 import { createClient } from 'urql';
 import config, { RELAY_ON } from '../../config/config';
+import { CreatePublicPostRequest } from '../../generated/graphql';
 import { getFollowNftContract, getLensHub } from './contract';
 import { getAddressFromSigner, signedTypeData, splitSignature } from './ethers-service';
 import {
@@ -338,8 +339,60 @@ export const pollUntilIndexed = async (txHash: string, accessToken: string) => {
 // todo - get publications
 
 // todo - create publication
-export const postRequest = ({}, accessToken: string) => {
-  return graphInstance.mutation(mutationCreatePostTypedData, {}).toPromise();
+export const postRequest = async (request: CreatePublicPostRequest, accessToken: string, library: Web3Provider) => {
+  const result = await graphInstance.mutation(mutationCreatePostTypedData, {
+    // options: {
+    //   "overrideSigNonce": 25
+    // },
+    request,
+  }, {
+    fetchOptions: {
+      headers: {
+        'x-access-token': accessToken,
+      },
+    },
+  },).toPromise();
+  if (!result) throw 'result is undefined';
+  console.log(result)
+  try {
+    const typedData = result.data.createPostTypedData.typedData;
+    const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value, library);
+    const { v, r, s } = splitSignature(signature);
+    if (false && RELAY_ON) {
+      const broadcastRes = await broadcast(
+        {
+          id: result.data.createPostTypedData.id,
+          signature: signature,
+        },
+        accessToken,
+      );
+      if (broadcastRes.error) {
+        throw broadcastRes.error
+      }
+      return broadcastRes.data.broadcast.txHash
+    } else {
+      const tx = await getLensHub(library).postWithSig({
+        profileId: typedData.value.profileId,
+        contentURI:typedData.value.contentURI,
+        collectModule: typedData.value.collectModule,
+        collectModuleInitData: typedData.value.collectModuleInitData,
+        referenceModule: typedData.value.referenceModule,
+        referenceModuleInitData: typedData.value.referenceModuleInitData,
+        sig: {
+          v,
+          r,
+          s,
+          deadline: typedData.value.deadline,
+        },
+      });
+      return tx.hash;
+    }
+    // you can look at how to know when its been indexed here:
+    //   - https://docs.lens.dev/docs/has-transaction-been-indexed
+  } catch (e) {
+    console.error(e);
+    console.error('Make sure you are on the correct network or may ');
+  }
 };
 
 //gasless!

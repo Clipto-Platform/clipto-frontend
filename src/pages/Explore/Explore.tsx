@@ -33,6 +33,7 @@ const ExplorePage = () => {
   const handleScroll = () => {
     setPage(page + 1);
   };
+
   useEffect(() => {
     if (!account) return;
     lens.getFollowNFTs(account).then((res) => {
@@ -41,15 +42,17 @@ const ExplorePage = () => {
         return;
       }
       const lensHandleOfFollow: Array<string> = res.data.following.items.map(
-        (one: { profile: { handle: string } }) => one.profile.handle,
-      );
-      api.creatorsByLens(lensHandleOfFollow).then((res) => {
-        setLoaded(true);
-        if (!res.data) return;
+        (one: { profile: { handle: string, ownedBy: string } }) => (one.profile.ownedBy)
+      )
+
+      api.findCreators(lensHandleOfFollow).then(res => {
         setFollowing(res.data?.creators);
-      });
+      }).finally(() => {
+        setLoaded(true);
+      })
     });
   }, [account]);
+
   return (
     <>
       {loaded ? (

@@ -194,3 +194,11 @@ export const indexCreator = async (txHash: string) => {
     }, 500);
   });
 };
+
+export const findCreators = async (addresses: Array<String>) => {
+  return graphInstance
+    .query(query.queryCreatorsByAddresses, {
+      addresses,
+    })
+    .toPromise();
+}
