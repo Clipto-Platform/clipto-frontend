@@ -88,24 +88,22 @@ export const signText = (text: string, library: Web3Provider) => {
   return signer.signMessage(text);
 };
 
+
+export const checkAccess = async (address: string, accessToken: string | undefined) : Promise<{ accessToken: any; refreshToken: any; } | null> => {
+  if (!accessToken) {
+    return null;
+  }
+  const isAccessValid = await verify(accessToken);
+  if (isAccessValid && isAccessValid.data.verify) {
+    return {
+      accessToken: accessToken,
+      refreshToken: accessToken,
+    };
+  }
+  return null;
+}
 //gets access and request tokens
 export const getAccess = async (address: string, library: Web3Provider) => {
-  let localAddress = localStorage.getItem('lensAddress'); //needs for when user switches accounts
-  let localAccess = localStorage.getItem('lensAccessToken'); // Note - this should be refactored to be in the state and in a hook inside
-  //This is a major security flaw! ^^ Vulnerable to XSS
-  if (localAccess && localAddress === address) {
-    const isAccessValid = await verify(localAccess);
-    if (isAccessValid && isAccessValid.data.verify) {
-      return {
-        data: {
-          authenticate: {
-            accessToken: localAccess,
-            refreshToken: localAccess,
-          },
-        },
-      };
-    }
-  }
   const challengeResponse = await generateChallenge(address);
   // sign the text with the wallet
   const signature = challengeResponse && (await signText(challengeResponse.data.challenge.text, library));

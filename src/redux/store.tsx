@@ -1,4 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import allReducer from './reducer';
+import reducer from './reducer';
 
-export default configureStore({ reducer: allReducer });
+const store = configureStore({ 
+  reducer: reducer,
+});
+
+store.subscribe(() => { console.log(store.getState())})
+
+export default store
