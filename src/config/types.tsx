@@ -5,7 +5,7 @@ interface Erc20Info {
 
 export interface Config {
   environment: 'production' | 'test';
-
+  url: string;
   chainId: number;
   chainName: string;
   chainSymbol: string;

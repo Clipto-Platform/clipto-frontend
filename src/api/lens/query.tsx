@@ -394,6 +394,15 @@ query Query ($accessToken: Jwt!) {
 }
 `;
 
+export const queryRefresh = `
+mutation Refresh ($refreshToken: Jwt!) {
+  refresh(request: { refreshToken: $refreshToken }) {
+    accessToken
+    refreshToken
+  }
+}
+`
+
 
 //publications
 

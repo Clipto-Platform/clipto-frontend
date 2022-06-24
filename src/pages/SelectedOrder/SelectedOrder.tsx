@@ -20,13 +20,18 @@ import { NFTHistory } from '../../components/NFTHistory';
 import { OrderCard } from '../../components/OrderCard/OrderCard';
 import { SecondaryLabel } from '../../components/OrderCard/Style';
 import { TextField } from '../../components/TextField';
-import { Video } from '../../components/Video';
+import { Video } from '../../components/Video/Video';
 import { useExchangeContract, useExchangeContractV1 } from '../../hooks/useContracts';
 import { uploadToIPFS } from '../../lib/uploadToIPFS';
 import { Description, Label, Text } from '../../styles/typography';
 import { getNFTDetails, getNFTHistory } from '../../web3/nft';
 import { signMessage } from '../../web3/request';
 import { LensPostButton } from './LensPostButton';
+// import {uuid} from 'uuidv4';
+const uuid = () => {
+  return 1
+}
+import config from '@/config/config'
 import {
   BookingCard,
   ComboButtonContainer,
@@ -36,6 +41,7 @@ import {
   UploadStatusContainer,
 } from './Style';
 import { ArweaveResponse, NFTDetailsType, NFTFormError, NFTHistories } from './types';
+import { useSocialGraph } from '@/hooks/useSocialGraph';
 // import uploadToIPFS from '../../lib/uploadToIPFS'
 
 
@@ -55,10 +61,15 @@ const SelectedOrderPage = () => {
   const [minting, setMinting] = useState<boolean>(false);
   const [nftDetails, setNftDetails] = useState<NFTDetailsType>();
   const [clipDetails, setClipDetails] = useState('');
+  const [clipDetailsFull, setClipDetailsFull] = useState<{animation_url: string, description: string, image: string}>();
   const [nftName, setNftName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [error, setError] = useState<NFTFormError>();
   const [history, setHistory] = useState<NFTHistories[]>();
+  const [toggle, setToggle] = useState(false);
+
+  const {doSocialGraphAction} = useSocialGraph();
+
 
   useEffect(() => {
     if (creator && requestId && version) {
@@ -213,6 +224,8 @@ const SelectedOrderPage = () => {
   const getNFTVideo = async (id: string) => {
     const metadata = await api.getArweaveMetadata(id);
     setClipDetails(metadata.data.animation_url);
+    setClipDetailsFull(metadata.data)
+    console.log("order metadata", metadata)
   };
 
   const fetchNFT = async (tokenAddress: string, tokenId: number, tokenUri: string) => {
@@ -235,6 +248,91 @@ const SelectedOrderPage = () => {
     });
   };
 
+  const shareToLens = async () => {
+    try {
+      if (!clipDetailsFull) {
+        console.error('How is this possible?')
+        return;
+      }
+      console.log(account)
+      if (!account) return;
+      toast.dismiss()
+      toast.loading('Creating post');
+      const lensProfileRes = await lens.getProfile(account)
+      console.log(lensProfileRes) 
+      if (!lensProfileRes.data && lensProfileRes.data.profiles.items.length != 0) return;
+      const lensHandle = lensProfileRes.data.profiles.items[0].handle
+      const lensId = lensProfileRes.data.profiles.items[0].id
+      //example metadata:
+      // text + video
+      //https://bafybeidswqwkngytwe6g52glyfaui5rqqbd22k6eeqcokfrxgmc4u2cptm.ipfs.infura-ipfs.io/
+      // video only
+      //https://bafybeifr3bhfnfqipawsmifyb67dyvjuj7ga7igm2acjox2r22z2avacpi.ipfs.infura-ipfs.io/
+      const content = {
+        "version": "1.0.0",
+        "metadata_id": `${uuid()}`,
+        "description": `${clipDetailsFull.description} \n Created from ${config.url}`,
+        "content": `Created from ${config.url}`,
+        "external_url": `${config.url}/creator/${creator}`,
+        "image": clipDetailsFull.image,
+        "imageMimeType": null,
+        "name": `Post by @${lensHandle}`,
+        "mainContentFocus": "TEXT",
+        "contentWarning": null,
+        "attributes": [
+          {
+            "traitType": "string",
+            "key": "type",
+            "value": "post"
+          }
+        ],
+        "media": [
+          {
+            "item": clipDetailsFull.animation_url,
+            "type": "video/mp4",
+            "altTag": ""
+          }
+        ],
+        "createdOn": "2022-06-17T00:02:28.704Z",
+        "appId": "Clipto"
+      }
+      const {path} = await uploadToIPFS(content)
+      if (!path) {
+        toast.dismiss()
+        toast.error("Error uploading post to lens")
+        return;
+      }
+      const request = {
+        profileId: lensId, 
+        contentURI: `https://ipfs.infura.io/ipfs/${path}`,
+        collectModule: {
+          freeCollectModule: {
+            followerOnly: false
+          }
+        },
+        referenceModule: {
+          "followerOnlyReferenceModule": false
+        }
+      }
+      console.log(request)
+      const txHash = await lens.postRequest(request, library as Web3Provider)
+      if (!txHash) {
+        console.error('no txHash detected!');
+        toast.dismiss();
+        toast.error('Error in tx, please open console to screenshot and report error')
+        return;
+      }
+      toast.dismiss();
+      toast.loading('Waiting for transaction to complete');
+      const f = await lens.pollUntilIndexed(txHash);
+      setToggle(!toggle); //todo(jonathanng) - this is trashcan code!
+      toast.dismiss();
+      toast.success('Transaction is finished');
+    } catch (e) {
+      console.error(e)
+      toast.error('Something is wrong')
+    }
+  }
   return (
     <>
       {loaded && (
@@ -347,66 +445,9 @@ const SelectedOrderPage = () => {
             )}
             {!request && <Label>Could not find request</Label>}
             {true && <LensPostButton onPress={async () => {
-              try {
-                console.log(account)
-                if (!account) return;
-                toast.loading('Signing into Lens');
-                const accessToken = await lens.getAccess(account, library as Web3Provider);
-                toast.dismiss();
-                if (!accessToken) return;
-                const content = {
-                  "version": "1.0.0",
-                  "metadata_id": "6936408776530249488",
-                  "description": "adsf",
-                  "content": "adsf",
-                  "external_url": "https://lenster.xyz/u/jonomnom.lens",
-                  "image": null,
-                  "imageMimeType": null,
-                  "name": "Post by @jonomnom.lens",
-                  "mainContentFocus": "TEXT",
-                  "contentWarning": null,
-                  "attributes": [
-                    {
-                      "traitType": "string",
-                      "key": "type",
-                      "value": "post"
-                    }
-                  ],
-                  "media": [
-                    
-                  ],
-                  "createdOn": "2022-06-17T00:02:28.704Z",
-                  "appId": "Clipto"
-                }
-                // const ipfs = ipfsClient({
-                //   host: 'ipfs.infura.io',
-                //   port: 5001,
-                //   protocol: 'https'
-                // })
-                // um..... Why does cdn work but npm package doesn't :o)
-                // awaiting solution - apparently this is a common issue with vite and 
-
-                uploadToIPFS(content)
-                // const addResult = await uploadToIPFS(content)
-                // console.log(addResult)
-                return;
-                const request = {
-                  profileId: "0x1052",
-                  contentURI: "https://ipfs.infura.io/ipfs/QmTsJdsQcvP6xveEm1bqEUtn8sYZpPUA6y5vZawzysPKkA",
-                  collectModule: {
-                    freeCollectModule: {
-                      followerOnly: false
-                    }
-                  },
-                  referenceModule: {
-                    "followerOnlyReferenceModule": false
-                  }
-                }
-                lens.postRequest(request, accessToken.data.authenticate.accessToken, library as Web3Provider)
-              } catch (e) {
-                console.error(e)
-                toast.error('Something is wrong')
-              }
+              doSocialGraphAction('share', () => {
+                shareToLens()
+              })
             }}/>}
             {nftDetails && <NFTDetails details={nftDetails} />}
             {history && <NFTHistory history={history} />}

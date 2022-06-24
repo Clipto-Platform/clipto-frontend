@@ -4,7 +4,7 @@ import { errors, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { Formik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { exchangeRates, indexRequest } from '../../api';
@@ -37,7 +37,9 @@ import { ProfileSearchResult } from '../../generated/graphql';
 import { BookingFormValues, UsesOptions } from './types';
 import { getTwitterData } from '../../api';
 import { FaTwitter } from 'react-icons/fa';
-import { fetchLensAccess } from '@/redux/reducer';
+import { displayLensSignIn, fetchLensAccess } from '@/redux/reducer';
+import { Unsubscribe } from '@reduxjs/toolkit';
+import { useSocialGraph } from '@/hooks/useSocialGraph';
 
 const BookingPage = () => {
   const navigate = useNavigate();
@@ -65,8 +67,10 @@ const BookingPage = () => {
   const [businessPrice, setBusinessPrice] = useState<number>(0);
   const [businessIndex, setBusinessIndex] = useState<number>(0);
   const [creatorLensFollowModuleType, setCreatorLensFollowModuleType] = useState<string>();
-  const lensAccessToken = useSelector((state : any) => state.lensAccessToken);
-  const dispatch = useDispatch();
+
+  const {doSocialGraphAction} = useSocialGraph();
+
+
   useEffect(() => {
     setUser(getUser);
   }, [getUser]);
@@ -184,6 +188,35 @@ const BookingPage = () => {
     await tx.wait();
     toast.dismiss();
   };
+
+  const followOrUnfollow = async (creatorLensId : string, library: Web3Provider) => {
+    try {
+      toast.dismiss();
+      toast.loading(
+        doesFollow
+          ? 'Awaiting unfollow confirmation'
+          : 'Awaiting follow confirmation',
+      );
+      const txHash = doesFollow
+        ? await lens.unfollow(creatorLensId, library)
+        : await lens.follow(creatorLensId, library);
+
+      toast.dismiss();
+      toast.loading('Waiting for transaction to complete');
+      if (!txHash) {
+        console.error('no txHash detected!');
+        return;
+      }
+      const f = await lens.pollUntilIndexed(txHash);
+      setToggle(!toggle); //todo(jonathanng) - this is trashcan code!
+      toast.dismiss();
+      toast.success('Transaction is finished');
+    } catch (e: any) {
+      toast.dismiss();
+      toast.error((e && e.message) || e || 'Unknown error.');
+      return;
+    }
+  }
 
   const makeBooking = async (values: BookingFormValues) => {
     try {
@@ -312,35 +345,9 @@ const BookingPage = () => {
                                 }
                           }
                           onPress={async (e) => {
-                            try {
-                              // toast.loading('Signing into Lens');
-                              dispatch(fetchLensAccess(creator.address, library, lensAccessToken))
-                              toast.dismiss();
-                              toast.loading(
-                                doesFollow
-                                  ? 'Are you sure you want to lose your follow NFT?'
-                                  : 'Awaiting follow confirmation',
-                              );
-                              if (!lensAccessToken || !creatorLensId) return;
-                              const txHash = doesFollow
-                                ? await lens.unfollow(creatorLensId, lensAccessToken, library)
-                                : await lens.follow(creatorLensId, lensAccessToken, library);
-
-                              toast.dismiss();
-                              toast.loading('Waiting for transaction to complete');
-                              if (!txHash) {
-                                console.error('no txHash detected!');
-                                return;
-                              }
-                              const f = await lens.pollUntilIndexed(txHash, lensAccessToken);
-                              setToggle(!toggle); //todo(jonathanng) - this is trashcan code!
-                              toast.dismiss();
-                              toast.success('Transaction is finished');
-                            } catch (e: any) {
-                              toast.dismiss();
-                              toast.error((e && e.message) || 'Error.');
-                              return;
-                            }
+                            doSocialGraphAction(doesFollow ? "follow" : "unfollow", () => {
+                              followOrUnfollow(creatorLensId, library)
+                            })
                           }}
                         >
                           {doesFollow ? 'Following' : 'Follow'}

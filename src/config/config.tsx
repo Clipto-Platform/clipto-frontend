@@ -14,6 +14,7 @@ const configCommon = {
 };
 
 const configTest = {
+  url: "https://test.clipto.io",
   chainId: 80001,
   chainName: 'Polygon Testnet Mumbai',
   chainSymbol: 'MATIC',
@@ -63,6 +64,7 @@ const configTest = {
 };
 
 const configProd = {
+  url: 'https://clipto.io',
   chainId: 137,
   chainName: 'Polygon',
   chainSymbol: 'MATIC',
