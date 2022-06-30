@@ -41,15 +41,16 @@ const lensSimplePostModal = () => {
     try {
       console.log(account)
       if (!account) return;
-      toast.dismiss()
-      toast.loading('Creating post');
+      
       const lensProfileRes = await lens.getProfile(account)
       console.log(lensProfileRes) 
-      if (!lensProfileRes.data && lensProfileRes.data.profiles.items.length != 0) {
+      if (lensProfileRes.data && lensProfileRes.data.profiles.items.length == 0) {
         toast.dismiss()
         toast.error('A lens profile NFT is required in order to post.')
         return;
       }
+      toast.dismiss()
+      toast.loading('Creating post');
       const lensHandle = lensProfileRes.data.profiles.items[0].handle
       const lensId = lensProfileRes.data.profiles.items[0].id
       //example metadata:

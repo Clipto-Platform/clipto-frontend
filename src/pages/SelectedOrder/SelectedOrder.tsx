@@ -62,7 +62,7 @@ const SelectedOrderPage = () => {
   const [error, setError] = useState<NFTFormError>();
   const [history, setHistory] = useState<NFTHistories[]>();
 
-  const {doSocialGraphAction} = useSocialGraph();
+  const {doSocialGraphAction, hasLensProfile} = useSocialGraph();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -354,12 +354,21 @@ const SelectedOrderPage = () => {
             )}
             {!request && <Label>Could not find request</Label>}
             {clipDetailsFull && request && account && request.requester.toLowerCase() == account.toLowerCase() && <LensPostButton onPress={async () => {
+              if (!(await hasLensProfile())) {
+                toast.dismiss()
+                toast.error('A lens profile NFT is required in order to post.')
+                return;
+              }
+
+              console.log(account)
+
               doSocialGraphAction('share', () => {
                 if (!clipDetailsFull || !creator) {
                   toast.dismiss();
                   toast.error('Clip details not found!')
                   return;
                 }
+                
                 dispatch(startLensPost({
                   description: clipDetailsFull.description,
                   image: clipDetailsFull.image,

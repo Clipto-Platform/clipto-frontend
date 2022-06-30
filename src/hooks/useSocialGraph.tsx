@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Description } from '../styles/typography';
+import * as lens from '@/api/lens';
 
 export const useSocialGraph = () => {
   const {library, account} = useWeb3React();
@@ -54,8 +55,19 @@ export const useSocialGraph = () => {
     onSuccessLens()
     }
   
+
+  const hasLensProfile = useCallback(async () => {
+    console.log(account)
+    if (!account) return false;
+    const lensProfileRes = await lens.getProfile(account)
+      if (lensProfileRes.data && lensProfileRes.data.profiles.items.length == 0) {
+        return false
+      }
+      return true
+  }, [lens, account])
   
   return {
-    doSocialGraphAction
+    doSocialGraphAction,
+    hasLensProfile
   };
 };
