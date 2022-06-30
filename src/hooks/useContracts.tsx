@@ -34,5 +34,5 @@ export const useExchangeContractV1 = (withSignerIfPossible = false) => {
 
 export const getErc20Contract = (token: ERCTokenType, account: string, library: Web3Provider) => {
   const provider = getProviderOrSigner(library, account ? account : undefined);
-  return ERC20__factory.connect(config.erc20Contracts[token], provider);
+  return ERC20__factory.connect(config.erc20[token].address, provider);
 };

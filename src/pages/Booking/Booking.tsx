@@ -4,7 +4,7 @@ import { errors, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { Formik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { exchangeRates, indexRequest } from '../../api';
@@ -37,12 +37,14 @@ import { ProfileSearchResult } from '../../generated/graphql';
 import { BookingFormValues, UsesOptions } from './types';
 import { getTwitterData } from '../../api';
 import { FaTwitter } from 'react-icons/fa';
+import { displayLensSignIn, fetchLensAccess } from '@/redux/reducer';
+import { Unsubscribe } from '@reduxjs/toolkit';
+import { useSocialGraph } from '@/hooks/useSocialGraph';
 
 const BookingPage = () => {
   const navigate = useNavigate();
   const ref = useRef(null as any);
   const exchangeContractV1 = useExchangeContractV1(true);
-  const getUser = useSelector((state: any) => state.user);
 
   const { account, library, chainId } = useWeb3React<Web3Provider>();
   const { creatorId } = useParams();
@@ -50,12 +52,12 @@ const BookingPage = () => {
   const { FeeDescription } = useFee();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [user, setUser] = useState();
+  const user = useSelector((state: any) => state.user);
   const [token, setToken] = useState<ERCTokenType>('USDC');
   const [price, setPrice] = useState<number>(0);
   const [doesFollow, setDoesFollow] = useState<boolean>(false);
   const [toggle, setToggle] = useState<boolean>(true);
-  const [creatorLensId, setCreatorLensId] = useState<string>();
+  const [creatorLens, setCreatorLens] = useState<any>();
   const [uses, setUses] = useState<UsesOptions>(UsesOptions.personal);
   const [isTwitterAccount, setIsTwitterAccount] = useState<boolean>(false);
   const [isLoader, setIsLoader] = useState<boolean>(false);
@@ -63,10 +65,9 @@ const BookingPage = () => {
   const [invalidTwitter, setInvalidTwitter] = useState<string>('');
   const [businessPrice, setBusinessPrice] = useState<number>(0);
   const [businessIndex, setBusinessIndex] = useState<number>(0);
+  const [creatorLensFollowModuleType, setCreatorLensFollowModuleType] = useState<string>();
 
-  useEffect(() => {
-    setUser(getUser);
-  }, [getUser]);
+  const {doSocialGraphAction} = useSocialGraph();
 
   useEffect(() => {
     if (ref && ref.current) {
@@ -129,13 +130,22 @@ const BookingPage = () => {
   }, [businessTwitter]);
 
   useEffect(() => {
-    if (account && creator && creator.lensHandle) {
-      lens.getProfileByHandle(creator.lensHandle).then((res) => {
-        const profile = res.data.profiles.items[0];
-        if (profile.ownedBy.toUpperCase() === creator.address.toUpperCase()) {
-          // lens profile must be owned by creator to display it to user - Please talk with jonathan before deleting this
-          //Maybe consider moving this code to the redux
-          setCreatorLensId(profile.id);
+    if (account && creator) {
+      let lensProfilePromise;
+      if (creator.lensHandle) {
+        lensProfilePromise = lens.getProfileByHandle(creator.lensHandle)
+      } else {
+        // even if a clipto creator didn't set a lensHandle when creating a profile
+        // (this happens when you create a clipto account before lens integration)
+        lensProfilePromise = lens.getProfile(creator.address)
+      }
+      if (lensProfilePromise == null) return;
+      lensProfilePromise.then((res) => {
+        const lensProfile = res.data.profiles.items[0];
+        if (lensProfile.ownedBy.toUpperCase() === creator.address.toUpperCase()) {
+          console.log(lensProfile)
+          setCreatorLens(lensProfile);
+          setCreatorLensFollowModuleType(lensProfile.followModule && lensProfile.followModule.__typename)
         } else {
           throw new Error('Validation lens error');
         }
@@ -167,12 +177,41 @@ const BookingPage = () => {
 
   const addAllowance = async (amount: string) => {
     const ERC20 = getErc20Contract(token, account as string, library as Web3Provider);
-    const tx = await ERC20.approve(config.exchangeAddressV1, parseUnits(amount));
+    const tx = await ERC20.approve(config.exchangeAddressV1, parseUnits(amount, config.erc20[token].decimals));
 
     toast.loading('Waiting for approval');
     await tx.wait();
     toast.dismiss();
   };
+
+  const followOrUnfollow = async (creatorLensId : string, library: Web3Provider) => {
+    try {
+      toast.dismiss();
+      toast.loading(
+        doesFollow
+          ? 'Awaiting unfollow confirmation'
+          : 'Awaiting follow confirmation',
+      );
+      const txHash = doesFollow
+        ? await lens.unfollow(creatorLensId, library)
+        : await lens.follow(creatorLensId, library);
+
+      toast.dismiss();
+      toast.loading('Waiting for transaction to complete');
+      if (!txHash) {
+        console.error('no txHash detected!');
+        return;
+      }
+      const f = await lens.pollUntilIndexed(txHash);
+      setToggle(!toggle); //todo(jonathanng) - this is trashcan code!
+      toast.dismiss();
+      toast.success('Transaction is finished');
+    } catch (e: any) {
+      toast.dismiss();
+      toast.error((e && e.message) || e || 'Unknown error.');
+      return;
+    }
+  }
 
   const makeBooking = async (values: BookingFormValues) => {
     try {
@@ -202,8 +241,8 @@ const BookingPage = () => {
         transaction = await exchangeContractV1.newRequest(
           creatorId as string,
           account as string,
-          config.erc20Contracts[token],
-          parseUnits(values.amount),
+          config.erc20[token].address,
+          parseUnits(values.amount, config.erc20[token].decimals),
           JSON.stringify(requestData),
         );
       } else {
@@ -259,78 +298,68 @@ const BookingPage = () => {
                         <FaTwitter style={{ color: '#1C9BEF' }} /> &nbsp;@{creator.twitterHandle}
                       </a>{' '}
                     </Description>
-                    {creator.lensHandle && (
+                    {(creator.lensHandle || creatorLens) && (
                       <Description style={{ marginBottom: '5px' }}>
                         <a
-                          href={`https://lenster.xyz/u/${creator.lensHandle}`}
+                          href={`https://lenster.xyz/u/${creator.lensHandle || (creatorLens && creatorLens.handle)}`}
                           target="_blank"
                           style={{ color: '#EDE641' }}
                         >
-                          🌿 &nbsp;@{creator.lensHandle}
+                          🌿 &nbsp;@{creator.lensHandle || (creatorLens && creatorLens.handle)}
                         </a>{' '}
                       </Description>
                     )}
                     <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
                   </div>
-                  <div>
-                    {library && creatorLensId && (
-                      <PrimaryButton
-                        size="small"
-                        width="small"
-                        style={
-                          doesFollow
-                            ? {
-                                margin: 10,
-                                marginLeft: 0,
-                                maxWidth: 100,
-                                background: '#2E2E2E',
-                                color: 'white',
-                              }
-                            : {
-                                margin: 10,
-                                marginLeft: 0,
-                                maxWidth: 150,
-                                background: '#5F21E2',
-                                color: 'white',
-                                lineHeight: '16px',
-                              }
-                        }
-                        onPress={async (e) => {
-                          try {
-                            toast.loading('Signing into Lens');
-                            const accessToken = await lens.getAccess(account, library as Web3Provider);
-                            toast.dismiss();
-                            toast.loading(
-                              doesFollow
-                                ? 'Are you sure you want to lose your follow NFT?'
-                                : 'Awaiting follow confirmation',
-                            );
-                            if (!accessToken || !creatorLensId) return;
-                            const access = accessToken.data.authenticate.accessToken;
-                            const txHash = doesFollow
-                              ? await lens.unfollow(creatorLensId, access, library)
-                              : await lens.follow(creatorLensId, access, library);
+                  <div style= {{
 
-                            toast.dismiss();
-                            toast.loading('Waiting for transaction to complete');
-                            if (!txHash) {
-                              console.error('no txHash detected!');
+                  }}>
+                    <div>
+                      {creatorLens && creatorLens.id && (
+                        <PrimaryButton
+                          size="small"
+                          width="small"
+                          isDisabled={creatorLensFollowModuleType != null } 
+                        // only accepts creators with basic follow module
+                          style={
+                            doesFollow
+                              ? {
+                                  margin: 10,
+                                  marginLeft: 0,
+                                  maxWidth: 100,
+                                  background: '#2E2E2E',
+                                  color: 'white',
+                                }
+                              : {
+                                  margin: 10,
+                                  marginLeft: 0,
+                                  maxWidth: 150,
+                                  background: '#5F21E2',
+                                  color: 'white',
+                                  lineHeight: '16px',
+                                }
+                          }
+                          onPress={async (e) => {
+                            if (!user) { //this means that you have not connected a wallet
+                              toast.dismiss()
+                              toast.error('Please connect your wallet')
                               return;
                             }
-                            const f = await lens.pollUntilIndexed(txHash, access);
-                            setToggle(!toggle); //todo(jonathanng) - this is trashcan code!
-                            toast.dismiss();
-                            toast.success('Transaction is finished');
-                          } catch (e: any) {
-                            toast.dismiss();
-                            toast.error((e && e.message) || 'Error.');
-                            return;
-                          }
-                        }}
-                      >
-                        {doesFollow ? 'Following' : 'Follow on lens'}
-                      </PrimaryButton>
-                    )}
+                            if (!library) {
+                              toast.dismiss()
+                              toast.error('Please reload the page and reconnect your wallet')
+                              return;
+                            }
+                            doSocialGraphAction(doesFollow ? "follow" : "unfollow", () => {
+                              followOrUnfollow(creatorLens.id, library)
+                            })
+                          }}
+                        >
+                          {doesFollow ? 'Following' : 'Follow'}
+                        </PrimaryButton>
+                      )}
+                      {creatorLens && creatorLens.id && creatorLensFollowModuleType && <Description style={{maxWidth: 200}}>This creator has a follow module of {creatorLensFollowModuleType}. We have disabled the module until we support it. Please let us know if this is an issue.</Description>}
+                    </div>
                   </div>
                 </FlexRow>
                 <FlexRow style={{ marginBottom: 24 }}>

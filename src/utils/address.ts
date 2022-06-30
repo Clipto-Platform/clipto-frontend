@@ -6,9 +6,12 @@ export const getShortenedAddress = (address: string, start = 6, end = 4) => {
 };
 
 export const getErcTokenSymbol = (address: string): string => {
-  const names = Object.keys(config.erc20Contracts);
-  const addresses = Object.values(config.erc20Contracts);
-  const index = addresses.indexOf(address.toLowerCase());
-
-  return index != -1 ? names[index] : 'UNKNOWN';
+  const addressToMatch = address.toLowerCase();
+  for (let i = 0; i < config.erc20TokenNames.length; i++) {
+    const erc20Name = config.erc20TokenNames[i];
+    if (config.erc20[erc20Name].address == addressToMatch) {
+      return erc20Name;
+    }
+  }
+  return 'UNKNOWN';
 };

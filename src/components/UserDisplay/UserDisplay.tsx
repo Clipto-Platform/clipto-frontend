@@ -43,8 +43,8 @@ const UserDisplay: React.FC<UserDisplayProps> = (props) => {
                 >
                   {users.map((user) => {
                     return (
-                      <Link key={user.address} to={`/creator/${user.address}`}>
-                        <UserCardContainer key={user.id}>
+                      <Link key={user.timestamp + user.address} to={`/creator/${user.address}`}>
+                        <UserCardContainer>
                           <UserImage
                             src={user.profilePicture}
                             twitterHandle={user.twitterHandle}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled, { CSSProperties } from 'styled-components';
 import axios from 'axios';
-import { getTwitterData } from '../api';
+import { getTwitterData } from '@/api';
 const AvatarOrb = styled.div<{
   size?: 'large' | 'medium' | 'small';
 }>`
@@ -70,7 +70,7 @@ const AvatarComponent: React.FC<AvatarProps> = (props) => {
         }
       });
   }, [props.twitterHandle]);
-
+  
   if (url) {
     return (
       <div style={{ ...props.style }}>
