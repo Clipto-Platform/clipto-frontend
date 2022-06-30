@@ -45,7 +45,6 @@ const BookingPage = () => {
   const navigate = useNavigate();
   const ref = useRef(null as any);
   const exchangeContractV1 = useExchangeContractV1(true);
-  const getUser = useSelector((state: any) => state.user);
 
   const { account, library, chainId } = useWeb3React<Web3Provider>();
   const { creatorId } = useParams();
@@ -53,12 +52,12 @@ const BookingPage = () => {
   const { FeeDescription } = useFee();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [user, setUser] = useState();
+  const user = useSelector((state: any) => state.user);
   const [token, setToken] = useState<ERCTokenType>('USDC');
   const [price, setPrice] = useState<number>(0);
   const [doesFollow, setDoesFollow] = useState<boolean>(false);
   const [toggle, setToggle] = useState<boolean>(true);
-  const [creatorLensId, setCreatorLensId] = useState<string>();
+  const [creatorLens, setCreatorLens] = useState<any>();
   const [uses, setUses] = useState<UsesOptions>(UsesOptions.personal);
   const [isTwitterAccount, setIsTwitterAccount] = useState<boolean>(false);
   const [isLoader, setIsLoader] = useState<boolean>(false);
@@ -69,11 +68,6 @@ const BookingPage = () => {
   const [creatorLensFollowModuleType, setCreatorLensFollowModuleType] = useState<string>();
 
   const {doSocialGraphAction} = useSocialGraph();
-
-
-  useEffect(() => {
-    setUser(getUser);
-  }, [getUser]);
 
   useEffect(() => {
     if (ref && ref.current) {
@@ -149,7 +143,8 @@ const BookingPage = () => {
       lensProfilePromise.then((res) => {
         const lensProfile = res.data.profiles.items[0];
         if (lensProfile.ownedBy.toUpperCase() === creator.address.toUpperCase()) {
-          setCreatorLensId(lensProfile.id);
+          console.log(lensProfile)
+          setCreatorLens(lensProfile);
           setCreatorLensFollowModuleType(lensProfile.followModule && lensProfile.followModule.__typename)
         } else {
           throw new Error('Validation lens error');
@@ -303,14 +298,14 @@ const BookingPage = () => {
                         <FaTwitter style={{ color: '#1C9BEF' }} /> &nbsp;@{creator.twitterHandle}
                       </a>{' '}
                     </Description>
-                    {creator.lensHandle && (
+                    {(creator.lensHandle || creatorLens) && (
                       <Description style={{ marginBottom: '5px' }}>
                         <a
-                          href={`https://lenster.xyz/u/${creator.lensHandle}`}
+                          href={`https://lenster.xyz/u/${creator.lensHandle || (creatorLens && creatorLens.handle)}`}
                           target="_blank"
                           style={{ color: '#EDE641' }}
                         >
-                          🌿 &nbsp;@{creator.lensHandle}
+                          🌿 &nbsp;@{creator.lensHandle || (creatorLens && creatorLens.handle)}
                         </a>{' '}
                       </Description>
                     )}
@@ -320,7 +315,7 @@ const BookingPage = () => {
 
                   }}>
                     <div>
-                      {library && creatorLensId && (
+                      {creatorLens && creatorLens.id && (
                         <PrimaryButton
                           size="small"
                           width="small"
@@ -345,15 +340,25 @@ const BookingPage = () => {
                                 }
                           }
                           onPress={async (e) => {
+                            if (!user) { //this means that you have not connected a wallet
+                              toast.dismiss()
+                              toast.error('Please connect your wallet')
+                              return;
+                            }
+                            if (!library) {
+                              toast.dismiss()
+                              toast.error('Please reload the page and reconnect your wallet')
+                              return;
+                            }
                             doSocialGraphAction(doesFollow ? "follow" : "unfollow", () => {
-                              followOrUnfollow(creatorLensId, library)
+                              followOrUnfollow(creatorLens.id, library)
                             })
                           }}
                         >
                           {doesFollow ? 'Following' : 'Follow'}
                         </PrimaryButton>
                       )}
-                      {creatorLensId && creatorLensFollowModuleType && <Description style={{maxWidth: 200}}>This creator has a follow module of {creatorLensFollowModuleType}. We have disabled the module until we support it.</Description>}
+                      {creatorLens && creatorLens.id && creatorLensFollowModuleType && <Description style={{maxWidth: 200}}>This creator has a follow module of {creatorLensFollowModuleType}. We have disabled the module until we support it. Please let us know if this is an issue.</Description>}
                     </div>
                   </div>
                 </FlexRow>

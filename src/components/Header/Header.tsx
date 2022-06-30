@@ -191,8 +191,6 @@ const Header: React.FC<HeaderProps> = () => {
   const showLoginDialog = useHeaderStore((s) => s.showDialog);
   const setShowLoginDialog = useHeaderStore((s) => s.setShowDialog);
   const setHasTriedEagerConnecting = useHeaderStore((s) => s.setHasTriedEagerConnecting);
-
-  const showLensModal = useSelector((s: any) => s.displayLensSignIn); //todo - replace with some form of state
   
   const showProfileDropDown = useHeaderStore((s) => s.showProfileDropDown);
   const setShowProfileDropDown = useHeaderStore((s) => s.setShowProfileDropDown);
@@ -211,7 +209,6 @@ const Header: React.FC<HeaderProps> = () => {
   const user = useSelector((state: any) => state.user);
   const lensProfile = useSelector((state: any) => state.lensProfile)
   const error = useSelector((state: any) => state.error);
-  const loading = useSelector((state: any) => state.loading);
   const dispatch = useDispatch();
   const [lensAccess, setLensAccess] = useState(''); // if about to get access token, then lens will be 🌿
   const navigate = useNavigate();
@@ -283,10 +280,6 @@ const Header: React.FC<HeaderProps> = () => {
 
   const attemptLensLogin = useCallback(() => {
     dispatch(login(user))
-    // console.log(user)
-    // dispatch(fetchLensProfile(user, true, () => {
-    //   setShowLoginDialog(false);
-    // }))
   } ,[user, hasLensAccess])
 
 
@@ -406,7 +399,8 @@ const Header: React.FC<HeaderProps> = () => {
                       size={'small'}
                       style={{ width: 160 }}
                       variant={'secondary'}
-                      onPress={() => setShowLoginDialog(true)}
+                      onPress={() => {
+                        setShowLoginDialog(true)}}
                     >
                       Connect Wallet
                     </PrimaryButton>
@@ -543,47 +537,6 @@ const Header: React.FC<HeaderProps> = () => {
               >
                 <ConnectWalletPopup>
                   {currentlyActivating === 'wc' ? <>{'Confirm in your wallet'}</> : 'Continue with mobile wallet'}
-                </ConnectWalletPopup>
-              </PrimaryButton>
-            </>
-          </ModalDialog>
-        </OverlayContainer>
-      )}
-
-      {showLensModal && account && (
-        <OverlayContainer>
-          <ModalDialog
-            containerStyles={{
-              border: '1px solid #b3b3b3',
-              padding: '24px',
-            }}
-            isOpen
-            onClose={() => dispatch(displayLensSignIn(false))}
-            isDismissable
-          >
-            <>
-              <LensConnect>Please sign the message.</LensConnect>
-              <LensConnectSubtitle>Choose social graphs you want to connect</LensConnectSubtitle>
-              {error && <Error>{error}</Error>}
-
-              <PrimaryButton
-                variant={'secondary'}
-                style={{ marginBottom: 16, minWidth: 310 }}
-                isDisabled={loading}
-                onPress={() => dispatch(fetchLensLogin(account, library))}
-              >
-                <ConnectWalletPopup>
-                  {'Sign into Lens  🌿'}
-                </ConnectWalletPopup>
-              </PrimaryButton>
-              <PrimaryButton
-                variant={'secondary'}
-                style={{ marginBottom: 16, minWidth: 310 }}
-                isDisabled={true || loading}
-                onPress={() => {}}
-              >
-                <ConnectWalletPopup>
-                  {'🚧 Cyberconnect coming soon 🚧'}
                 </ConnectWalletPopup>
               </PrimaryButton>
             </>

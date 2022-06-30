@@ -83,7 +83,6 @@ const getAuth = async ({ authState } : any) => {
 }
 
 const didAuthError = ({error} : any) => {
-  console.error("didAuthError", error.message.includes('User not authenticated'))
   return error.message.includes('User not authenticated')
 };
 const addAuthToOperation = ({ authState, operation } : any) => {

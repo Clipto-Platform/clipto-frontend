@@ -44,7 +44,9 @@ const initialState = (() => {
     error: '',
     hasLensAccess: false,
     lensProfile: {},
-    displayLensSignIn: false
+    displayLensSignIn: false,
+    lensPostData: {},
+    showLensPostModal: false
   }
 })()
 
@@ -67,6 +69,36 @@ const FETCH_LENS_PROFILE_FAILURE = 'FETCH_LENS_PROFILE_FAILURE';
 const DISPLAY_LENS_SIGN_IN = 'DISPLAY_LENS_SIGN_IN';
 
 const LOGOUT_LENS = 'LOGOUT_LENS'
+
+const START_LENS_POST = 'START_LENS_POST';
+const END_LENS_POST = 'END_LENS_POST';
+
+export interface LensPostData {
+  description: string; // description that the original author created
+  image: any;
+  animation_url: string;
+  creatorAddress: string;
+}
+
+export const startLensPost = (lensPostData: LensPostData) => {
+  return {
+    type: START_LENS_POST,
+    payload: {
+      lensPostData: lensPostData,
+      showLensPostModal: true
+    }
+  }
+}
+export const endLensPost = () => {
+  return {
+    type: END_LENS_POST,
+    payload: {
+      lensPostData: {},
+      showLensPostModal: false
+    }
+  }
+}
+
 
 // lens login modal action
 export const displayLensSignIn = (show: boolean) => {
@@ -211,7 +243,6 @@ export function reducer(state = { ...initialState }, action: LensAccessAction) {
         ...state,
         user: payload.user,
         lensProfile: {},
-        hasLensAccess: payload.user == state.user // if previous user is the same as new user
       };
     }
     case FETCH_LENS_LOGIN_REQUEST: {
@@ -311,6 +342,19 @@ export function reducer(state = { ...initialState }, action: LensAccessAction) {
         loading: false,
         lensAccessToken: '',
         error: action.payload
+      }
+    }
+    case START_LENS_POST: {
+      return {
+        ...state,
+        lensPostData: {...action.payload.lensPostData},
+        showLensPostModal: true
+      }
+    }
+    case END_LENS_POST: {
+      return {
+        ...state,
+        showLensPostModal: false
       }
     }
     default:

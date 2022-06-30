@@ -1,16 +1,17 @@
+import { useSocialGraph } from '@/hooks/useSocialGraph';
+import { startLensPost } from '@/redux/reducer';
 import { Web3Provider } from '@ethersproject/providers';
 import * as UpChunk from '@mux/upchunk';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, ContractReceipt } from 'ethers';
+import { ContractReceipt } from 'ethers';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import BounceLoader from 'react-spinners/BounceLoader';
 import { toast } from 'react-toastify';
 import { useTheme } from 'styled-components';
 import * as api from '../../api';
-import * as lens from '../../api/lens';
-import { postRequest } from '../../api/lens';
 import { EntityRequest } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
 import { HeaderSpacer } from '../../components/Header/Header';
@@ -18,30 +19,24 @@ import { PageContentWrapper, PageWrapper } from '../../components/layout/Common'
 import { NFTDetails } from '../../components/NFTDetails';
 import { NFTHistory } from '../../components/NFTHistory';
 import { OrderCard } from '../../components/OrderCard/OrderCard';
-import { SecondaryLabel } from '../../components/OrderCard/Style';
 import { TextField } from '../../components/TextField';
 import { Video } from '../../components/Video/Video';
 import { useExchangeContract, useExchangeContractV1 } from '../../hooks/useContracts';
-import { uploadToIPFS } from '../../lib/uploadToIPFS';
-import { Description, Label, Text } from '../../styles/typography';
+import { Description, Label } from '../../styles/typography';
 import { getNFTDetails, getNFTHistory } from '../../web3/nft';
 import { signMessage } from '../../web3/request';
 import { LensPostButton } from './LensPostButton';
-// import {uuid} from 'uuidv4';
-const uuid = () => {
-  return 1
-}
-import config from '@/config/config'
 import {
   BookingCard,
   ComboButtonContainer,
   Divider,
   ImageCardContainer,
   ImageCardImg,
-  UploadStatusContainer,
+  UploadStatusContainer
 } from './Style';
 import { ArweaveResponse, NFTDetailsType, NFTFormError, NFTHistories } from './types';
-import { useSocialGraph } from '@/hooks/useSocialGraph';
+
+
 // import uploadToIPFS from '../../lib/uploadToIPFS'
 
 
@@ -66,10 +61,9 @@ const SelectedOrderPage = () => {
   const [description, setDescription] = useState<string>('');
   const [error, setError] = useState<NFTFormError>();
   const [history, setHistory] = useState<NFTHistories[]>();
-  const [toggle, setToggle] = useState(false);
 
   const {doSocialGraphAction} = useSocialGraph();
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (creator && requestId && version) {
@@ -248,91 +242,6 @@ const SelectedOrderPage = () => {
     });
   };
 
-  const shareToLens = async () => {
-    try {
-      if (!clipDetailsFull) {
-        console.error('How is this possible?')
-        return;
-      }
-      console.log(account)
-      if (!account) return;
-      toast.dismiss()
-      toast.loading('Creating post');
-      const lensProfileRes = await lens.getProfile(account)
-      console.log(lensProfileRes) 
-      if (!lensProfileRes.data && lensProfileRes.data.profiles.items.length != 0) return;
-      const lensHandle = lensProfileRes.data.profiles.items[0].handle
-      const lensId = lensProfileRes.data.profiles.items[0].id
-      //example metadata:
-      // text + video
-      //https://bafybeidswqwkngytwe6g52glyfaui5rqqbd22k6eeqcokfrxgmc4u2cptm.ipfs.infura-ipfs.io/
-      // video only
-      //https://bafybeifr3bhfnfqipawsmifyb67dyvjuj7ga7igm2acjox2r22z2avacpi.ipfs.infura-ipfs.io/
-      const content = {
-        "version": "1.0.0",
-        "metadata_id": `${uuid()}`,
-        "description": `${clipDetailsFull.description} \n Created from ${config.url}`,
-        "content": `Created from ${config.url}`,
-        "external_url": `${config.url}/creator/${creator}`,
-        "image": clipDetailsFull.image,
-        "imageMimeType": null,
-        "name": `Post by @${lensHandle}`,
-        "mainContentFocus": "TEXT",
-        "contentWarning": null,
-        "attributes": [
-          {
-            "traitType": "string",
-            "key": "type",
-            "value": "post"
-          }
-        ],
-        "media": [
-          {
-            "item": clipDetailsFull.animation_url,
-            "type": "video/mp4",
-            "altTag": ""
-          }
-        ],
-        "createdOn": "2022-06-17T00:02:28.704Z",
-        "appId": "Clipto"
-      }
-      const {path} = await uploadToIPFS(content)
-      if (!path) {
-        toast.dismiss()
-        toast.error("Error uploading post to lens")
-        return;
-      }
-      const request = {
-        profileId: lensId, 
-        contentURI: `https://ipfs.infura.io/ipfs/${path}`,
-        collectModule: {
-          freeCollectModule: {
-            followerOnly: false
-          }
-        },
-        referenceModule: {
-          "followerOnlyReferenceModule": false
-        }
-      }
-      console.log(request)
-      const txHash = await lens.postRequest(request, library as Web3Provider)
-      if (!txHash) {
-        console.error('no txHash detected!');
-        toast.dismiss();
-        toast.error('Error in tx, please open console to screenshot and report error')
-        return;
-      }
-      toast.dismiss();
-      toast.loading('Waiting for transaction to complete');
-      const f = await lens.pollUntilIndexed(txHash);
-      setToggle(!toggle); //todo(jonathanng) - this is trashcan code!
-      toast.dismiss();
-      toast.success('Transaction is finished');
-    } catch (e) {
-      console.error(e)
-      toast.error('Something is wrong')
-    }
-  }
   return (
     <>
       {loaded && (
@@ -444,11 +353,22 @@ const SelectedOrderPage = () => {
               />
             )}
             {!request && <Label>Could not find request</Label>}
-            {true && <LensPostButton onPress={async () => {
+            {clipDetailsFull && request && account && request.requester.toLowerCase() == account.toLowerCase() && <LensPostButton onPress={async () => {
               doSocialGraphAction('share', () => {
-                shareToLens()
+                if (!clipDetailsFull || !creator) {
+                  toast.dismiss();
+                  toast.error('Clip details not found!')
+                  return;
+                }
+                dispatch(startLensPost({
+                  description: clipDetailsFull.description,
+                  image: clipDetailsFull.image,
+                  animation_url: clipDetailsFull.animation_url,
+                  creatorAddress: creator
+                }))
               })
             }}/>}
+            <div style={{margin: 20}}></div>
             {nftDetails && <NFTDetails details={nftDetails} />}
             {history && <NFTHistory history={history} />}
           </PageContentWrapper>
