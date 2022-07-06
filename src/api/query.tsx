@@ -338,3 +338,29 @@ query GetCreatorByTxHash(
   }
 }
 `;
+
+
+export const queryCreatorsByAddresses = `
+query CreatorsByAddresses ($addresses: [Bytes!]) {
+  creators (where: {address_in: $addresses}) {
+    id
+    address
+    metadataURI
+    nftTokenAddress
+    twitterHandle
+    bio
+    deliveryTime
+    lensHandle
+    demos
+    profilePicture
+    userName
+    price
+    txHash
+    block
+    timestamp
+  }
+}
+`
+
+
+

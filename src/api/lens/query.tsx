@@ -112,6 +112,9 @@ export const queryProfileByHandle = `
 query Profiles ($handle: Handle!){
   profiles(request: { handles: [$handle], limit: 1 }) {
     items {
+      followModule {
+        __typename # used to check what type of follow module that they are using
+      }
       id
       ownedBy
     }
@@ -391,21 +394,21 @@ query Query ($accessToken: Jwt!) {
 }
 `;
 
+export const queryRefresh = `
+mutation Refresh ($refreshToken: Jwt!) {
+  refresh(request: { refreshToken: $refreshToken }) {
+    accessToken
+    refreshToken
+  }
+}
+`
+
 
 //publications
 
 export const mutationCreatePostTypedData = `
-mutation CreatePostTypedData {
-  createPostTypedData(request: {
-    profileId: "0x03",
-    contentURI: "ipfs://bafybeiakcddsewbuuzgjqlqzr5ejbvvknerrhdhhysl5ibtelb43cvdime",
-    collectModule: {
-      revertCollectModule: true
-    },
-    referenceModule: {
-      followerOnlyReferenceModule: false
-    }
-  }) {
+mutation CreatePostTypedData($options: TypedDataOptions, $request: CreatePublicPostRequest!) {
+  createPostTypedData(options: $options, request: $request) {
     id
     expiresAt
     typedData {
@@ -413,13 +416,16 @@ mutation CreatePostTypedData {
         PostWithSig {
           name
           type
+          __typename
         }
+        __typename
       }
       domain {
         name
         chainId
         version
         verifyingContract
+        __typename
       }
       value {
         nonce
@@ -430,12 +436,14 @@ mutation CreatePostTypedData {
         collectModuleInitData
         referenceModule
         referenceModuleInitData
+        __typename
       }
+      __typename
     }
+    __typename
   }
 }
 `
-
 
 export const mutationBroadcast = `
 mutation Broadcast($request: BroadcastRequest!) {

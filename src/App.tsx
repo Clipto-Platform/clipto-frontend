@@ -24,6 +24,8 @@ function getLibrary(provider: any): Web3Provider {
   library.pollingInterval = 12000;
   return library;
 }
+import SocialSignInModal from './components/SocialSignInModal';
+import LensSimplePostModal from './components/LensSimplePostModal';
 
 function App() {
   const user = useSelector((state: any) => state.user);
@@ -31,19 +33,6 @@ function App() {
     <GraphQLProvider value={graphInstance}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <ThemeProvider theme={theme}>
-          <ToastContainer
-            position="bottom-center"
-            theme="dark"
-            limit={1}
-            newestOnTop={false}
-            closeOnClick
-            autoClose={5000}
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            transition={Zoom}
-            hideProgressBar={true}
-          />
           <BrowserRouter>
             <Header />
             <Routes>
@@ -66,6 +55,22 @@ function App() {
             </Routes>
             <BottomBar />
           </BrowserRouter>
+          {/* Modals */}
+          <ToastContainer
+            position="bottom-center"
+            theme="dark"
+            limit={1}
+            newestOnTop={false}
+            closeOnClick
+            autoClose={5000}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            transition={Zoom}
+            hideProgressBar={true}
+          />
+          <SocialSignInModal />
+          <LensSimplePostModal />
         </ThemeProvider>
       </Web3ReactProvider>
     </GraphQLProvider>

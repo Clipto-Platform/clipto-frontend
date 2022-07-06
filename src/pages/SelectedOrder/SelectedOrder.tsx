@@ -1,9 +1,12 @@
+import { useSocialGraph } from '@/hooks/useSocialGraph';
+import { startLensPost } from '@/redux/reducer';
 import { Web3Provider } from '@ethersproject/providers';
 import * as UpChunk from '@mux/upchunk';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, ContractReceipt } from 'ethers';
+import { ContractReceipt } from 'ethers';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import BounceLoader from 'react-spinners/BounceLoader';
 import { toast } from 'react-toastify';
@@ -16,22 +19,26 @@ import { PageContentWrapper, PageWrapper } from '../../components/layout/Common'
 import { NFTDetails } from '../../components/NFTDetails';
 import { NFTHistory } from '../../components/NFTHistory';
 import { OrderCard } from '../../components/OrderCard/OrderCard';
-import { SecondaryLabel } from '../../components/OrderCard/Style';
 import { TextField } from '../../components/TextField';
-import { Video } from '../../components/Video';
+import { Video } from '../../components/Video/Video';
 import { useExchangeContract, useExchangeContractV1 } from '../../hooks/useContracts';
-import { Description, Label, Text } from '../../styles/typography';
+import { Description, Label } from '../../styles/typography';
 import { getNFTDetails, getNFTHistory } from '../../web3/nft';
 import { signMessage } from '../../web3/request';
+import { LensPostButton } from './LensPostButton';
 import {
   BookingCard,
   ComboButtonContainer,
   Divider,
   ImageCardContainer,
   ImageCardImg,
-  UploadStatusContainer,
+  UploadStatusContainer
 } from './Style';
 import { ArweaveResponse, NFTDetailsType, NFTFormError, NFTHistories } from './types';
+
+
+// import uploadToIPFS from '../../lib/uploadToIPFS'
+
 
 const SelectedOrderPage = () => {
   const { account, library } = useWeb3React<Web3Provider>();
@@ -49,10 +56,14 @@ const SelectedOrderPage = () => {
   const [minting, setMinting] = useState<boolean>(false);
   const [nftDetails, setNftDetails] = useState<NFTDetailsType>();
   const [clipDetails, setClipDetails] = useState('');
+  const [clipDetailsFull, setClipDetailsFull] = useState<{animation_url: string, description: string, image: string}>();
   const [nftName, setNftName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [error, setError] = useState<NFTFormError>();
   const [history, setHistory] = useState<NFTHistories[]>();
+
+  const {doSocialGraphAction, hasLensProfile} = useSocialGraph();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (creator && requestId && version) {
@@ -207,6 +218,8 @@ const SelectedOrderPage = () => {
   const getNFTVideo = async (id: string) => {
     const metadata = await api.getArweaveMetadata(id);
     setClipDetails(metadata.data.animation_url);
+    setClipDetailsFull(metadata.data)
+    console.log("order metadata", metadata)
   };
 
   const fetchNFT = async (tokenAddress: string, tokenId: number, tokenUri: string) => {
@@ -340,6 +353,31 @@ const SelectedOrderPage = () => {
               />
             )}
             {!request && <Label>Could not find request</Label>}
+            {clipDetailsFull && request && account && request.requester.toLowerCase() == account.toLowerCase() && <LensPostButton onPress={async () => {
+              if (!(await hasLensProfile())) {
+                toast.dismiss()
+                toast.error('A lens profile NFT is required in order to post.')
+                return;
+              }
+
+              console.log(account)
+
+              doSocialGraphAction('share', () => {
+                if (!clipDetailsFull || !creator) {
+                  toast.dismiss();
+                  toast.error('Clip details not found!')
+                  return;
+                }
+                
+                dispatch(startLensPost({
+                  description: clipDetailsFull.description,
+                  image: clipDetailsFull.image,
+                  animation_url: clipDetailsFull.animation_url,
+                  creatorAddress: creator
+                }))
+              })
+            }}/>}
+            <div style={{margin: 20}}></div>
             {nftDetails && <NFTDetails details={nftDetails} />}
             {history && <NFTHistory history={history} />}
           </PageContentWrapper>
