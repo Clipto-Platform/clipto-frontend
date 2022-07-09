@@ -72,15 +72,11 @@ const OnboardProfilePage = () => {
       toast.error('Temporally disabled account creation');
       return { error: 'Temporally disabled account creation' };
     }
-    const accessRes = await lens.getAccess(account, library as Web3Provider);
-    if (!accessRes) return;
-    const access = accessRes.data.authenticate.accessToken;
     toast.loading('Creating lens profile');
     const profileRes = await lens.createProfile(
       {
         handle: lensHandle,
-      },
-      access,
+      }
     );
     const profileResVal =
       (profileRes && profileRes.data && profileRes.data.createProfile && profileRes.data.createProfile.reason) ||
@@ -90,7 +86,7 @@ const OnboardProfilePage = () => {
       toast.error('Handle is taken');
       return profileRes;
     }
-    await lens.pollUntilIndexed(profileRes.data.createProfile.txHash, access);
+    await lens.pollUntilIndexed(profileRes.data.createProfile.txHash);
     toast.dismiss();
     toast.success('Lens profile created');
 
