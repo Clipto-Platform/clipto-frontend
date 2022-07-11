@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { useSelector } from 'react-redux';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ToastContainer, Zoom } from 'react-toastify';
 import { ThemeProvider } from 'styled-components';
 import { BottomBar } from './components/BottomBar/BottomBar';
@@ -33,7 +33,7 @@ function App() {
     <GraphQLProvider value={graphInstance}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <ThemeProvider theme={theme}>
-          <BrowserRouter>
+          <HashRouter>
             <Header />
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -54,7 +54,7 @@ function App() {
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
             <BottomBar />
-          </BrowserRouter>
+          </HashRouter>
           {/* Modals */}
           <ToastContainer
             position="bottom-center"
