@@ -37,7 +37,6 @@ import { ProfileSearchResult } from '../../generated/graphql';
 import { BookingFormValues, UsesOptions } from './types';
 import { getTwitterData } from '../../api';
 import { FaTwitter } from 'react-icons/fa';
-import { displayLensSignIn, fetchLensAccess } from '@/redux/reducer';
 import { Unsubscribe } from '@reduxjs/toolkit';
 import { useSocialGraph } from '@/hooks/useSocialGraph';
 

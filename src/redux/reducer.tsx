@@ -362,51 +362,7 @@ export function reducer(state = { ...initialState }, action: LensAccessAction) {
   }
 }
 
-//TODO: when logout or switching addresses, accessToken needs to be cleared
-//action thunk
-export const fetchLensAccess = (address: string, library: Web3Provider, onSuccess: (accessToken: string) => void) => {
-  const {lensAccessToken, lensRefreshToken} = store.getState();
-  return (dispatch: any) => {
-    dispatch(fetchLensAccessCheck())
-    // first check if on right network
-    if (library.network.chainId != config.chainId) {
-      dispatch(fetchLensAccessFailure(`Make sure that you are on network ${config.chainName} (chain id: ${config.chainId})`))
-      toastError(`Make sure you are on ${config.chainName}`)
-      return;
-    }
-    if (
-      lens.verifyJwt(address, lensAccessToken) &&
-      lens.verifyJwt(address, lensRefreshToken)
-    ) {
-      dispatch(fetchLensAccessSuccess(lensAccessToken, lensRefreshToken, address, onSuccess));
-      lens.refreshAccess(lensRefreshToken, library).then(({data, error}) => {
-        if (data && data.refresh) {
-          dispatch(fetchLensAccessRefreshed(data.refresh.accessToken, data.refresh.refreshToken, address)) // address will match the token due to verifyJwt
-        } else if (error) {
-          console.warn(error)
-          console.warn('Unable to refresh token')
-        }
-      });
-      return;
-    }
-    dispatch(fetchLensAccessRequest())
-    lens.getAccess(address, library).then(res => {
-      if (res && res.data.authenticate.accessToken && res.data.authenticate.refreshToken) {
-        dispatch(fetchLensAccessSuccess(
-          res.data.authenticate.accessToken, 
-          res.data.authenticate.refreshToken, 
-          address, 
-          onSuccess
-        ))
-      } else {
-        dispatch(fetchLensAccessFailure('Something is wrong in lens.getAccess'))
-      }
-    }).catch(err => {
-      console.log(err)
-      dispatch(fetchLensAccessFailure(err))
-    })
-  }
-}
+
 
 export const fetchLensLogin = (address: string, library: Web3Provider | any) => {
   return (dispatch: any) => {
