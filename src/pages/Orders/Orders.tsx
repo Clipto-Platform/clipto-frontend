@@ -204,7 +204,9 @@ const OrdersPage = () => {
                   <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
                     <div style={{ display: 'block', width: '100%' }}>
                       <Label style={{ marginBottom: '10px' }}>You haven't received any booking requests yet.</Label>
-                      <Description style={{ marginBottom: '30px' }}>Set up your creator profile to start receiving bookings.</Description>
+                      <Description style={{ marginBottom: '30px' }}>
+                        Set up your creator profile to start receiving bookings.
+                      </Description>
                       {/* Note(jonathanng) - currently /orders is not accessible for noncreators */}
                       <PrimaryButton
                         onPress={() => {

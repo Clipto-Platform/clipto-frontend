@@ -1,12 +1,12 @@
 import { AriaTextFieldOptions, useTextField } from '@react-aria/textfield';
 import { useRef } from 'react';
+import { BsFillCheckCircleFill } from 'react-icons/bs';
+import Loader from 'react-spinners/ClipLoader';
 import { CSSProperties } from 'styled-components';
 
 import { Description, Label } from '../styles/typography';
 import { EndText, Input, Textarea } from './Input';
-import { BsFillCheckCircleFill } from 'react-icons/bs';
-import Loader from 'react-spinners/ClipLoader';
-
+import { colors } from '@/styles/theme';
 export interface TextFieldProps {
   label?: string;
   endText?: string;
@@ -24,8 +24,15 @@ function TextField(props: AriaTextFieldOptions<'input' | 'textarea'> & TextField
   const ref = useRef<HTMLInputElement | null>(null);
   const { ...textFieldProps } = props;
   const { labelProps, inputProps, descriptionProps, errorMessageProps } = useTextField(textFieldProps, ref);
-
+  const { isDisabled } = props;
   const inputStyles = { ...inputProps.style, ...props.inputStyles };
+
+  const inputStylesWithState = props.errorMessage
+    ? { ...inputStyles, borderColor: 'red' }
+    : isDisabled === true
+    ? { ...inputStyles, backgroundColor: colors.darkGray, color: colors.lightGray }
+    : { ...inputStyles };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div style={{ marginBottom: 16 }}>
@@ -38,10 +45,7 @@ function TextField(props: AriaTextFieldOptions<'input' | 'textarea'> & TextField
       </div>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         {props.inputElementType === 'textarea' ? (
-          <Textarea
-            {...(inputProps as any)}
-            style={props.errorMessage ? { ...inputStyles, borderColor: 'red' } : { ...inputStyles }}
-          />
+          <Textarea {...(inputProps as any)} style={inputStylesWithState} />
         ) : (
           <>
             <Input
@@ -50,7 +54,7 @@ function TextField(props: AriaTextFieldOptions<'input' | 'textarea'> & TextField
               step="1"
               onWheel={(e) => (e.target as HTMLElement).blur()}
               ref={ref}
-              style={props.errorMessage ? { ...inputStyles, borderColor: 'red' } : { ...inputStyles }}
+              style={inputStylesWithState}
             />
             {props.isSuccess ? <BsFillCheckCircleFill size={24} style={iconStyle} /> : null}
             {props.isLoader ? (

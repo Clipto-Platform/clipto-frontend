@@ -1,6 +1,6 @@
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link } from 'react-router-dom';
-import Loader from 'react-spinners/ClipLoader';
+import Loader from 'react-spinners/';
 import config from '../../config/config';
 import { useImagesLoaded } from '../../hooks/useImagesLoaded';
 import { formatETH } from '../../utils/format';
