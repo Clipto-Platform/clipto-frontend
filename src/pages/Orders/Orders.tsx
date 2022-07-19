@@ -1,3 +1,4 @@
+import { useCreator } from '@/hooks/useCreator';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
@@ -23,6 +24,7 @@ const OrdersPage = () => {
   const [requestsToUser, setRequestsToUser] = useState<EntityRequest[]>([]);
   const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
+  const { creator } = useCreator(account);
   const exchangeContractV1 = useExchangeContractV1(true);
   const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate();
@@ -203,21 +205,25 @@ const OrdersPage = () => {
                 FallbackWhenNoRequests={() => (
                   <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
                     <div style={{ display: 'block', width: '100%' }}>
-                      <Label style={{ marginBottom: '10px' }}>You haven't received any booking requests yet.</Label>
-                      <Description style={{ marginBottom: '30px' }}>
-                        Set up your creator profile to start receiving bookings.
-                      </Description>
+                      <Label style={{ marginBottom: '10px' }}>You haven't received any booking requests yet</Label>
+                      {!creator && (
+                        <Description style={{ marginBottom: '30px' }}>
+                          Set up your creator profile to start receiving bookings.
+                        </Description>
+                      )}
                       {/* Note(jonathanng) - currently /orders is not accessible for noncreators */}
-                      <PrimaryButton
-                        onPress={() => {
-                          navigate(`/onboarding`);
-                        }}
-                        size="small"
-                        width="small"
-                        style={{ marginTop: 20, margin: 'auto' }}
-                      >
-                        Create profile
-                      </PrimaryButton>
+                      {!creator && (
+                        <PrimaryButton
+                          onPress={() => {
+                            navigate(`/onboarding`);
+                          }}
+                          size="small"
+                          width="small"
+                          style={{ marginTop: 20, margin: 'auto' }}
+                        >
+                          Create profile
+                        </PrimaryButton>
+                      )}
                     </div>
                   </div>
                 )}

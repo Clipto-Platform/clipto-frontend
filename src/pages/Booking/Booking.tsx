@@ -66,7 +66,7 @@ const BookingPage = () => {
   const [businessIndex, setBusinessIndex] = useState<number>(0);
   const [creatorLensFollowModuleType, setCreatorLensFollowModuleType] = useState<string>();
 
-  const {doSocialGraphAction} = useSocialGraph();
+  const { doSocialGraphAction } = useSocialGraph();
 
   useEffect(() => {
     if (ref && ref.current) {
@@ -132,19 +132,19 @@ const BookingPage = () => {
     if (account && creator) {
       let lensProfilePromise;
       if (creator.lensHandle) {
-        lensProfilePromise = lens.getProfileByHandle(creator.lensHandle)
+        lensProfilePromise = lens.getProfileByHandle(creator.lensHandle);
       } else {
         // even if a clipto creator didn't set a lensHandle when creating a profile
         // (this happens when you create a clipto account before lens integration)
-        lensProfilePromise = lens.getProfile(creator.address)
+        lensProfilePromise = lens.getProfile(creator.address);
       }
       if (lensProfilePromise == null) return;
       lensProfilePromise.then((res) => {
         const lensProfile = res.data.profiles.items[0];
         if (lensProfile.ownedBy.toUpperCase() === creator.address.toUpperCase()) {
-          console.log(lensProfile)
+          console.log(lensProfile);
           setCreatorLens(lensProfile);
-          setCreatorLensFollowModuleType(lensProfile.followModule && lensProfile.followModule.__typename)
+          setCreatorLensFollowModuleType(lensProfile.followModule && lensProfile.followModule.__typename);
         } else {
           throw new Error('Validation lens error');
         }
@@ -163,8 +163,15 @@ const BookingPage = () => {
   };
 
   const waitForTransaction = async (transaction: ethers.ContractTransaction) => {
+    toast.dismiss();
     toast.loading('Creating a new booking, waiting for confirmation');
+    const timeoutId = setTimeout(() => {
+      console.log('Your transaction hash is:', transaction.hash);
+      toast.dismiss();
+      toast.loading(`Your transaction is pending, you free to come back later.`);
+    }, 10000);
     await transaction.wait();
+    clearTimeout(timeoutId);
     toast.dismiss();
   };
 
@@ -183,14 +190,10 @@ const BookingPage = () => {
     toast.dismiss();
   };
 
-  const followOrUnfollow = async (creatorLensId : string, library: Web3Provider) => {
+  const followOrUnfollow = async (creatorLensId: string, library: Web3Provider) => {
     try {
       toast.dismiss();
-      toast.loading(
-        doesFollow
-          ? 'Awaiting unfollow confirmation'
-          : 'Awaiting follow confirmation',
-      );
+      toast.loading(doesFollow ? 'Awaiting unfollow confirmation' : 'Awaiting follow confirmation');
       const txHash = doesFollow
         ? await lens.unfollow(creatorLensId, library)
         : await lens.follow(creatorLensId, library);
@@ -210,7 +213,7 @@ const BookingPage = () => {
       toast.error((e && e.message) || e || 'Unknown error.');
       return;
     }
-  }
+  };
 
   const makeBooking = async (values: BookingFormValues) => {
     try {
@@ -310,16 +313,14 @@ const BookingPage = () => {
                     )}
                     <Description>Address: {creator && getShortenedAddress(creator.address)}</Description>
                   </div>
-                  <div style= {{
-
-                  }}>
+                  <div style={{}}>
                     <div>
                       {creatorLens && creatorLens.id && (
                         <PrimaryButton
                           size="small"
                           width="small"
-                          isDisabled={creatorLensFollowModuleType != null } 
-                        // only accepts creators with basic follow module
+                          isDisabled={creatorLensFollowModuleType != null}
+                          // only accepts creators with basic follow module
                           style={
                             doesFollow
                               ? {
@@ -339,25 +340,31 @@ const BookingPage = () => {
                                 }
                           }
                           onPress={async (e) => {
-                            if (!user) { //this means that you have not connected a wallet
-                              toast.dismiss()
-                              toast.error('Please connect your wallet')
+                            if (!user) {
+                              //this means that you have not connected a wallet
+                              toast.dismiss();
+                              toast.error('Please connect your wallet');
                               return;
                             }
                             if (!library) {
-                              toast.dismiss()
-                              toast.error('Please reload the page and reconnect your wallet')
+                              toast.dismiss();
+                              toast.error('Please reload the page and reconnect your wallet');
                               return;
                             }
-                            doSocialGraphAction(doesFollow ? "follow" : "unfollow", () => {
-                              followOrUnfollow(creatorLens.id, library)
-                            })
+                            doSocialGraphAction(doesFollow ? 'follow' : 'unfollow', () => {
+                              followOrUnfollow(creatorLens.id, library);
+                            });
                           }}
                         >
                           {doesFollow ? 'Following' : 'Follow'}
                         </PrimaryButton>
                       )}
-                      {creatorLens && creatorLens.id && creatorLensFollowModuleType && <Description style={{maxWidth: 200}}>This creator has a follow module of {creatorLensFollowModuleType}. We have disabled the module until we support it. Please let us know if this is an issue.</Description>}
+                      {creatorLens && creatorLens.id && creatorLensFollowModuleType && (
+                        <Description style={{ maxWidth: 200 }}>
+                          This creator has a follow module of {creatorLensFollowModuleType}. We have disabled the module
+                          until we support it. Please let us know if this is an issue.
+                        </Description>
+                      )}
                     </div>
                   </div>
                 </FlexRow>
