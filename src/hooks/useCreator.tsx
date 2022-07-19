@@ -7,11 +7,13 @@ export const useCreator = (creatorId: string | undefined | null) => {
   const [creator, setCreator] = useState<EntityCreator>();
   useEffect(() => {
     const getCreatorData = async () => {
+      console.log(creatorId)
       const response = await api.creatorById(creatorId || '');
       if (response.data) {
         setCreator(response.data.creator);
-        setLoaded(true);
       }
+      console.log(response)
+      setLoaded(true)
     };
     try {
       if (!creatorId) {

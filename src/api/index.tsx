@@ -201,4 +201,4 @@ export const findCreators = async (addresses: Array<String>) => {
       addresses,
     })
     .toPromise();
-}
+};

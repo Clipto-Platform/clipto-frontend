@@ -60,14 +60,17 @@ const ExplorePage = () => {
         return;
       }
       const lensHandleOfFollow: Array<string> = res.data.following.items.map(
-        (one: { profile: { handle: string, ownedBy: string } }) => (one.profile.ownedBy)
-      )
+        (one: { profile: { handle: string; ownedBy: string } }) => one.profile.ownedBy,
+      );
 
-      api.findCreators(lensHandleOfFollow).then(res => {
-        setFollowing(res.data?.creators);
-      }).finally(() => {
-        setLoaded(true);
-      })
+      api
+        .findCreators(lensHandleOfFollow)
+        .then((res) => {
+          setFollowing(res.data?.creators);
+        })
+        .finally(() => {
+          setLoaded(true);
+        });
     });
   }, [account]);
 
