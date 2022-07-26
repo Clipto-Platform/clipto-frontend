@@ -188,9 +188,9 @@ const Header: React.FC<HeaderProps> = () => {
     setHasTriedEagerConnecting(hasTriedEagerConnect);
   }, [hasTriedEagerConnect, setHasTriedEagerConnecting]);
 
-  const [currentlyActivating, setCurrentlyActivating] = useState<'metamask' | 'wc' | undefined>(undefined);
+  const [currentlyActivating, setCurrentlyActivating] = useState<'metamask' | 'wc' | 'tallyho' | undefined>(undefined);
 
-  const activeWithMetamask = useCallback(async () => {
+  const activeWithInjected = useCallback(async () => {
     setErrorMessage(null);
     setCurrentlyActivating('metamask');
     try {
@@ -456,7 +456,18 @@ const Header: React.FC<HeaderProps> = () => {
                 variant={'secondary'}
                 style={{ marginBottom: 16, minWidth: 310 }}
                 isDisabled={currentlyActivating === 'metamask' && user}
-                onPress={() => activeWithMetamask()}
+                onPress={() => activeWithInjected()}
+              >
+                <ConnectWalletPopup>
+                  {currentlyActivating === 'tallyho' ? <>{'Confirm in your wallet'}</> : 'Continue with Tally Ho'}
+                </ConnectWalletPopup>
+              </PrimaryButton>
+
+              <PrimaryButton
+                variant={'secondary'}
+                style={{ marginBottom: 16, minWidth: 310 }}
+                isDisabled={currentlyActivating === 'metamask' && user}
+                onPress={() => activeWithInjected()}
               >
                 <ConnectWalletPopup>
                   {currentlyActivating === 'metamask' ? <>{'Confirm in your wallet'}</> : 'Continue with Metamask'}
