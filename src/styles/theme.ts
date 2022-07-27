@@ -46,6 +46,7 @@ export const colors: Colors = {
   yellow: '#EDE641',
   red: '#FF6868',
   purple: '#5F21E2',
+  lensGreen: '#ABFE2C',
   // Semantic colors
   primary: white,
   secondary: '#888F96',

@@ -12,6 +12,9 @@ export type CreateUserDto = {
   price: number | undefined;
   tweetUrl: string | undefined;
   address: string | undefined;
+  lensHandle: string | undefined;
+  businessPrice: number;
+  customServices: [string];
 };
 
 export interface CreateUserDtoFull {
@@ -77,9 +80,12 @@ export const useProfile = create<UserProfile>(
     profilePicture: undefined,
     deliveryTime: undefined,
     demos: [],
+    businessPrice: 0,
+    customServices: [''],
     price: undefined,
     tweetUrl: undefined,
     address: undefined,
+    lensHandle: undefined,
     setBio: (bio: string) => {
       set((draft) => {
         draft.bio = bio;
@@ -123,6 +129,11 @@ export const useProfile = create<UserProfile>(
     setAddress: (address: string) => {
       set((draft) => {
         draft.address = address;
+      });
+    },
+    setLensHandle: (lensHandle: string) => {
+      set((draft) => {
+        draft.lensHandle = lensHandle;
       });
     },
   })),

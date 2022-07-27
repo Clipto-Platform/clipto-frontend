@@ -16,7 +16,7 @@ import {
 import { Description, Label } from '../../styles/typography';
 import { Comment, Retweet, Hamburger } from '../SocialFeedIcons';
 import { AvatarComponent } from '../AvatarOrb';
-import { Video } from '../Video';
+import { Video } from '../Video/Video';
 
 type TweetInfo = {
   description: string;

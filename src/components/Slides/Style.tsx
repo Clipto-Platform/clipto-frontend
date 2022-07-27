@@ -82,6 +82,12 @@ export const BookNow = styled.h3`
   margin-right: 10px;
 `;
 
+export const BookNowDisabled = styled(BookNow)`
+  &:hover {
+    cursor: not-allowed;
+  }
+`;
+
 export const BookNowButton = styled.button`
   font-size: clamp(14px, 2vw, 16px);
   font-family: 'Eina01-Bold';

@@ -91,11 +91,12 @@ const Slides = (props: any) => {
   };
 
   const onOvalClick = (index: number) => {
-    if (index < visibleSlide) {
-      leftClick();
-    } else if (index > visibleSlide) {
+    if (
+      (visibleSlide < index && !(visibleSlide == 0 && index == NSlides - 1)) ||
+      (visibleSlide == NSlides - 1 && index == 0)
+    ) {
       rightClick();
-    }
+    } else leftClick();
   };
   return (
     <>
@@ -120,6 +121,8 @@ const Slides = (props: any) => {
             index={index}
             backgroundM={props.backgroundM}
             backgroundD={props.backgroundD}
+            //change to 3 when bob is back
+            style={index === 2 ? { backgroundSize: '100%', backgroundRepeat: 'no-repeat' } : {}}
           >
             <OpacityGradient />
             <HeaderSpacer />

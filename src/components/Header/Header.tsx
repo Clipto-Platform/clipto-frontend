@@ -4,11 +4,12 @@ import { useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import React, { useCallback, useEffect, useState } from 'react';
 import { HiOutlineArrowRight } from 'react-icons/hi';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import create, { State } from 'zustand';
 import * as api from '../../api';
+import { EntityCreator } from '../../api/types';
 import menu from '../../assets/svgs/hamburger.svg';
 import config from '../../config/config';
 import { useEagerConnect } from '../../hooks/useEagerConnect';
@@ -27,20 +28,28 @@ import {
   ChainContainer,
   ConnectWallet,
   ConnectWalletPopup,
-  DesktopHeaderWrapper, DiscordWrapper, Divider,
+  DesktopHeaderWrapper,
+  DiscordWrapper,
+  Divider,
   DropDownItem,
   Error,
   HeaderWrapperInner,
   HeaderWrapperOuter,
   HEADER_HEIGHT_IN_PX,
-  LeftWrapper, LinkWrapper, MenuButton,
+  LeftWrapper,
+  LensConnect,
+  LensConnectSubtitle,
+  LinkWrapper,
+  MenuButton,
   MenuContainer,
   MobileHeaderWrapper,
   RightWrapper,
   StyledSpan,
-  Wrapper
+  Wrapper,
 } from './Style';
-
+import * as lens from '../../api/lens';
+import { toast } from 'react-toastify';
+import { displayLensSignIn, fetchLensLogin, fetchLensProfile, login, logout } from '@/redux/reducer';
 interface HeaderStore extends State {
   showProfileDropDown: boolean;
   showDialog: boolean;
@@ -89,8 +98,18 @@ const DiscordButton = (props: { onPress: (e: any) => void }) => {
 };
 const DesktopHeader = (props: any) => {
   const { loggedInProfile } = props;
+  const user = useSelector((s : any) => s.user)
+  const hasLensProfile = useSelector((s : any) => s.lensProfile.id)
+  const hasLensAccess = useSelector((s: any) => s.hasLensAccess)
+  const isLensModalOn = useSelector((s:any) => s.displayLensSignIn)
+  const dispatch = useDispatch();
   return (
     <DesktopHeaderWrapper>
+      {/* {user && !hasLensAccess && !isLensModalOn && (
+        <StyledSpan style={{marginRight: 40, minWidth: 110}} onClick={() => {
+          dispatch(displayLensSignIn(true));
+        }}>Connect Lens </StyledSpan>
+      )} */}
       <Link to={'/explore'}>
         <StyledSpan style={{ marginRight: 40 }}>Explore</StyledSpan>
       </Link>
@@ -113,6 +132,11 @@ const DesktopHeader = (props: any) => {
 const MobileHeader = (props: any) => {
   const { loggedInProfile, userLoggedIn } = props;
   const [visible, setVisible] = useState<boolean>(false);
+  const hasLensProfile = useSelector((s : any) => s.lensProfile.id)
+  const hasLensAccess = useSelector((s: any) => s.hasLensAccess)
+  const isLensModalOn = useSelector((s:any) => s.displayLensSignIn)
+
+  const dispatch = useDispatch();
   const handleClick = () => {
     setVisible(!visible);
   };
@@ -127,6 +151,12 @@ const MobileHeader = (props: any) => {
       {visible ? (
         <Wrapper onClick={handleClick}>
           <MobileHeaderWrapper>
+            {/* {userLoggedIn && !hasLensAccess && !isLensModalOn && (
+              <StyledSpan onClick={() => {
+                dispatch(displayLensSignIn(true));
+                handleClick();
+              }}>Connect Lens</StyledSpan>
+            )} */}
             <Link to={'/explore'} onClick={handleClick}>
               <StyledSpan>Explore</StyledSpan>
             </Link>
@@ -154,29 +184,40 @@ const MobileHeader = (props: any) => {
 };
 const Header: React.FC<HeaderProps> = () => {
   const [checkLogin, setCheckLogin] = useState<boolean | null>(false);
-  const { activate, account, deactivate, chainId } = useWeb3React<Web3Provider>();
+  const { activate, account, deactivate, chainId, library } = useWeb3React<Web3Provider>();
   const [chainDialog, setChainDialog] = useState<boolean | null>(false);
   const currentChainName = config.chainName;
 
   const showLoginDialog = useHeaderStore((s) => s.showDialog);
   const setShowLoginDialog = useHeaderStore((s) => s.setShowDialog);
   const setHasTriedEagerConnecting = useHeaderStore((s) => s.setHasTriedEagerConnecting);
-
+  
   const showProfileDropDown = useHeaderStore((s) => s.showProfileDropDown);
   const setShowProfileDropDown = useHeaderStore((s) => s.setShowProfileDropDown);
   const dropDropRef = React.useRef<HTMLDivElement>(null);
 
   const userEnsName = useEns();
-
+  const [displayName, setDisplayName] = useState<string>();
+  
   const hasTriedEagerConnect = useEagerConnect();
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loggedInProfile, setLoggedInProfile] = useState<Partial<UserProfile> | null>();
-
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); //todo(jonathanng) - move this to redux
+  const [loggedInProfile, setLoggedInProfile] = useState<EntityCreator | null>();
+  
+  const store = useStore();
+  const hasLensAccess = useSelector((s:any) => s.hasLensAccess)
   const user = useSelector((state: any) => state.user);
+  const lensProfile = useSelector((state: any) => state.lensProfile)
+  const error = useSelector((state: any) => state.error);
   const dispatch = useDispatch();
-
+  const [lensAccess, setLensAccess] = useState(''); // if about to get access token, then lens will be 🌿
   const navigate = useNavigate();
+
+  //displayName
+  useEffect(() => {
+    if (account)
+    setDisplayName(hasLensAccess &&  Object.keys(lensProfile).length != 0 && lensProfile.name || hasLensAccess && Object.keys(lensProfile).length != 0 && lensProfile.handle || userEnsName || getShortenedAddress(account, 6, 4))
+  } ,[hasLensAccess, lensProfile, userEnsName, account])
 
   useEffect(() => {
     setHasTriedEagerConnecting(hasTriedEagerConnect);
@@ -207,10 +248,12 @@ const Header: React.FC<HeaderProps> = () => {
       setCurrentlyActivating(undefined);
       return;
     }
-    setShowLoginDialog(false);
+    
+    
     setTimeout(() => {
       setCurrentlyActivating(undefined);
     }, 1500);
+    attemptLensLogin()
   }, [activate, setShowLoginDialog]);
 
   const activeWithWalletConnect = useCallback(async () => {
@@ -229,19 +272,44 @@ const Header: React.FC<HeaderProps> = () => {
       setErrorMessage(e.message ?? 'Something went wrong logging in with WalletConnect');
       return;
     }
-    setShowLoginDialog(false);
     setTimeout(() => {
       setCurrentlyActivating(undefined);
     }, 1500);
+    attemptLensLogin()
   }, [activate, setShowLoginDialog]);
 
+  const attemptLensLogin = useCallback(() => {
+    dispatch(login(user))
+  } ,[user, hasLensAccess])
+
+
+
   const logoutUser = useCallback(async () => {
+    dispatch(logout());
     deactivate();
     setShowProfileDropDown(false);
-    dispatch({ type: 'logout', payload: { user: null } });
     setCheckLogin(false);
-    navigate('/');
+    // navigate('/');
   }, [deactivate]);
+
+  useEffect(() => {
+
+    if (user == null) {
+      logoutUser()
+    } else {
+      setShowLoginDialog(false);
+      dispatch(fetchLensProfile(user, !hasLensAccess, () => {
+        // setShowLoginDialog(false); // do this if you instead of 2 lines above if you want to wait to get lens profile before closing the modal
+      }))
+    }
+  }, [user])
+
+  useEffect(() => {
+    if (error && !error.includes('You probably do not have a lens profile')) {
+      toast.dismiss();
+      toast.error(error);
+    }
+  }, [error])
 
   useInactiveListener(!hasTriedEagerConnect);
 
@@ -251,7 +319,8 @@ const Header: React.FC<HeaderProps> = () => {
         if (user && user === account) {
           setCheckLogin(true);
         } else if (user && user !== account) {
-          dispatch({ type: 'login', payload: { user: account } });
+          dispatch(login(account))
+          setLoggedInProfile(null)
         }
         try {
           const response = await api.creatorById(account || '');
@@ -266,9 +335,29 @@ const Header: React.FC<HeaderProps> = () => {
     getCreatorData();
   }, [account]);
 
+  const getLensCreatorData = async () => {
+    try {
+      if (account) {
+        toast.loading('Signing in');
+        const accessToken = await lens.getAccess(account, library as Web3Provider);
+        toast.dismiss();
+        if (!accessToken) {
+          toast.error('Login failed');
+          return;
+        }
+        toast.success('Login success');
+        setLensAccess('🌿');
+      }
+    } catch (e: any) {
+      toast.dismiss();
+      toast.error(e.message);
+    }
+  };
+
   useEffect(() => {
     if (checkLogin && account) {
-      dispatch({ type: 'login', payload: { user: account } });
+      // getLensCreatorData()
+      dispatch(login(account))
     }
   }, [checkLogin]);
 
@@ -310,7 +399,8 @@ const Header: React.FC<HeaderProps> = () => {
                       size={'small'}
                       style={{ width: 160 }}
                       variant={'secondary'}
-                      onPress={() => setShowLoginDialog(true)}
+                      onPress={() => {
+                        setShowLoginDialog(true)}}
                     >
                       Connect Wallet
                     </PrimaryButton>
@@ -330,7 +420,7 @@ const Header: React.FC<HeaderProps> = () => {
                       style={{ position: 'relative' }}
                     >
                       <StyledSpan style={{ marginRight: 16 }}>
-                        {userEnsName ?? getShortenedAddress(account, 6, 4)}
+                      {displayName}
                       </StyledSpan>
                       <AvatarComponent address={account} />
                       {showProfileDropDown && (
@@ -364,7 +454,7 @@ const Header: React.FC<HeaderProps> = () => {
                       style={{ position: 'relative' }}
                     >
                       <StyledSpan style={{ marginRight: 16 }}>
-                        {userEnsName ?? getShortenedAddress(account, 6, 4)}
+                        {displayName}
                       </StyledSpan>
                       <AvatarComponent
                         address={account}
@@ -419,7 +509,9 @@ const Header: React.FC<HeaderProps> = () => {
               padding: '24px',
             }}
             isOpen
-            onClose={() => setShowLoginDialog(false)}
+            onClose={() => {
+              setShowLoginDialog(false)
+            }}
             isDismissable
           >
             <>
@@ -451,6 +543,7 @@ const Header: React.FC<HeaderProps> = () => {
           </ModalDialog>
         </OverlayContainer>
       )}
+
       {checkLogin && chainDialog && (
         <>
           <ChainContainer>

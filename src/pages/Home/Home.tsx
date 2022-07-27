@@ -10,25 +10,41 @@ import { featuredCreators } from '../../api/index';
 import { EntityCreator } from '../../api/types';
 import background1D from '../../assets/images/homepage/page1/background1D.png';
 import background1M from '../../assets/images/homepage/page1/background1M.png';
+import background2D from '/src/assets/images/homepage/page2/background2DBob.png';
+import background2M from '/src/assets/images/homepage/page2/background2MBob.png';
+
 import background3D from '../../assets/images/homepage/page3/background3D.png';
 import background3M from '../../assets/images/homepage/page3/background3M.png';
+import bountyBG01D from '../../assets/images/homepage/page1/bountyBG01D.png';
+import bountyBG01M from '../../assets/images/homepage/page1/bountyBG01M.png';
 import { CreatorCards } from '../../components/CreatorCards/CreatorCards';
+
 import { PageWrapper } from '../../components/layout/Common';
 import Slides from '../../components/Slides/Slides';
 import {
   BookNow,
   BookNowButton,
-  HeroTitle, LeftContentWrapper
+  BookNowDisabled,
+  CreatorText,
+  HeroTitle,
+  LeftContentWrapper,
+  Name,
+  Title,
 } from '../../components/Slides/Style';
 import { UserDisplay } from '../../components/UserDisplay/UserDisplay';
 import config from '../../config/config';
 import { UserProfile } from '../../hooks/useProfile';
+import * as lens from '../../api/lens';
+import { useQuery } from 'urql';
+import { queryDoesFollow } from '../../api/lens/query';
+import { DoesFollow, DoesFollowResponse } from '../../generated/graphql';
 
 const featuredList: string[] = [
   '0xCFFE08BDf20918007f8Ab268C32f8756494fC8D8', // Gabriel Haines.eth
   '0x0f32c8fBD8FE29D5EF451Ed9F8a13062C00ED583', // Fedrick
+  '0x5fa594b53817d96bcf4ff548be54b1b23579cdac', // bobburnquist
   '0x8d86932d23d3766fe317b0e385fcac24806ba9a3', // Lee Eller
-  '0x0c44cb8087a269e7cc1f416a9bb4d5e9fed4eb9f', // bobburnquist
+  // '0x7cACbc75d74740b50Dc68fBF0a573Af80243ca56', // jon
   '0x1c6f1a832e73949c97fe335a98b6a5fc3c9c29e9', // mackrypto
 ];
 const featuredListTest: string[] = [
@@ -41,11 +57,10 @@ const featuredListTest: string[] = [
 const HomePage = () => {
   let [creators, setCreators] = useState<EntityCreator[]>([]);
 
-  const [creator, setCreator] = useState<Partial<UserProfile> | null>();
+  const [creator, setCreator] = useState<EntityCreator | null>();
   const { account } = useWeb3React<Web3Provider>();
   const user = useSelector((state: any) => state.user);
   const theme = useTheme();
-
   const warning = (msg: string) => toast.warn(msg);
 
   useEffect(() => {
@@ -115,12 +130,45 @@ const HomePage = () => {
         )}
       </div>
     </LeftContentWrapper>,
+    <LeftContentWrapper>
+      <HeroTitle>
+        Request a personalized video from <span style={{ color: theme.yellow, fontWeight: '700' }}>anyone</span>
+      </HeroTitle>
+      <div style={{ display: 'inline-block', width: 'fit-content' }}>
+        <Link to={'/'}>
+          <BookNowDisabled color={theme.purple}>Bounty Coming Soon</BookNowDisabled>
+        </Link>
+      </div>
+    </LeftContentWrapper>,
   ];
+  //todo for bob
+  /*slideContent.push()
+  <>
+      <LeftContentWrapper>
+        <HeroTitle>
+          Personalized videos from your favorite{' '}
+          <span style={{ color: theme.yellow, fontWeight: '700' }}>crypto stars</span>
+        </HeroTitle>
+        <div style={{ display: 'inline-block', width: 'fit-content' }}>
+          <Link to={'/creator/0x5fa594b53817d96bcf4ff548be54b1b23579cdac'}>
+            <BookNow color={theme.twitterBlue}>Book with Bob</BookNow>
+          </Link>
+        </div>
+      </LeftContentWrapper>
+      <CreatorText>
+        <Name>Bob Burnquist</Name>
+        <Title>Skateboarder</Title>
+      </CreatorText>
+    </>
 
+  */
   return (
     <>
       <PageWrapper style={{ top: 0 }}>
-        <Slides backgroundD={[background1D, background3D]} backgroundM={[background1M, background3M]}>
+        <Slides
+          backgroundD={[background1D, /*background2D,*/ background3D, bountyBG01D]}
+          backgroundM={[background1M, /*background2M,*/ background3M, bountyBG01M]}
+        >
           {slideContent}
         </Slides>
         <UserDisplay users={creators} handleScroll={() => {}} hasMore={false} title="Featured" />

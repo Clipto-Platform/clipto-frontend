@@ -29,3 +29,10 @@ export const OnboardProfile = styled.img`
   width: 124px;
   height: 124px;
 `;
+
+export const CustomServices = styled.div`
+  margin-bottom: 48px;
+  @media screen and (max-width: 600px) {
+    overflow-x: scroll;
+  }
+`;
