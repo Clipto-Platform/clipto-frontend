@@ -7,11 +7,11 @@ import Plyr from 'plyr-react'
 
 const VideoCard = styled.video`
   border-radius: 15px;
-  margin-bottom: 20px;
 `;
 
 interface VideoProps {
   src: string;
+  autoplay?: boolean;
 }
 
 const VideoLegacy = (props: VideoProps) => {
@@ -38,7 +38,7 @@ const VideoLegacy = (props: VideoProps) => {
           src={src}
           width={600}
           controls
-          autoPlay
+          autoPlay={props.autoplay != null ? props.autoplay : true}
           onError={() => {
             setKey(Math.random());
           }}

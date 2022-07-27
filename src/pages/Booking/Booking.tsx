@@ -28,6 +28,7 @@ import { convertToFloat, convertToInt, formatETH, removeTrailingZero } from '../
 import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
+import { SocialFeed } from '../../components/SocialFeed/SocialFeed';
 import { ERC20__factory } from '../../contracts';
 import axios from 'axios';
 import * as lens from '../../api/lens';
@@ -278,6 +279,7 @@ const BookingPage = () => {
         <PageGrid>
           <ImagesColumnContainer>
             {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
+            {creator && <SocialFeed creator={creator} />}
           </ImagesColumnContainer>
           <RightPanel creator={creator} account={account} loaded={loaded} user={user}>
             {(creator, account) => (
