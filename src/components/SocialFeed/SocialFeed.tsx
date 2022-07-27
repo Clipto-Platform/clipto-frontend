@@ -115,6 +115,7 @@ export const SocialFeed = (props: any) => {
         }}
         hasMore={hasMore}
         height={730}
+        style={{ flexGrow: 1 }}
         loader={
           <div style={{ width: '100%', position: 'relative', textAlign: 'center', bottom: '-50px' }}>
             <Loader color="#fff" />

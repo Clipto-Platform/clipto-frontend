@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 export const SocialFeedWrapper = styled.div`
-  display: flex;
   width: 100%;
   border: 1px solid #2a2a2a;
   border-radius: 16px;
