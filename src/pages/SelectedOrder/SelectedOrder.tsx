@@ -321,6 +321,7 @@ const SelectedOrderPage = () => {
             )}
 
             {(request?.delivered || clipDetails) && <Video src={clipDetails} />}
+            <div style={{ height: 20, width: '100%' }} />
             {request && <OrderCard request={request!} key={request.id} isReceived={false} />}
             {!request && <Label>Could not find request</Label>}
             {nftDetails && <NFTDetails details={nftDetails} />}

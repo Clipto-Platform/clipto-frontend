@@ -29,6 +29,7 @@ import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
 import { BookingFormValues } from './types';
+import { SocialFeed } from '../../components/SocialFeed/SocialFeed';
 
 const BookingPage = () => {
   const { creatorId } = useParams();
@@ -131,6 +132,7 @@ const BookingPage = () => {
         <PageGrid>
           <ImagesColumnContainer>
             {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
+            {creator && <SocialFeed creator={creator} />}
           </ImagesColumnContainer>
           <RightPanel creator={creator} account={account} loaded={loaded} user={user}>
             {(creator, account) => (

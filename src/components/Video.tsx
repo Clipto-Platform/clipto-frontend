@@ -4,11 +4,11 @@ import ContentLoader from 'react-content-loader';
 
 const VideoCard = styled.video`
   border-radius: 15px;
-  margin-bottom: 20px;
 `;
 
 interface VideoProps {
   src: string;
+  autoplay?: boolean;
 }
 
 const Video = (props: VideoProps) => {
@@ -35,7 +35,7 @@ const Video = (props: VideoProps) => {
           src={src}
           width={600}
           controls
-          autoPlay
+          autoPlay={props.autoplay != null ? props.autoplay : true}
           onError={() => {
             setKey(Math.random());
           }}
