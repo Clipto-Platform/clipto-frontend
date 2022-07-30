@@ -103,6 +103,19 @@ export const ConnectWallet = styled.div`
   text-align: 'left';
 `;
 
+export const LensConnect = styled.div`
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-size: 18;
+  text-align: 'left';
+`;
+
+export const LensConnectSubtitle = styled.div`
+  margin-bottom: 12px;
+  font-size: 18;
+  text-align: 'left';
+`;
+
 export const Error = styled.div`
   margin-bottom: 12px;
   color: #ff6868;

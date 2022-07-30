@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, FC } from 'react';
 import styled from 'styled-components';
 import ContentLoader from 'react-content-loader';
+import './plyr.css'
+
+import Plyr from 'plyr-react'
 
 const VideoCard = styled.video`
   border-radius: 15px;
@@ -11,7 +14,7 @@ interface VideoProps {
   src: string;
 }
 
-const Video = (props: VideoProps) => {
+const VideoLegacy = (props: VideoProps) => {
   const src = props.src;
   const [loading, setLoading] = useState(true);
   const [key, setKey] = useState(Math.random());
@@ -44,5 +47,34 @@ const Video = (props: VideoProps) => {
     </>
   );
 };
+
+
+const Video: FC<VideoProps> = ({ src }) => {
+  return (
+    <div className="rounded-lg">
+      <Plyr
+        source={{
+          type: 'video',
+          sources: [{ src, provider: 'html5' }],
+          poster: src
+        }}
+        options={{
+          controls: [
+            'play-large',
+            'play',
+            'progress',
+            'current-time',
+            'mute',
+            'volume',
+            'fullscreen'
+          ],
+          ratio: '16:12'
+        }}
+      />
+    </div>
+  )
+}
+
+export default Video
 
 export { Video };

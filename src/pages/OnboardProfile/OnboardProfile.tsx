@@ -1,14 +1,22 @@
+import './ToggleStyle.css';
+
 import { Web3Provider } from '@ethersproject/providers';
 import { OverlayContainer } from '@react-aria/overlays';
 import { useWeb3React } from '@web3-react/core';
 import { Formik } from 'formik';
 import { useEffect, useState } from 'react';
+import { BsX } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import Loader from 'react-spinners/ClipLoader';
 import { toast } from 'react-toastify';
+import Toggle from 'react-toggle';
+import create, { State } from 'zustand';
+
 import * as api from '../../api';
 import * as lens from '../../api/lens';
 import { CreatorData, EntityCreator } from '../../api/types';
 import { PrimaryButton } from '../../components/Button';
+import { ModalDialog } from '../../components/Dialog';
 import { Dropdown, Option } from '../../components/Dropdown/Dropdown';
 import { ContentWrapper, PageContentWrapper, PageWrapper } from '../../components/layout/Common';
 import { TextField } from '../../components/TextField';
@@ -16,17 +24,11 @@ import config from '../../config/config';
 import { useExchangeContractV1 } from '../../hooks/useContracts';
 import { useFee } from '../../hooks/useFee';
 import { useProfile } from '../../hooks/useProfile';
-import { Address, Number, TweetUrl, Url } from '../../utils/validation';
-import { isCreatorOnChain } from '../../web3/request';
-import { OnboardProfile, OnboardTitle, ProfileDetailsContainer, CustomServices } from './Style';
-import { ModalDialog } from '../../components/Dialog';
-import create, { State } from 'zustand';
-import { immer } from '../../utils/zustand';
-import Toggle from 'react-toggle';
-import './ToggleStyle.css';
 import { Description } from '../../styles/typography';
-import { BsX } from 'react-icons/bs';
-import Loader from 'react-spinners/ClipLoader';
+import { Address, Number, TweetUrl, Url } from '../../utils/validation';
+import { immer } from '../../utils/zustand';
+import { isCreatorOnChain } from '../../web3/request';
+import { CustomServices, OnboardProfile, OnboardTitle, ProfileDetailsContainer } from './Style';
 
 interface HeaderStore extends State {
   showDialog: boolean;
@@ -63,6 +65,14 @@ const OnboardProfilePage = () => {
   const setShowLensDialog = useHeaderStore((s) => s.setShowDialog);
   const [createLens, setCreateLens] = useState(false); //true when dropdown has CREATE_LENS_TEXT set
 
+  useEffect(() => {
+    console.log(userProfile);
+    if (userProfile.address) {
+      return;
+    }
+    navigate('/onboarding');
+  }, [userProfile]);
+
   const createLensProfile = async (lensHandle: string) => {
     if (!account) {
       toast.error('No account detected!');
@@ -72,16 +82,10 @@ const OnboardProfilePage = () => {
       toast.error('Temporally disabled account creation');
       return { error: 'Temporally disabled account creation' };
     }
-    const accessRes = await lens.getAccess(account, library as Web3Provider);
-    if (!accessRes) return;
-    const access = accessRes.data.authenticate.accessToken;
     toast.loading('Creating lens profile');
-    const profileRes = await lens.createProfile(
-      {
-        handle: lensHandle,
-      },
-      access,
-    );
+    const profileRes = await lens.createProfile({
+      handle: lensHandle,
+    });
     const profileResVal =
       (profileRes && profileRes.data && profileRes.data.createProfile && profileRes.data.createProfile.reason) ||
       (profileRes && profileRes.data.createProfile && profileRes.data.createProfile);
@@ -90,7 +94,7 @@ const OnboardProfilePage = () => {
       toast.error('Handle is taken');
       return profileRes;
     }
-    await lens.pollUntilIndexed(profileRes.data.createProfile.txHash, access);
+    await lens.pollUntilIndexed(profileRes.data.createProfile.txHash);
     toast.dismiss();
     toast.success('Lens profile created');
 
@@ -100,6 +104,7 @@ const OnboardProfilePage = () => {
     return profileRes;
   };
 
+  //Todo: refactor so that this is a part of form
   const [isBusiness, setIsBusiness] = useState<boolean>(false);
   const [customServicesData, setCustomServicesData] = useState<any>([
     {
@@ -113,11 +118,20 @@ const OnboardProfilePage = () => {
     { description: '', time: '', price: '', placeholderDesc: 'How-to video', placeHolderTime: 'Up to 30 sec' },
   ]);
 
-  const waitForIndexing = async (txHash: string) => {
-    toast.dismiss();
-    // toast.loading('Indexing your data, will be done soon');
-    await api.indexCreator(txHash);
-    // toast.dismiss();
+  const waitForIndexing = async (
+    txHash: string,
+    stillWaiting?: {
+      time: number;
+      onStillWaiting: () => void;
+    },
+  ) => {
+    if (!stillWaiting) {
+      await api.indexCreator(txHash);
+    } else {
+      const timerId = setTimeout(stillWaiting.onStillWaiting, stillWaiting.time);
+      await api.indexCreator(txHash);
+      clearTimeout(timerId);
+    }
   };
 
   const addFormFields = () => {
@@ -128,7 +142,7 @@ const OnboardProfilePage = () => {
   };
 
   const removeFormFields = (i: any) => {
-    let newFormValues = [...customServicesData];
+    const newFormValues = [...customServicesData];
     newFormValues.splice(i, 1);
     setCustomServicesData(newFormValues);
   };
@@ -143,15 +157,16 @@ const OnboardProfilePage = () => {
 
   const updateUserProfile = async (creatorData: CreatorData) => {
     try {
+      toast.dismiss();
       toast.loading('Profile updating, waiting for confirmation!');
       const txResult = await exchangeContractV1.updateCreator(JSON.stringify(creatorData));
 
       await txResult.wait();
       // await waitForIndexing(txResult.hash);
 
+      toast.dismiss();
       toast.success('Changes will be reflected soon!');
       navigate(`/creator/${account}`);
-      toast.dismiss();
     } catch (err: any) {
       toast.dismiss();
       toast.error(err.message);
@@ -163,27 +178,41 @@ const OnboardProfilePage = () => {
     try {
       userOnChain = await isCreatorOnChain(exchangeContractV1, account);
     } catch (err) {
+      toast.dismiss();
       toast.error('Error connecting to wallet. Toggle your networks and reload.');
       return;
     }
 
-    if (!userOnChain) {
-      try {
-        const txResult = await exchangeContractV1.registerCreator(creatorData.userName, JSON.stringify(creatorData));
-        toast.loading('Profile created, waiting for confirmation!');
+    if (userOnChain) {
+      toast.dismiss();
+      toast.error('Please reload the page, you are already a creator');
+      return;
+    }
 
-        await txResult.wait();
-        await waitForIndexing(txResult.hash);
+    try {
+      toast.dismiss();
+      toast.loading('Creating profile, waiting for approval');
+      const txResult = await exchangeContractV1.registerCreator(creatorData.userName, JSON.stringify(creatorData));
+      toast.dismiss();
+      toast.loading('Profile transaction submitted, awaiting confirmation');
 
-        toast.success('Your account will be reflected here soon!');
-        navigate(`/creator/${account}`);
-      } catch (err: any) {
-        toast.dismiss();
-        if (err.message) {
-          toast.error(err.message);
-        } else if (err.data && err.data.message) {
-          toast.error(err.data.message);
-        }
+      await txResult.wait();
+      await waitForIndexing(txResult.hash, {
+        time: 5000,
+        onStillWaiting() {
+          toast.dismiss();
+          toast.loading('It is to leave this page while you are waiting for your transaction');
+        },
+      });
+      toast.dismiss();
+      toast.success('Profile creation is successful. Your account will be reflected here soon!');
+      navigate(`/creator/${account}`);
+    } catch (err: any) {
+      toast.dismiss();
+      if (err.message) {
+        toast.error(err.message);
+      } else if (err.data && err.data.message) {
+        toast.error(err.data.message);
       }
     }
   };
@@ -388,7 +417,7 @@ const OnboardProfilePage = () => {
                   }
                   //lens validation
                   if (createLens) {
-                    let aggLensHandle =
+                    const aggLensHandle =
                       lensHandle == CREATE_LENS_TEXT
                         ? userProfileDB?.twitterHandle || userProfile.twitterHandle || values.userName
                         : lensHandle;
@@ -494,6 +523,7 @@ const OnboardProfilePage = () => {
                           label="Wallet Address"
                           description="You will receive payments to this address"
                           isReadOnly={true}
+                          isDisabled={true}
                           placeholder={account!}
                           value={account!}
                           onBlur={handleBlur}
@@ -574,90 +604,101 @@ const OnboardProfilePage = () => {
                         )}
                       </div>
 
-                      <div style={{ marginBottom: 24 }}>
-                        <TextField
-                          onChange={(e) => {
-                            setFieldValue('businessPrice', e);
-                            handleChangeCustomForm(0, 'price', e);
-                          }}
-                          label="Minimum amount to charge for business bookings"
-                          description={`Fans will be able to pay this in ${config.defaultToken}`}
-                          placeholder="0.5"
-                          value={values.businessPrice.toString()}
-                          type="number"
-                          endText={config.defaultToken}
-                          onBlur={handleBlur}
-                          errorMessage={errors.businessPrice}
-                        />
-                        <FeeDescription />
-                      </div>
-
-                      <div style={{ marginBottom: 48, display: 'flex', alignItems: 'center' }}>
+                      <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center' }}>
                         <Toggle
                           defaultChecked={isBusiness}
                           icons={false}
                           onChange={(e: any) => setIsBusiness(e.target.checked)}
                         />
-                        <span style={{ paddingLeft: '10px' }}>Open to receive booking requests</span>
+                        <span style={{ paddingLeft: '10px' }}>Enable business requests</span>
                       </div>
-
-                      <div style={{ fontWeight: 'bold' }}>Custom Services</div>
-                      <Description style={{ marginTop: 7 }}>Add in custom services (Service + Time+ Price)</Description>
-                      <CustomServices>
-                        {customServicesData.map((elm: any, index: any) => (
-                          <div style={{ display: 'flex' }} key={index}>
+                      {isBusiness && (
+                        <>
+                          <div style={{ marginBottom: 24 }}>
                             <TextField
-                              placeholder={elm.placeholderDesc}
-                              inputStyles={{ width: 265, marginRight: 15 }}
-                              value={elm.description || ''}
-                              onChange={(e) => handleChangeCustomForm(index, 'description', e)}
-                            />
-                            <TextField
-                              placeholder={elm.placeHolderTime}
-                              inputStyles={{ width: 145, marginRight: 15 }}
-                              value={elm.time || ''}
-                              onChange={(e) => handleChangeCustomForm(index, 'time', e)}
-                            />
-                            <TextField
-                              endText={config.defaultToken}
-                              type="number"
-                              inputStyles={{ width: 220 }}
-                              value={index === 0 ? values.businessPrice : elm.price}
                               onChange={(e) => {
-                                if (index === 0) setFieldValue('businessPrice', e);
-                                handleChangeCustomForm(index, 'price', e);
+                                setFieldValue('businessPrice', e);
+                                handleChangeCustomForm(0, 'price', e);
                               }}
+                              label="Minimum amount to charge for business bookings"
+                              description={`Fans will be able to pay this in ${config.defaultToken}`}
+                              placeholder="0.5"
+                              value={values.businessPrice.toString()}
+                              type="number"
+                              endText={config.defaultToken}
+                              onBlur={handleBlur}
+                              errorMessage={errors.businessPrice}
                             />
-                            {index ? (
-                              <div
+                            <FeeDescription />
+                          </div>
+                          <CustomServices>
+                            <div style={{ fontWeight: 'bold' }}>Custom Services</div>
+                            <Description style={{ marginTop: 7 }}>
+                              Add in custom services (Service + Time+ Price)
+                            </Description>
+                            {customServicesData.map((elm: any, index: any) => (
+                              <div style={{ display: 'flex' }} key={index}>
+                                <TextField
+                                  placeholder={elm.placeholderDesc}
+                                  inputStyles={{ width: 265, marginRight: 15 }}
+                                  value={elm.description || ''}
+                                  onChange={(e) => handleChangeCustomForm(index, 'description', e)}
+                                  isDisabled={!isBusiness}
+                                />
+                                <TextField
+                                  placeholder={elm.placeHolderTime}
+                                  inputStyles={{ width: 145, marginRight: 15 }}
+                                  value={elm.time || ''}
+                                  onChange={(e) => handleChangeCustomForm(index, 'time', e)}
+                                  isDisabled={!isBusiness}
+                                />
+                                <TextField
+                                  endText={config.defaultToken}
+                                  type="number"
+                                  inputStyles={{ width: 220 }}
+                                  value={index === 0 ? values.businessPrice : elm.price}
+                                  onChange={(e) => {
+                                    if (index === 0) setFieldValue('businessPrice', e);
+                                    handleChangeCustomForm(index, 'price', e);
+                                  }}
+                                  isDisabled={!isBusiness}
+                                />
+                                {index !== 0 && isBusiness ? (
+                                  <div
+                                    style={{
+                                      marginTop: 25,
+                                      marginLeft: 20,
+                                      color: 'rgba(179, 179, 179, 1)',
+                                      fontWeight: 'normal',
+                                    }}
+                                  >
+                                    <BsX
+                                      size={30}
+                                      style={{ cursor: 'pointer' }}
+                                      onClick={() => removeFormFields(index)}
+                                    />
+                                  </div>
+                                ) : (
+                                  ''
+                                )}
+                              </div>
+                            ))}
+                            <div style={{ marginTop: 15 }}>
+                              <a
+                                onClick={() => addFormFields()}
+                                target="_blank"
                                 style={{
-                                  marginTop: 25,
-                                  marginLeft: 20,
-                                  color: 'rgba(179, 179, 179, 1)',
-                                  fontWeight: 'normal',
+                                  color: '#EDE641',
+                                  textDecoration: 'underline',
+                                  cursor: 'pointer',
                                 }}
                               >
-                                <BsX size={30} style={{ cursor: 'pointer' }} onClick={() => removeFormFields(index)} />
-                              </div>
-                            ) : (
-                              ''
-                            )}
-                          </div>
-                        ))}
-                        <div style={{ marginTop: 15 }}>
-                          <a
-                            onClick={() => addFormFields()}
-                            target="_blank"
-                            style={{
-                              color: '#EDE641',
-                              textDecoration: 'underline',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            + Add
-                          </a>{' '}
-                        </div>
-                      </CustomServices>
+                                + Add
+                              </a>{' '}
+                            </div>
+                          </CustomServices>
+                        </>
+                      )}
 
                       <div style={{ marginBottom: 12 }}>
                         <TextField

@@ -1,3 +1,4 @@
+import { useCreator } from '@/hooks/useCreator';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
@@ -14,7 +15,7 @@ import { OrderCard } from '../../components/OrderCard/OrderCard';
 import { OrdersTab, Status } from '../../components/Orders/OrdersTab';
 import { Item, Tabs } from '../../components/Tabs';
 import { useExchangeContract, useExchangeContractV1 } from '../../hooks/useContracts';
-import { Label } from '../../styles/typography';
+import { Description, Label } from '../../styles/typography';
 import { isRequestExpired } from '../../utils/time';
 import { HighlightText, SingleColumnPageContent } from './Style';
 
@@ -23,6 +24,7 @@ const OrdersPage = () => {
   const [requestsToUser, setRequestsToUser] = useState<EntityRequest[]>([]);
   const { account, library } = useWeb3React<Web3Provider>();
   const exchangeContract = useExchangeContract(true);
+  const { creator } = useCreator(account);
   const exchangeContractV1 = useExchangeContractV1(true);
   const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate();
@@ -203,9 +205,25 @@ const OrdersPage = () => {
                 FallbackWhenNoRequests={() => (
                   <div style={{ textAlign: 'center', display: 'flex', marginBottom: 24, marginTop: 80, width: '100%' }}>
                     <div style={{ display: 'block', width: '100%' }}>
-                      <Label style={{ marginBottom: '24px' }}>You haven't received any booking requests yet.</Label>
-                      {/* <Description>Set up your creator profile to start receiving bookings.</Description> */}
+                      <Label style={{ marginBottom: '10px' }}>You haven't received any booking requests yet</Label>
+                      {!creator && (
+                        <Description style={{ marginBottom: '30px' }}>
+                          Set up your creator profile to start receiving bookings.
+                        </Description>
+                      )}
                       {/* Note(jonathanng) - currently /orders is not accessible for noncreators */}
+                      {!creator && (
+                        <PrimaryButton
+                          onPress={() => {
+                            navigate(`/onboarding`);
+                          }}
+                          size="small"
+                          width="small"
+                          style={{ marginTop: 20, margin: 'auto' }}
+                        >
+                          Create profile
+                        </PrimaryButton>
+                      )}
                     </div>
                   </div>
                 )}

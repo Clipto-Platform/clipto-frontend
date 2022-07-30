@@ -13,6 +13,7 @@ export interface Colors {
   yellow: Color;
   red: Color;
   purple: Color;
+  lensGreen: Color;
   // semantic
   primary: Color;
   secondary: Color;
