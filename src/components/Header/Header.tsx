@@ -188,36 +188,55 @@ const Header: React.FC<HeaderProps> = () => {
     setHasTriedEagerConnecting(hasTriedEagerConnect);
   }, [hasTriedEagerConnect, setHasTriedEagerConnecting]);
 
-  const [currentlyActivating, setCurrentlyActivating] = useState<'metamask' | 'wc' | undefined>(undefined);
+  const [currentlyActivating, setCurrentlyActivating] = useState<'metamask' | 'wc' | 'tallyho' | undefined>(undefined);
 
-  const activeWithMetamask = useCallback(async () => {
-    setErrorMessage(null);
-    setCurrentlyActivating('metamask');
-    try {
-      await activate(injected, undefined, true);
-      setCheckLogin(true);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      if (e.name === 'NoEthereumProviderError' || e.message?.includes('No Ethereum provider was found')) {
-        setErrorMessage('No MetaMask detected.');
-      } else if (
-        e.message.includes('Already processing eth_requestAccounts') ||
-        e.message.includes(`Request of type 'wallet_requestPermissions'`)
-      ) {
-        setErrorMessage('Check MetaMask for an existing login request');
-      } else if (e.message.includes('The user rejected the request')) {
-        setErrorMessage('The MetaMask login was closed, try connecting again');
-      } else {
-        setErrorMessage(e.message ?? 'Something went wrong logging in');
+  const activeWithInjected = useCallback(
+    async (wallet: string) => {
+      setErrorMessage(null);
+
+      if (window.ethereum) {
+        if (window.ethereum.isTally) {
+          if (wallet === 'metamask') {
+            setErrorMessage('You have Tally Ho installed and set as the default wallet.');
+            return;
+          }
+          setCurrentlyActivating('tallyho');
+        } else {
+          if (wallet === 'tallyho') {
+            setErrorMessage('Tallyho is either not installed or not set as the default wallet.');
+            return;
+          }
+          setCurrentlyActivating('metamask');
+        }
+        try {
+          await activate(injected, undefined, true);
+          setCheckLogin(true);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (e: any) {
+          if (e.name === 'NoEthereumProviderError' || e.message?.includes('No Ethereum provider was found')) {
+            setErrorMessage('No MetaMask detected.');
+          } else if (
+            e.message.includes('Already processing eth_requestAccounts') ||
+            e.message.includes(`Request of type 'wallet_requestPermissions'`)
+          ) {
+            setErrorMessage('Check MetaMask for an existing login request');
+          } else if (e.message.includes('The user rejected the request')) {
+            setErrorMessage('The MetaMask login was closed, try connecting again');
+          } else {
+            setErrorMessage(e.message ?? 'Something went wrong logging in');
+          }
+          setCurrentlyActivating(undefined);
+          return;
+        }
+
+        setShowLoginDialog(false);
+        setTimeout(() => {
+          setCurrentlyActivating(undefined);
+        }, 1500);
       }
-      setCurrentlyActivating(undefined);
-      return;
-    }
-    setShowLoginDialog(false);
-    setTimeout(() => {
-      setCurrentlyActivating(undefined);
-    }, 1500);
-  }, [activate, setShowLoginDialog]);
+    },
+    [activate, setShowLoginDialog],
+  );
 
   const activeWithWalletConnect = useCallback(async () => {
     setErrorMessage(null);
@@ -455,8 +474,19 @@ const Header: React.FC<HeaderProps> = () => {
               <PrimaryButton
                 variant={'secondary'}
                 style={{ marginBottom: 16, minWidth: 310 }}
+                isDisabled={currentlyActivating === 'tallyho' && user}
+                onPress={() => activeWithInjected('tallyho')}
+              >
+                <ConnectWalletPopup>
+                  {currentlyActivating === 'tallyho' ? <>{'Confirm in your wallet'}</> : 'Continue with Tally Ho'}
+                </ConnectWalletPopup>
+              </PrimaryButton>
+
+              <PrimaryButton
+                variant={'secondary'}
+                style={{ marginBottom: 16, minWidth: 310 }}
                 isDisabled={currentlyActivating === 'metamask' && user}
-                onPress={() => activeWithMetamask()}
+                onPress={() => activeWithInjected('metamask')}
               >
                 <ConnectWalletPopup>
                   {currentlyActivating === 'metamask' ? <>{'Confirm in your wallet'}</> : 'Continue with Metamask'}
