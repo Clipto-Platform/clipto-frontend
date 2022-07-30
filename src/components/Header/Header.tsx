@@ -344,7 +344,7 @@ const Header: React.FC<HeaderProps> = () => {
       if (account) {
         if (user && user === account) {
           setCheckLogin(true);
-        } else if (user && user !== account) {
+        } else if (user && account && user !== account) {
           dispatch(login(account));
           setLoggedInProfile(null);
         }
