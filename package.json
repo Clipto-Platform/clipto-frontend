@@ -8,7 +8,7 @@
     "dev": "npm run env:test && vite",
     "prod": "npm run env:prod && vite",
     "build": "echo 'run either \n npm run build:test \n npm run build:prod'",
-    "build:test": "npm run env:test && tsc && vite build",
+    "build:test": "npm run env:test && vite build",
     "build:test-no-tsc": "npm run env:test && vite build",
     "build:prod": "npm run env:prod && tsc && vite build",
     "preview": "vite preview",
