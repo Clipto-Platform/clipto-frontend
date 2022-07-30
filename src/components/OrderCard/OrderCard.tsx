@@ -20,7 +20,7 @@ import {
   WideContainer,
 } from './Style';
 import { OrderCardProps } from './types';
-import * as lens from '@/api/lens'
+import * as lens from '@/api/lens';
 const OrderCard: React.FC<OrderCardProps> = (props) => {
   const { isReceived, request } = props;
   const displayBusiness = request.isBusiness && props.displayBusiness;
@@ -29,22 +29,24 @@ const OrderCard: React.FC<OrderCardProps> = (props) => {
 
   const symbol = getErcTokenSymbol(request.erc20);
   const [url, setUrl] = useState<string>(); // only to be set if the request isReceived and is a creator or has a lens profile
-  
+
   useEffect(() => {
     if (!isReceived) return;
     //check if the requester is also a creator or has a lens profile
-    lens.getProfile(request.requester).then(({data, error}) => {
+    lens.getProfile(request.requester).then(({ data, error }) => {
       if (error) {
-        console.error(error)
+        console.error(error);
       } else if (data) {
         if (data.profiles.items.length > 0) {
-          const lensProfile = data.profiles.items[0]
-          setUrl(lensProfile.picture.original.url)
+          const lensProfile = data.profiles.items[0];
+          setUrl(lensProfile.picture.original.url);
         }
       }
-    })
-  }, [isReceived])
-  useEffect(() => {console.log(url)}, [url])
+    });
+  }, [isReceived]);
+  useEffect(() => {
+    console.log(url);
+  }, [url]);
   return (
     <OrderCardContainer>
       <OrderCardTopRowContainer>

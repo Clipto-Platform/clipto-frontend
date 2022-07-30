@@ -339,7 +339,6 @@ query GetCreatorByTxHash(
 }
 `;
 
-
 export const queryCreatorsByAddresses = `
 query CreatorsByAddresses ($addresses: [Bytes!]) {
   creators (where: {address_in: $addresses}) {
@@ -360,7 +359,4 @@ query CreatorsByAddresses ($addresses: [Bytes!]) {
     timestamp
   }
 }
-`
-
-
-
+`;

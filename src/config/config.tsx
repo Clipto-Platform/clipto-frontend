@@ -1,6 +1,6 @@
 import { Config } from './types';
 
-export const RELAY_ON = true //broadcast api for free gas on lens, must be on port 4783, https://clipto.io
+export const RELAY_ON = true; //broadcast api for free gas on lens, must be on port 4783, https://clipto.io
 
 const configCommon = {
   minDeliveryTime: 3,
@@ -14,7 +14,7 @@ const configCommon = {
 };
 
 const configTest = {
-  url: "https://test.clipto.io",
+  url: 'https://test.clipto.io',
   chainId: 80001,
   chainName: 'Polygon Testnet Mumbai',
   chainSymbol: 'MATIC',
