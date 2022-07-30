@@ -4,22 +4,21 @@
 
 type IPFSResponse = {
   path?: string; //hash
-}
-export const uploadToIPFS = async (data : any) : Promise<IPFSResponse> => {
+};
+export const uploadToIPFS = async (data: any): Promise<IPFSResponse> => {
   // @ts-ignore
-  const ipfsClient = window.IpfsHttpClient
+  const ipfsClient = window.IpfsHttpClient;
 
-  if (!ipfsClient) throw 'ipfshttpclient not supported'
+  if (!ipfsClient) throw 'ipfshttpclient not supported';
 
-  const {create} = ipfsClient
+  const { create } = ipfsClient;
   const client = create({
     host: 'ipfs.infura.io',
     port: 5001,
-    protocol: 'https'
-  })
-  console.log(data)
-  return await client.add(JSON.stringify(data))
-    
-}
+    protocol: 'https',
+  });
+  console.log(data);
+  return await client.add(JSON.stringify(data));
+};
 
 // export default uploadToIPFS
