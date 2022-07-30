@@ -120,7 +120,7 @@ query Profiles ($handle: Handle!){
     }
   }
 }
-`
+`;
 
 export const mutationFollow = `
   mutation CreateFollowTypedData ($profile: ProfileId!){
@@ -401,8 +401,7 @@ mutation Refresh ($refreshToken: Jwt!) {
     refreshToken
   }
 }
-`
-
+`;
 
 //publications
 
@@ -443,7 +442,7 @@ mutation CreatePostTypedData($options: TypedDataOptions, $request: CreatePublicP
     __typename
   }
 }
-`
+`;
 
 export const mutationBroadcast = `
 mutation Broadcast($request: BroadcastRequest!) {
@@ -459,4 +458,4 @@ mutation Broadcast($request: BroadcastRequest!) {
     __typename
   }
 }
-`
+`;

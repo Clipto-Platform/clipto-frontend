@@ -25,52 +25,56 @@ import {
 } from './query';
 import { CreateProfileRequest } from './types';
 import { authExchange } from '@urql/exchange-auth';
-import * as jose from 'jose'
-import axios from 'axios'
-import store from '@/redux/store'
+import * as jose from 'jose';
+import axios from 'axios';
+import store from '@/redux/store';
 import { logout, logoutLens } from '@/redux/reducer';
 declare var window: any; //this removes window.ethereum type error
 
 export const verifyJwt = (address: string, token: string) => {
   if (token == '') {
-    return false
+    return false;
   }
   try {
     const claims = jose.decodeJwt(token);
-    if ((claims.id as string).toLowerCase() == address.toLowerCase() && //if user address of token is the same as the state
-    claims.exp && claims.exp * 1000 > Date.now()) { //if token is not expired
-      return true
+    if (
+      (claims.id as string).toLowerCase() == address.toLowerCase() && //if user address of token is the same as the state
+      claims.exp &&
+      claims.exp * 1000 > Date.now()
+    ) {
+      //if token is not expired
+      return true;
     }
   } catch (e) {
-    console.error(e)
+    console.error(e);
   }
-  return false
-}
+  return false;
+};
 
 //Note: This is only lens auth
-const getAuth = async ({ authState } : any) => {
+const getAuth = async ({ authState }: any) => {
   if (!authState) {
     const address = localStorage.getItem('user');
     const token = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
     if (token && refreshToken && token && address && verifyJwt(address, token)) {
-      const {data: res} = await axios(config.lens.url, {
+      const { data: res } = await axios(config.lens.url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         data: JSON.stringify({
           operationName: 'Refresh',
           query: queryRefresh,
           variables: {
-            refreshToken: refreshToken
-          }
-        })
-      })
+            refreshToken: refreshToken,
+          },
+        }),
+      });
       if (res.errors && res.errors.length > 0) {
-        console.error(res.errors)
-        store.dispatch(logoutLens())
+        console.error(res.errors);
+        store.dispatch(logoutLens());
         return null;
       }
-      const {refreshToken: newRefreshToken, accessToken: newAccessToken} = res?.data?.refresh
+      const { refreshToken: newRefreshToken, accessToken: newAccessToken } = res?.data?.refresh;
       return { token: newAccessToken, refreshToken: newRefreshToken };
     }
 
@@ -80,12 +84,12 @@ const getAuth = async ({ authState } : any) => {
 
   store.dispatch(logoutLens());
   return null;
-}
-
-const didAuthError = ({error} : any) => {
-  return error.message.includes('User not authenticated')
 };
-const addAuthToOperation = ({ authState, operation } : any) => {
+
+const didAuthError = ({ error }: any) => {
+  return error.message.includes('User not authenticated');
+};
+const addAuthToOperation = ({ authState, operation }: any) => {
   if (!authState || !authState.token) {
     return operation;
   }
@@ -110,25 +114,27 @@ const addAuthToOperation = ({ authState, operation } : any) => {
 export const graphInstance = createClient({
   // for performance reasons
   url: config.lens.url,
-  requestPolicy: 'cache-and-network',//defaults to no-cache option: https://formidable.com/open-source/urql/docs/basics/document-caching/,
+  requestPolicy: 'cache-and-network', //defaults to no-cache option: https://formidable.com/open-source/urql/docs/basics/document-caching/,
   exchanges: [
     dedupExchange,
     cacheExchange,
     authExchange({
       getAuth,
       addAuthToOperation,
-      didAuthError
+      didAuthError,
     }),
     fetchExchange,
-  ]
+  ],
 });
-
 
 export const generateChallenge = (address: any) => {
   return graphInstance.query(queryChallenge, { address }).toPromise();
 };
 
-export const authenticate = (address: string, signature: string) : Promise<OperationResult<{authenticate: AuthenticationResult}>> => {
+export const authenticate = (
+  address: string,
+  signature: string,
+): Promise<OperationResult<{ authenticate: AuthenticationResult }>> => {
   return graphInstance
     .mutation(queryAuth, {
       address,
@@ -138,12 +144,7 @@ export const authenticate = (address: string, signature: string) : Promise<Opera
 };
 
 export const createProfile = async (createProfileRequest: CreateProfileRequest) => {
-  return graphInstance
-    .mutation(
-      mutationProfile,
-      { request: createProfileRequest }
-    )
-    .toPromise();
+  return graphInstance.mutation(mutationProfile, { request: createProfileRequest }).toPromise();
 };
 
 export const getProfile = async (address: string) => {
@@ -168,8 +169,10 @@ export const signText = (text: string, library: Web3Provider) => {
   return signer.signMessage(text);
 };
 
-
-export const checkAccess = async (address: string, accessToken: string | undefined) : Promise<{ accessToken: any; refreshToken: any; } | null> => {
+export const checkAccess = async (
+  address: string,
+  accessToken: string | undefined,
+): Promise<{ accessToken: any; refreshToken: any } | null> => {
   if (!accessToken) {
     return null;
   }
@@ -181,37 +184,37 @@ export const checkAccess = async (address: string, accessToken: string | undefin
     };
   }
   return null;
-}
+};
 //gets access and request tokens
 /**
- * 
- * @param address 
- * @param library 
+ *
+ * @param address
+ * @param library
  * @returns a string if error and null if successful
  */
-export const getAccess = async (address: string, library: Web3Provider) : Promise<string | null> => {
+export const getAccess = async (address: string, library: Web3Provider): Promise<string | null> => {
   const challengeResponse = await generateChallenge(address);
-  if (!challengeResponse) return "Unable to get challenge response"
+  if (!challengeResponse) return 'Unable to get challenge response';
   const signature = await signText(challengeResponse.data.challenge.text, library);
-  if (!signature) return 'Unable to get signature'
+  if (!signature) return 'Unable to get signature';
   const authResponse = await authenticate(address, signature);
-  if (!authResponse || authResponse && authResponse.error) return 'unable to authenticate';
+  if (!authResponse || (authResponse && authResponse.error)) return 'unable to authenticate';
   if (authResponse.data && authResponse.data.authenticate.accessToken && authResponse.data.authenticate.refreshToken) {
-    localStorage.setItem('token', authResponse.data.authenticate.accessToken); 
+    localStorage.setItem('token', authResponse.data.authenticate.accessToken);
     localStorage.setItem('refreshToken', authResponse.data.authenticate.refreshToken);
-    return null; 
+    return null;
   }
   return 'something is very wrong';
 };
 
 //refreshs tokens
 export const refreshAccess = async (refreshToken: string, library: Web3Provider) => {
-  return graphInstance.mutation(queryRefresh, { refreshToken }).toPromise()
-}
+  return graphInstance.mutation(queryRefresh, { refreshToken }).toPromise();
+};
 
 //sign the address to a new lens account if address has zero lens accounts
 export const signUp = async (address: string, library: Web3Provider) => {
-  throw 'Not supported'
+  throw 'Not supported';
   const profileResponse = await getProfile(address);
   if (profileResponse && profileResponse.data.profiles.items.length === 0) {
     try {
@@ -226,12 +229,9 @@ export const signUp = async (address: string, library: Web3Provider) => {
 //Need to check what type of follow module - (don't want to have to pay for a fee)
 export const follow = async (profileId: string, library: Web3Provider) => {
   const result = await graphInstance
-    .mutation(
-      mutationFollow,
-      {
-        profile: profileId,
-      }
-    )
+    .mutation(mutationFollow, {
+      profile: profileId,
+    })
     .toPromise();
   if (!result) throw 'result is undefined';
   try {
@@ -253,36 +253,31 @@ export const follow = async (profileId: string, library: Web3Provider) => {
       return tx.hash;
     }
     if (RELAY_ON) {
-      const broadcastRes = await broadcast(
-        {
-          id: result.data.createFollowTypedData.id,
-          signature: signature,
-        }
-      );
-      if (broadcastRes.error  || broadcastRes.data?.broadcast?.reason === 'NOT_ALLOWED') {
-        return await writeTx()
+      const broadcastRes = await broadcast({
+        id: result.data.createFollowTypedData.id,
+        signature: signature,
+      });
+      if (broadcastRes.error || broadcastRes.data?.broadcast?.reason === 'NOT_ALLOWED') {
+        return await writeTx();
       }
-      return broadcastRes.data.broadcast.txHash
+      return broadcastRes.data.broadcast.txHash;
     } else {
-      return await writeTx()
+      return await writeTx();
     }
     // you can look at how to know when its been indexed here:
     //   - https://docs.lens.dev/docs/has-transaction-been-indexed
   } catch (e) {
     console.error(e);
     console.error('Make sure you are on the correct network or may ');
-    throw e
+    throw e;
   }
 };
 // check for edge cases in the docs
 export const unfollow = async (handle: string, library: Web3Provider) => {
   const result = await graphInstance
-    .mutation(
-      mutationUnfollow,
-      {
-        profile: handle,
-      }
-    )
+    .mutation(mutationUnfollow, {
+      profile: handle,
+    })
     .toPromise();
   if (!result) return;
   const typedData = result.data.createUnfollowTypedData.typedData;
@@ -300,23 +295,21 @@ export const unfollow = async (handle: string, library: Web3Provider) => {
   }
   try {
     if (RELAY_ON) {
-      const broadcastRes = await broadcast(
-        {
-          id: result.data.createUnfollowTypedData.id,
-          signature: signature,
-        }
-      );
-      if (broadcastRes.error  || broadcastRes.data?.broadcast?.reason === 'NOT_ALLOWED') {
+      const broadcastRes = await broadcast({
+        id: result.data.createUnfollowTypedData.id,
+        signature: signature,
+      });
+      if (broadcastRes.error || broadcastRes.data?.broadcast?.reason === 'NOT_ALLOWED') {
         return await writeTx();
       }
-      return broadcastRes.data.broadcast.txHash
+      return broadcastRes.data.broadcast.txHash;
     } else {
       return await writeTx();
     }
   } catch (e) {
     console.error(e);
     console.error('Make sure you are on the correct network or may ');
-    throw e
+    throw e;
   }
   // you can look at how to know when its been indexed here:
   //   - https://docs.lens.dev/docs/has-transaction-been-indexed
@@ -367,12 +360,9 @@ export const isFollowing = async (address: string, id: string) => {
  */
 export const txWait = async (txHash: string) => {
   return graphInstance
-    .query(
-      queryTxWait,
-      {
-        txHash: txHash,
-      }
-    )
+    .query(queryTxWait, {
+      txHash: txHash,
+    })
     .toPromise();
 };
 export const pollUntilIndexed = async (txHash: string) => {
@@ -380,7 +370,7 @@ export const pollUntilIndexed = async (txHash: string) => {
     const result = await txWait(txHash);
     const response = result.data.hasTxHashBeenIndexed;
     if (response.reason == 'REVERTED') {
-      throw new Error(response.reason)
+      throw new Error(response.reason);
     }
     if (response.__typename === 'TransactionIndexedResult') {
       if (response.metadataStatus) {
@@ -413,14 +403,16 @@ export const pollUntilIndexed = async (txHash: string) => {
 
 // todo - create publication
 export const postRequest = async (request: CreatePublicPostRequest, library: Web3Provider) => {
-  const result = await graphInstance.mutation(mutationCreatePostTypedData, {
-    // options: {
-    //   "overrideSigNonce": 25
-    // },
-    request,
-  }).toPromise();
+  const result = await graphInstance
+    .mutation(mutationCreatePostTypedData, {
+      // options: {
+      //   "overrideSigNonce": 25
+      // },
+      request,
+    })
+    .toPromise();
   if (!result) throw 'result is undefined';
-  console.log(result)
+  console.log(result);
   try {
     const typedData = result.data.createPostTypedData.typedData;
     const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value, library);
@@ -428,7 +420,7 @@ export const postRequest = async (request: CreatePublicPostRequest, library: Web
     async function writeTx() {
       const tx = await getLensHub(library).postWithSig({
         profileId: typedData.value.profileId,
-        contentURI:typedData.value.contentURI,
+        contentURI: typedData.value.contentURI,
         collectModule: typedData.value.collectModule,
         collectModuleInitData: typedData.value.collectModuleInitData,
         referenceModule: typedData.value.referenceModule,
@@ -443,18 +435,16 @@ export const postRequest = async (request: CreatePublicPostRequest, library: Web
       return tx.hash;
     }
     if (RELAY_ON) {
-      const broadcastRes = await broadcast(
-        {
-          id: result.data.createPostTypedData.id,
-          signature: signature,
-        }
-      );
-      if (broadcastRes.error  || broadcastRes.data?.broadcast?.reason === 'NOT_ALLOWED') {
-        return await writeTx()
+      const broadcastRes = await broadcast({
+        id: result.data.createPostTypedData.id,
+        signature: signature,
+      });
+      if (broadcastRes.error || broadcastRes.data?.broadcast?.reason === 'NOT_ALLOWED') {
+        return await writeTx();
       }
-      return broadcastRes.data.broadcast.txHash
+      return broadcastRes.data.broadcast.txHash;
     } else {
-      return await writeTx()
+      return await writeTx();
     }
     // you can look at how to know when its been indexed here:
     //   - https://docs.lens.dev/docs/has-transaction-been-indexed
@@ -467,11 +457,8 @@ export const postRequest = async (request: CreatePublicPostRequest, library: Web
 //gasless!
 export const broadcast = (request: { id: string; signature: string }) => {
   return graphInstance
-    .mutation(
-      mutationBroadcast,
-      {
-        request,
-      }
-    )
+    .mutation(mutationBroadcast, {
+      request,
+    })
     .toPromise();
 };

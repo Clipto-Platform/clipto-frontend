@@ -70,7 +70,7 @@ const AvatarComponent: React.FC<AvatarProps> = (props) => {
         }
       });
   }, [props.twitterHandle]);
-  
+
   if (url) {
     return (
       <div style={{ ...props.style }}>

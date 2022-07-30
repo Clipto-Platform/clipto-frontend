@@ -15,9 +15,7 @@ export function Dropdown(props: {
         <StyledSelect id={props.name} name={props.name}>
           {props.children}
         </StyledSelect>
-        <div>
-          {props.children.length != 1 && <img src={Icon} alt="icon" />}
-        </div>
+        <div>{props.children.length != 1 && <img src={Icon} alt="icon" />}</div>
       </StyledSelectDiv>
     </DropdownWrapper>
   );
