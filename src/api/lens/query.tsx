@@ -403,6 +403,378 @@ mutation Refresh ($refreshToken: Jwt!) {
 }
 `;
 
+export const queryTwitterPosts = `
+query ProfileFeed($request: PublicationsQueryRequest!, $reactionRequest: ReactionFieldResolverRequest) {
+  publications(request: $request) {
+    items {
+      ... on Post {
+        ...PostFields
+        __typename
+      }
+      ... on Comment {
+        ...CommentFields
+        __typename
+      }
+      ... on Mirror {
+        ...MirrorFields
+        __typename
+      }
+      __typename
+    }
+    pageInfo {
+      totalCount
+      next
+      __typename
+    }
+    __typename
+  }
+}
+
+fragment PostFields on Post {
+  
+  id
+  reaction(request: $reactionRequest)
+  profile {
+    ...MinimalProfileFields
+    __typename
+  }
+  collectedBy {
+    address
+    defaultProfile {
+      handle
+      __typename
+    }
+    __typename
+  }
+  collectModule {
+    ...MinimalCollectModuleFields
+    __typename
+  }
+  hidden
+  hasCollectedByMe
+  stats {
+    totalAmountOfComments
+    totalAmountOfCollects
+    totalAmountOfMirrors
+    totalUpvotes
+    totalDownvotes
+    __typename
+  }
+  metadata {
+    name
+    description
+    content
+    
+    description
+    media {
+      original {
+        url
+        mimeType
+        __typename
+      }
+      __typename
+    }
+    cover {
+      original {
+        url
+        __typename
+      }
+      __typename
+    }
+    attributes {
+      value
+      
+      traitType
+      __typename
+    }
+    __typename
+  }
+  createdAt
+  appId
+  __typename
+}
+
+fragment MinimalProfileFields on Profile {
+  id
+  name
+  handle
+  bio
+  ownedBy
+  isFollowedByMe
+  attributes {
+    key
+    value
+    __typename
+  }
+  stats {
+    totalFollowers
+    totalPosts
+    __typename
+  }
+  picture {
+    ... on MediaSet {
+      original {
+        url
+        __typename
+      }
+      __typename
+    }
+    ... on NftImage {
+      uri
+      __typename
+    }
+    __typename
+  }
+  followModule {
+    __typename
+  }
+  __typename
+}
+
+fragment MinimalCollectModuleFields on CollectModule {
+  ... on FreeCollectModuleSettings {
+    type
+    followerOnly
+    __typename
+  }
+  ... on FeeCollectModuleSettings {
+    type
+    amount {
+      asset {
+        address
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  ... on LimitedFeeCollectModuleSettings {
+    type
+    amount {
+      asset {
+        address
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  ... on LimitedTimedFeeCollectModuleSettings {
+    type
+    amount {
+      asset {
+        address
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  ... on TimedFeeCollectModuleSettings {
+    type
+    amount {
+      asset {
+        address
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
+
+fragment CommentFields on Comment {
+  id
+  profile {
+    ...MinimalProfileFields
+    __typename
+  }
+  reaction(request: $reactionRequest)
+  collectedBy {
+    address
+    defaultProfile {
+      handle
+      __typename
+    }
+    __typename
+  }
+  hidden
+  collectModule {
+    ...MinimalCollectModuleFields
+    __typename
+  }
+  stats {
+    totalAmountOfComments
+    totalAmountOfCollects
+    totalAmountOfMirrors
+    totalDownvotes
+    totalUpvotes
+    __typename
+  }
+  metadata {
+    name
+    description
+    content
+    description
+    media {
+      original {
+        url
+        mimeType
+        __typename
+      }
+      __typename
+    }
+    attributes {
+      traitType
+      value
+      __typename
+    }
+    __typename
+  }
+  commentOn {
+    ... on Post {
+      pubId: id
+      createdAt
+      profile {
+        ...MinimalProfileFields
+        __typename
+      }
+      metadata {
+        name
+        content
+        cover {
+          original {
+            url
+            __typename
+          }
+          __typename
+        }
+        attributes {
+          value
+          traitType
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    ... on Comment {
+      id
+      profile {
+        ...MinimalProfileFields
+        __typename
+      }
+      reaction(request: $reactionRequest)
+      metadata {
+        name
+        content
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  createdAt
+  appId
+  __typename
+}
+
+fragment MirrorFields on Mirror {
+  id
+  profile {
+    name
+    handle
+    __typename
+  }
+  reaction(request: $reactionRequest)
+  collectModule {
+    ...MinimalCollectModuleFields
+    __typename
+  }
+  stats {
+    totalUpvotes
+    totalAmountOfMirrors
+    totalAmountOfCollects
+    totalAmountOfComments
+    __typename
+  }
+  metadata {
+    ...MetadataFields
+    __typename
+  }
+  mirrorOf {
+    ... on Post {
+      id
+      profile {
+        ...MinimalProfileFields
+        __typename
+      }
+      metadata {
+        ...MetadataFields
+        __typename
+      }
+      reaction(request: $reactionRequest)
+      stats {
+        totalUpvotes
+        totalAmountOfMirrors
+        totalAmountOfCollects
+        totalAmountOfComments
+        __typename
+      }
+      __typename
+    }
+    ... on Comment {
+      id
+      profile {
+        ...MinimalProfileFields
+        __typename
+      }
+      reaction(request: $reactionRequest)
+      stats {
+        totalUpvotes
+        totalAmountOfMirrors
+        totalAmountOfCollects
+        totalAmountOfComments
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  createdAt
+  appId
+  __typename
+}
+
+fragment MetadataFields on MetadataOutput {
+  name
+  description
+  content
+  cover {
+    original {
+      url
+      __typename
+    }
+    __typename
+  }
+  media {
+    original {
+      url
+      mimeType
+      __typename
+    }
+    __typename
+  }
+  attributes {
+    value
+    traitType
+    __typename
+  }
+  __typename
+}
+`;
+
 //publications
 
 export const mutationCreatePostTypedData = `
