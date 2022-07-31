@@ -143,7 +143,6 @@ const BookingPage = () => {
       lensProfilePromise.then((res) => {
         const lensProfile = res.data.profiles.items[0];
         if (lensProfile.ownedBy.toUpperCase() === creator.address.toUpperCase()) {
-          console.log(lensProfile);
           setCreatorLens(lensProfile);
           setCreatorLensFollowModuleType(lensProfile.followModule && lensProfile.followModule.__typename);
         } else {
@@ -279,7 +278,7 @@ const BookingPage = () => {
         <PageGrid>
           <ImagesColumnContainer>
             {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
-            {creator && <SocialFeed creator={creator} />}
+            {creator && creatorLens && <SocialFeed creator={creator} creatorLens={creatorLens} />}
           </ImagesColumnContainer>
           <RightPanel creator={creator} account={account} loaded={loaded} user={user}>
             {(creator, account) => (
