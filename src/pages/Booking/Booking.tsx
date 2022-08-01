@@ -40,6 +40,19 @@ import { getTwitterData } from '../../api';
 import { FaTwitter } from 'react-icons/fa';
 import { Unsubscribe } from '@reduxjs/toolkit';
 import { useSocialGraph } from '@/hooks/useSocialGraph';
+import styled from 'styled-components';
+
+const OnlyDesktop = styled.div`
+  @media (max-width: 955px) {
+    display: none;
+  }
+`;
+
+const OnlyMobile = styled.div`
+  @media (min-width: 956px) {
+    display: none;
+  }
+`;
 
 const BookingPage = () => {
   const navigate = useNavigate();
@@ -278,7 +291,11 @@ const BookingPage = () => {
         <PageGrid>
           <ImagesColumnContainer>
             {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
-            {creator && creatorLens && <SocialFeed creator={creator} creatorLens={creatorLens} />}
+            {creator && creatorLens && (
+              <OnlyDesktop>
+                <SocialFeed creator={creator} creatorLens={creatorLens} />
+              </OnlyDesktop>
+            )}
           </ImagesColumnContainer>
           <RightPanel creator={creator} account={account} loaded={loaded} user={user}>
             {(creator, account) => (
@@ -664,6 +681,11 @@ const BookingPage = () => {
               </BookingCard>
             )}
           </RightPanel>
+          {creator && creatorLens && (
+            <OnlyMobile>
+              <SocialFeed creator={creator} creatorLens={creatorLens} />
+            </OnlyMobile>
+          )}
         </PageGrid>
       </PageContentWrapper>
     </PageWrapper>
