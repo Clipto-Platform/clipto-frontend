@@ -22,6 +22,7 @@ import {
   queryRefresh,
   queryTxWait,
   queryVerify,
+  queryTwitterPosts,
 } from './query';
 import { CreateProfileRequest } from './types';
 import { authExchange } from '@urql/exchange-auth';
@@ -30,6 +31,15 @@ import axios from 'axios';
 import store from '@/redux/store';
 import { logout, logoutLens } from '@/redux/reducer';
 declare var window: any; //this removes window.ethereum type error
+
+//Gets twitter data
+export const getTwitterPosts = async ({ request }: any) => {
+  return graphInstance
+    .query(queryTwitterPosts, {
+      request,
+    })
+    .toPromise();
+};
 
 export const verifyJwt = (address: string, token: string) => {
   if (token == '') {

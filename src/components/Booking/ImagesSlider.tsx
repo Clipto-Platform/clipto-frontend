@@ -57,7 +57,7 @@ const ImagesSliderContainer = styled.div`
 const SliderControlsContainer = styled.div`
   display: flex;
   flex-direction: row;
-  flex: 1;
+  margin-bottom: 32px;
   justify-content: flex-end;
 `;
 

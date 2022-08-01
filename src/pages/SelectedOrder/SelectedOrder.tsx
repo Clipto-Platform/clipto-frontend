@@ -347,7 +347,7 @@ const SelectedOrderPage = () => {
             )}
 
             {(request?.delivered || clipDetails) && <Video src={clipDetails} />}
-
+            <div style={{ height: 20, width: '100%' }} />
             {request && (
               <OrderCard
                 request={request!}
