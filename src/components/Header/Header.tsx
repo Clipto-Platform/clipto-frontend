@@ -381,11 +381,11 @@ const Header: React.FC<HeaderProps> = () => {
   };
 
   useEffect(() => {
-    if (checkLogin && account) {
+    if (checkLogin && account && user) {
       // getLensCreatorData()
       dispatch(login(account));
     }
-  }, [checkLogin]);
+  }, [checkLogin, user, account]);
 
   useEffect(() => {
     if (chainId !== config.chainId) {
