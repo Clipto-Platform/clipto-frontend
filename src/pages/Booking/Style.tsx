@@ -17,7 +17,8 @@ export const PageGrid = styled.div`
 `;
 
 export const ImagesColumnContainer = styled.div`
-  position: relative;
+  display: flex;
+  flex-direction: column;
   height: auto;
   max-width: 100%;
   ${({ theme }) => theme.mediaWidth.upToMedium`

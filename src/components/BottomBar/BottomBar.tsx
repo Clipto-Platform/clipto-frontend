@@ -25,9 +25,11 @@ const BottomBar: React.FC = () => {
           <a href={config.twitter} target="_blank" style={{ marginRight: 20, marginLeft: 20 }}>
             <SiTwitter style={{ width: SOCIAL_SIZE, height: SOCIAL_SIZE }} />
           </a>
-          {config.email && <a href={'mailto:'.concat(config.email)} target="_blank" style={{ marginRight: 20, marginLeft: 20 }}>
-            <MdEmail style={{ width: SOCIAL_SIZE, height: SOCIAL_SIZE }} />
-          </a>}
+          {config.email && (
+            <a href={'mailto:'.concat(config.email)} target="_blank" style={{ marginRight: 20, marginLeft: 20 }}>
+              <MdEmail style={{ width: SOCIAL_SIZE, height: SOCIAL_SIZE }} />
+            </a>
+          )}
         </div>
         <div style={{ marginBottom: 20 }}>
           <a href={config.documentation} target="_blank" style={{ marginRight: 10, marginLeft: 10 }}>

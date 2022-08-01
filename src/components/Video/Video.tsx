@@ -1,17 +1,17 @@
 import { useEffect, useState, FC } from 'react';
 import styled from 'styled-components';
 import ContentLoader from 'react-content-loader';
-import './plyr.css'
+import './plyr.css';
 
-import Plyr from 'plyr-react'
+import Plyr from 'plyr-react';
 
 const VideoCard = styled.video`
   border-radius: 15px;
-  margin-bottom: 20px;
 `;
 
 interface VideoProps {
   src: string;
+  autoplay?: boolean;
 }
 
 const VideoLegacy = (props: VideoProps) => {
@@ -38,7 +38,7 @@ const VideoLegacy = (props: VideoProps) => {
           src={src}
           width={600}
           controls
-          autoPlay
+          autoPlay={props.autoplay != null ? props.autoplay : true}
           onError={() => {
             setKey(Math.random());
           }}
@@ -48,7 +48,6 @@ const VideoLegacy = (props: VideoProps) => {
   );
 };
 
-
 const Video: FC<VideoProps> = ({ src }) => {
   return (
     <div className="rounded-lg">
@@ -56,25 +55,17 @@ const Video: FC<VideoProps> = ({ src }) => {
         source={{
           type: 'video',
           sources: [{ src, provider: 'html5' }],
-          poster: src
+          poster: src,
         }}
         options={{
-          controls: [
-            'play-large',
-            'play',
-            'progress',
-            'current-time',
-            'mute',
-            'volume',
-            'fullscreen'
-          ],
-          ratio: '16:12'
+          controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+          ratio: '16:12',
         }}
       />
     </div>
-  )
-}
+  );
+};
 
-export default Video
+export default Video;
 
 export { Video };
