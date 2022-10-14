@@ -28,6 +28,7 @@ import { convertToFloat, convertToInt, formatETH, removeTrailingZero } from '../
 import { Number } from '../../utils/validation';
 import { isCreatorOnChain } from '../../web3/request';
 import { FlexRow, HR, ImagesColumnContainer, PageGrid, PurchaseOption } from './Style';
+import { SocialFeed } from '../../components/SocialFeed/SocialFeed';
 import { ERC20__factory } from '../../contracts';
 import axios from 'axios';
 import * as lens from '../../api/lens';
@@ -39,6 +40,19 @@ import { getTwitterData } from '../../api';
 import { FaTwitter } from 'react-icons/fa';
 import { Unsubscribe } from '@reduxjs/toolkit';
 import { useSocialGraph } from '@/hooks/useSocialGraph';
+import styled from 'styled-components';
+
+const OnlyDesktop = styled.div`
+  @media (max-width: 955px) {
+    display: none;
+  }
+`;
+
+const OnlyMobile = styled.div`
+  @media (min-width: 956px) {
+    display: none;
+  }
+`;
 
 const BookingPage = () => {
   const navigate = useNavigate();
@@ -142,7 +156,6 @@ const BookingPage = () => {
       lensProfilePromise.then((res) => {
         const lensProfile = res.data.profiles.items[0];
         if (lensProfile.ownedBy.toUpperCase() === creator.address.toUpperCase()) {
-          console.log(lensProfile);
           setCreatorLens(lensProfile);
           setCreatorLensFollowModuleType(lensProfile.followModule && lensProfile.followModule.__typename);
         } else {
@@ -278,6 +291,11 @@ const BookingPage = () => {
         <PageGrid>
           <ImagesColumnContainer>
             {loaded && creator && creator.demos && <ImagesSlider images={creator.demos} />}
+            {creator && creatorLens && (
+              <OnlyDesktop>
+                <SocialFeed creator={creator} creatorLens={creatorLens} />
+              </OnlyDesktop>
+            )}
           </ImagesColumnContainer>
           <RightPanel creator={creator} account={account} loaded={loaded} user={user}>
             {(creator, account) => (
@@ -663,6 +681,11 @@ const BookingPage = () => {
               </BookingCard>
             )}
           </RightPanel>
+          {creator && creatorLens && (
+            <OnlyMobile>
+              <SocialFeed creator={creator} creatorLens={creatorLens} />
+            </OnlyMobile>
+          )}
         </PageGrid>
       </PageContentWrapper>
     </PageWrapper>
