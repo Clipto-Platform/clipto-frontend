@@ -70,7 +70,6 @@ const OnboardProfilePage = () => {
     if (userProfile.address) {
       return;
     }
-    navigate('/onboarding');
   }, [userProfile]);
 
   const createLensProfile = async (lensHandle: string) => {
